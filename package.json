@@ -33,7 +33,7 @@
     "@angular/compiler-cli": "~13.2.0",
     "@ngneat/spectator": "^10.0.0",
     "@types/jest": "^27.4.0",
-    "@types/node": "^12.11.1",
+    "@types/node": "16.11.25",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
     "eslint": "^8.9.0",
