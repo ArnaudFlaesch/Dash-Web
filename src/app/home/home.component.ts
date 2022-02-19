@@ -1,7 +1,7 @@
 import { ITab } from './../model/Tab';
 import { Router } from '@angular/router';
 import { AuthService } from './../services/auth.service/auth.service';
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { TabService } from '../services/tab.service/tab.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 

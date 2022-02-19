@@ -1,7 +1,7 @@
-import { createComponentFactory, Spectator } from '@ngneat/spectator';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterTestingModule } from '@angular/router/testing';
+import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
+import { AppComponent } from './app.component';
 import { AuthService } from './services/auth.service/auth.service';
 
 describe('AppComponent', () => {
