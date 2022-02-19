@@ -38,10 +38,7 @@ describe('Login tests', () => {
       .wait('@login')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.waitUntil(() => cy.get('.tab.selectedItem').should('be.visible'))
-          .get('.tab')
-          .should('have.length', 1)
-          .get('#logoutButton')
+        cy.get('#logoutButton')
           .click()
           .waitUntil(() =>
             cy
