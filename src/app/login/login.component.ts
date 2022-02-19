@@ -34,6 +34,7 @@ export class LoginComponent {
         },
         error: (error: Error) => {
           this.isLoading = false;
+          console.log(error.message);
           this.snackBar.open(this.ERROR_AUTHENTICATING_USER);
         },
         complete: () => (this.isLoading = false)

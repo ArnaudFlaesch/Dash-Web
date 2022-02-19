@@ -45,7 +45,7 @@ export class HomeComponent implements OnDestroy {
         this.tabs = tabs;
         this.activeTab = tabs[0].id;
       },
-      error: (error) => {
+      error: () => {
         this.snabbar.open(this.ERROR_MESSAGE_INIT_DASHBOARD);
       }
     });

@@ -1,19 +1,15 @@
-import { ITab } from './../model/Tab';
-import { Component, Input, OnInit } from '@angular/core';
-import { IWidgetConfig } from '../model/IWidgetConfig';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-tab',
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss']
 })
-export class TabComponent implements OnInit {
+export class TabComponent {
   private widgets: IWidgetConfig[] = [];
   @Input() public tab: ITab | undefined = undefined;
-  ERROR_MESSAGE_GET_WIDGETS = 'Erreur lors de la récupération des widgets.';
-  ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
-
-  constructor() {}
-
-  ngOnInit(): void {}
+  private ERROR_MESSAGE_GET_WIDGETS =
+    'Erreur lors de la récupération des widgets.';
+  private ERROR_MESSAGE_DELETE_WIDGET =
+    "Erreur lors de la suppression d'un widget.";
 }
