@@ -12,7 +12,7 @@ describe('ApiService tests', () => {
     service: AuthService
   });
 
-  const expectedUserData: unknown = {
+  const expectedUserData: Record<string, unknown> = {
     accessToken: 'access_token',
     id: 2,
     username: 'admintest',
