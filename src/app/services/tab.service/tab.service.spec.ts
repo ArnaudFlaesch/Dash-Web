@@ -82,4 +82,17 @@ describe('ApiService tests', () => {
     );
     request.flush(expectedUpdatedTabs);
   });
+
+  it('Devrait supprimer un onglet', () => {
+    const tabId = 1;
+    spectator.service
+      .deleteTab(tabId)
+      .subscribe((response) => expect(response).toEqual(true));
+
+    const request = spectator.expectOne(
+      environment.backend_url + tabPath + 'deleteTab/?id=' + tabId,
+      HttpMethod.DELETE
+    );
+    request.flush(true);
+  });
 });
