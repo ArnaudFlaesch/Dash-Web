@@ -10,11 +10,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnDestroy {
+export class HomeComponent {
   public tabs: ITab[] = [];
   public activeTab = -1;
 
-  //private interval: NodeJS.Timer;
   private refreshTimeout = 900000; // 15 minutes
 
   private ERROR_MESSAGE_INIT_DASHBOARD =
@@ -31,17 +30,11 @@ export class HomeComponent implements OnDestroy {
     private snabbar: MatSnackBar
   ) {
     this.initDashboard();
-    //  this.interval = setInterval(this.refreshAllWidgets, this.refreshTimeout);
-  }
-
-  ngOnDestroy(): void {
-    //clearInterval(this.interval);
   }
 
   private initDashboard() {
     this.tabService.getTabs().subscribe({
       next: (tabs) => {
-        console.log('ici');
         this.tabs = tabs;
         this.activeTab = tabs[0].id;
       },
@@ -49,10 +42,6 @@ export class HomeComponent implements OnDestroy {
         this.snabbar.open(this.ERROR_MESSAGE_INIT_DASHBOARD);
       }
     });
-  }
-
-  public refreshAllWidgets() {
-    console.log('refresh');
   }
 
   public logout() {
