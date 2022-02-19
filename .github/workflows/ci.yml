@@ -38,6 +38,25 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: E2E Tests
+        run: |
+          npm i -g wait-on npm-run-all
+          run-p -r npm run start npm run cy:run:parallel
+
+      - name: Generate test report
+        if: always()
+        run: |
+          mkdir cypress/screenshots || true
+          npm run report:merge
+          npm run report:generate
+          npm run report:copyScreenshots
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Cypress report
+          path: cypress/reports/html
+
       - name: Send coverage report
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov 

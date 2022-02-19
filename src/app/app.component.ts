@@ -1,4 +1,11 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service/auth.service';
+
+export interface IMenu {
+  link: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -7,4 +14,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Dash';
+
+  constructor(private authService: AuthService, private router: Router) {
+    if (this.authService.isUserAuthenticated()) {
+      this.router.navigate(['home']);
+    } else {
+      this.router.navigate(['login']);
+    }
+  }
 }

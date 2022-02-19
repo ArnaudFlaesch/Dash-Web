@@ -1,0 +1,12 @@
+<div class="flex flex-row flex-wrap">
+  <app-tab
+    class="tab"
+    [ngClass]="{ selectedItem: activeTab === tab.id }"
+    *ngFor="let tab of this.tabs"
+    [tab]="tab"
+  ></app-tab>
+
+  <button id="logoutButton" mat-raised-button (click)="logout()">
+    Déconnexion
+  </button>
+</div>

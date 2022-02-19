@@ -1,0 +1,45 @@
+import { Component } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../services/auth.service/auth.service';
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
+})
+export class LoginComponent {
+  public logoPath = './../assets/logo.png';
+  public isLoading = false;
+
+  public inputUsername = '';
+  public inputPassword = '';
+
+  private ERROR_AUTHENTICATING_USER =
+    "Erreur lors de la connexion de l'utilisateur.";
+
+  private ERROR_WRONG_LOGIN =
+    "Erreur: l'identifiant ou le mot de passe ne correspondent pas.";
+
+  constructor(
+    private authService: AuthService,
+    private snackBar: MatSnackBar
+  ) {}
+
+  public handleLogin() {
+    if (this.inputUsername && this.inputPassword) {
+      this.isLoading = true;
+      this.authService.login(this.inputUsername, this.inputPassword).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.snackBar.open(this.ERROR_WRONG_LOGIN);
+        },
+        error: (error: Error) => {
+          this.isLoading = false;
+          this.snackBar.open(this.ERROR_AUTHENTICATING_USER);
+        },
+        complete: () => (this.isLoading = false)
+      });
+    } else {
+      this.isLoading = false;
+    }
+  }
+}
