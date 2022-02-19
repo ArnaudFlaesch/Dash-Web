@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service/auth.service';
@@ -16,12 +17,10 @@ export class LoginComponent {
   private ERROR_AUTHENTICATING_USER =
     "Erreur lors de la connexion de l'utilisateur.";
 
-  private ERROR_WRONG_LOGIN =
-    "Erreur: l'identifiant ou le mot de passe ne correspondent pas.";
-
   constructor(
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   public handleLogin() {
@@ -30,7 +29,7 @@ export class LoginComponent {
       this.authService.login(this.inputUsername, this.inputPassword).subscribe({
         next: () => {
           this.isLoading = false;
-          this.snackBar.open(this.ERROR_WRONG_LOGIN);
+          this.router.navigate(['home']);
         },
         error: (error: Error) => {
           this.isLoading = false;

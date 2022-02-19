@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RouterTestingModule } from '@angular/router/testing';
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { AuthService } from '../services/auth.service/auth.service';
 import { LoginComponent } from './login.component';
@@ -9,7 +10,12 @@ describe('LoginComponent', () => {
   let spectator: Spectator<LoginComponent>;
   const createComponent = createComponentFactory({
     component: LoginComponent,
-    imports: [HttpClientModule, FormsModule, MatSnackBarModule],
+    imports: [
+      HttpClientModule,
+      FormsModule,
+      MatSnackBarModule,
+      RouterTestingModule
+    ],
     providers: [AuthService]
   });
 
