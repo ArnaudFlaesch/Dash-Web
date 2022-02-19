@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ITab } from '../model/Tab';
 
 @Component({
   selector: 'app-tab',
@@ -6,7 +7,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./tab.component.scss']
 })
 export class TabComponent {
-  private widgets: IWidgetConfig[] = [];
+  // private widgets: IWidgetConfig[] = [];
   @Input() public tab: ITab | undefined = undefined;
   private ERROR_MESSAGE_GET_WIDGETS =
     'Erreur lors de la récupération des widgets.';
