@@ -1,25 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { ErrorComponent } from './error.component';
 
 describe('ErrorComponent', () => {
-  let component: ErrorComponent;
-  let fixture: ComponentFixture<ErrorComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ErrorComponent ]
-    })
-    .compileComponents();
+  let spectator: Spectator<ErrorComponent>;
+  const createComponent = createComponentFactory({
+    component: ErrorComponent
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ErrorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => (spectator = createComponent()));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create the app', () => {
+    expect(spectator.component).toBeTruthy();
   });
 });

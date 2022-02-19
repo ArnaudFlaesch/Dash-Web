@@ -35,8 +35,8 @@ export class TabService {
     id: number,
     label: string,
     tabOrder: number
-  ): Observable<unknown> {
-    return this.http.post(
+  ): Observable<ITab> {
+    return this.http.post<ITab>(
       `${environment.backend_url}/tab/updateTab`,
       { id: id, label: label, tabOrder: tabOrder },
       {
@@ -48,13 +48,17 @@ export class TabService {
     );
   }
 
-  public updateTabs(tabs: ITab[]): Observable<unknown> {
-    return this.http.post(`${environment.backend_url}/tab/updateTabs`, tabs, {
-      headers: {
-        Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+  public updateTabs(tabs: ITab[]): Observable<ITab[]> {
+    return this.http.post<ITab[]>(
+      `${environment.backend_url}/tab/updateTabs`,
+      tabs,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        }
       }
-    });
+    );
   }
 
   public deleteTab(id: number): Observable<unknown> {

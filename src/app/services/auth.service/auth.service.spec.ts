@@ -25,7 +25,7 @@ describe('ApiService tests', () => {
 
   beforeEach(() => (spectator = createSpectator()));
 
-  it('Devrait retourner deux livres', () => {
+  it("Devrait renvoyer les données d'un utilisateur", () => {
     spectator.service
       .login('login', 'password')
       .subscribe((response) => expect(response).toEqual(expectedUserData));
@@ -37,7 +37,7 @@ describe('ApiService tests', () => {
     request.flush(expectedUserData);
   });
 
-  it('Devrait retourner une liste de livres vide', () => {
+  it('Devrait ne rien renvoyer', () => {
     spectator.service
       .login('login', 'password')
       .subscribe((response) => expect(response).toBe(null));

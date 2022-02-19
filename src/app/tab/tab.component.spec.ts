@@ -1,25 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { TabComponent } from './tab.component';
 
 describe('TabComponent', () => {
-  let component: TabComponent;
-  let fixture: ComponentFixture<TabComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ TabComponent ]
-    })
-    .compileComponents();
+  let spectator: Spectator<TabComponent>;
+  const createComponent = createComponentFactory({
+    component: TabComponent
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TabComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => (spectator = createComponent()));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create the app', () => {
+    expect(spectator.component).toBeTruthy();
   });
 });
