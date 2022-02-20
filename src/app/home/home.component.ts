@@ -1,9 +1,9 @@
-import { ITab } from './../model/Tab';
-import { Router } from '@angular/router';
-import { AuthService } from './../services/auth.service/auth.service';
 import { Component } from '@angular/core';
-import { TabService } from '../services/tab.service/tab.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { TabService } from '../services/tab.service/tab.service';
+import { ITab } from './../model/Tab';
+import { AuthService } from './../services/auth.service/auth.service';
 
 @Component({
   selector: 'app-home',

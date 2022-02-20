@@ -83,6 +83,30 @@
           "options": {
             "browserTarget": "dash-web:build"
           }
+        },
+        "e2e": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "dash-web:serve",
+            "browser": "chrome"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "dash-web:serve:production"
+            }
+          }
+        },
+        "e2e:ci": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "dash-web:serve",
+            "configFile": "cypress-test.json"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "dash-web:production"
+            }
+          }
         }
       }
     }

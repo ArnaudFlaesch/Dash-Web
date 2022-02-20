@@ -61,8 +61,7 @@ jobs:
 
       - name: E2E Tests
         run: |
-          npm i -g wait-on npm-run-all
-          run-p -r start cy:run:parallel
+          npm run e2e:ci
 
       - name: Generate test report
         if: always()
