@@ -96,11 +96,12 @@
             }
           }
         },
-        "e2e:ci": {
+        "e2e-ci": {
           "builder": "@cypress/schematic:cypress",
           "options": {
             "devServerTarget": "dash-web:serve",
-            "configFile": "cypress-test.json"
+            "configFile": "cypress-test.json",
+            "browser": "chrome"
           },
           "configurations": {
             "production": {
