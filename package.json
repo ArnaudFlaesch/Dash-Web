@@ -12,7 +12,7 @@
     "test": "jest --config jest-config.js",
     "test:watch": "npm run test -- --watch",
     "test:e2e": "ng e2e",
-    "test:e2e:ci": "ng e2e-ci",
+    "test:e2e:ci": "ng run dash-web:e2e-ci",
     "eslint": "eslint . --ext .ts",
     "eslint:fix": "npm run eslint -- --fix",
     "cy:open": "cypress open",
