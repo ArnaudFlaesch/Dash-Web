@@ -16,10 +16,10 @@ export class AppComponent {
   title = 'Dash';
 
   constructor(private authService: AuthService, private router: Router) {
-    if (this.authService.isUserAuthenticated()) {
-      this.router.navigate(['home']);
-    } else {
+    if (this.authService.isTokenExpired()) {
       this.router.navigate(['login']);
+    } else {
+      this.router.navigate(['home']);
     }
   }
 }

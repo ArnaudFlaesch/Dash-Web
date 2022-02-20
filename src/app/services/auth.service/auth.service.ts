@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IUser } from './../../model/User';
-import jwt_decode from 'jwt-decode';
+import jwt_decode, { InvalidTokenError } from 'jwt-decode';
 import { environment } from '../../../environments/environment';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -45,7 +45,7 @@ export class AuthService {
     localStorage.removeItem('user');
   }
 
-  public getCurrentUser(): IUser | null {
+  public getCurrentUserData(): IUser | null {
     const userData = localStorage.getItem('user');
     if (!userData) {
       return null;
@@ -54,18 +54,18 @@ export class AuthService {
     }
   }
 
-  private isTokenExpired(): boolean {
-    const authenticatedUser = this.getCurrentUser();
+  public isTokenExpired(): boolean {
+    const authenticatedUser = this.getCurrentUserData();
     if (!authenticatedUser || !authenticatedUser.accessToken) {
       return false;
     } else {
-      return (
-        Date.now() >= jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000
-      );
+      let result = false;
+      try {
+        result = Date.now() >= jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000;
+      } catch (error) {
+        result = false;
+      }
+      return result;
     }
-  }
-
-  public isUserAuthenticated(): boolean {
-    return this.getCurrentUser() !== null && !this.isTokenExpired();
   }
 }

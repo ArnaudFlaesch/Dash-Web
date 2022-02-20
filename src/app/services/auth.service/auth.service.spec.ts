@@ -25,7 +25,7 @@ describe('ApiService tests', () => {
 
   beforeEach(() => (spectator = createSpectator()));
 
-  it("Devrait renvoyer les données d'un utilisateur", () => {
+  it('Should send user data and disconnect him', () => {
     spectator.service
       .login('login', 'password')
       .subscribe((response) => expect(response).toEqual(expectedUserData));
@@ -41,7 +41,7 @@ describe('ApiService tests', () => {
     expect(localStorage.getItem('user')).toBeNull();
   });
 
-  it('Devrait ne rien renvoyer', () => {
+  it('Should not send anything', () => {
     spectator.service
       .login('login', 'password')
       .subscribe((response) => expect(response).toBe(null));
@@ -50,5 +50,13 @@ describe('ApiService tests', () => {
       HttpMethod.POST
     );
     request.flush(null);
+  });
+
+  it('Should fail to parse token', () => {
+    const userData: Record<string, unknown> = {
+      accessToken: 'access_token'
+    };
+    localStorage.setItem('user', JSON.stringify(userData));
+    expect(spectator.service.isTokenExpired()).toBe(false);
   });
 });
