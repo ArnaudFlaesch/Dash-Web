@@ -14,8 +14,7 @@ export class LoginComponent {
   public inputUsername = '';
   public inputPassword = '';
 
-  private ERROR_AUTHENTICATING_USER =
-    "Erreur lors de la connexion de l'utilisateur.";
+  private ERROR_AUTHENTICATING_USER = "Erreur lors de la connexion de l'utilisateur.";
 
   constructor(
     private authService: AuthService,

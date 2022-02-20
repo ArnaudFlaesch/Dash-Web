@@ -1,8 +1,4 @@
-import {
-  createHttpFactory,
-  HttpMethod,
-  SpectatorHttp
-} from '@ngneat/spectator';
+import { createHttpFactory, HttpMethod, SpectatorHttp } from '@ngneat/spectator';
 import { environment } from '../../../environments/environment';
 import { TabService } from './tab.service';
 
@@ -22,14 +18,9 @@ describe('ApiService tests', () => {
       { id: 2, label: 'Météo', tabOrder: 2 }
     ];
 
-    spectator.service
-      .getTabs()
-      .subscribe((response) => expect(response).toEqual(expectedTabData));
+    spectator.service.getTabs().subscribe((response) => expect(response).toEqual(expectedTabData));
 
-    const request = spectator.expectOne(
-      environment.backend_url + tabPath,
-      HttpMethod.GET
-    );
+    const request = spectator.expectOne(environment.backend_url + tabPath, HttpMethod.GET);
     request.flush(expectedTabData);
   });
 
@@ -52,11 +43,7 @@ describe('ApiService tests', () => {
     const expectedUpdatedTab = { id: 1, label: 'Updated onglet', tabOrder: 3 };
 
     spectator.service
-      .updateTab(
-        expectedUpdatedTab.id,
-        expectedUpdatedTab.label,
-        expectedUpdatedTab.tabOrder
-      )
+      .updateTab(expectedUpdatedTab.id, expectedUpdatedTab.label, expectedUpdatedTab.tabOrder)
       .subscribe((response) => expect(response).toEqual(expectedUpdatedTab));
 
     const request = spectator.expectOne(
@@ -85,9 +72,7 @@ describe('ApiService tests', () => {
 
   it('Devrait supprimer un onglet', () => {
     const tabId = 1;
-    spectator.service
-      .deleteTab(tabId)
-      .subscribe((response) => expect(response).toEqual(true));
+    spectator.service.deleteTab(tabId).subscribe((response) => expect(response).toEqual(true));
 
     const request = spectator.expectOne(
       environment.backend_url + tabPath + 'deleteTab/?id=' + tabId,

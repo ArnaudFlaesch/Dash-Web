@@ -24,11 +24,7 @@ module.exports = (on, config) => {
   // https://on.cypress.io/browser-launch-api
 
   on('before:browser:launch', (browser: Cypress.Browser, launchOptions) => {
-    console.log(
-      'launching browser %s is headless? %s',
-      browser.name,
-      browser.isHeadless
-    );
+    console.log('launching browser %s is headless? %s', browser.name, browser.isHeadless);
 
     // the browser width and height we want to get
     // our screenshots and videos will be of that resolution
