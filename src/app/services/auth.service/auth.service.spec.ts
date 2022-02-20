@@ -35,6 +35,10 @@ describe('ApiService tests', () => {
       HttpMethod.POST
     );
     request.flush(expectedUserData);
+
+    expect(localStorage.getItem('user')).toBeTruthy;
+    spectator.service.logout();
+    expect(localStorage.getItem('user')).toBeNull();
   });
 
   it('Devrait ne rien renvoyer', () => {
