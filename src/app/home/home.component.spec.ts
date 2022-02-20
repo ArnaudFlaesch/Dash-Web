@@ -1,6 +1,5 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TabService } from './../services/tab.service/tab.service';
-import { AuthService } from './../services/auth.service/auth.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   createComponentFactory,
@@ -9,13 +8,10 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator';
-import { HomeComponent } from './home.component';
-import { HttpClientModule } from '@angular/common/http';
-import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing';
 import { environment } from '../../environments/environment';
+import { AuthService } from './../services/auth.service/auth.service';
+import { TabService } from './../services/tab.service/tab.service';
+import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
   let spectator: Spectator<HomeComponent>;
