@@ -19,12 +19,7 @@ describe('LoginComponent', () => {
 
   const createComponent = createComponentFactory({
     component: LoginComponent,
-    imports: [
-      HttpClientModule,
-      FormsModule,
-      MatSnackBarModule,
-      RouterTestingModule
-    ],
+    imports: [HttpClientModule, FormsModule, MatSnackBarModule, RouterTestingModule],
     providers: [AuthService]
   });
   const createHttp = createHttpFactory(AuthService);
@@ -65,10 +60,7 @@ describe('LoginComponent', () => {
     spectator.component.inputUsername = 'username';
     spectator.component.inputPassword = 'password';
     spectator.component.handleLogin();
-    const request = authService.expectOne(
-      environment.backend_url + '/auth/login',
-      HttpMethod.POST
-    );
+    const request = authService.expectOne(environment.backend_url + '/auth/login', HttpMethod.POST);
     request.flush(userData);
     spectator.fixture.detectChanges();
     expect(loginSpy).toHaveBeenCalledWith('username', 'password');

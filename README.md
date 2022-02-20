@@ -9,7 +9,6 @@
 Coverage
 ![Coverage](https://codecov.io/gh/ArnaudFlaesch/Dash-Web/branch/master/graphs/sunburst.svg)
 
-
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.2.
 
 ## Development server

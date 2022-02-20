@@ -22,7 +22,9 @@ describe('ApiService tests', () => {
   beforeEach(() => (spectator = createSpectator()));
 
   it('Should send user data and disconnect him', () => {
-    spectator.service.login('login', 'password').subscribe((response) => expect(response).toEqual(expectedUserData));
+    spectator.service
+      .login('login', 'password')
+      .subscribe((response) => expect(response).toEqual(expectedUserData));
 
     const request = spectator.expectOne(environment.backend_url + loginPath, HttpMethod.POST);
     request.flush(expectedUserData);
@@ -33,7 +35,9 @@ describe('ApiService tests', () => {
   });
 
   it('Should not send anything', () => {
-    spectator.service.login('login', 'password').subscribe((response) => expect(response).toBe(null));
+    spectator.service
+      .login('login', 'password')
+      .subscribe((response) => expect(response).toBe(null));
     const request = spectator.expectOne(environment.backend_url + loginPath, HttpMethod.POST);
     request.flush(null);
   });

@@ -39,10 +39,7 @@ describe('HomeComponent', () => {
   it('should create the app', () => {
     expect(spectator.component).toBeTruthy();
     expect(spectator.component.tabs).toEqual([]);
-    const request = tabService.expectOne(
-      environment.backend_url + tabPath,
-      HttpMethod.GET
-    );
+    const request = tabService.expectOne(environment.backend_url + tabPath, HttpMethod.GET);
     request.flush(tabData);
     spectator.fixture.detectChanges();
     expect(spectator.component.tabs).toEqual(tabData);
