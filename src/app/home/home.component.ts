@@ -16,12 +16,10 @@ export class HomeComponent {
 
   private refreshTimeout = 900000; // 15 minutes
 
-  private ERROR_MESSAGE_INIT_DASHBOARD =
-    "Erreur lors de l'initialisation du dashboard.";
+  private ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
   private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
   private ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
-  private ERROR_EXPORT_CONFIGURATION =
-    "Erreur lors de l'export de la configuration.";
+  private ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
 
   constructor(
     private router: Router,

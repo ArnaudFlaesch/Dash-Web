@@ -2,9 +2,12 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { config } from './env.vars.secret';
+
 export const environment = {
   production: false,
-  backend_url: 'http://localhost:8080'
+  backend_url: 'http://localhost:8080',
+  ...config
 };
 
 /*

@@ -16,13 +16,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TabComponent } from './tab/tab.component';
 import { AuthService } from './services/auth.service/auth.service';
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    HomeComponent,
-    ErrorComponent,
-    TabComponent
-  ],
+  declarations: [AppComponent, LoginComponent, HomeComponent, ErrorComponent, TabComponent],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
