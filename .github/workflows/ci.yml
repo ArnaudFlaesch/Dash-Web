@@ -61,7 +61,7 @@ jobs:
 
       - name: E2E Tests
         run: |
-          npm run e2e:ci
+          npm run test:e2e:ci
 
       - name: Generate test report
         if: always()
