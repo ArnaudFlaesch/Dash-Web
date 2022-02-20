@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IUser } from './../../model/User';
-import jwt_decode, { InvalidTokenError } from 'jwt-decode';
-import { environment } from '../../../environments/environment';
-import { map } from 'rxjs/operators';
+import jwt_decode from 'jwt-decode';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { IUser } from './../../model/User';
 interface IJwt {
   sub: string;
   iat: number;
