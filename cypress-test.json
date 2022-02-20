@@ -1,0 +1,19 @@
+{
+  "baseUrl": "http://localhost:4200/",
+  "testFiles": ["**/**/*.spec.ts"],
+  "watchForFileChanges": false,
+  "defaultCommandTimeout": 6000,
+  "viewportWidth": 1920,
+  "viewportHeight": 1080,
+  "supportFile": "cypress/support/index.ts",
+  "screenshotOnRunFailure": true,
+  "video": false,
+  "videoCompression": false,
+  "reporter": "cypress-multi-reporters",
+  "reporterOptions": {
+    "configFile": "reporter-e2e-config.json"
+  },
+  "env": {
+    "backend_url": "localhost:8080"
+  }
+}

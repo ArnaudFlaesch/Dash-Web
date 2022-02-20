@@ -1,0 +1,73 @@
+{
+  "widgets": [
+    {
+      "id": 34,
+      "type": 2,
+      "data": {
+        "url": "https://www.jeuxvideo.com/rss/rss-news.xml"
+      },
+      "widgetOrder": 4,
+      "tab": {
+        "id": 40,
+        "label": "Perso",
+        "tabOrder": 2
+      }
+    },
+    {
+      "id": 36,
+      "type": 2,
+      "data": {
+        "url": "https://www.lefigaro.fr/rss/figaro_actualites.xml"
+      },
+      "widgetOrder": 6,
+      "tab": {
+        "id": 40,
+        "label": "Perso",
+        "tabOrder": 2
+      }
+    },
+    {
+      "id": 35,
+      "type": 2,
+      "data": {
+        "url": "https://lesjoiesducode.fr/feed"
+      },
+      "widgetOrder": 5,
+      "tab": {
+        "id": 40,
+        "label": "Perso",
+        "tabOrder": 2
+      }
+    },
+    {
+      "id": 32,
+      "type": 4,
+      "widgetOrder": 2,
+      "tab": {
+        "id": 40,
+        "label": "Perso",
+        "tabOrder": 2
+      }
+    },
+    {
+      "id": 31,
+      "type": 1,
+      "data": {
+        "city": "Paris"
+      },
+      "widgetOrder": 1,
+      "tab": {
+        "id": 40,
+        "label": "Perso",
+        "tabOrder": 2
+      }
+    }
+  ],
+  "tabs": [
+    {
+      "id": 40,
+      "label": "Perso",
+      "tabOrder": 2
+    }
+  ]
+}
