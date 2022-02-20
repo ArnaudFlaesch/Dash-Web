@@ -54,18 +54,16 @@ export class AuthService {
     }
   }
 
-  public isTokenExpired(): boolean {
+  public userHasValidToken(): boolean {
     const authenticatedUser = this.getCurrentUserData();
-    if (!authenticatedUser || !authenticatedUser.accessToken) {
-      return false;
-    } else {
-      let result = false;
+    let result = false;
+    if (authenticatedUser && authenticatedUser.accessToken) {
       try {
         result = Date.now() >= jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000;
       } catch (error) {
         result = false;
       }
-      return result;
     }
+    return result;
   }
 }

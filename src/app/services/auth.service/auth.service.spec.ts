@@ -1,8 +1,4 @@
-import {
-  createHttpFactory,
-  HttpMethod,
-  SpectatorHttp
-} from '@ngneat/spectator';
+import { createHttpFactory, HttpMethod, SpectatorHttp } from '@ngneat/spectator';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -26,14 +22,9 @@ describe('ApiService tests', () => {
   beforeEach(() => (spectator = createSpectator()));
 
   it('Should send user data and disconnect him', () => {
-    spectator.service
-      .login('login', 'password')
-      .subscribe((response) => expect(response).toEqual(expectedUserData));
+    spectator.service.login('login', 'password').subscribe((response) => expect(response).toEqual(expectedUserData));
 
-    const request = spectator.expectOne(
-      environment.backend_url + loginPath,
-      HttpMethod.POST
-    );
+    const request = spectator.expectOne(environment.backend_url + loginPath, HttpMethod.POST);
     request.flush(expectedUserData);
 
     expect(localStorage.getItem('user')).toBeTruthy;
@@ -42,13 +33,8 @@ describe('ApiService tests', () => {
   });
 
   it('Should not send anything', () => {
-    spectator.service
-      .login('login', 'password')
-      .subscribe((response) => expect(response).toBe(null));
-    const request = spectator.expectOne(
-      environment.backend_url + loginPath,
-      HttpMethod.POST
-    );
+    spectator.service.login('login', 'password').subscribe((response) => expect(response).toBe(null));
+    const request = spectator.expectOne(environment.backend_url + loginPath, HttpMethod.POST);
     request.flush(null);
   });
 
@@ -57,6 +43,6 @@ describe('ApiService tests', () => {
       accessToken: 'access_token'
     };
     localStorage.setItem('user', JSON.stringify(userData));
-    expect(spectator.service.isTokenExpired()).toBe(false);
+    expect(spectator.service.userHasValidToken()).toBe(false);
   });
 });
