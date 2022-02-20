@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ITab } from 'src/app/model/Tab';
 import { environment } from '../../../environments/environment';
-import authorizationBearer from '../authorizationBearer';
+import authorizationBearer from '../authorizationBearer/authorizationBearer';
 
 @Injectable()
 export class TabService {

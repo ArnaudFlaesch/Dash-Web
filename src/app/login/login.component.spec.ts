@@ -73,16 +73,4 @@ describe('LoginComponent', () => {
     spectator.fixture.detectChanges();
     expect(loginSpy).toHaveBeenCalledWith('username', 'password');
   });
-
-  it('Should throw an error while trying to login', () => {
-    spectator.component.inputUsername = 'username';
-    spectator.component.inputPassword = 'password';
-    spectator.component.handleLogin();
-    const request = authService.expectOne(
-      environment.backend_url + '/auth/login',
-      HttpMethod.POST
-    );
-    request.flush(new Error());
-    spectator.fixture.detectChanges();
-  });
 });
