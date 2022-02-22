@@ -1,0 +1,32 @@
+<div *ngIf="isModeEdit()" class="flex flex-col">
+  <div class="grid justify-items-end m-2">
+    <mat-icon (click)="this.deleteWidget()" aria-hidden="false">delete</mat-icon>
+  </div>
+  <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
+
+  <button mat-raised-button (click)="onValidation()" [disabled]="this.isFormValid">Valider</button>
+</div>
+
+<app-delete-widget
+  *ngIf="this.isModeDelete()"
+  (cancelWidgetDeletion)="cancelDeletion()"
+></app-delete-widget>
+
+<div *ngIf="this.isModeRead()" class="widget h-96 m-2 border-2 border-solid border-black">
+  <div>
+    <div class="header h-10 flex flex-row justify-between sticky top-0">
+      <div class="font-bold w-1/2">
+        <ng-container *ngTemplateOutlet="header"> </ng-container>
+      </div>
+
+      <div class="flex flex-row max-w-1/2">
+        <mat-icon (click)="this.editWidget()" aria-hidden="false">settings</mat-icon>
+        <mat-icon (click)="this.refreshWidget()" aria-hidden="false">refresh</mat-icon>
+        <mat-icon (click)="this.deleteWidget()" aria-hidden="false">delete</mat-icon>
+      </div>
+    </div>
+    <div class="max-h-80 overflow-y-scroll">
+      <ng-container *ngTemplateOutlet="body"> </ng-container>
+    </div>
+  </div>
+</div>

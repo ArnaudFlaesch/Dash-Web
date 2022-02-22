@@ -1,3 +1,17 @@
-<div class="border-2 border-gray-800 border-opacity-100">
-  {{ tab?.label }}
-</div>
+<ng-template [ngIf]="this.editMode" [ngIfElse]="readMode">
+  <div class="flex flex-row">
+    <input (keypress)="this.enterSaveTabName($event)" [value]="this.tab?.label" />
+    <mat-icon class="deleteTabButton" (click)="this.deleteTabFromDash()"> delete </mat-icon>
+  </div>
+</ng-template>
+
+<ng-template #readMode>
+  <div class="flex flex-row">
+    <div (dblclick)="this.toggleEditMode()">
+      {{ this.tab?.label }}
+    </div>
+    <div>
+      <mat-icon>drag_handle</mat-icon>
+    </div>
+  </div>
+</ng-template>

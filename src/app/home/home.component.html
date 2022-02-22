@@ -1,12 +1,15 @@
 <div class="flex flex-row flex-wrap">
   <app-tab
-    class="tab"
+    class="tab border-2 border-gray-800 border-opacity-100"
+    (click)="selectTab(tab.id)"
     [ngClass]="{ selectedItem: activeTab === tab.id }"
     *ngFor="let tab of this.tabs"
     [tab]="tab"
   ></app-tab>
-
-  <button id="logoutButton" mat-raised-button (click)="logout()">
-    Déconnexion
-  </button>
+  <button id="logoutButton" mat-raised-button (click)="logout()">Déconnexion</button>
 </div>
+
+<app-widget-list
+  [widgetList]="this.activeWidgets"
+  *ngIf="this.activeWidgets.length"
+></app-widget-list>

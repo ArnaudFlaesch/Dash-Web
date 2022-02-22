@@ -1,0 +1,40 @@
+<app-widget
+  (onValidationEmitter)="this.refreshWidget(this.urlFeed)"
+  (refreshWidgetAction)="this.refreshWidget(this.urlFeed)"
+>
+  <ng-template #header>
+    <div class="h-10">
+      <a [href]="this.link" class="flex flex-row">
+        <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">
+          {{ this.title }}
+        </div>
+      </a>
+    </div>
+  </ng-template>
+  <ng-template #editComponent>
+    <input
+      id="rssFeedUrl"
+      name="url"
+      onChange="{onChangeHandler}"
+      [value]="this.urlForm"
+      placeholder="Saisissez l'URL du flux RSS"
+    />
+  </ng-template>
+  <ng-template #body>
+    <div *ngIf="this.urlFeed && this.feed.length">
+      <div class="font-bold">{{ this.description }}</div>
+      <div class="feed">
+        <div *ngFor="let article of feed" class="rssArticle">
+          {{ this.formatTitleForArticle(article) }}
+        </div>
+      </div>
+    </div>
+
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title> This is the expansion title </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p>This is the primary content of the panel.</p>
+    </mat-expansion-panel>
+  </ng-template>
+</app-widget>

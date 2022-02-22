@@ -1,0 +1,13 @@
+<app-widget (refreshWidgetAction)="this.refreshWidget()">
+  <ng-template #header> header weather </ng-template>
+  <ng-template #editComponent
+    ><input
+      id="cityNameInput"
+      name="city"
+      onChange="{onCityChangeHandler}"
+      value="{city}"
+      placeholder="Saisissez de nom de la ville"
+    />
+  </ng-template>
+  <ng-template #body> body weather </ng-template>
+</app-widget>

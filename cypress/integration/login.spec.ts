@@ -38,7 +38,10 @@ describe('Login tests', () => {
       .wait('@login')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('#logoutButton')
+        cy.reload()
+          .url()
+          .should('be.equal', `${Cypress.config('baseUrl')}home`)
+          .get('#logoutButton')
           .click()
           .waitUntil(() =>
             cy
