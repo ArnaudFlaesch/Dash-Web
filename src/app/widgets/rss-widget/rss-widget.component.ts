@@ -1,7 +1,7 @@
-import { RssWidgetService } from './rss.widget.service';
 import { Component } from '@angular/core';
-import { IArticle, IRSSHeader, ImageContent } from './IArticle';
 import * as xml2js from 'xml2js';
+import { IArticle } from './IArticle';
+import { RssWidgetService } from './rss.widget.service';
 
 @Component({
   selector: 'app-rss-widget',
@@ -28,7 +28,6 @@ export class RssWidgetComponent {
 
   public refreshWidget(url: string) {
     this.urlFeed = this.urlForm;
-    console.log('refreshWidget' + this.urlFeed);
 
     this.rssWidgetService.fetchDataFromRssFeed(url).subscribe({
       next: (apiResult) => {
@@ -40,19 +39,6 @@ export class RssWidgetComponent {
           this.link = res.link;
           this.title = res.title;
         });
-        /* this.rssParser
-          .parseString(apiResult)
-          .then((response: unknown) => {
-            const result = response as IRSSHeader;
-            
-            /* setDecription(result.description);
-            setFeed(result.items);
-            setImage(result.image);
-            setLink(result.link);
-            setTitle(result.title);
-          })
-          .catch((error: Error) => console.error(error.message));
-          */
       },
       error: (error) => console.error(error.message)
     });

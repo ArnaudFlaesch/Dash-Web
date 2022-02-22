@@ -23,14 +23,14 @@ export class TabComponent {
     if (this.tab) {
       this.tabService.deleteTab(this.tab.id).subscribe({
         next: () => this.tabDeletedEvent.emit(this.tab?.id),
-        error: (error: Error) => console.error(this.ERROR_MESSAGE_DELETE_TAB)
+        error: () => console.error(this.ERROR_MESSAGE_DELETE_TAB)
       });
     }
   }
 
   public saveTabName(tabId: number, label: string, tabOrder: number) {
     this.tabService.updateTab(tabId, label, tabOrder).subscribe({
-      error: (error: Error) => console.error(this.ERROR_MESSAGE_UPDATE_TAB),
+      error: () => console.error(this.ERROR_MESSAGE_UPDATE_TAB),
       complete: this.toggleEditMode
     });
   }

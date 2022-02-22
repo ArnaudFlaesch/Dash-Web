@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { TabService } from '../services/tab.service/tab.service';
+import { WidgetService } from '../services/widget.service/widget.service';
 import { IWidgetConfig } from './../model/IWidgetConfig';
 import { ITab } from './../model/Tab';
 import { AuthService } from './../services/auth.service/auth.service';
-import { WidgetService } from './../services/widget.service/widget.service';
 
 @Component({
   selector: 'app-home',
@@ -64,7 +64,7 @@ export class HomeComponent {
           );
         }
       },
-      error: (error: Error) => console.log(this.ERROR_MESSAGE_DELETE_WIDGET)
+      error: () => console.log(this.ERROR_MESSAGE_DELETE_WIDGET)
     });
   }
 
