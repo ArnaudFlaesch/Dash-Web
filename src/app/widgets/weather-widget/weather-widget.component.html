@@ -1,13 +1,100 @@
 <app-widget (refreshWidgetAction)="this.refreshWidget()">
-  <ng-template #header> header weather </ng-template>
+  <ng-template #header>La météo aujourd'hui à {{ city }}</ng-template>
   <ng-template #editComponent
     ><input
       id="cityNameInput"
       name="city"
-      onChange="{onCityChangeHandler}"
-      value="{city}"
+      [(ngModel)]="this.city"
       placeholder="Saisissez de nom de la ville"
     />
   </ng-template>
-  <ng-template #body> body weather </ng-template>
+  <ng-template #body>
+    <div *ngIf="city && weather && weather.weather" class="flex flex-col">
+      <div class="flex-col">
+        <img
+          class="w-16"
+          [src]="getCurrentWeatherIcon()"
+          [title]="weather.weather[0].description"
+          [alt]="weather.weather[0].description"
+        />
+      </div>
+      <div class="flex flex-row place-items-center">
+        <div class="flex flex-col mr-5">
+          <div>{{ weather.weather[0].description }}</div>
+          <div>
+            <mat-icon>device_thermostat</mat-icon>
+            {{ weather.main.temp }}°
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex justify-between">
+            <div>
+              <mat-icon>wb_sunny</mat-icon>
+              {{
+                this.dateUtils
+                  .formatDateFromTimestamp(
+                    weather.sys.sunrise,
+                    this.dateUtils.adjustTimeWithOffset(weather.timezone)
+                  )
+                  .toLocaleTimeString('fr')
+              }}
+            </div>
+            <div>
+              <mat-icon>brightness_3</mat-icon>
+              {{
+                this.dateUtils
+                  .formatDateFromTimestamp(
+                    weather.sys.sunset,
+                    this.dateUtils.adjustTimeWithOffset(weather.timezone)
+                  )
+                  .toLocaleTimeString('fr')
+              }}
+            </div>
+          </div>
+          <div>
+            <mat-icon>schedule</mat-icon>
+            <span>{{
+              this.dateUtils
+                .formatDateFromTimestamp(
+                  weather.dt,
+                  this.dateUtils.adjustTimeWithOffset(weather.timezone)
+                )
+                .toLocaleString('fr')
+            }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-row forecastRow">
+        <div class="forecastContainer" *ngFor="let forecastDay of this.filterForecastByMode()">
+          <div class="forecast border-2 border-solid border-black">
+            <div>test</div>
+            <div class="flex flex-row">
+              <div>
+                <img
+                  [src]="getIconFromWeatherApi(forecastDay.weather[0]?.icon || '')"
+                  class="max-h-14 max-w-14"
+                  [title]="forecastDay.weather[0]?.description"
+                  [alt]="forecastDay.weather[0]?.description"
+                />
+              </div>
+              <div>
+                <div>
+                  <mat-icon class="m-r-1 color text-crimson">device_thermostat</mat-icon>
+                  {{ forecastDay.main.temp_max }}°
+                </div>
+                <div>
+                  <mat-icon class="m-r-1">device_thermostat</mat-icon>
+                  {{ forecastDay.main.temp_min }}°
+                </div>
+                <div>
+                  <mat-icon class="m-r-1">opacity</mat-icon>
+                  {{ forecastDay.main.humidity }}%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </app-widget>

@@ -33,7 +33,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build
+          npm run build --base-href=https://arnaudflaesch.github.io/WizardLibrary/
 
       - name: Test
         run: npm run test
@@ -88,3 +88,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Deploy with gh-pages
+        #  if: success() && github.ref == 'refs/heads/master'
+        run: |
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          npx gh-pages-clean
+          npx gh-pages -d dist -u "github-actions-bot <support+actions@github.com>"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

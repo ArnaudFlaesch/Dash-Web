@@ -1,4 +1,5 @@
-import { RssWidgetService } from './widgets/rss-widget/rss.widget.service';
+import { DateUtilsService } from './utils/DateUtils';
+import { WeatherWidgetService } from './widgets/weather-widget/weather.widget.service';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +22,7 @@ import { WidgetService } from './services/widget.service/widget.service';
 import { TabComponent } from './tab/tab.component';
 import { DeleteWidgetComponent } from './widgets/delete-widget/delete-widget.component';
 import { RssWidgetComponent } from './widgets/rss-widget/rss-widget.component';
+import { RssWidgetService } from './widgets/rss-widget/rss.widget.service';
 import { WeatherWidgetComponent } from './widgets/weather-widget/weather-widget.component';
 import { WidgetListComponent } from './widgets/widget-list/widget-list.component';
 import { WidgetComponent } from './widgets/widget/widget.component';
@@ -43,7 +45,6 @@ import { WidgetComponent } from './widgets/widget/widget.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    BrowserAnimationsModule,
     MatProgressSpinnerModule,
     FormsModule,
     MatButtonModule,
@@ -52,7 +53,14 @@ import { WidgetComponent } from './widgets/widget/widget.component';
     MatTabsModule,
     MatExpansionModule
   ],
-  providers: [AuthService, TabService, WidgetService, RssWidgetService],
+  providers: [
+    AuthService,
+    TabService,
+    WidgetService,
+    RssWidgetService,
+    WeatherWidgetService,
+    DateUtilsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

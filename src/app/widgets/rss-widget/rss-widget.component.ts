@@ -27,12 +27,11 @@ export class RssWidgetComponent {
   }
 
   public refreshWidget(url: string) {
-    this.urlFeed = this.urlForm;
+    this.urlFeed = url;
 
     this.rssWidgetService.fetchDataFromRssFeed(url).subscribe({
       next: (apiResult) => {
         this.parser.parseString(apiResult, (err: unknown, result: any) => {
-          console.log(result.rss.channel);
           const res = result.rss.channel;
           this.description = res.description;
           this.feed = res.item;
@@ -52,5 +51,16 @@ export class RssWidgetComponent {
         })
       : '';
     return `${date} ${article.title}`;
+  }
+
+  public formatDateFromUTC(date: string): string {
+    const parsedDate = new Date(date);
+    return parsedDate.toLocaleString('fr');
+  }
+
+  public stripHtmlFromContent(content?: string) {
+    const div = document.createElement('div');
+    div.innerHTML = content || '';
+    return div.textContent || div.innerText || '';
   }
 }

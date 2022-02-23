@@ -18,7 +18,6 @@ export class WidgetComponent {
 
   @Input() isFormValid = false;
   @Output() refreshWidgetAction = new EventEmitter();
-  @Output() onValidationEmitter = new EventEmitter();
 
   public mode: ModeEnum;
 
@@ -30,7 +29,7 @@ export class WidgetComponent {
   }
 
   public onValidation() {
-    this.onValidationEmitter.emit();
+    this.refreshWidget();
     this.mode = ModeEnum.READ;
   }
 

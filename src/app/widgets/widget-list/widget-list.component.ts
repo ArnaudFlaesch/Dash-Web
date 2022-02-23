@@ -8,7 +8,7 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import { WidgetTypes } from 'src/app/enums/WidgetsEnum';
+import { WidgetTypes } from '../../../app/enums/WidgetsEnum';
 import { RssWidgetComponent } from '../rss-widget/rss-widget.component';
 import { WeatherWidgetComponent } from '../weather-widget/weather-widget.component';
 import { IWidgetConfig } from './../../model/IWidgetConfig';

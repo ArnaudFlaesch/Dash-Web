@@ -1,25 +1,29 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { DateUtilsService } from './../../utils/DateUtils';
+import {
+  createComponentFactory,
+  createHttpFactory,
+  Spectator,
+  SpectatorHttp
+} from '@ngneat/spectator';
 import { WeatherWidgetComponent } from './weather-widget.component';
+import { WeatherWidgetService } from './weather.widget.service';
 
 describe('WeatherWidgetComponent', () => {
-  let component: WeatherWidgetComponent;
-  let fixture: ComponentFixture<WeatherWidgetComponent>;
+  let spectator: Spectator<WeatherWidgetComponent>;
+  let weatherWidgetService: SpectatorHttp<WeatherWidgetService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ WeatherWidgetComponent ]
-    })
-    .compileComponents();
+  const createComponent = createComponentFactory({
+    component: WeatherWidgetComponent,
+    providers: [WeatherWidgetService, DateUtilsService]
   });
+  const createHttp = createHttpFactory(WeatherWidgetService);
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WeatherWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    weatherWidgetService = createHttp();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });

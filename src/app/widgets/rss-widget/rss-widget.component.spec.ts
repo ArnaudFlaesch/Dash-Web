@@ -1,25 +1,34 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import {
+  createComponentFactory,
+  createHttpFactory,
+  HttpMethod,
+  Spectator,
+  SpectatorHttp
+} from '@ngneat/spectator';
+import { environment } from '../../../environments/environment';
 import { RssWidgetComponent } from './rss-widget.component';
+import { RssWidgetService } from './rss.widget.service';
 
 describe('RssWidgetComponent', () => {
-  let component: RssWidgetComponent;
-  let fixture: ComponentFixture<RssWidgetComponent>;
+  let spectator: Spectator<RssWidgetComponent>;
+  let rssWidgetService: SpectatorHttp<RssWidgetService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ RssWidgetComponent ]
-    })
-    .compileComponents();
+  const createComponent = createComponentFactory({
+    component: RssWidgetComponent,
+    providers: [RssWidgetService]
   });
+  const createHttp = createHttpFactory(RssWidgetService);
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RssWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    rssWidgetService = createHttp();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('Dummy test', () => {
+    expect(true).toBeTruthy();
+    rssWidgetService.expectOne(
+      environment.backend_url + '/proxy/?url=' + spectator.component.urlFeed,
+      HttpMethod.GET
+    );
   });
 });

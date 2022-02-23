@@ -1,0 +1,16 @@
+#header {
+  font-weight: bold;
+}
+
+.spaceBetween {
+  display: flex;
+  justify-content: space-between;
+}
+
+.forecastRow {
+  overflow-x: scroll;
+}
+
+.forecastContainer {
+  flex: 0 0 calc(100% / 3);
+}

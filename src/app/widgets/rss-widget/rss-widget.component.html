@@ -1,7 +1,4 @@
-<app-widget
-  (onValidationEmitter)="this.refreshWidget(this.urlFeed)"
-  (refreshWidgetAction)="this.refreshWidget(this.urlFeed)"
->
+<app-widget (onValidationEmitter)="this.refreshWidget(this.urlForm)">
   <ng-template #header>
     <div class="h-10">
       <a [href]="this.link" class="flex flex-row">
@@ -11,30 +8,42 @@
       </a>
     </div>
   </ng-template>
+
   <ng-template #editComponent>
     <input
       id="rssFeedUrl"
       name="url"
-      onChange="{onChangeHandler}"
-      [value]="this.urlForm"
+      [(ngModel)]="this.urlForm"
       placeholder="Saisissez l'URL du flux RSS"
     />
   </ng-template>
+
   <ng-template #body>
     <div *ngIf="this.urlFeed && this.feed.length">
       <div class="font-bold">{{ this.description }}</div>
       <div class="feed">
         <div *ngFor="let article of feed" class="rssArticle">
-          {{ this.formatTitleForArticle(article) }}
+          <mat-expansion-panel hideToggle>
+            <mat-expansion-panel-header>
+              <mat-panel-title> {{ this.formatTitleForArticle(article) }} </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="border-2 border-gray-500 border-solid">
+              <div class="articleTitle">
+                <a [href]="article.link">{{ article.title }}</a>
+              </div>
+              <div class="articleContent">
+                {{
+                  stripHtmlFromContent(article.content) || stripHtmlFromContent(article.description)
+                }}
+              </div>
+              <div class="articlePubDate">
+                Publié le {{ formatDateFromUTC(article.pubDate || '') }}
+                {{ article.author && 'par ' + article.author }}
+              </div>
+            </div>
+          </mat-expansion-panel>
         </div>
       </div>
     </div>
-
-    <mat-expansion-panel hideToggle>
-      <mat-expansion-panel-header>
-        <mat-panel-title> This is the expansion title </mat-panel-title>
-      </mat-expansion-panel-header>
-      <p>This is the primary content of the panel.</p>
-    </mat-expansion-panel>
   </ng-template>
 </app-widget>
