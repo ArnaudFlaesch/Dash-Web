@@ -2,15 +2,10 @@
   font-weight: bold;
 }
 
-.spaceBetween {
-  display: flex;
-  justify-content: space-between;
-}
-
-.forecastRow {
+.forecast-row {
   overflow-x: scroll;
 }
 
-.forecastContainer {
+.forecast-container {
   flex: 0 0 calc(100% / 3);
 }
