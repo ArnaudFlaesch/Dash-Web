@@ -1,10 +1,10 @@
-import { DateUtilsService } from '../../utils/date.utils';
-import { WeatherWidgetService } from './weather.widget.service';
 import { Component, ViewChild } from '@angular/core';
-import { IWeather, IForecast, ICity, IWeatherAPIResponse } from './IWeather';
-import { ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartType } from 'chart.js';
 import { format } from 'date-fns';
+import { BaseChartDirective } from 'ng2-charts';
+import { DateUtilsService } from '../../utils/date.utils';
+import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
+import { WeatherWidgetService } from './weather.widget.service';
 
 enum ForecastMode {
   TODAY,
@@ -83,8 +83,9 @@ export class WeatherWidgetComponent {
   }
 
   public getWeatherChart(cityData: ICity) {
+    const filteredData = this.filterForecastByMode(cityData, this.forecast);
     return {
-      labels: this.filterForecastByMode(cityData, this.forecast).map((forecastDay) => {
+      labels: filteredData.map((forecastDay) => {
         if (
           this.forecastMode === ForecastMode.TODAY ||
           this.forecastMode === ForecastMode.TOMORROW
@@ -98,16 +99,12 @@ export class WeatherWidgetComponent {
         {
           label: 'Température',
           borderColor: 'orange',
-          data: this.filterForecastByMode(cityData, this.forecast).map(
-            (forecastDay) => forecastDay.main.temp_max
-          )
+          data: filteredData.map((forecastDay) => forecastDay.main.temp_max)
         },
         {
           label: 'Ressenti',
           borderColor: 'red',
-          data: this.filterForecastByMode(cityData, this.forecast).map(
-            (forecastDay) => forecastDay.main.feels_like
-          )
+          data: filteredData.map((forecastDay) => forecastDay.main.feels_like)
         }
       ]
     };
