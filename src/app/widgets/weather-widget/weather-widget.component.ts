@@ -1,10 +1,8 @@
-import { DateUtilsService } from '../../utils/date.utils';
-import { WeatherWidgetService } from './weather.widget.service';
-import { Component, ViewChild } from '@angular/core';
-import { IWeather, IForecast, ICity, IWeatherAPIResponse } from './IWeather';
-import { ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+import { Component } from '@angular/core';
 import { format } from 'date-fns';
+import { DateUtilsService } from '../../utils/date.utils';
+import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
+import { WeatherWidgetService } from './weather.widget.service';
 
 enum ForecastMode {
   TODAY,
@@ -26,13 +24,19 @@ export class WeatherWidgetComponent {
   public cityData: ICity | undefined;
   public forecastMode = ForecastMode.TODAY;
 
-  public lineChartOptions: ChartConfiguration['options'] = {
-    maintainAspectRatio: false
-  };
+  public view: [number, number] = [700, 300];
 
-  public lineChartType: ChartType = 'line';
-
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+  // options
+  public legend = true;
+  public showLabels = true;
+  public animations = true;
+  public xAxis = true;
+  public yAxis = true;
+  public showYAxisLabel = true;
+  public showXAxisLabel = true;
+  public xAxisLabel = 'Heure';
+  public yAxisLabel = 'Température';
+  public timeline = true;
 
   constructor(
     private weatherWidgetService: WeatherWidgetService,
@@ -83,34 +87,46 @@ export class WeatherWidgetComponent {
   }
 
   public getWeatherChart(cityData: ICity) {
-    return {
-      labels: this.filterForecastByMode(cityData, this.forecast).map((forecastDay) => {
-        if (
-          this.forecastMode === ForecastMode.TODAY ||
-          this.forecastMode === ForecastMode.TOMORROW
-        ) {
-          return format(new Date(forecastDay.dt * 1000), 'HH');
-        } else {
-          return format(new Date(forecastDay.dt * 1000), 'EEE dd MMM');
-        }
-      }),
-      datasets: [
-        {
-          label: 'Température',
-          borderColor: 'orange',
-          data: this.filterForecastByMode(cityData, this.forecast).map(
-            (forecastDay) => forecastDay.main.temp_max
-          )
-        },
-        {
-          label: 'Ressenti',
-          borderColor: 'red',
-          data: this.filterForecastByMode(cityData, this.forecast).map(
-            (forecastDay) => forecastDay.main.feels_like
-          )
-        }
-      ]
-    };
+    return [
+      {
+        name: 'Température',
+        series: this.filterForecastByMode(cityData, this.forecast).map((forecastDay) => {
+          if (
+            this.forecastMode === ForecastMode.TODAY ||
+            this.forecastMode === ForecastMode.TOMORROW
+          ) {
+            return {
+              name: format(new Date(forecastDay.dt * 1000), 'HH'),
+              value: forecastDay.main.temp_max
+            };
+          } else {
+            return {
+              name: format(new Date(forecastDay.dt * 1000), 'EEE dd MMM'),
+              value: forecastDay.main.temp_max
+            };
+          }
+        })
+      },
+      {
+        name: 'Ressenti',
+        series: this.filterForecastByMode(cityData, this.forecast).map((forecastDay) => {
+          if (
+            this.forecastMode === ForecastMode.TODAY ||
+            this.forecastMode === ForecastMode.TOMORROW
+          ) {
+            return {
+              name: format(new Date(forecastDay.dt * 1000), 'HH'),
+              value: forecastDay.main.feels_like
+            };
+          } else {
+            return {
+              name: format(new Date(forecastDay.dt * 1000), 'EEE dd MMM'),
+              value: forecastDay.main.feels_like
+            };
+          }
+        })
+      }
+    ];
   }
 
   public getIconFromWeatherApi = (icon: string) =>

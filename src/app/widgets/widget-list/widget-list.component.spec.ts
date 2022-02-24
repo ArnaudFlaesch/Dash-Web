@@ -1,3 +1,4 @@
+import { NgChartsModule } from 'ng2-charts';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WidgetListComponent } from './widget-list.component';
@@ -8,9 +9,8 @@ describe('WidgetListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WidgetListComponent ]
-    })
-    .compileComponents();
+      declarations: [WidgetListComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

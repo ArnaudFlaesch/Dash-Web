@@ -70,24 +70,24 @@
           <span className="font-bold">Prévisions</span>
           <span className="flex flex-row space-x-1">
             <button
-              [color]="this.isForecastModeToday() ? 'primary' : ''"
               mat-raised-button
+              [color]="this.isForecastModeToday() ? 'primary' : ''"
               id="toggleTodayForecast"
               (click)="selectTodayForecast()"
             >
               Aujourd'hui
             </button>
             <button
-              [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
               mat-raised-button
+              [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
               id="toggleTomorrowForecast"
               (click)="selectTomorrowForecast()"
             >
               Demain
             </button>
             <button
-              [color]="this.isForecastModeWeek() ? 'primary' : ''"
               mat-raised-button
+              [color]="this.isForecastModeWeek() ? 'primary' : ''"
               id="toggleWeekForecast"
               (click)="selectWeekForecast()"
             >
@@ -97,14 +97,19 @@
         </div>
         <br />
         <div className="min-h-24 max-x-full">
-          <canvas
-            baseChart
-            width="400"
-            height="400"
-            [data]="getWeatherChart(this.cityData)"
-            [options]="lineChartOptions"
-            [type]="lineChartType"
-          ></canvas>
+          <ngx-charts-line-chart
+            [view]="view"
+            [legend]="legend"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxis]="xAxis"
+            [yAxis]="yAxis"
+            [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel"
+            [timeline]="timeline"
+            [results]="this.getWeatherChart(cityData)"
+          >
+          </ngx-charts-line-chart>
         </div>
       </div>
 
