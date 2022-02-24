@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "dash-web": {
+    "Dash-Web": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/dash-web",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -70,10 +70,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "dash-web:build:production"
+              "browserTarget": "Dash-Web:build:production"
             },
             "development": {
-              "browserTarget": "dash-web:build:development"
+              "browserTarget": "Dash-Web:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -81,36 +81,36 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dash-web:build"
+            "browserTarget": "Dash-Web:build"
           }
         },
         "e2e": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "dash-web:serve",
+            "devServerTarget": "Dash-Web:serve",
             "browser": "chrome"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "dash-web:serve:production"
+              "devServerTarget": "Dash-Web:serve:production"
             }
           }
         },
         "e2e-ci": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "dash-web:serve",
+            "devServerTarget": "Dash-Web:serve",
             "configFile": "cypress-test.json",
             "browser": "chrome"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "dash-web:production"
+              "devServerTarget": "Dash-Web:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "dash-web"
+  "defaultProject": "Dash-Web"
 }

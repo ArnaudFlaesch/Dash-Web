@@ -14,7 +14,7 @@
     "cy:open": "cypress open",
     "cy:verify": "npx cypress verify",
     "test:e2e": "ng e2e",
-    "test:e2e:ci": "ng run dash-web:e2e-ci",
+    "test:e2e:ci": "ng run Dash-Web:e2e-ci",
     "eslint": "eslint . --ext .ts",
     "eslint:fix": "npm run eslint -- --fix",
     "lint:styles": "stylelint \"src/**/*.{css,scss,sass}\" ",
