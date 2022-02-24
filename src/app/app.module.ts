@@ -26,7 +26,7 @@ import { RssWidgetService } from './widgets/rss-widget/rss.widget.service';
 import { WeatherWidgetComponent } from './widgets/weather-widget/weather-widget.component';
 import { WidgetListComponent } from './widgets/widget-list/widget-list.component';
 import { WidgetComponent } from './widgets/widget/widget.component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -53,7 +53,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     MatSnackBarModule,
     MatTabsModule,
     MatExpansionModule,
-    NgxChartsModule
+    NgChartsModule
   ],
   providers: [
     AuthService,
