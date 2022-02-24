@@ -33,7 +33,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build --base-href=https://arnaudflaesch.github.io/WizardLibrary/
+          npm run build --base-href=https://arnaudflaesch.github.io/Dash-Web/
 
       - name: Test
         run: npm run test
