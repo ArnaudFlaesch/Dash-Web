@@ -10,7 +10,7 @@ describe('Date utils tests', () => {
 
   it('Should return a date', () => {
     expect(spectator.service.formatDateFromTimestamp(1645570800)).toEqual(
-      new Date(2022, 1, 23, 0, 0, 0)
+      new Date(2022, 1, 22, 23, 0, 0)
     );
   });
 
