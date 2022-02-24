@@ -1,10 +1,10 @@
-import { DateUtilsService } from './../../utils/DateUtils';
 import {
   createComponentFactory,
   createHttpFactory,
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator';
+import { DateUtilsService } from '../../utils/date.utils';
 import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
 

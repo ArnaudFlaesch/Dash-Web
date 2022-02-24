@@ -13,7 +13,7 @@
       <div class="flex-col">
         <img
           class="w-16"
-          [src]="getCurrentWeatherIcon()"
+          [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
           [title]="weather.weather[0].description"
           [alt]="weather.weather[0].description"
         />
@@ -64,10 +64,56 @@
           </div>
         </div>
       </div>
-      <div class="flex flex-row forecast-row">
-        <div class="forecast-container" *ngFor="let forecastDay of this.filterForecastByMode()">
+
+      <div *ngIf="cityData && forecast">
+        <div className="flex flex-row flex-wrap space-x-10">
+          <span className="font-bold">Prévisions</span>
+          <span className="flex flex-row space-x-1">
+            <button
+              [color]="this.isForecastModeToday() ? 'primary' : ''"
+              mat-raised-button
+              id="toggleTodayForecast"
+              (click)="selectTodayForecast()"
+            >
+              Aujourd'hui
+            </button>
+            <button
+              [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
+              mat-raised-button
+              id="toggleTomorrowForecast"
+              (click)="selectTomorrowForecast()"
+            >
+              Demain
+            </button>
+            <button
+              [color]="this.isForecastModeWeek() ? 'primary' : ''"
+              mat-raised-button
+              id="toggleWeekForecast"
+              (click)="selectWeekForecast()"
+            >
+              Semaine
+            </button>
+          </span>
+        </div>
+        <br />
+        <div className="min-h-24 max-x-full">
+          <canvas
+            baseChart
+            width="400"
+            height="400"
+            [data]="getWeatherChart(this.cityData)"
+            [options]="lineChartOptions"
+            [type]="lineChartType"
+          ></canvas>
+        </div>
+      </div>
+
+      <div *ngIf="this.cityData" class="flex flex-row forecast-row">
+        <div
+          class="forecast-container"
+          *ngFor="let forecastDay of this.filterForecastByMode(this.cityData, this.forecast)"
+        >
           <div class="forecast border-2 border-solid border-black">
-            <div>test</div>
             <div class="flex flex-row">
               <div>
                 <img
@@ -79,15 +125,17 @@
               </div>
               <div>
                 <div>
-                  <mat-icon class="m-r-1 color text-crimson">device_thermostat</mat-icon>
+                  <mat-icon [ngStyle]="{ color: 'crimson' }" class="m-r-1"
+                    >device_thermostat</mat-icon
+                  >
                   {{ forecastDay.main.temp_max }}°
                 </div>
                 <div>
-                  <mat-icon class="m-r-1">device_thermostat</mat-icon>
+                  <mat-icon [ngStyle]="{ color: 'blue' }" class="m-r-1">device_thermostat</mat-icon>
                   {{ forecastDay.main.temp_min }}°
                 </div>
                 <div>
-                  <mat-icon class="m-r-1">opacity</mat-icon>
+                  <mat-icon [ngStyle]="{ color: 'lightblue' }" class="m-r-1">opacity</mat-icon>
                   {{ forecastDay.main.humidity }}%
                 </div>
               </div>

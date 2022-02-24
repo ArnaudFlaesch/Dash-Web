@@ -1,7 +1,10 @@
-import { DateUtilsService } from './../../utils/DateUtils';
+import { DateUtilsService } from '../../utils/date.utils';
 import { WeatherWidgetService } from './weather.widget.service';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IWeather, IForecast, ICity, IWeatherAPIResponse } from './IWeather';
+import { ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { format } from 'date-fns';
 
 enum ForecastMode {
   TODAY,
@@ -21,7 +24,15 @@ export class WeatherWidgetComponent {
   public weather: IWeather | undefined;
   public forecast: IForecast[] = [];
   public cityData: ICity | undefined;
-  public forecastMode = ForecastMode.WEEK;
+  public forecastMode = ForecastMode.TODAY;
+
+  public lineChartOptions: ChartConfiguration['options'] = {
+    maintainAspectRatio: false
+  };
+
+  public lineChartType: ChartType = 'line';
+
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   constructor(
     private weatherWidgetService: WeatherWidgetService,
@@ -42,56 +53,74 @@ export class WeatherWidgetComponent {
     });
   }
 
-  public filterForecastByMode(): IForecast[] {
-    if (this.cityData && this.forecast) {
-      switch (this.forecastMode) {
-        case ForecastMode.WEEK: {
-          return this.forecast.filter((forecastDay) => {
-            const forecastElement = this.dateUtils.formatDateFromTimestamp(
-              forecastDay.dt,
-              this.dateUtils.adjustTimeWithOffset(this.cityData!.timezone)
-            );
-            return forecastElement.getHours() >= 15 && forecastElement.getHours() <= 18;
-          });
-        }
-        case ForecastMode.TOMORROW: {
-          return this.forecast.filter(
-            (forecastDay) =>
-              new Date(forecastDay.dt * 1000).getDay() ===
-                new Date(+new Date() + 86400000).getDay() &&
-              new Date(forecastDay.dt * 1000).getHours() >= 7
+  public filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {
+    switch (this.forecastMode) {
+      case ForecastMode.WEEK: {
+        return forecastData.filter((forecastDay) => {
+          const forecastElement = this.dateUtils.formatDateFromTimestamp(
+            forecastDay.dt,
+            this.dateUtils.adjustTimeWithOffset(cityData.timezone)
           );
-        }
-        case ForecastMode.TODAY: {
-          return this.forecast.filter(
-            (forecastDay) =>
-              new Date(forecastDay.dt * 1000).getDay() === new Date().getDay() &&
-              new Date(forecastDay.dt * 1000).getHours() >= 7
-          );
-        }
+          return forecastElement.getHours() >= 15 && forecastElement.getHours() <= 18;
+        });
       }
-    } else {
-      return [];
+      case ForecastMode.TOMORROW: {
+        return forecastData.filter(
+          (forecastDay) =>
+            new Date(forecastDay.dt * 1000).getDay() ===
+              new Date(+new Date() + 86400000).getDay() &&
+            new Date(forecastDay.dt * 1000).getHours() >= 7
+        );
+      }
+      case ForecastMode.TODAY: {
+        return forecastData.filter(
+          (forecastDay) =>
+            new Date(forecastDay.dt * 1000).getDay() === new Date().getDay() &&
+            new Date(forecastDay.dt * 1000).getHours() >= 7
+        );
+      }
     }
   }
 
-  public getCurrentWeatherIcon() {
-    return `https://openweathermap.org/img/wn/${this.weather?.weather[0].icon}@2x.png`;
+  public getWeatherChart(cityData: ICity) {
+    return {
+      labels: this.filterForecastByMode(cityData, this.forecast).map((forecastDay) => {
+        if (
+          this.forecastMode === ForecastMode.TODAY ||
+          this.forecastMode === ForecastMode.TOMORROW
+        ) {
+          return format(new Date(forecastDay.dt * 1000), 'HH');
+        } else {
+          return format(new Date(forecastDay.dt * 1000), 'EEE dd MMM');
+        }
+      }),
+      datasets: [
+        {
+          label: 'Température',
+          borderColor: 'orange',
+          data: this.filterForecastByMode(cityData, this.forecast).map(
+            (forecastDay) => forecastDay.main.temp_max
+          )
+        },
+        {
+          label: 'Ressenti',
+          borderColor: 'red',
+          data: this.filterForecastByMode(cityData, this.forecast).map(
+            (forecastDay) => forecastDay.main.feels_like
+          )
+        }
+      ]
+    };
   }
 
-  public getIconFromWeatherApi(icon: string) {
-    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
-  }
+  public getIconFromWeatherApi = (icon: string) =>
+    `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
-  public selectTodayForecast(): void {
-    this.forecastMode = ForecastMode.TODAY;
-  }
+  public isForecastModeToday = () => this.forecastMode === ForecastMode.TODAY;
+  public isForecastModeTomorrow = () => this.forecastMode === ForecastMode.TOMORROW;
+  public isForecastModeWeek = () => this.forecastMode === ForecastMode.WEEK;
 
-  public selectTomorrowForecast(): void {
-    this.forecastMode = ForecastMode.TOMORROW;
-  }
-
-  public selectWeekForecast(): void {
-    this.forecastMode = ForecastMode.WEEK;
-  }
+  public selectTodayForecast = () => (this.forecastMode = ForecastMode.TODAY);
+  public selectTomorrowForecast = () => (this.forecastMode = ForecastMode.TOMORROW);
+  public selectWeekForecast = () => (this.forecastMode = ForecastMode.WEEK);
 }

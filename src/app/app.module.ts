@@ -1,4 +1,4 @@
-import { DateUtilsService } from './utils/DateUtils';
+import { DateUtilsService } from './utils/date.utils';
 import { WeatherWidgetService } from './widgets/weather-widget/weather.widget.service';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -26,6 +26,7 @@ import { RssWidgetService } from './widgets/rss-widget/rss.widget.service';
 import { WeatherWidgetComponent } from './widgets/weather-widget/weather-widget.component';
 import { WidgetListComponent } from './widgets/widget-list/widget-list.component';
 import { WidgetComponent } from './widgets/widget/widget.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { WidgetComponent } from './widgets/widget/widget.component';
     MatIconModule,
     MatSnackBarModule,
     MatTabsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    NgChartsModule
   ],
   providers: [
     AuthService,
