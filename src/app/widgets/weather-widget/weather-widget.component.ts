@@ -1,3 +1,4 @@
+import { ErrorHandlerService } from './../../services/error.handler.service';
 import { Component, ViewChild } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { format } from 'date-fns';
@@ -31,10 +32,16 @@ export class WeatherWidgetComponent {
 
   public lineChartType: ChartType = 'line';
 
+  private ERROR_GETTING_WEATHER_DATA =
+    'Erreur lors de la récupération des données météorologiques.';
+  private ERROR_GETTING_FORECAST_DATA =
+    'Erreur lors de la récupération des prévisions météorologiques.';
+
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   constructor(
     private weatherWidgetService: WeatherWidgetService,
+    private errorHandlerService: ErrorHandlerService,
     public dateUtils: DateUtilsService
   ) {}
 
@@ -42,14 +49,16 @@ export class WeatherWidgetComponent {
     if (this.city) {
       this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
         next: (weatherData) => (this.weather = weatherData),
-        error: (error) => console.error(error.message)
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WEATHER_DATA)
       });
       this.weatherWidgetService.fetchForecastData(this.city).subscribe({
         next: (forecastApiResponse: IWeatherAPIResponse) => {
           this.forecast = forecastApiResponse.list;
           this.cityData = forecastApiResponse.city;
         },
-        error: (error) => console.error(error.message)
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_FORECAST_DATA)
       });
     }
   }
@@ -112,6 +121,7 @@ export class WeatherWidgetComponent {
   }
 
   public getWidgetData = (): { city: string } | null => (this.city ? { city: this.city } : null);
+  public isFormValid = (): boolean => this.city !== null && this.city.length > 0;
 
   public getIconFromWeatherApi = (icon: string) =>
     `https://openweathermap.org/img/wn/${icon}@2x.png`;

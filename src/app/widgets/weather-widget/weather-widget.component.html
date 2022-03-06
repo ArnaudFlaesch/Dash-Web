@@ -1,4 +1,4 @@
-<app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>La météo aujourd'hui à {{ city }}</ng-template>
   <ng-template #editComponent
     ><input id="cityNameInput" name="city" [(ngModel)]="this.city" placeholder="Saisissez de nom de la ville" />

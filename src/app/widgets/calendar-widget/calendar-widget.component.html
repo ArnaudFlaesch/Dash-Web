@@ -18,34 +18,11 @@
 
   <ng-template #body>
     <div [ngSwitch]="view">
-      <calendar-scheduler-view
-        *ngSwitchCase="CalendarView.Week"
-        [viewDays]="viewDays"
+      <mwl-calendar-day-view
+        *ngSwitchCase="CalendarView.Day"
         [viewDate]="viewDate"
-        [events]="events"
-        [locale]="locale"
-        [responsive]="true"
-        [weekStartsOn]="weekStartsOn"
-        [excludeDays]="excludeDays"
-        [startsWithToday]="startsWithToday"
-        [hourSegments]="hourSegments"
-        [dayStartHour]="dayStartHour"
-        [dayEndHour]="dayEndHour"
-        [dayModifier]="dayModifier"
-        [hourModifier]="hourModifier"
-        [segmentModifier]="segmentModifier"
-        [eventModifier]="eventModifier"
-        [showEventActions]="true"
-        [showSegmentHour]="true"
-        [zoomEventOnHover]="true"
-        (viewDaysChanged)="viewDaysChanged($event)"
-        (dayHeaderClicked)="dayHeaderClicked($event.day)"
-        (hourClicked)="hourClicked($event.hour)"
-        (segmentClicked)="segmentClicked('Clicked', $event.segment)"
-        (eventClicked)="eventClicked('Clicked', $event.event)"
-        (eventTimesChanged)="eventTimesChanged($event)"
+        [events]="[]"
         [refresh]="refresh"
-      >
-      </calendar-scheduler-view></div
+      ></mwl-calendar-day-view></div
   ></ng-template>
 </app-widget>

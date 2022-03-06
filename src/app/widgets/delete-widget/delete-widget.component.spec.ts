@@ -1,25 +1,28 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import {
+  createComponentFactory,
+  createHttpFactory,
+  Spectator,
+  SpectatorHttp
+} from '@ngneat/spectator/jest';
+import { WidgetService } from './../../services/widget.service/widget.service';
 import { DeleteWidgetComponent } from './delete-widget.component';
 
 describe('DeleteWidgetComponent', () => {
-  let component: DeleteWidgetComponent;
-  let fixture: ComponentFixture<DeleteWidgetComponent>;
+  let spectator: Spectator<DeleteWidgetComponent>;
+  let widgetService: SpectatorHttp<WidgetService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ DeleteWidgetComponent ]
-    })
-    .compileComponents();
+  const createComponent = createComponentFactory({
+    component: DeleteWidgetComponent,
+    providers: [WidgetService]
   });
+  const createHttp = createHttpFactory(WidgetService);
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeleteWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    widgetService = createHttp();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('Dummy test', () => {
+    expect(true).toBeTruthy();
   });
 });

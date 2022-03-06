@@ -1,25 +1,33 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  createComponentFactory,
+  createHttpFactory,
+  Spectator,
+  SpectatorHttp
+} from '@ngneat/spectator/jest';
+import { ErrorHandlerService } from '../../services/error.handler.service';
 import { SteamWidgetComponent } from './steam-widget.component';
+import { SteamWidgetService } from './steam.widget.service';
 
 describe('SteamWidgetComponent', () => {
-  let component: SteamWidgetComponent;
-  let fixture: ComponentFixture<SteamWidgetComponent>;
+  let spectator: Spectator<SteamWidgetComponent>;
+  let steamWidgetService: SpectatorHttp<SteamWidgetService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ SteamWidgetComponent ]
-    })
-    .compileComponents();
+  const createComponent = createComponentFactory({
+    component: SteamWidgetComponent,
+    imports: [MatSnackBarModule],
+    providers: [SteamWidgetService, ErrorHandlerService],
+    schemas: [NO_ERRORS_SCHEMA]
   });
+  const createHttp = createHttpFactory(SteamWidgetService);
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SteamWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    steamWidgetService = createHttp();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });

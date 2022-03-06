@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import authorizationBearer from '../../../app/services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
-import { IAthlete, IActivity } from './IStrava';
+import { IActivity, IAthlete } from './IStrava';
 
 @Injectable()
 export class StravaWidgetService {

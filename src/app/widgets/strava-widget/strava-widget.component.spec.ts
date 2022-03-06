@@ -1,25 +1,31 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  createHttpFactory,
+  createRoutingFactory,
+  SpectatorHttp,
+  SpectatorRouting
+} from '@ngneat/spectator/jest';
+import { ErrorHandlerService } from '../../services/error.handler.service';
 import { StravaWidgetComponent } from './strava-widget.component';
+import { StravaWidgetService } from './strava.widget.service';
 
 describe('StravaWidgetComponent', () => {
-  let component: StravaWidgetComponent;
-  let fixture: ComponentFixture<StravaWidgetComponent>;
+  let spectator: SpectatorRouting<StravaWidgetComponent>;
+  let stravaWidgetService: SpectatorHttp<StravaWidgetService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ StravaWidgetComponent ]
-    })
-    .compileComponents();
+  const createComponent = createRoutingFactory({
+    component: StravaWidgetComponent,
+    imports: [MatSnackBarModule],
+    providers: [StravaWidgetService, ErrorHandlerService]
   });
+  const createHttp = createHttpFactory(StravaWidgetService);
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StravaWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    stravaWidgetService = createHttp();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });

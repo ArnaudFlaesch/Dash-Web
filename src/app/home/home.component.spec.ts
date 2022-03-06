@@ -1,6 +1,9 @@
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ErrorHandlerService } from './../services/error.handler.service';
+import { ConfigService } from './../services/config.service/config.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { WidgetService } from './../services/widget.service/widget.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   createComponentFactory,
@@ -8,11 +11,12 @@ import {
   HttpMethod,
   Spectator,
   SpectatorHttp
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/jest';
 import { environment } from '../../environments/environment';
 import { AuthService } from './../services/auth.service/auth.service';
 import { TabService } from './../services/tab.service/tab.service';
 import { HomeComponent } from './home.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('HomeComponent', () => {
   let spectator: Spectator<HomeComponent>;
@@ -23,8 +27,9 @@ describe('HomeComponent', () => {
 
   const createComponent = createComponentFactory({
     component: HomeComponent,
-    imports: [HttpClientTestingModule, MatSnackBarModule, RouterTestingModule],
-    providers: [AuthService, TabService, WidgetService]
+    imports: [HttpClientTestingModule, RouterTestingModule, MatDialogModule, MatSnackBarModule],
+    providers: [AuthService, TabService, WidgetService, ConfigService, ErrorHandlerService],
+    schemas: [NO_ERRORS_SCHEMA]
   });
   const createTabHttp = createHttpFactory(TabService);
   const createWidgetHttp = createHttpFactory(WidgetService);

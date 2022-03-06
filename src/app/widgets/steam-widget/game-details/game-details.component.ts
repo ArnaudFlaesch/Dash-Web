@@ -1,6 +1,7 @@
+import { ErrorHandlerService } from './../../../services/error.handler.service';
 import { SteamWidgetService } from './../steam.widget.service';
 import { IGameInfo } from './../IGameInfo';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 
 interface IAchievement {
   apiname: string;
@@ -19,17 +20,22 @@ interface IAchievementResponse {
   templateUrl: './game-details.component.html',
   styleUrls: ['./game-details.component.scss']
 })
-export class GameDetailsComponent implements OnChanges {
+export class GameDetailsComponent implements OnInit {
   @Input()
   public gameInfo: IGameInfo | undefined;
 
   public achievements: IAchievement[] = [];
   public completedAchievements: IAchievement[] = [];
 
-  constructor(private steamWidgetService: SteamWidgetService) {}
+  private ERROR_GETTING_ACHIEVEMENTS_DATA = 'Erreur lors de la récupération des succès.';
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.gameInfo?.appid) {
+  constructor(
+    private errorHandlerService: ErrorHandlerService,
+    private steamWidgetService: SteamWidgetService
+  ) {}
+
+  ngOnInit(): void {
+    if (this.gameInfo) {
       this.steamWidgetService.getAchievementList(this.gameInfo.appid).subscribe({
         next: (response: unknown) => {
           const achievementResponse = response as IAchievementResponse;
@@ -40,7 +46,8 @@ export class GameDetailsComponent implements OnChanges {
             );
           }
         },
-        error: (error: Error) => console.error(error.message)
+        error: (error: Error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACHIEVEMENTS_DATA)
       });
     }
   }

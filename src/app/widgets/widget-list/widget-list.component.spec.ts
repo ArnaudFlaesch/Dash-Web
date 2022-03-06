@@ -1,25 +1,31 @@
+import { WidgetService } from './../../services/widget.service/widget.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WidgetListComponent } from './widget-list.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import {
+  Spectator,
+  SpectatorHttp,
+  createComponentFactory,
+  createHttpFactory
+} from '@ngneat/spectator/jest';
 
 describe('WidgetListComponent', () => {
-  let component: WidgetListComponent;
-  let fixture: ComponentFixture<WidgetListComponent>;
+  let spectator: Spectator<WidgetListComponent>;
+  let widgetService: SpectatorHttp<WidgetService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ WidgetListComponent ]
-    })
-    .compileComponents();
+  const createComponent = createComponentFactory({
+    component: WidgetListComponent,
+    schemas: [NO_ERRORS_SCHEMA]
   });
+  const createHttp = createHttpFactory(WidgetService);
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WidgetListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    widgetService = createHttp();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });

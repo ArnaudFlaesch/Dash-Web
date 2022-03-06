@@ -1,3 +1,4 @@
+import { ErrorHandlerService } from './../../services/error.handler.service';
 import { IGameInfo } from './IGameInfo';
 import { IPlayerData } from './IPlayerData';
 import { Component } from '@angular/core';
@@ -12,7 +13,13 @@ export class SteamWidgetComponent {
   public playerData: IPlayerData | null = null;
   public ownedGames: IGameInfo[] = [];
 
-  constructor(private steamWidgetService: SteamWidgetService) {}
+  private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations.';
+  private ERROR_GETTING_OWNED_GAMES = 'Erreur lors de la récupération de la liste des jeux.';
+
+  constructor(
+    private errorHandlerService: ErrorHandlerService,
+    private steamWidgetService: SteamWidgetService
+  ) {}
 
   public refreshWidget() {
     this.getPlayerData();
@@ -22,7 +29,8 @@ export class SteamWidgetComponent {
   public getPlayerData(): void {
     this.steamWidgetService.getPlayerData().subscribe({
       next: (response: any) => (this.playerData = response.response.players[0]),
-      error: (error: Error) => console.error(error.message)
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_PLAYER_DATA)
     });
   }
 
@@ -32,7 +40,8 @@ export class SteamWidgetComponent {
         (this.ownedGames = (response.response.games as IGameInfo[]).sort((gameA, gameB) =>
           gameA.name.localeCompare(gameB.name)
         )),
-      error: (error: Error) => console.error(error.message)
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_OWNED_GAMES)
     });
   }
 

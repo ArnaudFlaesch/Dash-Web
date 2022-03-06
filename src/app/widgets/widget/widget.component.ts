@@ -1,24 +1,23 @@
-import { WidgetService } from 'src/app/services/widget.service/widget.service';
-import { ModeEnum } from './../../enums/ModeEnum';
 import {
   Component,
   ContentChild,
   EventEmitter,
-  Input,
-  Output,
-  TemplateRef,
-  OnInit,
   Inject,
-  SimpleChanges,
-  OnChanges
+  Input,
+  OnInit,
+  Output,
+  TemplateRef
 } from '@angular/core';
+import { ErrorHandlerService } from '../../../app/services/error.handler.service';
+import { WidgetService } from '../../../app/services/widget.service/widget.service';
+import { ModeEnum } from './../../enums/ModeEnum';
 
 @Component({
   selector: 'app-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss']
 })
-export class WidgetComponent implements OnInit, OnChanges {
+export class WidgetComponent implements OnInit {
   @ContentChild('header', { static: false })
   header: TemplateRef<any> | null;
 
@@ -36,7 +35,14 @@ export class WidgetComponent implements OnInit, OnChanges {
 
   public mode: ModeEnum;
 
-  constructor(private widgetService: WidgetService, @Inject('widgetId') widgetId: number) {
+  private ERROR_UPDATING_WIDGET_DATA =
+    'Erreur lors de la mise à jour de la configuration du widget.';
+
+  constructor(
+    private errorHandlerService: ErrorHandlerService,
+    private widgetService: WidgetService,
+    @Inject('widgetId') widgetId: number
+  ) {
     this.header = null;
     this.body = null;
     this.editComponent = null;
@@ -44,16 +50,8 @@ export class WidgetComponent implements OnInit, OnChanges {
     this.widgetId = widgetId;
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes['widgetData']) {
-      console.log(changes['widgetData'].currentValue);
-    }
-    if (changes['widgetData'].currentValue && this.mode !== ModeEnum.DELETE) {
-      this.mode = ModeEnum.READ;
-    }
-  }
-
   public ngOnInit(): void {
+    this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
   }
 
@@ -68,7 +66,8 @@ export class WidgetComponent implements OnInit, OnChanges {
           this.mode = ModeEnum.READ;
           this.refreshWidget();
         },
-        error: (error) => console.error(error.message)
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_WIDGET_DATA)
       });
   }
 

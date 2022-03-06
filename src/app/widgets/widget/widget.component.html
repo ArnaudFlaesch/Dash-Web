@@ -5,7 +5,7 @@
     </div>
     <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
 
-    <button class="validateButton" mat-raised-button (click)="onValidation()" [disabled]="this.isFormValid">
+    <button class="validateButton" mat-raised-button (click)="onValidation()" [disabled]="!this.isFormValid">
       Valider
     </button>
   </div>

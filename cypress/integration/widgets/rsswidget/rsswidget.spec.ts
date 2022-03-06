@@ -8,7 +8,14 @@ describe('RSS Widget tests', () => {
       .visit('/')
       .title()
       .should('equals', 'Dash')
-      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'));
+      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
+      .intercept('GET', '/rssWidget/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
+        fixture: 'figaro_rss.json'
+      })
+      .as('refreshWidget')
+      .get('.tab')
+      .contains('Flux RSS')
+      .click();
   });
 
   it('Should create a RSS Widget and add it to the dashboard', () => {
@@ -21,26 +28,23 @@ describe('RSS Widget tests', () => {
       .wait('@addWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 1);
+        cy.get('.widget').should('have.length', 2);
       });
   });
 
   it('Should edit RSS widget and add a feed URL', () => {
-    cy.intercept('GET', '/proxy/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
-      fixture: 'figaro_rss.xml'
-    })
-      .as('refreshWidget')
-      .get('.validateRssUrl')
+    cy.get('.validateButton')
       .should('be.disabled')
       .get('input')
       .type('https://www.lefigaro.fr/rss/figaro_actualites.xml')
-      .get('.validateRssUrl')
+      .get('.validateButton')
       .click()
       .wait('@refreshWidget')
-      .then(() => {
-        cy.get('.rssTitle')
+      .then((request: Interception) => {
+        expect(request.response.statusCode).to.equal(200);
+        cy.get('.rssTitle:nth(1)')
           .should('have.text', 'Le Figaro - Actualité en direct et informations en continu')
-          .get('.rssArticle')
+          .get('.widget:nth(1) .rssArticle')
           .should('have.length', 20);
       });
   });
@@ -48,39 +52,39 @@ describe('RSS Widget tests', () => {
   it('Should read all articles', () => {
     cy.intercept('PATCH', '/widget/updateWidgetData/*')
       .as('markAllFeedAsRead')
-      .intercept('GET', '/proxy/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
-        fixture: 'figaro_rss.xml'
+      .intercept('GET', '/rssWidget/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
+        fixture: 'figaro_rss.json'
       })
       .as('refreshWidget')
-      .get('.refreshButton')
+      .get('.refreshButton:nth(1)')
       .click()
       .wait('@refreshWidget')
       .then(() => {
-        cy.get('.rssArticle')
+        cy.get('.widget:nth(1) .rssArticle')
           .should('have.length', 20)
           .first()
           .contains(
             'EN DIRECT - Déconfinement : les Français savourent leur première soirée en terrasse'
           )
           .click()
-          .get('.articleTitle:visible')
+          .get('.widget:nth(1) .articleTitle:visible')
           .should(
             'have.text',
             'EN DIRECT - Déconfinement : les Français savourent leur première soirée en terrasse'
           )
-          .get('.articleContent:visible')
+          .get('.widget:nth(1) .articleContent:visible')
           .should(
             'have.text',
             "La deuxième étape de l'allègement des restrictions sanitaires contre le Covid-19 commence ce mercredi. Le couvre-feu est repoussé de 19h à 21h."
           )
-          .get('.rssArticle')
+          .get('.widget:nth(1) .rssArticle')
           .contains(
             'EN DIRECT - Déconfinement : les Français savourent leur première soirée en terrasse'
           )
           .should('have.class', 'read')
-          .get('.rssArticle.read')
+          .get('.widget:nth(1) .rssArticle.read')
           .should('have.length', 1)
-          .get('.markAllArticlesAsRead')
+          .get('.widget:nth(1) .markAllArticlesAsRead')
           .click()
           .wait('@markAllFeedAsRead')
           .then((request: Interception) => {
@@ -91,40 +95,28 @@ describe('RSS Widget tests', () => {
   });
 
   it('Should refresh all widgets', () => {
-    cy.intercept('GET', '/proxy/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
-      fixture: 'figaro_rss.xml'
-    })
-      .as('refreshWidget')
-      .get('#reloadAllWidgetsButton')
+    cy.get('#reloadAllWidgetsButton')
       .click()
       .wait('@refreshWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.rssArticle').should('have.length', 20);
+        cy.get('.widget:nth(1) .rssArticle').should('have.length', 20);
       });
   });
 
   it('Should delete previously added widget', () => {
-    cy.intercept('GET', '/proxy/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
-      fixture: 'figaro_rss.xml'
-    })
-      .as('getWidgetData')
-      .intercept('DELETE', '/widget/deleteWidget/*')
+    cy.intercept('DELETE', '/widget/deleteWidget/*')
       .as('deleteWidget')
-      .wait('@getWidgetData')
+      .get('.widget:nth(1) .deleteButton')
+      .click()
+      .get('h4')
+      .should('have.text', 'Êtes-vous sûr de vouloir supprimer ce widget ?')
+      .get('.validateDeletionButton')
+      .click()
+      .wait('@deleteWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.deleteButton')
-          .click()
-          .get('h4')
-          .should('have.text', 'Êtes-vous sûr de vouloir supprimer ce widget ?')
-          .get('.validateDeletionButton')
-          .click()
-          .wait('@deleteWidget')
-          .then((request: Interception) => {
-            expect(request.response.statusCode).to.equal(200);
-            cy.get('.widget').should('have.length', 0);
-          });
+        cy.get('.widget').should('have.length', 1);
       });
   });
 });

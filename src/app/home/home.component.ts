@@ -50,7 +50,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnDestroy(): void {}
+  public ngOnDestroy(): void {
+    console.log('ondestroy home');
+  }
 
   private initDashboard() {
     this.tabService.getTabs().subscribe({
@@ -98,7 +100,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       const type = WidgetTypes[result];
       this.widgetService.addWidget(type, this.activeTab).subscribe({
         next: (response: IWidgetConfig) => {
-          console.log(response);
           this.activeWidgets = [...this.activeWidgets, response];
         },
         error: (error: Error) =>
@@ -125,7 +126,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         document.body.appendChild(link);
         link.click();
       },
-      error: (error: Error) => console.error(this.ERROR_EXPORT_CONFIGURATION)
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_EXPORT_CONFIGURATION)
     });
   }
 

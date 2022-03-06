@@ -1,28 +1,26 @@
-import { StravaWidgetComponent } from './../strava-widget/strava-widget.component';
-import { CalendarWidgetComponent } from '../calendar-widget/calendar-widget.component';
 import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ComponentRef,
   EventEmitter,
   Injector,
   Input,
   OnChanges,
   Output,
   QueryList,
-  ReflectiveInjector,
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import { WidgetService } from 'src/app/services/widget.service/widget.service';
+import { WidgetService } from '../../../app/services/widget.service/widget.service';
 import { WidgetTypes } from '../../../app/enums/WidgetsEnum';
+import { CalendarWidgetComponent } from '../calendar-widget/calendar-widget.component';
 import { RssWidgetComponent } from '../rss-widget/rss-widget.component';
-import { WeatherWidgetComponent } from '../weather-widget/weather-widget.component';
-import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { SteamWidgetComponent } from '../steam-widget/steam-widget.component';
 import { TwitterTimelineWidgetComponent } from '../twitter-timeline-widget/twitter-timeline-widget.component';
 import { TwitterWidgetComponent } from '../twitter-widget/twitter-widget.component';
+import { WeatherWidgetComponent } from '../weather-widget/weather-widget.component';
+import { IWidgetConfig } from './../../model/IWidgetConfig';
+import { StravaWidgetComponent } from './../strava-widget/strava-widget.component';
 
 @Component({
   selector: 'app-widget-list',
@@ -62,11 +60,9 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
           ]
         });
         const widgetData = this.widgetList[index].data;
-        console.log(widgetData);
         switch (this.widgetList[index].type) {
           case WidgetTypes.WEATHER: {
             component = target.createComponent(WeatherWidgetComponent, { injector: injector });
-            console.log(widgetData);
             component.instance.city = widgetData ? (widgetData['city'] as string) : null;
             break;
           }

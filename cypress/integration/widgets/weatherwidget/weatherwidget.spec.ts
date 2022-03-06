@@ -9,14 +9,17 @@ describe('Weather Widget tests', () => {
       .title()
       .should('equals', 'Dash')
       .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
-      .intercept('GET', `/weatherWidget/weather`, {
-        fixture: 'parisWeatherSample.json'
+      .intercept('GET', `/weatherWidget/weather?city=Paris`, {
+        fixture: 'weather/parisWeatherSample.json'
       })
-      .as('refreshWidget')
-      .intercept('GET', `/weatherWidget/forecast`, {
-        fixture: 'parisWeatherSample.json'
+      .as('getWeather')
+      .intercept('GET', `/weatherWidget/forecast?city=Paris`, {
+        fixture: 'weather/parisForecastSample.json'
       })
-      .as('getForecast');
+      .as('getForecast')
+      .get('.tab')
+      .contains('Météo')
+      .click();
   });
 
   it('Should create a Weather Widget and add it to the dashboard', () => {
@@ -37,13 +40,13 @@ describe('Weather Widget tests', () => {
     cy.clock(new Date(2020, 6, 15, 0, 0, 0).getTime())
       .get('#cityNameInput')
       .type('Paris')
-      .get('#validateButton')
+      .get('.validateButton')
       .click()
-      .get('.refreshButton')
-      .click()
-      .wait('@refreshWidget')
-      .then(() => {
-        cy.get('.forecast').should('have.length.at.least', 5);
+      .wait(['@getWeather', '@getForecast'])
+      .then((request: Interception[]) => {
+        expect(request[0].response.statusCode).to.equal(200);
+        expect(request[1].response.statusCode).to.equal(200);
+        cy.get('.widget:nth(1) .forecast').should('have.length.at.least', 5);
       })
       .clock()
       .then((clock) => {
@@ -53,19 +56,19 @@ describe('Weather Widget tests', () => {
 
   it("Should toggle between today's, tomorrow's and the week's forecasts", () => {
     cy.clock(new Date(2020, 6, 15, 0, 0, 0).getTime())
-      .get('#toggleTodayForecast')
+      .get('.widget:nth(1) #toggleTodayForecast')
       .click()
-      .get('.forecastRow')
+      .get('.widget:nth(1) .forecast-row')
       .scrollIntoView()
-      .get('.forecast')
+      .get('.widget:nth(1) .forecast')
       .should('have.length.at.least', 5)
-      .get('#toggleTomorrowForecast')
+      .get('.widget:nth(1) #toggleTomorrowForecast')
       .click()
       .get('.forecast')
       .should('have.length.at.least', 5)
-      .get('#toggleWeekForecast')
+      .get('.widget:nth(1) #toggleWeekForecast')
       .click()
-      .get('.forecast')
+      .get('.widget:nth(1) .forecast')
       .should('have.length', 5)
       .clock()
       .then((clock) => {
@@ -76,7 +79,7 @@ describe('Weather Widget tests', () => {
   it('Should delete previously added widget', () => {
     cy.intercept('DELETE', '/widget/deleteWidget/*')
       .as('deleteWidget')
-      .get('.deleteButton')
+      .get('.widget:nth(0) .deleteButton')
       .click()
       .get('h4')
       .should('have.text', 'Êtes-vous sûr de vouloir supprimer ce widget ?')

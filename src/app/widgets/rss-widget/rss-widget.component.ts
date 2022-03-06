@@ -55,6 +55,8 @@ export class RssWidgetComponent {
     return div.textContent || div.innerText || '';
   }
 
+  public isFormValid = (): boolean => this.urlFeed !== null && this.urlFeed.length > 0;
+
   public getWidgetData = (): { url: string } | null =>
     this.urlFeed ? { url: this.urlFeed } : null;
 }

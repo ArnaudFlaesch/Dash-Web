@@ -1,3 +1,4 @@
+import { DateAdapter } from 'angular-calendar';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CalendarWidgetComponent } from './calendar-widget.component';
@@ -8,9 +9,9 @@ describe('CalendarWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CalendarWidgetComponent ]
-    })
-    .compileComponents();
+      declarations: [CalendarWidgetComponent],
+      providers: [DateAdapter]
+    }).compileComponents();
   });
 
   beforeEach(() => {

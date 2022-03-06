@@ -1,4 +1,4 @@
-<app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
     <div class="h-10">
       <a [href]="this.link | safe: 'url'" class="flex flex-row">

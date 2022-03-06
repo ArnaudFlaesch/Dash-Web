@@ -4,7 +4,7 @@ import {
   HttpMethod,
   Spectator,
   SpectatorHttp
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/jest';
 import { environment } from '../../../environments/environment';
 import { RssWidgetComponent } from './rss-widget.component';
 import { RssWidgetService } from './rss.widget.service';
@@ -12,6 +12,8 @@ import { RssWidgetService } from './rss.widget.service';
 describe('RssWidgetComponent', () => {
   let spectator: Spectator<RssWidgetComponent>;
   let rssWidgetService: SpectatorHttp<RssWidgetService>;
+
+  const urlFeed = 'https://www.jeuxvideo.com/rss/rss-pc.xml';
 
   const createComponent = createComponentFactory({
     component: RssWidgetComponent,
@@ -25,9 +27,10 @@ describe('RssWidgetComponent', () => {
   });
 
   it('Dummy test', () => {
-    expect(true).toBeTruthy();
+    spectator.component.urlFeed = urlFeed;
+    spectator.component.refreshWidget();
     rssWidgetService.expectOne(
-      environment.backend_url + '/proxy/?url=' + spectator.component.urlFeed,
+      environment.backend_url + '/rssWidget/?url=' + urlFeed,
       HttpMethod.GET
     );
   });

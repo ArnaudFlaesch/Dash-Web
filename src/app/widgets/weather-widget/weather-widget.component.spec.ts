@@ -1,12 +1,15 @@
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ErrorHandlerService } from './../../services/error.handler.service';
 import {
   createComponentFactory,
   createHttpFactory,
   Spectator,
   SpectatorHttp
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/jest';
 import { DateUtilsService } from '../../utils/date.utils';
 import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('WeatherWidgetComponent', () => {
   let spectator: Spectator<WeatherWidgetComponent>;
@@ -14,7 +17,9 @@ describe('WeatherWidgetComponent', () => {
 
   const createComponent = createComponentFactory({
     component: WeatherWidgetComponent,
-    providers: [WeatherWidgetService, DateUtilsService]
+    imports: [MatSnackBarModule],
+    providers: [WeatherWidgetService, DateUtilsService, ErrorHandlerService],
+    schemas: [NO_ERRORS_SCHEMA]
   });
   const createHttp = createHttpFactory(WeatherWidgetService);
 
