@@ -1,17 +1,28 @@
+import { StravaWidgetComponent } from './../strava-widget/strava-widget.component';
+import { CalendarWidgetComponent } from '../calendar-widget/calendar-widget.component';
 import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ComponentRef,
+  EventEmitter,
+  Injector,
   Input,
   OnChanges,
+  Output,
   QueryList,
+  ReflectiveInjector,
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
+import { WidgetService } from 'src/app/services/widget.service/widget.service';
 import { WidgetTypes } from '../../../app/enums/WidgetsEnum';
 import { RssWidgetComponent } from '../rss-widget/rss-widget.component';
 import { WeatherWidgetComponent } from '../weather-widget/weather-widget.component';
 import { IWidgetConfig } from './../../model/IWidgetConfig';
+import { SteamWidgetComponent } from '../steam-widget/steam-widget.component';
+import { TwitterTimelineWidgetComponent } from '../twitter-timeline-widget/twitter-timeline-widget.component';
+import { TwitterWidgetComponent } from '../twitter-widget/twitter-widget.component';
 
 @Component({
   selector: 'app-widget-list',
@@ -23,8 +34,9 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
   public widgetTargets: QueryList<ViewContainerRef> | undefined;
 
   @Input() widgetList: IWidgetConfig[] = [];
+  @Output() widgetDeletedEvent = new EventEmitter<number>();
 
-  constructor(private cdRef: ChangeDetectorRef) {}
+  constructor(private cdRef: ChangeDetectorRef, private widgetService: WidgetService) {}
 
   ngAfterViewInit(): void {
     this.createWidgets();
@@ -39,10 +51,55 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
   private createWidgets() {
     if (this.widgetTargets) {
       this.widgetTargets.forEach((target, index) => {
-        if (this.widgetList[index].type === WidgetTypes.WEATHER) {
-          target.createComponent(WeatherWidgetComponent);
-        } else {
-          target.createComponent(RssWidgetComponent);
+        target.detach();
+        let component;
+        const injector: Injector = Injector.create({
+          providers: [
+            {
+              provide: 'widgetId',
+              useValue: this.widgetList[index].id
+            }
+          ]
+        });
+        const widgetData = this.widgetList[index].data;
+        console.log(widgetData);
+        switch (this.widgetList[index].type) {
+          case WidgetTypes.WEATHER: {
+            component = target.createComponent(WeatherWidgetComponent, { injector: injector });
+            console.log(widgetData);
+            component.instance.city = widgetData ? (widgetData['city'] as string) : null;
+            break;
+          }
+          case WidgetTypes.RSS: {
+            component = target.createComponent(RssWidgetComponent, { injector: injector });
+            component.instance.urlFeed = widgetData ? (widgetData['url'] as string) : null;
+            break;
+          }
+          case WidgetTypes.CALENDAR: {
+            component = target.createComponent(CalendarWidgetComponent, { injector: injector });
+            component.instance.calendarUrls = widgetData
+              ? (widgetData['calendarUrls'] as string[])
+              : null;
+            break;
+          }
+          case WidgetTypes.STRAVA: {
+            target.createComponent(StravaWidgetComponent, { injector: injector });
+            break;
+          }
+          case WidgetTypes.STEAM: {
+            target.createComponent(SteamWidgetComponent, { injector: injector });
+            break;
+          }
+          case WidgetTypes.TWITTER: {
+            target.createComponent(TwitterWidgetComponent, { injector: injector });
+            break;
+          }
+          case WidgetTypes.TWITTER_TIMELINE: {
+            target.createComponent(TwitterTimelineWidgetComponent, {
+              injector: injector
+            });
+            break;
+          }
         }
       });
     }

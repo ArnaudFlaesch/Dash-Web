@@ -2,6 +2,8 @@
   <h4 class="font-bold">Êtes-vous sûr de vouloir supprimer ce widget ?</h4>
   <div class="flex flex-row justify-around w-full">
     <button (click)="cancelButtonClicked()" mat-raised-button class="cancelButton">Annuler</button>
-    <button mat-raised-button color="warn" class="validateDeletionButton">Supprimer</button>
+    <button (click)="deleteWidget()" mat-raised-button color="warn" class="validateDeletionButton">
+      Supprimer
+    </button>
   </div>
 </div>

@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Ajouter un widget</h1>
+
+<mat-dialog-content>
+  <div class="grid grid-cols-4 gap-3">
+    <mat-card *ngFor="let type of getWidgetTypesKeys()">
+      <mat-card-content>
+        <div class="flex flex-col space-y-5">
+          <span>{{ type }}</span>
+          <span>Widget {{ type }}</span>
+          <span>Cliquez ci-dessous pour ajouter un widget {{ type }} au dashboard.</span>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button id="{{ type }}" mat-raised-button [mat-dialog-close]="type">Ajouter</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions> <button mat-button mat-dialog-close>Fermer</button> </mat-dialog-actions>

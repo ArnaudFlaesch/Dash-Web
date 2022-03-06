@@ -18,8 +18,7 @@ enum ForecastMode {
   styleUrls: ['./weather-widget.component.scss']
 })
 export class WeatherWidgetComponent {
-  public city = 'Paris';
-  public cityForm = '';
+  public city: string | null = null;
 
   public weather: IWeather | undefined;
   public forecast: IForecast[] = [];
@@ -40,17 +39,19 @@ export class WeatherWidgetComponent {
   ) {}
 
   public refreshWidget() {
-    this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
-      next: (weatherData) => (this.weather = weatherData),
-      error: (error) => console.error(error.message)
-    });
-    this.weatherWidgetService.fetchForecastData(this.city).subscribe({
-      next: (forecastApiResponse: IWeatherAPIResponse) => {
-        this.forecast = forecastApiResponse.list;
-        this.cityData = forecastApiResponse.city;
-      },
-      error: (error) => console.error(error.message)
-    });
+    if (this.city) {
+      this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
+        next: (weatherData) => (this.weather = weatherData),
+        error: (error) => console.error(error.message)
+      });
+      this.weatherWidgetService.fetchForecastData(this.city).subscribe({
+        next: (forecastApiResponse: IWeatherAPIResponse) => {
+          this.forecast = forecastApiResponse.list;
+          this.cityData = forecastApiResponse.city;
+        },
+        error: (error) => console.error(error.message)
+      });
+    }
   }
 
   public filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {
@@ -109,6 +110,8 @@ export class WeatherWidgetComponent {
       ]
     };
   }
+
+  public getWidgetData = (): { city: string } | null => (this.city ? { city: this.city } : null);
 
   public getIconFromWeatherApi = (icon: string) =>
     `https://openweathermap.org/img/wn/${icon}@2x.png`;

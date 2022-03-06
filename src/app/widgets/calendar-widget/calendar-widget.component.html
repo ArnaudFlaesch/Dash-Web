@@ -1,0 +1,51 @@
+<app-widget [widgetData]="getWidgetConfig()" (refreshWidgetAction)="this.refreshWidget()">
+  <ng-template #header> Agenda </ng-template>
+
+  <ng-template #editComponent>
+    <div *ngFor="let calendarUrl of this.calendarUrls; let index = index">
+      <div class="flex flex-row">
+        <input
+          id="{{ index.toString() }}"
+          (change)="onCalendarUrlUpdated($event)"
+          [value]="calendarUrl"
+          placeholder="Saisissez une URL"
+        />
+
+        <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #body>
+    <div [ngSwitch]="view">
+      <calendar-scheduler-view
+        *ngSwitchCase="CalendarView.Week"
+        [viewDays]="viewDays"
+        [viewDate]="viewDate"
+        [events]="events"
+        [locale]="locale"
+        [responsive]="true"
+        [weekStartsOn]="weekStartsOn"
+        [excludeDays]="excludeDays"
+        [startsWithToday]="startsWithToday"
+        [hourSegments]="hourSegments"
+        [dayStartHour]="dayStartHour"
+        [dayEndHour]="dayEndHour"
+        [dayModifier]="dayModifier"
+        [hourModifier]="hourModifier"
+        [segmentModifier]="segmentModifier"
+        [eventModifier]="eventModifier"
+        [showEventActions]="true"
+        [showSegmentHour]="true"
+        [zoomEventOnHover]="true"
+        (viewDaysChanged)="viewDaysChanged($event)"
+        (dayHeaderClicked)="dayHeaderClicked($event.day)"
+        (hourClicked)="hourClicked($event.hour)"
+        (segmentClicked)="segmentClicked('Clicked', $event.segment)"
+        (eventClicked)="eventClicked('Clicked', $event.event)"
+        (eventTimesChanged)="eventTimesChanged($event)"
+        [refresh]="refresh"
+      >
+      </calendar-scheduler-view></div
+  ></ng-template>
+</app-widget>

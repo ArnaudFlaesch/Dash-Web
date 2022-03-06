@@ -1,3 +1,4 @@
+import { ErrorHandlerService } from './../services/error.handler.service';
 import { TabService } from './../services/tab.service/tab.service';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ITab } from '../model/Tab';
@@ -17,20 +18,22 @@ export class TabComponent {
   private ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
   private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
 
-  constructor(private tabService: TabService) {}
+  constructor(private tabService: TabService, private errorHandlerService: ErrorHandlerService) {}
 
   public deleteTabFromDash() {
     if (this.tab) {
       this.tabService.deleteTab(this.tab.id).subscribe({
         next: () => this.tabDeletedEvent.emit(this.tab?.id),
-        error: () => console.error(this.ERROR_MESSAGE_DELETE_TAB)
+        error: (error: Error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_TAB)
       });
     }
   }
 
   public saveTabName(tabId: number, label: string, tabOrder: number) {
     this.tabService.updateTab(tabId, label, tabOrder).subscribe({
-      error: () => console.error(this.ERROR_MESSAGE_UPDATE_TAB),
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_UPDATE_TAB),
       complete: this.toggleEditMode
     });
   }

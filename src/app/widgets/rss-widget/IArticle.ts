@@ -10,7 +10,7 @@ export interface IRSSHeader {
   lastBuildDate: string;
   docs: string;
   ttl: string;
-  items: [IArticle];
+  item: [IArticle];
 }
 
 export interface IArticle {

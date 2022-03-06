@@ -6,10 +6,15 @@
     *ngFor="let tab of this.tabs"
     [tab]="tab"
   ></app-tab>
-  <button id="logoutButton" mat-raised-button (click)="logout()">Déconnexion</button>
+  <div>
+    <mat-icon id="openAddWidgetModal" (click)="this.openCreateWidgetModal()" aria-hidden="false"
+      >add_circle_outline</mat-icon
+    >
+    <mat-icon id="reloadAllWidgetsButton" aria-hidden="false">refresh</mat-icon>
+    <mat-icon id="downloadConfigButton" (click)="this.downloadConfig()" aria-hidden="false">download</mat-icon>
+    <mat-icon id="openImportConfigModal" (click)="this.openImportConfigModal()" aria-hidden="false">upload</mat-icon>
+    <button id="logoutButton" mat-raised-button (click)="logout()">Déconnexion</button>
+  </div>
 </div>
 
-<app-widget-list
-  [widgetList]="this.activeWidgets"
-  *ngIf="this.activeWidgets.length"
-></app-widget-list>
+<app-widget-list [widgetList]="this.activeWidgets" *ngIf="this.activeWidgets.length"></app-widget-list>

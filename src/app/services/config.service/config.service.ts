@@ -23,8 +23,7 @@ export class ConfigService {
     formData.append('file', file);
     return this.http.post<boolean>(`${environment.backend_url}/config/import`, formData, {
       headers: {
-        Authorization: authorizationBearer(),
-        'content-type': 'multipart/form-data'
+        Authorization: authorizationBearer()
       }
     });
   }

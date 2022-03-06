@@ -1,5 +1,10 @@
-import { Component } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ErrorHandlerService } from '../services/error.handler.service';
+import { ImportConfigModalComponent } from './../modals/import-config-modal/import-config-modal.component';
+import { ConfigService } from './../services/config.service/config.service';
+import { WidgetTypes } from './../enums/WidgetsEnum';
+import { CreateWidgetModalComponent } from './../modals/create-widget-modal/create-widget-modal.component';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TabService } from '../services/tab.service/tab.service';
 import { WidgetService } from '../services/widget.service/widget.service';
@@ -12,7 +17,7 @@ import { AuthService } from './../services/auth.service/auth.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
   public tabs: ITab[] = [];
   public activeWidgets: IWidgetConfig[] = [];
   public activeTab = -1;
@@ -23,59 +28,104 @@ export class HomeComponent {
   private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
   private ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
   private ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
-
-  private ERROR_MESSAGE_GET_WIDGETS = 'Erreur lors de la récupération des widgets.';
   private ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
 
+  private ERROR_MESSAGE_GET_WIDGETS = 'Erreur lors de la récupération des widgets.';
+
   constructor(
+    public dialog: MatDialog,
     private router: Router,
     private authService: AuthService,
     private tabService: TabService,
     private widgetService: WidgetService,
-    private snabbar: MatSnackBar
+    private configService: ConfigService,
+    private errorHandlerService: ErrorHandlerService
   ) {
     this.initDashboard();
   }
+
+  public ngOnInit(): void {
+    this.widgetService.widgetDeleted.subscribe({
+      next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
+    });
+  }
+
+  public ngOnDestroy(): void {}
 
   private initDashboard() {
     this.tabService.getTabs().subscribe({
       next: (tabs) => {
         this.tabs = tabs;
         this.activeTab = tabs[0].id;
-        this.getWidgets(this.activeTab);
+        this.loadWidgets(this.activeTab);
       },
-      error: () => {
-        this.snabbar.open(this.ERROR_MESSAGE_INIT_DASHBOARD);
-      }
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD)
     });
   }
 
   public selectTab(tabId: number) {
     this.activeTab = tabId;
-    this.getWidgets(this.activeTab);
+    this.loadWidgets(this.activeTab);
+  }
+
+  private loadWidgets(activeTabId: number) {
+    this.widgetService.getWidgets(activeTabId).subscribe({
+      next: (widgets) => (this.activeWidgets = widgets),
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_GET_WIDGETS)
+    });
   }
 
   public deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
-      next: (response) => {
-        if (response) {
-          this.activeWidgets = this.activeWidgets.filter(
-            (widget: IWidgetConfig) => widget.id !== id
-          );
-        }
-      },
-      error: () => console.log(this.ERROR_MESSAGE_DELETE_WIDGET)
+      next: (response) =>
+        (this.activeWidgets = this.activeWidgets.filter(
+          (widget: IWidgetConfig) => widget.id !== id
+        )),
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_WIDGET)
     });
   }
 
-  private getWidgets(activeTabId: number) {
-    this.widgetService.getWidgets(activeTabId).subscribe({
-      next: (widgets) => {
-        this.activeWidgets = widgets;
+  public openCreateWidgetModal(): void {
+    const dialogRef = this.dialog.open(CreateWidgetModalComponent, {
+      height: '400px',
+      width: '600px'
+    });
+
+    dialogRef.afterClosed().subscribe((result: WidgetTypes) => {
+      const type = WidgetTypes[result];
+      this.widgetService.addWidget(type, this.activeTab).subscribe({
+        next: (response: IWidgetConfig) => {
+          console.log(response);
+          this.activeWidgets = [...this.activeWidgets, response];
+        },
+        error: (error: Error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_WIDGET)
+      });
+    });
+  }
+
+  public openImportConfigModal(): void {
+    this.dialog.open(ImportConfigModalComponent, {
+      height: '400px',
+      width: '600px'
+    });
+  }
+
+  public downloadConfig(): void {
+    this.configService.exportConfig().subscribe({
+      next: (response) => {
+        console.info('Configuration exportée');
+        const url = window.URL.createObjectURL(new Blob([response]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'dashboardConfig.json');
+        document.body.appendChild(link);
+        link.click();
       },
-      error: () => {
-        this.snabbar.open(this.ERROR_MESSAGE_GET_WIDGETS);
-      }
+      error: (error: Error) => console.error(this.ERROR_EXPORT_CONFIGURATION)
     });
   }
 

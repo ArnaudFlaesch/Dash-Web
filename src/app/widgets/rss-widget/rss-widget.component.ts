@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import * as xml2js from 'xml2js';
-import { IArticle } from './IArticle';
+import { IArticle, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 
 @Component({
@@ -16,31 +15,23 @@ export class RssWidgetComponent {
 
   public isFeedClosed = true;
   public readArticles: string[] = [];
-  public parser = new xml2js.Parser({ explicitArray: false });
-  public urlFeed = 'https://www.lefigaro.fr/rss/figaro_actualites.xml';
-  public urlForm = 'test';
+  public urlFeed: string | null = null;
 
-  constructor(private rssWidgetService: RssWidgetService) {
+  constructor(private rssWidgetService: RssWidgetService) {}
+
+  public refreshWidget() {
     if (this.urlFeed) {
-      this.refreshWidget(this.urlFeed);
-    }
-  }
-
-  public refreshWidget(url: string) {
-    this.urlFeed = url;
-
-    this.rssWidgetService.fetchDataFromRssFeed(url).subscribe({
-      next: (apiResult) => {
-        this.parser.parseString(apiResult, (err: unknown, result: any) => {
-          const res = result.rss.channel;
+      this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
+        next: (apiResult: unknown) => {
+          const res = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
           this.description = res.description;
           this.feed = res.item;
           this.link = res.link;
           this.title = res.title;
-        });
-      },
-      error: (error) => console.error(error.message)
-    });
+        },
+        error: (error) => console.error(error.message)
+      });
+    }
   }
 
   public formatTitleForArticle(article: IArticle) {
@@ -63,4 +54,7 @@ export class RssWidgetComponent {
     div.innerHTML = content || '';
     return div.textContent || div.innerText || '';
   }
+
+  public getWidgetData = (): { url: string } | null =>
+    this.urlFeed ? { url: this.urlFeed } : null;
 }

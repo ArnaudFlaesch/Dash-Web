@@ -9,11 +9,11 @@ export class RssWidgetService {
   constructor(private http: HttpClient) {}
 
   public fetchDataFromRssFeed(url: string): Observable<string> {
-    return this.http.get(`${environment.backend_url}/proxy/?url=${url}`, {
+    return this.http.get<string>(`${environment.backend_url}/rssWidget/?url=${url}`, {
       headers: {
-        Authorization: authorizationBearer()
-      },
-      responseType: 'text'
+        Authorization: authorizationBearer(),
+        'Content-type': 'application/json'
+      }
     });
   }
 }

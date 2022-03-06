@@ -1,7 +1,7 @@
-<app-widget (onValidationEmitter)="this.refreshWidget(this.urlForm)">
+<app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
     <div class="h-10">
-      <a [href]="this.link" class="flex flex-row">
+      <a [href]="this.link | safe: 'url'" class="flex flex-row">
         <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">
           {{ this.title }}
         </div>
@@ -10,12 +10,7 @@
   </ng-template>
 
   <ng-template #editComponent>
-    <input
-      id="rssFeedUrl"
-      name="url"
-      [(ngModel)]="this.urlForm"
-      placeholder="Saisissez l'URL du flux RSS"
-    />
+    <input id="rssFeedUrl" name="url" [(ngModel)]="this.urlFeed" placeholder="Saisissez l'URL du flux RSS" />
   </ng-template>
 
   <ng-template #body>
@@ -27,20 +22,20 @@
             <mat-expansion-panel-header>
               <mat-panel-title> {{ this.formatTitleForArticle(article) }} </mat-panel-title>
             </mat-expansion-panel-header>
-            <div class="border-2 border-gray-500 border-solid">
-              <div class="articleTitle">
-                <a [href]="article.link">{{ article.title }}</a>
+            <ng-template matExpansionPanelContent>
+              <div class="border-2 border-gray-500 border-solid">
+                <div class="articleTitle">
+                  <a [href]="article.link | safe: 'url'">{{ article.title }}</a>
+                </div>
+                <div class="articleContent">
+                  {{ stripHtmlFromContent(article.content) || stripHtmlFromContent(article.description) }}
+                </div>
+                <div class="articlePubDate">
+                  Publié le {{ formatDateFromUTC(article.pubDate || '') }}
+                  {{ article.author && 'par ' + article.author }}
+                </div>
               </div>
-              <div class="articleContent">
-                {{
-                  stripHtmlFromContent(article.content) || stripHtmlFromContent(article.description)
-                }}
-              </div>
-              <div class="articlePubDate">
-                Publié le {{ formatDateFromUTC(article.pubDate || '') }}
-                {{ article.author && 'par ' + article.author }}
-              </div>
-            </div>
+            </ng-template>
           </mat-expansion-panel>
         </div>
       </div>
