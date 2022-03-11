@@ -23,9 +23,9 @@ export class TabComponent {
   public deleteTabFromDash() {
     if (this.tab) {
       this.tabService.deleteTab(this.tab.id).subscribe({
-        next: () => this.tabDeletedEvent.emit(this.tab?.id),
         error: (error: Error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_TAB)
+          this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_TAB),
+        complete: () => this.tabDeletedEvent.emit(this.tab?.id)
       });
     }
   }
@@ -34,7 +34,7 @@ export class TabComponent {
     this.tabService.updateTab(tabId, label, tabOrder).subscribe({
       error: (error: Error) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_UPDATE_TAB),
-      complete: this.toggleEditMode
+      complete: this.toggleEditMode.bind(this)
     });
   }
 

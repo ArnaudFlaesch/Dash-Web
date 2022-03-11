@@ -58,11 +58,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.tabService.getTabs().subscribe({
       next: (tabs) => {
         this.tabs = tabs;
-        this.activeTab = tabs[0].id;
-        this.loadWidgets(this.activeTab);
+        if (tabs.length) {
+          this.activeTab = tabs[0].id;
+          this.loadWidgets(this.activeTab);
+        }
       },
       error: (error: Error) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD)
+    });
+  }
+
+  public addNewTab() {
+    const newTabLabel = 'Nouvel onglet';
+    this.tabService.addTab(newTabLabel).subscribe({
+      next: (insertedTab: ITab) => {
+        this.tabs = [...this.tabs, insertedTab];
+        this.activeTab = insertedTab.id;
+      },
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_TAB)
     });
   }
 
@@ -81,13 +95,20 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
-      next: (response) =>
+      error: (error: Error) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_WIDGET),
+      complete: () =>
         (this.activeWidgets = this.activeWidgets.filter(
           (widget: IWidgetConfig) => widget.id !== id
-        )),
-      error: (error: Error) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_WIDGET)
+        ))
     });
+  }
+
+  public deleteTabFromDashboard(tabId: number) {
+    this.activeWidgets = this.activeWidgets.filter(
+      (widget: IWidgetConfig) => widget.tab.id !== tabId
+    );
+    this.tabs = this.tabs.filter((tab) => tab.id !== tabId);
   }
 
   public openCreateWidgetModal(): void {
