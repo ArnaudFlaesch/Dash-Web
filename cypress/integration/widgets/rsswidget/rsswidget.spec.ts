@@ -49,7 +49,7 @@ describe('RSS Widget tests', () => {
           .then((text) => {
             expect(text.trim()).equal('Le Figaro - Actualité en direct et informations en continu');
           })
-          .get('.widget:nth(1) .rssArticle')
+          .get('.widget:nth(1) .rss-article')
           .should('have.length', NUMBER_OF_ARTICLES);
       });
   });
@@ -65,7 +65,7 @@ describe('RSS Widget tests', () => {
       .click()
       .wait('@refreshWidget')
       .then(() => {
-        cy.get('.widget:nth(1) .rssArticle')
+        cy.get('.widget:nth(1) .rss-article')
           .should('have.length', NUMBER_OF_ARTICLES)
           .first()
           .contains(
@@ -84,7 +84,7 @@ describe('RSS Widget tests', () => {
               "Les présidents russe et français se sont de nouveau entretenus ce dimanche. Selon l'Élysée Vladimir Poutine a assuré ne pas vouloir attaquer les centrales nucléaires et nié «que son armée prenne des civils pour cible»."
             );
           })
-          .get('.widget:nth(1) .rssArticle')
+          .get('.widget:nth(1) .rss-article')
           .contains(
             "EN DIRECT - Guerre en Ukraine : Poutine prévient qu'il atteindra ses objectifs «soit par la négociation, soit par la guerre»"
           )
@@ -109,7 +109,7 @@ describe('RSS Widget tests', () => {
       .wait('@refreshWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget:nth(1) .rssArticle').should('have.length', NUMBER_OF_ARTICLES);
+        cy.get('.widget:nth(1) .rss-article').should('have.length', NUMBER_OF_ARTICLES);
       });
   });
 
