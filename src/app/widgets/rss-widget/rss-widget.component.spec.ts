@@ -1,3 +1,6 @@
+import { DateUtilsService } from './../../utils/date.utils';
+import { ErrorHandlerService } from './../../services/error.handler.service';
+import { WidgetService } from './../../services/widget.service/widget.service';
 import {
   createComponentFactory,
   createHttpFactory,
@@ -8,6 +11,7 @@ import {
 import { environment } from '../../../environments/environment';
 import { RssWidgetComponent } from './rss-widget.component';
 import { RssWidgetService } from './rss.widget.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('RssWidgetComponent', () => {
   let spectator: Spectator<RssWidgetComponent>;
@@ -17,7 +21,14 @@ describe('RssWidgetComponent', () => {
 
   const createComponent = createComponentFactory({
     component: RssWidgetComponent,
-    providers: [RssWidgetService]
+    imports: [MatSnackBarModule],
+    providers: [
+      RssWidgetService,
+      DateUtilsService,
+      WidgetService,
+      ErrorHandlerService,
+      { provide: 'widgetId', useValue: '37' }
+    ]
   });
   const createHttp = createHttpFactory(RssWidgetService);
 
