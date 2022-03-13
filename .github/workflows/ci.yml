@@ -60,10 +60,10 @@ jobs:
         run: |
           if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' && ${GITHUB_REF#refs/*/} != 'master' ]]; then
             docker pull arnaudf93/dashwebservices:${GITHUB_REF#refs/*/}
-            docker run -p 8080:8080 -d --network="host" -e POSTGRES_URL=jdbc:postgresql://localhost:5432/dash_test -e OPENWEATHERMAP_KEY = ${OPENWEATHERMAP_KEY} -e STRAVA_CLIENT_ID = ${ STRAVA_CLIENT_ID } -e STRAVA_CLIENT_SECRET = ${ STRAVA_CLIENT_SECRET } -e STEAM_USER_ID = ${STEAM_USER_ID} -e STEAM_API_KEY = ${ STEAM_API_KEY } arnaudf93/dashwebservices:${GITHUB_REF#refs/*/}
+            docker run -p 8080:8080 -d --network="host" -e POSTGRES_URL=jdbc:postgresql://localhost:5432/dash_test -e OPENWEATHERMAP_KEY = ${OPENWEATHERMAP_KEY} -e STRAVA_CLIENT_ID = ${STRAVA_CLIENT_ID} -e STRAVA_CLIENT_SECRET = ${ STRAVA_CLIENT_SECRET} -e STEAM_USER_ID = ${STEAM_USER_ID} -e STEAM_API_KEY = ${STEAM_API_KEY} arnaudf93/dashwebservices:${GITHUB_REF#refs/*/}
           else 
             docker pull arnaudf93/dashwebservices:latest
-            docker run -p 8080:8080 -d --network="host" -e POSTGRES_URL=jdbc:postgresql://localhost:5432/dash_test -e OPENWEATHERMAP_KEY = ${OPENWEATHERMAP_KEY} -e STRAVA_CLIENT_ID = ${ STRAVA_CLIENT_ID } -e STRAVA_CLIENT_SECRET = ${ STRAVA_CLIENT_SECRET } -e STEAM_USER_ID = ${STEAM_USER_ID} -e STEAM_API_KEY = ${ STEAM_API_KEY } arnaudf93/dashwebservices:latest
+            docker run -p 8080:8080 -d --network="host" -e POSTGRES_URL=jdbc:postgresql://localhost:5432/dash_test -e OPENWEATHERMAP_KEY = ${OPENWEATHERMAP_KEY} -e STRAVA_CLIENT_ID = ${STRAVA_CLIENT_ID} -e STRAVA_CLIENT_SECRET = ${ STRAVA_CLIENT_SECRET} -e STEAM_USER_ID = ${STEAM_USER_ID} -e STEAM_API_KEY = ${STEAM_API_KEY} arnaudf93/dashwebservices:latest
           fi
 
       - name: E2E Tests
