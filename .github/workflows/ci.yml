@@ -6,6 +6,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      OPENWEATHERMAP_KEY: ${{ secrets.OPENWEATHERMAP_KEY }}
+      STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+      STEAM_USER_ID: ${{ secrets.STEAM_USER_ID }}
+      STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+      STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+
     steps:
       - uses: actions/checkout@v3
 
