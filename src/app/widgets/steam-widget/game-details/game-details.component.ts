@@ -2,6 +2,7 @@ import { ErrorHandlerService } from './../../../services/error.handler.service';
 import { SteamWidgetService } from './../steam.widget.service';
 import { IGameInfo } from './../IGameInfo';
 import { Component, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 interface IAchievement {
   apiname: string;
@@ -46,7 +47,7 @@ export class GameDetailsComponent implements OnInit {
             );
           }
         },
-        error: (error: Error) =>
+        error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACHIEVEMENTS_DATA)
       });
     }

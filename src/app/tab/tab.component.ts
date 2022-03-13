@@ -2,6 +2,7 @@ import { ErrorHandlerService } from './../services/error.handler.service';
 import { TabService } from './../services/tab.service/tab.service';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ITab } from '../model/Tab';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab',
@@ -23,7 +24,7 @@ export class TabComponent {
   public deleteTabFromDash() {
     if (this.tab) {
       this.tabService.deleteTab(this.tab.id).subscribe({
-        error: (error: Error) =>
+        error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_TAB),
         complete: () => this.tabDeletedEvent.emit(this.tab?.id)
       });
@@ -32,7 +33,7 @@ export class TabComponent {
 
   public saveTabName(tabId: number, label: string, tabOrder: number) {
     this.tabService.updateTab(tabId, label, tabOrder).subscribe({
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_UPDATE_TAB),
       complete: this.toggleEditMode.bind(this)
     });

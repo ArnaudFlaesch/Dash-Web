@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service/auth.service';
@@ -30,7 +31,7 @@ export class LoginComponent {
           this.isLoading = false;
           this.router.navigate(['home']);
         },
-        error: (error: Error) => {
+        error: (error: HttpErrorResponse) => {
           this.isLoading = false;
           this.errorHandlerService.handleError(error.message, this.ERROR_AUTHENTICATING_USER);
         },

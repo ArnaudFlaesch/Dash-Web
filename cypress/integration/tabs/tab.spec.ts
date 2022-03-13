@@ -8,39 +8,44 @@ describe('Tab tests', () => {
   });
 
   it('Should create a new tab', () => {
-    cy.get('#addNewTabButton').click().get('.tab').should('have.length', 2);
+    cy.get('#addNewTabButton').click().get('.tab').should('have.length', 6);
   });
 
   it('Should edit the created tab', () => {
     cy.intercept('POST', '/tab/updateTab')
       .as('updateTab')
-      .get('.tab')
-      .eq(1)
-      .should('have.text', 'Nouvel onglet')
+      .get('.tab:nth(-1) .tabLabel')
+      .click()
       .dblclick()
+      .invoke('text')
+      .then((text) => {
+        expect(text.trim()).equal('Nouvel onglet');
+      })
       .get('input')
       .clear()
-      .type('Flux RSS')
+      .type('News feed')
       .dblclick()
       .wait('@updateTab')
       .then(() => {
-        cy.get('.tab.selected-item')
-          .should('have.text', 'Flux RSS')
+        cy.get('.tab.selected-item .tabLabel')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('News feed');
+          })
           .get('.tab')
-          .first()
-          .click()
-          .get('.tab.selected-item')
-          .should('have.text', 'Nouvel onglet')
-          .get('.tab')
-          .contains('Flux RSS')
+          .contains('News feed')
           .click()
           .dblclick()
           .get('input')
           .clear()
-          .type('Flux RSS Updated{Enter}')
+          .type('News feed Updated{Enter}')
           .wait('@updateTab')
           .then(() => {
-            cy.get('.tab.selected-item').should('have.text', 'Flux RSS Updated');
+            cy.get('.tab.selected-item .tabLabel')
+              .invoke('text')
+              .then((text) => {
+                expect(text.trim()).equal('News feed Updated');
+              });
           });
       });
   });
@@ -49,13 +54,13 @@ describe('Tab tests', () => {
     cy.intercept('DELETE', '/tab/deleteTab/*')
       .as('deleteTab')
       .get('.tab')
-      .contains('Flux RSS Updated')
+      .contains('News feed Updated')
       .dblclick()
       .get('.deleteTabButton')
       .click()
       .wait('@deleteTab')
       .then(() => {
-        cy.get('.tab').should('have.length', 1);
+        cy.get('.tab').should('have.length', 5);
       });
   });
 });

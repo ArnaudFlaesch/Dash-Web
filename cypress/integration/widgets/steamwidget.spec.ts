@@ -70,10 +70,11 @@ describe('Steam Widget tests', () => {
       .get('h4')
       .should('have.text', 'Êtes-vous sûr de vouloir supprimer ce widget ?')
       .get('.validateDeletionButton')
-      .click();
-    cy.wait('@deleteWidget').then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(200);
-      cy.get('.widget').should('have.length', 1);
-    });
+      .click()
+      .wait('@deleteWidget')
+      .then((request: Interception) => {
+        expect(request.response.statusCode).to.equal(200);
+        cy.get('.widget').should('have.length', 1);
+      });
   });
 });

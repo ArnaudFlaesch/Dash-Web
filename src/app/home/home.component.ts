@@ -11,6 +11,7 @@ import { WidgetService } from '../services/widget.service/widget.service';
 import { IWidgetConfig } from './../model/IWidgetConfig';
 import { ITab } from './../model/Tab';
 import { AuthService } from './../services/auth.service/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -63,7 +64,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.loadWidgets(this.activeTab);
         }
       },
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD)
     });
   }
@@ -75,7 +76,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.tabs = [...this.tabs, insertedTab];
         this.activeTab = insertedTab.id;
       },
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_TAB)
     });
   }
@@ -88,14 +89,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   private loadWidgets(activeTabId: number) {
     this.widgetService.getWidgets(activeTabId).subscribe({
       next: (widgets) => (this.activeWidgets = widgets),
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_GET_WIDGETS)
     });
   }
 
   public deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_WIDGET),
       complete: () =>
         (this.activeWidgets = this.activeWidgets.filter(
@@ -123,7 +124,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         next: (response: IWidgetConfig) => {
           this.activeWidgets = [...this.activeWidgets, response];
         },
-        error: (error: Error) =>
+        error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_WIDGET)
       });
     });
@@ -147,7 +148,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         document.body.appendChild(link);
         link.click();
       },
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_EXPORT_CONFIGURATION)
     });
   }

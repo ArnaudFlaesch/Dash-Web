@@ -24,6 +24,7 @@
         </div>
 
         <div class="flex flex-row max-w-1/2">
+          <span *ngIf="additionalActions"><ng-container *ngTemplateOutlet="additionalActions"> </ng-container></span>
           <mat-icon *ngIf="this.editComponent" (click)="this.toEditMode()" class="editButton">settings</mat-icon>
           <mat-icon (click)="this.refreshWidget()" class="refreshButton" aria-hidden="false">refresh</mat-icon>
           <mat-icon (click)="this.toDeleteMode()" class="deleteButton" aria-hidden="false">delete</mat-icon>

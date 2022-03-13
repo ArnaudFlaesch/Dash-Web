@@ -85,7 +85,7 @@
           <canvas
             baseChart
             width="400"
-            height="400"
+            height="170"
             [data]="getWeatherChart(this.cityData)"
             [options]="lineChartOptions"
             [type]="lineChartType"
@@ -99,6 +99,9 @@
           *ngFor="let forecastDay of this.filterForecastByMode(this.cityData, this.forecast)"
         >
           <div class="forecast border-2 border-solid border-black">
+            <div *ngIf="forecastDay">
+              {{ getDateToDisplay(forecastDay.dt, this.cityData.timezone) }}
+            </div>
             <div class="flex flex-row">
               <div>
                 <img

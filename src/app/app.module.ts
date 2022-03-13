@@ -39,8 +39,6 @@ import { SteamWidgetComponent } from './widgets/steam-widget/steam-widget.compon
 import { SteamWidgetService } from './widgets/steam-widget/steam.widget.service';
 import { StravaWidgetComponent } from './widgets/strava-widget/strava-widget.component';
 import { StravaWidgetService } from './widgets/strava-widget/strava.widget.service';
-import { TwitterTimelineWidgetComponent } from './widgets/twitter-timeline-widget/twitter-timeline-widget.component';
-import { TwitterWidgetComponent } from './widgets/twitter-widget/twitter-widget.component';
 import { WeatherWidgetComponent } from './widgets/weather-widget/weather-widget.component';
 import { WeatherWidgetService } from './widgets/weather-widget/weather.widget.service';
 import { WidgetListComponent } from './widgets/widget-list/widget-list.component';
@@ -64,8 +62,6 @@ registerLocaleData(localeFr);
     StravaWidgetComponent,
     CalendarWidgetComponent,
     SteamWidgetComponent,
-    TwitterWidgetComponent,
-    TwitterTimelineWidgetComponent,
     GameDetailsComponent,
     SafePipe,
     CreateWidgetModalComponent,

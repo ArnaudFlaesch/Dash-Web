@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -67,7 +68,7 @@ export class StravaWidgetComponent {
         window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expires_at);
         this.router.navigate(['/']);
       },
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_TOKEN)
     });
   }
@@ -81,7 +82,7 @@ export class StravaWidgetComponent {
           this.tokenExpirationDate = response.expires_at;
           this.athlete = response.athlete;
         },
-        error: (error: Error) =>
+        error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_NO_REFRESH_TOKEN)
       });
     } else {
@@ -93,7 +94,7 @@ export class StravaWidgetComponent {
     if (this.token) {
       this.stravaWidgetService.getAthleteData(this.token).subscribe({
         next: (response) => (this.athlete = response),
-        error: (error: Error) =>
+        error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ATHLETE_DATA)
       });
     }
@@ -107,7 +108,7 @@ export class StravaWidgetComponent {
     ) {
       this.stravaWidgetService.getActivities(this.token, this.paginationActivities).subscribe({
         next: (response) => (this.activities = response.reverse()),
-        error: (error: Error) =>
+        error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACTIVITIES)
       });
     }

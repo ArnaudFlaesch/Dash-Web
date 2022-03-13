@@ -16,8 +16,6 @@ import { WidgetTypes } from '../../../app/enums/WidgetsEnum';
 import { CalendarWidgetComponent } from '../calendar-widget/calendar-widget.component';
 import { RssWidgetComponent } from '../rss-widget/rss-widget.component';
 import { SteamWidgetComponent } from '../steam-widget/steam-widget.component';
-import { TwitterTimelineWidgetComponent } from '../twitter-timeline-widget/twitter-timeline-widget.component';
-import { TwitterWidgetComponent } from '../twitter-widget/twitter-widget.component';
 import { WeatherWidgetComponent } from '../weather-widget/weather-widget.component';
 import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { StravaWidgetComponent } from './../strava-widget/strava-widget.component';
@@ -69,6 +67,10 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
           case WidgetTypes.RSS: {
             component = target.createComponent(RssWidgetComponent, { injector: injector });
             component.instance.urlFeed = widgetData ? (widgetData['url'] as string) : null;
+            component.instance.readArticles =
+              widgetData && widgetData['readArticlesGuids']
+                ? (widgetData['readArticlesGuids'] as string[])
+                : [];
             break;
           }
           case WidgetTypes.CALENDAR: {
@@ -84,16 +86,6 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
           }
           case WidgetTypes.STEAM: {
             target.createComponent(SteamWidgetComponent, { injector: injector });
-            break;
-          }
-          case WidgetTypes.TWITTER: {
-            target.createComponent(TwitterWidgetComponent, { injector: injector });
-            break;
-          }
-          case WidgetTypes.TWITTER_TIMELINE: {
-            target.createComponent(TwitterTimelineWidgetComponent, {
-              injector: injector
-            });
             break;
           }
         }

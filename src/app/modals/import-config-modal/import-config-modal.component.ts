@@ -2,6 +2,7 @@ import { ErrorHandlerService } from './../../services/error.handler.service';
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ConfigService } from './../../services/config.service/config.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-import-config-modal',
@@ -33,7 +34,7 @@ export class ImportConfigModalComponent {
             this.dialogRef.close();
           }
         },
-        error: (error: Error) =>
+        error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_IMPORT_CONFIGURATION)
       });
     }

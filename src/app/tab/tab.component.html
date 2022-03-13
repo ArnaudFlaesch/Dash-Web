@@ -11,7 +11,7 @@
 
 <ng-template #readMode>
   <div class="flex flex-row">
-    <div (dblclick)="this.toggleEditMode()">
+    <div class="tabLabel" (dblclick)="this.toggleEditMode()">
       {{ this.tab?.label }}
     </div>
     <div>

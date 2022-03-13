@@ -21,6 +21,9 @@ export class WidgetComponent implements OnInit {
   @ContentChild('header', { static: false })
   header: TemplateRef<any> | null;
 
+  @ContentChild('additionalActions', { static: false })
+  additionalActions: TemplateRef<any> | null;
+
   @ContentChild('body', { static: false })
   body: TemplateRef<any> | null;
 
@@ -44,6 +47,7 @@ export class WidgetComponent implements OnInit {
     @Inject('widgetId') widgetId: number
   ) {
     this.header = null;
+    this.additionalActions = null;
     this.body = null;
     this.editComponent = null;
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
@@ -74,7 +78,7 @@ export class WidgetComponent implements OnInit {
   public deleteWidget = () => this.widgetService._widgetDeletedEvent.next(this.widgetId);
 
   public refreshWidget = () => this.refreshWidgetAction.emit();
-  public toEditMode = () => (this.mode = ModeEnum.EDIT);
+  public toEditMode = () => (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
   public toReadMode = () => (this.mode = ModeEnum.READ);
   public toDeleteMode = () => (this.mode = ModeEnum.DELETE);
   public isModeRead = (): boolean => this.mode === ModeEnum.READ;

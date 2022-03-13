@@ -85,7 +85,7 @@ export interface IForecast {
       main: string;
       description: string;
       icon: string;
-    }?
+    }
   ];
   clouds: {
     all: number;

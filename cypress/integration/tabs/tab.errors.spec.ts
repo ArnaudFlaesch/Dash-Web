@@ -40,7 +40,7 @@ describe('Tab error tests', () => {
     cy.intercept('POST', '/tab/addTab', { statusCode: 500 })
       .as('addTabError')
       .get('.tab')
-      .should('have.length', 7)
+      .should('have.length', 5)
       .get('#addNewTabButton')
       .click()
       .wait('@addTabError')
@@ -49,16 +49,21 @@ describe('Tab error tests', () => {
         cy.get('.mat-simple-snack-bar-content')
           .should('have.text', "Erreur lors de l'ajout d'un onglet.")
           .get('.tab')
-          .should('have.length', 7);
+          .should('have.length', 5);
       });
   });
 
   it('Should fail to edit the tab', () => {
     cy.intercept('POST', '/tab/updateTab', { statusCode: 500 })
       .as('updateTabError')
+      .get('.tabLabel')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(text.trim()).equal('Météo');
+      })
       .get('.tab')
       .eq(0)
-      .should('have.text', 'Nouvel onglet')
       .dblclick()
       .get('input')
       .clear()
@@ -69,10 +74,15 @@ describe('Tab error tests', () => {
         expect(request.response.statusCode).to.equal(500);
         cy.get('.mat-simple-snack-bar-content')
           .should('have.text', "Erreur lors de la modification d'un onglet.")
+          .reload()
           .get('.tab')
-          .should('have.length', 7)
+          .should('have.length', 5)
           .eq(0)
-          .should('have.text', 'Flux RSS');
+          .find('.tabLabel')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('Météo');
+          });
       });
   });
 
@@ -80,7 +90,7 @@ describe('Tab error tests', () => {
     cy.intercept('DELETE', '/tab/deleteTab/*', { statusCode: 500 })
       .as('deleteTabError')
       .get('.tab')
-      .should('have.length', 7)
+      .should('have.length', 5)
       .eq(0)
       .dblclick()
       .get('.deleteTabButton')
@@ -91,7 +101,7 @@ describe('Tab error tests', () => {
         cy.get('.mat-simple-snack-bar-content')
           .should('have.text', "Erreur lors de la suppression d'un onglet.")
           .get('.tab')
-          .should('have.length', 7);
+          .should('have.length', 5);
       });
   });
 });

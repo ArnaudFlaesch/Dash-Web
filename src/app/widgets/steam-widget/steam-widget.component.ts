@@ -3,6 +3,7 @@ import { IGameInfo } from './IGameInfo';
 import { IPlayerData } from './IPlayerData';
 import { Component } from '@angular/core';
 import { SteamWidgetService } from './steam.widget.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-steam-widget',
@@ -29,7 +30,7 @@ export class SteamWidgetComponent {
   public getPlayerData(): void {
     this.steamWidgetService.getPlayerData().subscribe({
       next: (response: any) => (this.playerData = response.response.players[0]),
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_PLAYER_DATA)
     });
   }
@@ -40,7 +41,7 @@ export class SteamWidgetComponent {
         (this.ownedGames = (response.response.games as IGameInfo[]).sort((gameA, gameB) =>
           gameA.name.localeCompare(gameB.name)
         )),
-      error: (error: Error) =>
+      error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_OWNED_GAMES)
     });
   }

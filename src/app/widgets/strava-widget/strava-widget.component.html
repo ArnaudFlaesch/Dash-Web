@@ -1,4 +1,4 @@
-<app-widget [widgetData]="null" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
     <div id="stravaWidgetHeader">
       <a [href]="getAthleteProfileUrl(athlete?.id)" class="flex flex-row">

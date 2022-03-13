@@ -3,6 +3,8 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('RSS Widget tests', () => {
+  const NUMBER_OF_ARTICLES = 17;
+
   beforeEach(() => {
     cy.loginAsAdmin()
       .visit('/')
@@ -43,9 +45,12 @@ describe('RSS Widget tests', () => {
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
         cy.get('.rssTitle:nth(1)')
-          .should('have.text', 'Le Figaro - Actualité en direct et informations en continu')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('Le Figaro - Actualité en direct et informations en continu');
+          })
           .get('.widget:nth(1) .rssArticle')
-          .should('have.length', 20);
+          .should('have.length', NUMBER_OF_ARTICLES);
       });
   });
 
@@ -61,35 +66,39 @@ describe('RSS Widget tests', () => {
       .wait('@refreshWidget')
       .then(() => {
         cy.get('.widget:nth(1) .rssArticle')
-          .should('have.length', 20)
+          .should('have.length', NUMBER_OF_ARTICLES)
           .first()
           .contains(
-            'EN DIRECT - Déconfinement : les Français savourent leur première soirée en terrasse'
+            "EN DIRECT - Guerre en Ukraine : Poutine prévient qu'il atteindra ses objectifs «soit par la négociation, soit par la guerre»"
           )
           .click()
-          .get('.widget:nth(1) .articleTitle:visible')
+          .get('.widget:nth(1) .articleTitle')
           .should(
             'have.text',
-            'EN DIRECT - Déconfinement : les Français savourent leur première soirée en terrasse'
+            "EN DIRECT - Guerre en Ukraine : Poutine prévient qu'il atteindra ses objectifs «soit par la négociation, soit par la guerre»"
           )
-          .get('.widget:nth(1) .articleContent:visible')
-          .should(
-            'have.text',
-            "La deuxième étape de l'allègement des restrictions sanitaires contre le Covid-19 commence ce mercredi. Le couvre-feu est repoussé de 19h à 21h."
-          )
+          .get('.widget:nth(1) .articleContent')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              "Les présidents russe et français se sont de nouveau entretenus ce dimanche. Selon l'Élysée Vladimir Poutine a assuré ne pas vouloir attaquer les centrales nucléaires et nié «que son armée prenne des civils pour cible»."
+            );
+          })
           .get('.widget:nth(1) .rssArticle')
           .contains(
-            'EN DIRECT - Déconfinement : les Français savourent leur première soirée en terrasse'
+            "EN DIRECT - Guerre en Ukraine : Poutine prévient qu'il atteindra ses objectifs «soit par la négociation, soit par la guerre»"
           )
-          .should('have.class', 'read')
-          .get('.widget:nth(1) .rssArticle.read')
+          .get('.widget:nth(1) .mat-expansion-panel-header-title.is-read')
           .should('have.length', 1)
           .get('.widget:nth(1) .markAllArticlesAsRead')
           .click()
           .wait('@markAllFeedAsRead')
           .then((request: Interception) => {
             expect(request.response.statusCode).to.equal(200);
-            cy.get('.rssArticle.read').should('have.length', 20);
+            cy.get('.widget:nth(1) .mat-expansion-panel-header-title.is-read').should(
+              'have.length',
+              NUMBER_OF_ARTICLES
+            );
           });
       });
   });
@@ -100,7 +109,7 @@ describe('RSS Widget tests', () => {
       .wait('@refreshWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget:nth(1) .rssArticle').should('have.length', 20);
+        cy.get('.widget:nth(1) .rssArticle').should('have.length', NUMBER_OF_ARTICLES);
       });
   });
 
