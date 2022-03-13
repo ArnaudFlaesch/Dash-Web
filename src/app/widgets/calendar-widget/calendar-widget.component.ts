@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./calendar-widget.component.scss']
 })
 export class CalendarWidgetComponent {
-  public calendarUrls: string[] | null = null;
+  public calendarUrls: string[] = [];
 
   CalendarView = CalendarView;
 
@@ -47,7 +47,7 @@ export class CalendarWidgetComponent {
   public getWidgetConfig = (): { calendarUrls: string[] } | null =>
     this.calendarUrls ? { calendarUrls: this.calendarUrls } : null;
 
-  public onCalendarUrlAdded = () => null; // this.calendarUrls.push('');
+  public onCalendarUrlAdded = () => (this.calendarUrls = [...this.calendarUrls, '']);
   public removeCalendarUrl = (calendarUrl: string) => null; //  (this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl));
 
   public onCalendarUrlUpdated = (event: any) => {
@@ -56,4 +56,6 @@ export class CalendarWidgetComponent {
     //  index.toString() === event.target?.id ? event.target.value : url
     // );
   };
+
+  public isFormValid = () => this.calendarUrls.length > 0;
 }

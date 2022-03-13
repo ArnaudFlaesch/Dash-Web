@@ -1,4 +1,4 @@
-<app-widget [widgetData]="getWidgetConfig()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header> Agenda </ng-template>
 
   <ng-template #editComponent>
@@ -14,6 +14,7 @@
         <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
       </div>
     </div>
+    <button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>
   </ng-template>
 
   <ng-template #body>
