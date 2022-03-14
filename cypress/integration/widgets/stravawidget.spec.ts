@@ -60,8 +60,9 @@ describe('Strava Widget tests', () => {
     window.localStorage.setItem('strava_refresh_token', STRAVA_REFRESH_TOKEN);
     cy.intercept('/stravaWidget/getRefreshToken').as('refreshToken');
     navigateToStravaTab();
-    cy.wait('@refreshToken').then((requests: Interception) => {
-      expect(requests.response.statusCode).to.equal(400);
+    cy.wait('@refreshToken').then((request: Interception) => {
+      console.log(request.response.body);
+      expect(request.response.statusCode).to.equal(400);
       cy.get('.mat-simple-snack-bar-content').should(
         'have.text',
         "Vous n'êtes pas connecté à Strava."
