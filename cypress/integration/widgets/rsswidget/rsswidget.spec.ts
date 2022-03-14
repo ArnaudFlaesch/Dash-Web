@@ -58,7 +58,7 @@ describe('RSS Widget tests', () => {
     cy.intercept('PATCH', '/widget/updateWidgetData/*')
       .as('markAllFeedAsRead')
       .intercept('GET', '/rssWidget/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
-        fixture: 'figaro_rss.json'
+        fixture: 'rss/figaro_rss.json'
       })
       .as('refreshWidget')
       .get('.refreshButton:nth(1)')

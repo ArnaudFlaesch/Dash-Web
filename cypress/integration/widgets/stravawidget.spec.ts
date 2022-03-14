@@ -61,7 +61,7 @@ describe('Strava Widget tests', () => {
     cy.intercept('/stravaWidget/getRefreshToken').as('refreshToken');
     navigateToStravaTab();
     cy.wait('@refreshToken').then((request: Interception) => {
-      console.log(request.response.body);
+      cy.log(request.response.body);
       expect(request.response.statusCode).to.equal(400);
       cy.get('.mat-simple-snack-bar-content').should(
         'have.text',
