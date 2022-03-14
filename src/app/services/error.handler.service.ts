@@ -7,6 +7,6 @@ export class ErrorHandlerService {
 
   public handleError(messageToLog: string, messageToDisplay: string): void {
     console.error(messageToLog);
-    this.snackbar.open(messageToDisplay);
+    this.snackbar.open(messageToDisplay, undefined, { duration: 3000 });
   }
 }

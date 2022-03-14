@@ -9,17 +9,22 @@ describe('Weather Widget tests', () => {
       .title()
       .should('equals', 'Dash')
       .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
-      .intercept('GET', `/weatherWidget/weather?city=Paris`, {
+      .intercept('GET', `/weatherWidget/weather?city=*`, {
         fixture: 'weather/parisWeatherSample.json'
       })
       .as('getWeather')
-      .intercept('GET', `/weatherWidget/forecast?city=Paris`, {
+      .intercept('GET', `/weatherWidget/forecast?city=*`, {
         fixture: 'weather/parisForecastSample.json'
       })
       .as('getForecast')
       .get('.tab')
       .contains('Météo')
-      .click();
+      .click()
+      .wait(['@getWeather', '@getForecast'])
+      .then((requests: Interception[]) => {
+        expect(requests[0].response.statusCode).to.equal(200);
+        expect(requests[1].response.statusCode).to.equal(200);
+      });
   });
 
   it('Should create a Weather Widget and add it to the dashboard', () => {

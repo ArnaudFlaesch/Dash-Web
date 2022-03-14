@@ -7,6 +7,10 @@ describe('Strava Widget tests', () => {
   const STRAVA_REFRESH_TOKEN = 'FAKE_REFRESH_TOKEN';
   const TOKEN_EXPIRATION_DATE = Date.now() + 3600;
 
+  const GET_ATHLETE_DATA_URL = 'https://www.strava.com/api/v3/athlete';
+  const GET_ACTIVITIES_DATA_URL =
+    'https://www.strava.com/api/v3/athlete/activities?page=1&per_page=20';
+
   beforeEach(navigateToStravaTab);
 
   function navigateToStravaTab(): Cypress.Chainable {
@@ -37,18 +41,17 @@ describe('Strava Widget tests', () => {
     window.localStorage.setItem('strava_token', STRAVA_TOKEN);
     window.localStorage.setItem('strava_refresh_token', STRAVA_REFRESH_TOKEN);
     window.localStorage.setItem('strava_token_expires_at', TOKEN_EXPIRATION_DATE.toString());
-    cy.intercept('https://www.strava.com/api/v3/athlete')
+    cy.intercept(GET_ATHLETE_DATA_URL)
       .as('getAthleteData')
-      .intercept('https://www.strava.com/api/v3/athlete/activities?page=1&per_page=20')
+      .intercept(GET_ACTIVITIES_DATA_URL)
       .as('getActivities')
       .reload();
     navigateToStravaTab();
-    cy.wait(['@getAthleteData', '@getActivities']).then((request: Interception[]) => {
-      expect(request[0].response.statusCode).to.equal(401);
-      expect(request[1].response.statusCode).to.equal(401);
+    cy.wait('@getAthleteData').then((request: Interception) => {
+      expect(request.response.statusCode).to.equal(401);
       cy.get('.mat-simple-snack-bar-content').should(
         'have.text',
-        'Erreur lors de la récupération des activités.'
+        'Erreur lors de la récupération de vos informations.'
       );
     });
   });
@@ -65,31 +68,33 @@ describe('Strava Widget tests', () => {
       );
       window.localStorage.setItem('strava_token', STRAVA_TOKEN);
       window.localStorage.setItem('strava_token_expires_at', TOKEN_EXPIRATION_DATE.toString());
-      cy.intercept('https://www.strava.com/api/v3/athlete', {
+      cy.intercept(GET_ATHLETE_DATA_URL, {
         fixture: 'strava/strava_athleteData.json'
       })
         .as('getAthleteData')
-        .intercept('https://www.strava.com/api/v3/athlete/activities?page=1&per_page=20', {
+        .intercept(GET_ACTIVITIES_DATA_URL, {
           fixture: 'strava/strava_activities.json'
         })
         .as('getActivities')
         .reload();
       navigateToStravaTab();
-      cy.wait(['@getAthleteData', '@getActivities']).then((request: Interception[]) => {
-        const getAthleteResponse = request[0].response;
-        const getActivitiesResponse = request[1].response;
+      cy.wait('@getAthleteData').then((getAthleteDataRequest: Interception) => {
+        const getAthleteResponse = getAthleteDataRequest.response;
         expect(getAthleteResponse.statusCode).to.equal(200);
-        expect(getActivitiesResponse.statusCode).to.equal(200);
-        cy.get('.widget')
-          .eq(1)
-          .find('#stravaWidgetHeader')
-          .should('have.text', 'Arnaud Flaesch')
-          .get('.widget')
-          .eq(1)
-          .find('.stravaActivity')
-          .should('have.length', 5)
-          .first()
-          .contains('Afternoon Run 12.5188 kms');
+        cy.wait('@getActivities').then((getActivitiesRequest: Interception) => {
+          const getActivitiesResponse = getActivitiesRequest.response;
+          expect(getActivitiesResponse.statusCode).to.equal(200);
+          cy.get('.widget')
+            .eq(1)
+            .find('#stravaWidgetHeader')
+            .should('have.text', 'Arnaud Flaesch')
+            .get('.widget')
+            .eq(1)
+            .find('.stravaActivity')
+            .should('have.length', 5)
+            .first()
+            .contains('Afternoon Run 12.5188 kms');
+        });
       });
     });
   });

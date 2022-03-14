@@ -23,7 +23,12 @@ describe('Steam Widget tests', () => {
       .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
       .get('.tab')
       .contains('Steam')
-      .click();
+      .click()
+      .wait(['@getPlayerData', '@getGameData'])
+      .then((requests: Interception[]) => {
+        expect(requests[0].response.statusCode).to.equal(200);
+        expect(requests[1].response.statusCode).to.equal(200);
+      });
   });
 
   it('Should create a Steam Widget and add it to the dashboard', () => {
@@ -43,6 +48,7 @@ describe('Steam Widget tests', () => {
   it('Should refresh Steam widget and validate data', () => {
     cy.wait(['@getPlayerData', '@getGameData']).then((requests: Interception[]) => {
       expect(requests[0].response.statusCode).to.equal(200);
+      expect(requests[1].response.statusCode).to.equal(200);
       cy.get('.widget:nth(1) .gameInfo')
         .should('have.length', 10)
         .contains('Half-Life 2: Episode Two')

@@ -54,7 +54,6 @@ export class StravaWidgetComponent {
     if (this.token) {
       this.activities = [];
       this.getAthleteData();
-      this.getActivities();
     } else {
       this.refreshTokenFromApi();
     }
@@ -93,7 +92,10 @@ export class StravaWidgetComponent {
   public getAthleteData() {
     if (this.token) {
       this.stravaWidgetService.getAthleteData(this.token).subscribe({
-        next: (response) => (this.athlete = response),
+        next: (response) => {
+          this.athlete = response;
+          this.getActivities();
+        },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ATHLETE_DATA)
       });
