@@ -12,7 +12,7 @@ describe('RSS Widget tests', () => {
       .should('equals', 'Dash')
       .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
       .intercept('GET', '/rssWidget/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
-        fixture: 'figaro_rss.json'
+        fixture: 'rss/figaro_rss.json'
       })
       .as('refreshWidget')
       .get('.tab')
