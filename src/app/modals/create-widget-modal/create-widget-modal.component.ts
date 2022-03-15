@@ -10,8 +10,6 @@ import { WidgetTypes } from './../../enums/WidgetsEnum';
 export class CreateWidgetModalComponent {
   constructor(public dialogRef: MatDialogRef<CreateWidgetModalComponent>) {}
 
-  public addWidgetEvent = (widgetType: string) => this.dialogRef.close(widgetType);
-
   public getWidgetTypesKeys = () =>
     Object.keys(WidgetTypes).filter((key) => isNaN(parseInt(key, 0)));
 }
