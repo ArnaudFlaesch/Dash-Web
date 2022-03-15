@@ -17,17 +17,12 @@ export class TabComponent {
   @Output() tabDeletedEvent = new EventEmitter<number>();
 
   private ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
-  private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
 
   constructor(private tabService: TabService, private errorHandlerService: ErrorHandlerService) {}
 
   public deleteTabFromDash() {
     if (this.tab) {
-      this.tabService.deleteTab(this.tab.id).subscribe({
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_TAB),
-        complete: () => this.tabDeletedEvent.emit(this.tab?.id)
-      });
+      this.tabDeletedEvent.emit(this.tab.id);
     }
   }
 

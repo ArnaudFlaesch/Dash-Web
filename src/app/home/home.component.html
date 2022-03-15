@@ -2,7 +2,7 @@
   <app-tab
     class="tab border-2 border-gray-800 border-opacity-100"
     (click)="selectTab(tab.id)"
-    (tabDeletedEvent)="deleteTabFromDashboard($event)"
+    (tabDeletedEvent)="deleteTabFromDash($event)"
     [ngClass]="{ 'selected-item': activeTab === tab.id }"
     *ngFor="let tab of this.tabs"
     [tab]="tab"

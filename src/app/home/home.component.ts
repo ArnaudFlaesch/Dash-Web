@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
   private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
+  private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
   private ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
   private ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
   private ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
@@ -105,7 +106,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public deleteTabFromDashboard(tabId: number) {
+  public deleteTabFromDash(tabId: number): void {
+    this.tabService.deleteTab(tabId).subscribe({
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_TAB),
+      complete: () => this.deleteTabFromDashboard(tabId)
+    });
+  }
+
+  private deleteTabFromDashboard(tabId: number) {
     this.activeWidgets = this.activeWidgets.filter(
       (widget: IWidgetConfig) => widget.tab.id !== tabId
     );
