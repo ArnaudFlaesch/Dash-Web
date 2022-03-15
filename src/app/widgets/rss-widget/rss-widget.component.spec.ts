@@ -22,6 +22,8 @@ describe('RssWidgetComponent', () => {
 
   const urlFeed = 'https://www.jeuxvideo.com/rss/rss-pc.xml';
 
+  const widgetId = '37';
+
   const createComponent = createComponentFactory({
     component: RssWidgetComponent,
     imports: [MatSnackBarModule],
@@ -30,7 +32,7 @@ describe('RssWidgetComponent', () => {
       DateUtilsService,
       WidgetService,
       ErrorHandlerService,
-      { provide: 'widgetId', useValue: '37' }
+      { provide: 'widgetId', useValue: widgetId }
     ]
   });
   const createHttpRssWidgetService = createHttpFactory(RssWidgetService);
@@ -117,16 +119,12 @@ describe('RssWidgetComponent', () => {
     spectator.component.markAllFeedAsRead();
 
     const markAllFeedAsReadRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/updateWidgetData/37',
+      environment.backend_url + `/widget/updateWidgetData/${widgetId}`,
       HttpMethod.PATCH
     );
     const updatedWidgetData = {
-      id: 37,
-      type: WidgetTypes.RSS,
-      data: { readArticlesGuids: allArticlesGuids },
-      widgetOrder: 1,
-      tab: { id: 1 }
-    } as IWidgetConfig;
+      data: { readArticlesGuids: allArticlesGuids }
+    };
     markAllFeedAsReadRequest.flush(updatedWidgetData);
 
     expect(spectator.component.readArticles.length).toEqual(feedLength);
