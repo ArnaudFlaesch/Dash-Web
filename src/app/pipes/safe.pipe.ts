@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, SecurityContext } from '@angular/core';
 import {
   DomSanitizer,
   SafeHtml,
@@ -14,21 +14,18 @@ import {
 export class SafePipe implements PipeTransform {
   constructor(protected sanitizer: DomSanitizer) {}
 
-  public transform(
-    value: any,
-    type: string
-  ): SafeHtml | SafeStyle | SafeScript | SafeUrl | SafeResourceUrl {
+  public transform(value: any, type: string): string | null {
     switch (type) {
       case 'html':
-        return this.sanitizer.bypassSecurityTrustHtml(value);
+        return this.sanitizer.sanitize(SecurityContext.HTML, value);
       case 'style':
-        return this.sanitizer.bypassSecurityTrustStyle(value);
+        return this.sanitizer.sanitize(SecurityContext.STYLE, value);
       case 'script':
-        return this.sanitizer.bypassSecurityTrustScript(value);
+        return this.sanitizer.sanitize(SecurityContext.SCRIPT, value);
       case 'url':
-        return this.sanitizer.bypassSecurityTrustUrl(value);
+        return this.sanitizer.sanitize(SecurityContext.URL, value);
       case 'resourceUrl':
-        return this.sanitizer.bypassSecurityTrustResourceUrl(value);
+        return this.sanitizer.sanitize(SecurityContext.RESOURCE_URL, value);
       default:
         throw new Error(`Invalid safe type specified: ${type}`);
     }

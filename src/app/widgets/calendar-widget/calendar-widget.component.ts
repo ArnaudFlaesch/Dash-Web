@@ -1,5 +1,5 @@
-import { Component, Inject, LOCALE_ID, ViewChild } from '@angular/core';
-import { CalendarDateFormatter, CalendarView, DateAdapter } from 'angular-calendar';
+import { Component, Inject, LOCALE_ID } from '@angular/core';
+import { CalendarView, DateAdapter } from 'angular-calendar';
 import { addMonths, endOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
 
