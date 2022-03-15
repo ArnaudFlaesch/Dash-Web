@@ -1,7 +1,7 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ErrorHandlerService } from './../services/error.handler.service';
 import { ConfigService } from './../services/config.service/config.service';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { WidgetService } from './../services/widget.service/widget.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';

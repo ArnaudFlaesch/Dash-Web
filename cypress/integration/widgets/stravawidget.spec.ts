@@ -17,10 +17,16 @@ describe('Strava Widget tests', () => {
     return cy
       .loginAsAdmin()
       .visit('/')
+      .intercept('GET', '/widget/?tabId=*')
+      .as('getWidgets')
       .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
       .get('.tab')
       .contains('Strava')
-      .click();
+      .click()
+      .wait('@getWidgets')
+      .then((request: Interception) => {
+        expect(request.response.statusCode).to.equal(200);
+      });
   }
 
   it('Should create a Strava Widget and add it to the dashboard', () => {

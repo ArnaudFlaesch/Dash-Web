@@ -11,13 +11,19 @@ describe('RSS Widget tests', () => {
       .title()
       .should('equals', 'Dash')
       .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
+      .intercept('GET', '/widget/?tabId=*')
+      .as('getWidgets')
       .intercept('GET', '/rssWidget/?url=https://www.lefigaro.fr/rss/figaro_actualites.xml', {
         fixture: 'rss/figaro_rss.json'
       })
       .as('refreshWidget')
       .get('.tab')
       .contains('Flux RSS')
-      .click();
+      .click()
+      .wait('@getWidgets')
+      .then((request: Interception) => {
+        expect(request.response.statusCode).to.equal(200);
+      });
   });
 
   it('Should create a RSS Widget and add it to the dashboard', () => {
