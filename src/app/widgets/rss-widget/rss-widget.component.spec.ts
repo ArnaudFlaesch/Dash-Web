@@ -1,3 +1,4 @@
+import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { DateUtilsService } from './../../utils/date.utils';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
@@ -12,10 +13,12 @@ import { environment } from '../../../environments/environment';
 import { RssWidgetComponent } from './rss-widget.component';
 import { RssWidgetService } from './rss.widget.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { WidgetTypes } from '../../enums/WidgetsEnum';
 
 describe('RssWidgetComponent', () => {
   let spectator: Spectator<RssWidgetComponent>;
   let rssWidgetService: SpectatorHttp<RssWidgetService>;
+  let widgetService: SpectatorHttp<WidgetService>;
 
   const urlFeed = 'https://www.jeuxvideo.com/rss/rss-pc.xml';
 
@@ -30,7 +33,8 @@ describe('RssWidgetComponent', () => {
       { provide: 'widgetId', useValue: '37' }
     ]
   });
-  const createHttp = createHttpFactory(RssWidgetService);
+  const createHttpRssWidgetService = createHttpFactory(RssWidgetService);
+  const createHttpWidgetService = createHttpFactory(WidgetService);
 
   const rssFeedData = {
     version: '2.0',
@@ -92,19 +96,40 @@ describe('RssWidgetComponent', () => {
 
   beforeEach(() => {
     spectator = createComponent();
-    rssWidgetService = createHttp();
+    rssWidgetService = createHttpRssWidgetService();
+    widgetService = createHttpWidgetService();
   });
 
-  it('Dummy test', () => {
+  it('Should read all articles', () => {
     expect(spectator.component.feed).toEqual([]);
     spectator.component.urlFeed = urlFeed;
     spectator.component.refreshWidget();
+
     const request = rssWidgetService.expectOne(
       environment.backend_url + '/rssWidget/?url=' + urlFeed,
       HttpMethod.GET
     );
     request.flush(rssFeedData);
+    const feedLength = rssFeedData.channel.item.length;
+    expect(spectator.component.feed.length).toEqual(feedLength);
+    const allArticlesGuids = rssFeedData.channel.item.map((item) => item.guid);
 
-    expect(spectator.component.feed.length).toEqual(rssFeedData.channel.item.length);
+    spectator.component.markAllFeedAsRead();
+
+    const markAllFeedAsReadRequest = widgetService.expectOne(
+      environment.backend_url + '/widget/updateWidgetData/37',
+      HttpMethod.PATCH
+    );
+    const updatedWidgetData = {
+      id: 37,
+      type: WidgetTypes.RSS,
+      data: { readArticlesGuids: allArticlesGuids },
+      widgetOrder: 1,
+      tab: { id: 1 }
+    } as IWidgetConfig;
+    markAllFeedAsReadRequest.flush(updatedWidgetData);
+
+    expect(spectator.component.readArticles.length).toEqual(feedLength);
+    expect(spectator.component.isArticleRead(rssFeedData.channel.item[0].guid)).toEqual(true);
   });
 });
