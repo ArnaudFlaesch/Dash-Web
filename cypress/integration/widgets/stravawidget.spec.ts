@@ -33,7 +33,7 @@ describe('Strava Widget tests', () => {
       .wait('@addWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 2);
+        cy.get('.widget').should('have.length', 1);
       });
   });
 
@@ -61,7 +61,6 @@ describe('Strava Widget tests', () => {
     cy.intercept('/stravaWidget/getRefreshToken').as('refreshToken');
     navigateToStravaTab();
     cy.wait('@refreshToken').then((request: Interception) => {
-      expect(request.response.body).to.equal('test');
       expect(request.response.statusCode).to.equal(400);
       cy.get('.mat-simple-snack-bar-content').should(
         'have.text',
@@ -86,11 +85,9 @@ describe('Strava Widget tests', () => {
           const getActivitiesResponse = getActivitiesRequest.response;
           expect(getActivitiesResponse.statusCode).to.equal(200);
           cy.get('.widget')
-            .eq(1)
             .find('#stravaWidgetHeader')
             .should('have.text', 'Arnaud Flaesch')
             .get('.widget')
-            .eq(1)
             .find('.stravaActivity')
             .should('have.length', 5)
             .first()
@@ -104,7 +101,6 @@ describe('Strava Widget tests', () => {
     cy.intercept('DELETE', '/widget/deleteWidget/*')
       .as('deleteWidget')
       .get('.deleteButton')
-      .eq(1)
       .click()
       .get('h4')
       .should('have.text', 'Êtes-vous sûr de vouloir supprimer ce widget ?')
@@ -113,7 +109,7 @@ describe('Strava Widget tests', () => {
       .wait('@deleteWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 1);
+        cy.get('.widget').should('have.length', 0);
       });
   });
 });
