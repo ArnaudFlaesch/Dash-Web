@@ -12,13 +12,13 @@ import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { DateUtilsService } from '../../services/date.utils';
-import MockDate from 'mockdate';
 import { format } from 'date-fns';
+import { advanceTo } from 'jest-date-mock';
 
 describe('WeatherWidgetComponent', () => {
   let spectator: Spectator<WeatherWidgetComponent>;
   let weatherWidgetService: SpectatorHttp<WeatherWidgetService>;
-  MockDate.set(1646521200000); // 06/03/2022
+  advanceTo(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
   const createComponent = createComponentFactory({
     component: WeatherWidgetComponent,
