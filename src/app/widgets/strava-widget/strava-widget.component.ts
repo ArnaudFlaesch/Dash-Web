@@ -183,7 +183,7 @@ export class StravaWidgetComponent {
 
   public convertDecimalTimeToTime(decimalTime: number): number {
     const decimalPart = decimalTime % 1;
-    const convertedDecimalPart = (decimalPart / 10) * 6;
+    const convertedDecimalPart = Math.round(decimalPart * 6) / 10;
     return decimalTime - decimalPart + convertedDecimalPart;
   }
 }

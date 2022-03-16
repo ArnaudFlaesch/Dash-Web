@@ -224,4 +224,11 @@ describe('StravaWidgetComponent', () => {
       { x: new Date('2022-02-01T01:00:00'), y: 13 }
     ]);
   });
+
+  it('Should convert a time', () => {
+    expect(spectator.component.convertDecimalTimeToTime(1000)).toEqual(1000);
+    expect(spectator.component.convertDecimalTimeToTime(10.34)).toEqual(10.2);
+    expect(spectator.component.convertDecimalTimeToTime(1.8)).toEqual(1.5);
+    expect(spectator.component.convertDecimalTimeToTime(1.85)).toEqual(1.5);
+  });
 });
