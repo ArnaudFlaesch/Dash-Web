@@ -30,10 +30,6 @@ describe('LoginComponent', () => {
     authService = createHttp();
   });
 
-  it('should create the app', () => {
-    expect(spectator.component).toBeTruthy();
-  });
-
   it('Should display the title', () => {
     spectator.fixture.detectChanges();
     expect(spectator.query('h1')?.textContent).toEqual('Dash');

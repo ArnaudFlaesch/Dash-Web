@@ -8,14 +8,17 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
-import { DateUtilsService } from '../../utils/date.utils';
 import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { DateUtilsService } from '../../services/date.utils';
+import MockDate from 'mockdate';
+import { format } from 'date-fns';
 
 describe('WeatherWidgetComponent', () => {
   let spectator: Spectator<WeatherWidgetComponent>;
   let weatherWidgetService: SpectatorHttp<WeatherWidgetService>;
+  MockDate.set(1646521200000); // 06/03/2022
 
   const createComponent = createComponentFactory({
     component: WeatherWidgetComponent,
@@ -96,7 +99,7 @@ describe('WeatherWidgetComponent', () => {
         dt_txt: '2022-03-06 21:00:00'
       },
       {
-        dt: 1646611200,
+        dt: 1646643600,
         main: {
           temp: 4.78,
           feels_like: 1.44,
@@ -108,7 +111,7 @@ describe('WeatherWidgetComponent', () => {
           humidity: 56,
           temp_kf: 1.39
         },
-        weather: [{ id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01n' }],
+        weather: [{ id: 800, main: 'Sunny', description: 'Ensoleillé', icon: '01n' }],
         clouds: { all: 6 },
         wind: { speed: 4.26, deg: 41, gust: 9.9 },
         visibility: 10000,
@@ -117,7 +120,7 @@ describe('WeatherWidgetComponent', () => {
         dt_txt: '2022-03-07 00:00:00'
       },
       {
-        dt: 1646622000,
+        dt: 1646841600,
         main: {
           temp: 1.93,
           feels_like: -1.6,
@@ -129,7 +132,7 @@ describe('WeatherWidgetComponent', () => {
           humidity: 66,
           temp_kf: 0
         },
-        weather: [{ id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01n' }],
+        weather: [{ id: 800, main: 'Cloudy', description: 'Nuageux', icon: '01n' }],
         clouds: { all: 6 },
         wind: { speed: 3.54, deg: 39, gust: 8.33 },
         visibility: 10000,
@@ -177,5 +180,33 @@ describe('WeatherWidgetComponent', () => {
 
     expect(spectator.component.cityData?.name).toEqual(cityName);
     expect(spectator.component.forecast.length).toEqual(forecastData.list.length);
+
+    if (spectator.component.cityData) {
+      expect(spectator.component.getWeatherChart(spectator.component.cityData)).toEqual({
+        datasets: [
+          { borderColor: 'orange', data: [7.57, 6.76], label: 'Température' },
+          { borderColor: 'red', data: [5.19, 3.67], label: 'Ressenti' }
+        ],
+        labels: ['19', '22']
+      });
+      spectator.component.selectTodayForecast();
+      expect(
+        spectator.component
+          .filterForecastByMode(spectator.component.cityData, spectator.component.forecast)
+          .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
+      ).toEqual(['06-03-2022', '06-03-2022']);
+      spectator.component.selectTomorrowForecast();
+      expect(
+        spectator.component
+          .filterForecastByMode(spectator.component.cityData, spectator.component.forecast)
+          .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
+      ).toEqual(['07-03-2022']);
+      spectator.component.selectWeekForecast();
+      expect(
+        spectator.component
+          .filterForecastByMode(spectator.component.cityData, spectator.component.forecast)
+          .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
+      ).toEqual(['09-03-2022']);
+    }
   });
 });

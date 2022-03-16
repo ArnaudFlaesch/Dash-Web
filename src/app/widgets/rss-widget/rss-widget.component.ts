@@ -1,4 +1,3 @@
-import { DateUtilsService } from './../../utils/date.utils';
 import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
@@ -6,6 +5,7 @@ import { Component, Inject } from '@angular/core';
 import { IArticle, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DateUtilsService } from '../../../app/services/date.utils';
 
 @Component({
   selector: 'app-rss-widget',

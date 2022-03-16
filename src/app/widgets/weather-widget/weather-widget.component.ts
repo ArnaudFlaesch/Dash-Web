@@ -3,9 +3,9 @@ import { Component, ViewChild } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { format } from 'date-fns';
 import { BaseChartDirective } from 'ng2-charts';
-import { DateUtilsService } from '../../utils/date.utils';
 import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
+import { DateUtilsService } from '../../../app/services/date.utils';
 
 enum ForecastMode {
   TODAY,

@@ -29,7 +29,6 @@ import { AuthService } from './services/auth.service/auth.service';
 import { TabService } from './services/tab.service/tab.service';
 import { WidgetService } from './services/widget.service/widget.service';
 import { TabComponent } from './tab/tab.component';
-import { DateUtilsService } from './utils/date.utils';
 import { CalendarWidgetComponent } from './widgets/calendar-widget/calendar-widget.component';
 import { DeleteWidgetComponent } from './widgets/delete-widget/delete-widget.component';
 import { RssWidgetComponent } from './widgets/rss-widget/rss-widget.component';
@@ -45,6 +44,7 @@ import { WidgetListComponent } from './widgets/widget-list/widget-list.component
 import { WidgetComponent } from './widgets/widget/widget.component';
 import { ImportConfigModalComponent } from './modals/import-config-modal/import-config-modal.component';
 import { ErrorHandlerService } from './services/error.handler.service';
+import { DateUtilsService } from './services/date.utils';
 registerLocaleData(localeFr);
 
 @NgModule({

@@ -68,6 +68,7 @@
     "mochawesome": "7.1.2",
     "mochawesome-merge": "4.2.1",
     "mochawesome-report-generator": "6.1.1",
+    "mockdate": "3.0.5",
     "prettier": "2.5.1",
     "stylelint": "14.5.3",
     "stylelint-config-prettier-scss": "0.0.1",
