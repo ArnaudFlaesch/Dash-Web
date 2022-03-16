@@ -11,7 +11,6 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import { WidgetService } from '../../../app/services/widget.service/widget.service';
 import { WidgetTypes } from '../../../app/enums/WidgetsEnum';
 import { CalendarWidgetComponent } from '../calendar-widget/calendar-widget.component';
 import { RssWidgetComponent } from '../rss-widget/rss-widget.component';
@@ -27,12 +26,12 @@ import { StravaWidgetComponent } from '../strava-widget/strava-widget.component'
 })
 export class WidgetListComponent implements AfterViewInit, OnChanges {
   @ViewChildren('dynamic', { read: ViewContainerRef })
-  public widgetTargets: QueryList<ViewContainerRef> | undefined;
+  private widgetTargets: QueryList<ViewContainerRef> | undefined;
 
   @Input() widgetList: IWidgetConfig[] = [];
   @Output() widgetDeletedEvent = new EventEmitter<number>();
 
-  constructor(private cdRef: ChangeDetectorRef, private widgetService: WidgetService) {}
+  constructor(private cdRef: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     this.createWidgets();
