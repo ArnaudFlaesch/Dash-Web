@@ -3,9 +3,9 @@ import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { format, isAfter } from 'date-fns';
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { IActivity, IAthlete } from './IStrava';
+import { ErrorHandlerService } from '../../services/error.handler.service';
 import { StravaWidgetService } from './strava.widget.service';
+import { IActivity, IAthlete } from './IStrava';
 
 @Component({
   selector: 'app-strava-widget',

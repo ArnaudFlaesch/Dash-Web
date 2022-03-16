@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import authorizationBearer from '../../../app/services/authorizationBearer/authorizationBearer';
+import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
 import { IActivity, IAthlete } from './IStrava';
 
 @Injectable()
 export class StravaWidgetService {
-  private GET_ATHLETE_DATA_URL = 'https://www.strava.com/api/v3/athlete';
-  private GET_ACTIVITIES_URL = 'https://www.strava.com/api/v3/athlete/activities?page=1&per_page=';
+  public GET_ATHLETE_DATA_URL = 'https://www.strava.com/api/v3/athlete';
+  public GET_ACTIVITIES_URL = 'https://www.strava.com/api/v3/athlete/activities?page=1&per_page=';
 
   constructor(private http: HttpClient) {}
 

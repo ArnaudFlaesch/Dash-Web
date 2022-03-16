@@ -18,7 +18,7 @@ import { RssWidgetComponent } from '../rss-widget/rss-widget.component';
 import { SteamWidgetComponent } from '../steam-widget/steam-widget.component';
 import { WeatherWidgetComponent } from '../weather-widget/weather-widget.component';
 import { IWidgetConfig } from './../../model/IWidgetConfig';
-import { StravaWidgetComponent } from './../strava-widget/strava-widget.component';
+import { StravaWidgetComponent } from '../strava-widget/strava-widget.component';
 
 @Component({
   selector: 'app-widget-list',
