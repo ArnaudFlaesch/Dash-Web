@@ -37,20 +37,24 @@ export class GameDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.gameInfo) {
-      this.steamWidgetService.getAchievementList(this.gameInfo.appid).subscribe({
-        next: (response: unknown) => {
-          const achievementResponse = response as IAchievementResponse;
-          if (achievementResponse.playerstats.achievements) {
-            this.achievements = achievementResponse.playerstats.achievements;
-            this.completedAchievements = achievementResponse.playerstats.achievements.filter(
-              (achievement: IAchievement) => achievement.achieved === 1
-            );
-          }
-        },
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACHIEVEMENTS_DATA)
-      });
+      this.loadAchievementsData(this.gameInfo);
     }
+  }
+
+  public loadAchievementsData(gameInfo: IGameInfo) {
+    this.steamWidgetService.getAchievementList(gameInfo.appid).subscribe({
+      next: (response: unknown) => {
+        const achievementResponse = response as IAchievementResponse;
+        if (achievementResponse.playerstats.achievements) {
+          this.achievements = achievementResponse.playerstats.achievements;
+          this.completedAchievements = achievementResponse.playerstats.achievements.filter(
+            (achievement: IAchievement) => achievement.achieved === 1
+          );
+        }
+      },
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACHIEVEMENTS_DATA)
+    });
   }
 
   public getCompletionStatus = () =>
