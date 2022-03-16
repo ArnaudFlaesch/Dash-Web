@@ -187,7 +187,7 @@ describe('WeatherWidgetComponent', () => {
           { borderColor: 'orange', data: [7.57, 6.76], label: 'Température' },
           { borderColor: 'red', data: [5.19, 3.67], label: 'Ressenti' }
         ],
-        labels: ['19', '22']
+        labels: ['18', '21']
       });
       spectator.component.selectTodayForecast();
       expect(
