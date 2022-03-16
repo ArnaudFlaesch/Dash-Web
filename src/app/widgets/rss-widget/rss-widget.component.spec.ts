@@ -1,7 +1,4 @@
-import { IWidgetConfig } from './../../model/IWidgetConfig';
-import { DateUtilsService } from './../../utils/date.utils';
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { WidgetService } from './../../services/widget.service/widget.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   createComponentFactory,
   createHttpFactory,
@@ -10,10 +7,11 @@ import {
   SpectatorHttp
 } from '@ngneat/spectator/jest';
 import { environment } from '../../../environments/environment';
+import { ErrorHandlerService } from './../../services/error.handler.service';
+import { WidgetService } from './../../services/widget.service/widget.service';
+import { DateUtilsService } from './../../utils/date.utils';
 import { RssWidgetComponent } from './rss-widget.component';
 import { RssWidgetService } from './rss.widget.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { WidgetTypes } from '../../enums/WidgetsEnum';
 
 describe('RssWidgetComponent', () => {
   let spectator: Spectator<RssWidgetComponent>;

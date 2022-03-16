@@ -1,4 +1,3 @@
-import { IAthlete } from './IStrava';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   createHttpFactory,
@@ -8,10 +7,9 @@ import {
   SpectatorRouting
 } from '@ngneat/spectator/jest';
 import { addDays, getTime } from 'date-fns';
-import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
-import { StravaWidgetService } from './strava.widget.service';
 import { StravaWidgetComponent } from './strava-widget.component';
+import { StravaWidgetService } from './strava.widget.service';
 
 describe('StravaWidgetComponent', () => {
   let spectator: SpectatorRouting<StravaWidgetComponent>;

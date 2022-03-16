@@ -1,14 +1,12 @@
-import { WidgetService } from './../../services/widget.service/widget.service';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { WidgetListComponent } from './widget-list.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import {
-  Spectator,
-  SpectatorHttp,
   createComponentFactory,
-  createHttpFactory
+  createHttpFactory,
+  Spectator,
+  SpectatorHttp
 } from '@ngneat/spectator/jest';
+import { WidgetService } from './../../services/widget.service/widget.service';
+import { WidgetListComponent } from './widget-list.component';
 
 describe('WidgetListComponent', () => {
   let spectator: Spectator<WidgetListComponent>;
