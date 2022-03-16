@@ -219,10 +219,9 @@ describe('StravaWidgetComponent', () => {
       '2021-10': [6.3304, 8.6087],
       '2022-02': [12.5188]
     });
-    expect(spectator.component.getStatsFromActivities()).toEqual([
-      { x: new Date('2021-10-01T02:00:00'), y: 15 },
-      { x: new Date('2022-02-01T01:00:00'), y: 13 }
-    ]);
+    const statsFromActivities = spectator.component.getStatsFromActivities();
+    expect(statsFromActivities[0].y).toEqual(15);
+    expect(statsFromActivities[1].y).toEqual(13);
   });
 
   it('Should convert a time', () => {
