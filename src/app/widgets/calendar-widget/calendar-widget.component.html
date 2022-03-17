@@ -18,7 +18,58 @@
   </ng-template>
 
   <ng-template #body>
+    <div
+      class="btn btn-primary"
+      mwlCalendarPreviousView
+      [view]="view"
+      [(viewDate)]="viewDate"
+      (viewDateChange)="closeOpenMonthViewDay()"
+    >
+      Previous
+    </div>
+    <div class="btn btn-outline-secondary" mwlCalendarToday [(viewDate)]="viewDate">Today</div>
+    <div
+      class="btn btn-primary"
+      mwlCalendarNextView
+      [view]="view"
+      [(viewDate)]="viewDate"
+      (viewDateChange)="closeOpenMonthViewDay()"
+    >
+      Next
+    </div>
+
+    <h3>{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
+
+    <button mat-raised-button (click)="setView(CalendarView.Month)" [class.primary]="view === CalendarView.Month">
+      Month
+    </button>
+    <button mat-raised-button (click)="setView(CalendarView.Week)" [class.primary]="view === CalendarView.Week">
+      Week
+    </button>
+    <button mat-raised-button (click)="setView(CalendarView.Day)" [class.primary]="view === CalendarView.Day">
+      Day
+    </button>
+
     <div [ngSwitch]="view">
+      <mwl-calendar-month-view
+        *ngSwitchCase="CalendarView.Month"
+        [viewDate]="viewDate"
+        [events]="events"
+        [refresh]="refresh"
+        [activeDayIsOpen]="activeDayIsOpen"
+        (eventClicked)="handleEvent('Clicked', $event.event)"
+      >
+      </mwl-calendar-month-view>
+
+      <mwl-calendar-week-view
+        *ngSwitchCase="CalendarView.Week"
+        [viewDate]="viewDate"
+        [events]="events"
+        [refresh]="refresh"
+        (eventClicked)="handleEvent('Clicked', $event.event)"
+      >
+      </mwl-calendar-week-view>
+
       <mwl-calendar-day-view
         *ngSwitchCase="CalendarView.Day"
         [viewDate]="viewDate"

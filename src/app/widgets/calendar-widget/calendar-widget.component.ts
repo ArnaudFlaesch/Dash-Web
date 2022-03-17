@@ -1,5 +1,5 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
-import { CalendarView, DateAdapter } from 'angular-calendar';
+import { CalendarEvent, CalendarView, DateAdapter } from 'angular-calendar';
 import { addMonths, endOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
 
@@ -12,6 +12,7 @@ export class CalendarWidgetComponent {
   public calendarUrls: string[] = [];
 
   CalendarView = CalendarView;
+  events: CalendarEvent[] = [];
 
   view: CalendarView = CalendarView.Week;
   viewDate: Date = new Date();
@@ -58,4 +59,14 @@ export class CalendarWidgetComponent {
   };
 
   public isFormValid = () => this.calendarUrls.length > 0;
+
+  public closeOpenMonthViewDay() {
+    this.activeDayIsOpen = false;
+  }
+
+  public setView(view: CalendarView) {
+    this.view = view;
+  }
+
+  public handleEvent(action: string, event: CalendarEvent): void {}
 }
