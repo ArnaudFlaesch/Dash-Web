@@ -1,3 +1,4 @@
+import { CalendarWidgetService } from './calendar-widget.service';
 import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { CalendarEvent, CalendarView, DateAdapter } from 'angular-calendar';
 import { addMonths, endOfDay } from 'date-fns';
@@ -11,7 +12,7 @@ import { Subject } from 'rxjs';
 export class CalendarWidgetComponent {
   public calendarUrls: string[] = [];
 
-  CalendarView = CalendarView;
+  calendarView = CalendarView;
   events: CalendarEvent[] = [];
 
   view: CalendarView = CalendarView.Week;
@@ -22,10 +23,10 @@ export class CalendarWidgetComponent {
   weekStartsOn = 1;
   startsWithToday = true;
   activeDayIsOpen = true;
-  excludeDays: number[] = []; // [0];
+  excludeDays: number[] = [];
   weekendDays: number[] = [0, 6];
   dayStartHour = 6;
-  dayEndHour = 22;
+  dayEndHour = 24;
 
   minDate: Date = new Date();
   maxDate: Date = endOfDay(addMonths(new Date(), 1));
@@ -33,12 +34,37 @@ export class CalendarWidgetComponent {
   prevBtnDisabled = false;
   nextBtnDisabled = false;
 
-  constructor(@Inject(LOCALE_ID) locale: string, private dateAdapter: DateAdapter) {
+  constructor(
+    @Inject(LOCALE_ID) locale: string,
+    private dateAdapter: DateAdapter,
+    private calendarWidgetService: CalendarWidgetService
+  ) {
     this.locale = locale;
   }
 
   public refreshWidget() {
-    console.log('refresh calendar');
+    this.calendarUrls.forEach((calendarUrl: string) => {
+      this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
+        next: (calendarData) => this.parseEvents(calendarData.components),
+        error: (error) => console.error(error.message)
+      });
+    });
+  }
+
+  private parseEvents(calendarData: any[]) {
+    const parsedEvents: CalendarEvent[] = calendarData
+      .filter((event) => event.startDate && event.endDate && event.summary)
+      .map((event) => {
+        return {
+          title: event.summary.value,
+          start: new Date(event.startDate.date),
+          end: new Date(event.endDate.date),
+          allDay:
+            new Date(event.endDate.date).getHours() === 0 &&
+            new Date(event.startDate.date).getHours() === 0
+        };
+      });
+    this.events = [...this.events, ...parsedEvents];
   }
 
   private isDateValid(date: Date): boolean {
@@ -49,24 +75,27 @@ export class CalendarWidgetComponent {
     this.calendarUrls ? { calendarUrls: this.calendarUrls } : null;
 
   public onCalendarUrlAdded = () => (this.calendarUrls = [...this.calendarUrls, '']);
-  public removeCalendarUrl = (calendarUrl: string) => null; //  (this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl));
+  public removeCalendarUrl = (calendarUrl: string) =>
+    (this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl));
 
   public onCalendarUrlUpdated = (event: any) => {
-    null;
-    //  this.calendarUrls = this.calendarUrls.map((url: string, index: number) =>
-    //  index.toString() === event.target?.id ? event.target.value : url
-    // );
+    this.calendarUrls = this.calendarUrls.map((url: string, index: number) =>
+      index.toString() === event.target?.id ? event.target.value : url
+    );
   };
 
   public isFormValid = () => this.calendarUrls.length > 0;
 
-  public closeOpenMonthViewDay() {
-    this.activeDayIsOpen = false;
-  }
+  public closeOpenMonthViewDay = () => (this.activeDayIsOpen = false);
 
-  public setView(view: CalendarView) {
-    this.view = view;
-  }
+  public setView = (view: CalendarView) => (this.view = view);
 
-  public handleEvent(action: string, event: CalendarEvent): void {}
+  public isCalendarViewMonth = () => this.view === CalendarView.Month;
+  public isCalendarViewWeek = () => this.view === CalendarView.Week;
+  public isCalendarViewDay = () => this.view === CalendarView.Day;
+
+  public handleEvent(action: string, event: CalendarEvent): void {
+    console.log(action);
+    console.log(event);
+  }
 }

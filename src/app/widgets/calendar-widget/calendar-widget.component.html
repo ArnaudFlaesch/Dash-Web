@@ -18,41 +18,57 @@
   </ng-template>
 
   <ng-template #body>
-    <div
-      class="btn btn-primary"
-      mwlCalendarPreviousView
-      [view]="view"
-      [(viewDate)]="viewDate"
-      (viewDateChange)="closeOpenMonthViewDay()"
-    >
-      Previous
+    <div class="flex flex-row justify-between mx-4">
+      <div>
+        <button
+          mat-raised-button
+          mwlCalendarPreviousView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          color="primary"
+          (viewDateChange)="closeOpenMonthViewDay()"
+        >
+          Previous
+        </button>
+        <button mat-raised-button mwlCalendarToday [(viewDate)]="viewDate">Today</button>
+        <button
+          mat-raised-button
+          mwlCalendarNextView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          color="primary"
+          (viewDateChange)="closeOpenMonthViewDay()"
+        >
+          Next
+        </button>
+      </div>
+      <div>
+        <h3>{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
+      </div>
     </div>
-    <div class="btn btn-outline-secondary" mwlCalendarToday [(viewDate)]="viewDate">Today</div>
-    <div
-      class="btn btn-primary"
-      mwlCalendarNextView
-      [view]="view"
-      [(viewDate)]="viewDate"
-      (viewDateChange)="closeOpenMonthViewDay()"
-    >
-      Next
+    <div class="flex flex-row">
+      <button
+        mat-raised-button
+        (click)="setView(calendarView.Month)"
+        color="isCalendarViewMonth()"
+        [color]="this.isCalendarViewMonth() ? 'primary' : ''"
+      >
+        Month
+      </button>
+      <button
+        mat-raised-button
+        (click)="setView(calendarView.Week)"
+        [color]="this.isCalendarViewWeek() ? 'primary' : ''"
+      >
+        Week
+      </button>
+      <button mat-raised-button (click)="setView(calendarView.Day)" [color]="this.isCalendarViewDay() ? 'primary' : ''">
+        Day
+      </button>
     </div>
-
-    <h3>{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
-
-    <button mat-raised-button (click)="setView(CalendarView.Month)" [class.primary]="view === CalendarView.Month">
-      Month
-    </button>
-    <button mat-raised-button (click)="setView(CalendarView.Week)" [class.primary]="view === CalendarView.Week">
-      Week
-    </button>
-    <button mat-raised-button (click)="setView(CalendarView.Day)" [class.primary]="view === CalendarView.Day">
-      Day
-    </button>
-
     <div [ngSwitch]="view">
       <mwl-calendar-month-view
-        *ngSwitchCase="CalendarView.Month"
+        *ngSwitchCase="calendarView.Month"
         [viewDate]="viewDate"
         [events]="events"
         [refresh]="refresh"
@@ -62,7 +78,7 @@
       </mwl-calendar-month-view>
 
       <mwl-calendar-week-view
-        *ngSwitchCase="CalendarView.Week"
+        *ngSwitchCase="calendarView.Week"
         [viewDate]="viewDate"
         [events]="events"
         [refresh]="refresh"
@@ -71,7 +87,7 @@
       </mwl-calendar-week-view>
 
       <mwl-calendar-day-view
-        *ngSwitchCase="CalendarView.Day"
+        *ngSwitchCase="calendarView.Day"
         [viewDate]="viewDate"
         [events]="[]"
         [refresh]="refresh"

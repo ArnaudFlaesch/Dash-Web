@@ -1,3 +1,4 @@
+import { CalendarWidgetService } from './widgets/calendar-widget/calendar-widget.service';
 import { ConfigService } from './services/config.service/config.service';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -98,6 +99,7 @@ registerLocaleData(localeFr);
     ErrorHandlerService,
     DateUtilsService,
     SteamWidgetService,
+    CalendarWidgetService,
     StravaWidgetService,
     AuthGuard,
     { provide: LOCALE_ID, useValue: 'fr-FR' }
