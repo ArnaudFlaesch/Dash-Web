@@ -74,9 +74,10 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
           }
           case WidgetTypes.CALENDAR: {
             component = target.createComponent(CalendarWidgetComponent, { injector: injector });
-            component.instance.calendarUrls = widgetData
-              ? (widgetData['calendarUrls'] as string[])
-              : [];
+            component.instance.calendarUrls =
+              widgetData && widgetData['calendarUrls']
+                ? (widgetData['calendarUrls'] as string[])
+                : [];
             break;
           }
           case WidgetTypes.STRAVA: {
