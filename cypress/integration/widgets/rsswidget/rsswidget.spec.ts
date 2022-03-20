@@ -75,10 +75,11 @@ describe('RSS Widget tests', () => {
           .should('have.length', NUMBER_OF_ARTICLES)
           .get('.widget:nth(1) .rss-article:nth(0)  .articleTitle')
           .click()
+          .get('.widget:nth(1) .rss-article:nth(0) .rssPanelArticleTitle')
           .invoke('text')
           .then((text) => {
             expect(text.trim()).equal(
-              "17:30 EN DIRECT - Guerre en Ukraine : Poutine prévient qu'il atteindra ses objectifs «soit par la négociation, soit par la guerre»"
+              "EN DIRECT - Guerre en Ukraine : Poutine prévient qu'il atteindra ses objectifs «soit par la négociation, soit par la guerre»"
             );
           })
           .get('.widget:nth(1) .articleContent')

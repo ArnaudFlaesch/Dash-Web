@@ -37,7 +37,7 @@
             <ng-template matExpansionPanelContent>
               <div class="border-2 border-gray-500 border-solid">
                 <div>
-                  <a [href]="article.link | safe: 'url'">{{ article.title }}</a>
+                  <a class="rssPanelArticleTitle" [href]="article.link | safe: 'url'">{{ article.title }}</a>
                 </div>
                 <div class="articleContent">
                   {{ stripHtmlFromContent(article.description) }}
