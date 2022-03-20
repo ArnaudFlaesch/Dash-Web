@@ -28,13 +28,12 @@ export class ImportConfigModalComponent {
   public upload(): void {
     if (this.fileToUpload) {
       this.configService.importConfig(this.fileToUpload).subscribe({
-        next: (response) => {
-          if (response) {
-            this.dialogRef.close();
-          }
-        },
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_IMPORT_CONFIGURATION)
+          this.errorHandlerService.handleError(error.message, this.ERROR_IMPORT_CONFIGURATION),
+        complete: () => {
+          this.dialogRef.close();
+          window.location.reload();
+        }
       });
     }
   }

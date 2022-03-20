@@ -1,10 +1,9 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
     <div class="h-10">
-      <a [href]="this.link | safe: 'url'" class="flex flex-row">
-        <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">
-          {{ this.title }}
-        </div>
+      <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="flex flex-row">
+        <img class="max-h-8 max-w-1" src="{{ image?.url }}" alt="logo" />
+        <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">{{ this.title }}</div>
       </a>
     </div>
   </ng-template>

@@ -9,7 +9,6 @@ import { ErrorHandlerService } from './../services/error.handler.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  public logoPath = './../assets/logo.png';
   public isLoading = false;
 
   public inputUsername = '';

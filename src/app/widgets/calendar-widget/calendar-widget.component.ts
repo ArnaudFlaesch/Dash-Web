@@ -15,7 +15,7 @@ export class CalendarWidgetComponent {
   calendarView = CalendarView;
   events: CalendarEvent[] = [];
 
-  view: CalendarView = CalendarView.Week;
+  view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
   refresh: Subject<any> = new Subject();
   locale = 'fr';
@@ -43,6 +43,7 @@ export class CalendarWidgetComponent {
   }
 
   public refreshWidget() {
+    this.events = [];
     this.calendarUrls.forEach((calendarUrl: string) => {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
         next: (calendarData) => this.parseEvents(calendarData.components),
@@ -72,7 +73,7 @@ export class CalendarWidgetComponent {
   }
 
   public getWidgetConfig = (): { calendarUrls: string[] } | null =>
-    this.calendarUrls ? { calendarUrls: this.calendarUrls } : null;
+    this.calendarUrls && this.calendarUrls.length ? { calendarUrls: this.calendarUrls } : null;
 
   public onCalendarUrlAdded = () => (this.calendarUrls = [...this.calendarUrls, '']);
   public removeCalendarUrl = (calendarUrl: string) =>

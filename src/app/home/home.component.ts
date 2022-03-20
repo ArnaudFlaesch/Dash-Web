@@ -118,6 +118,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.activeWidgets = this.activeWidgets.filter(
       (widget: IWidgetConfig) => widget.tab.id !== tabId
     );
+    if (this.tabs.length > 1) {
+      if (this.tabs[0].id === tabId) {
+        this.selectTab(this.tabs[1].id);
+      } else if (this.activeTab === tabId) {
+        this.selectTab(this.tabs[0].id);
+      }
+    }
     this.tabs = this.tabs.filter((tab) => tab.id !== tabId);
   }
 

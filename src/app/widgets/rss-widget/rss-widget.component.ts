@@ -2,7 +2,7 @@ import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
 import { Component, Inject } from '@angular/core';
-import { IArticle, IRSSHeader } from './IArticle';
+import { IArticle, ImageContent, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DateUtilsService } from '../../../app/services/date.utils';
@@ -17,6 +17,7 @@ export class RssWidgetComponent {
   public description = '';
   public link = '';
   public title = '';
+  public image: ImageContent | undefined = undefined;
 
   private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
 
@@ -43,8 +44,9 @@ export class RssWidgetComponent {
           this.feed = res.item;
           this.link = res.link;
           this.title = res.title;
+          this.image = res.image;
         },
-        error: (error) => console.error(error.message)
+        error: (error) => this.errorHandlerService.handleError(error.message, 'erreur rss')
       });
     }
   }

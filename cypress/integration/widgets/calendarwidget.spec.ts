@@ -2,7 +2,7 @@
 
 import { Interception } from 'cypress/types/net-stubbing';
 
-xdescribe('Calendar Widget tests', () => {
+describe('Calendar Widget tests', () => {
   const icalFrenchHolidays =
     'https://calendar.google.com/calendar/ical/fr.french%23holiday%40group.v.calendar.google.com/public/basic.ics';
   const icalUsaHolidays =
@@ -10,8 +10,12 @@ xdescribe('Calendar Widget tests', () => {
 
   beforeEach(() => {
     cy.loginAsAdmin()
+      .clock(new Date(2021, 6, 1, 0, 0, 0).getTime())
       .visit('/')
-      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'));
+      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
+      .get('.tab')
+      .contains('Agenda')
+      .click();
   });
 
   it('Should create a Calendar Widget and add it to the dashboard', () => {
@@ -29,26 +33,24 @@ xdescribe('Calendar Widget tests', () => {
   });
 
   it('Should edit Calendar widget and add an Ical feed', () => {
-    cy.intercept('GET', `/proxy/?url=${icalFrenchHolidays}`)
-      .as('getFrenchCalendarData')
-      .intercept('GET', `/proxy/?url=${icalUsaHolidays}`)
-      .as('getUSCalendarData')
-      .clock(new Date(2021, 6, 1, 0, 0, 0).getTime())
+    cy.intercept('POST', `/calendarWidget/`)
+      .as('getCalendarDataRequest')
       .get('#addCalendarUrl')
       .click()
       .get('input')
       .type(`${icalFrenchHolidays}`)
-      .get('#validateCalendarUrls')
+      .get('.validateButton')
       .click()
-      .wait('@getFrenchCalendarData')
+      .wait('@getCalendarDataRequest')
       .then(() => {
-        cy.get('.rbc-toolbar-label')
+        cy.get('h3')
           .should('have.text', 'juillet 2021')
           .get('.refreshButton')
           .click()
-          .wait('@getFrenchCalendarData')
+          .wait('@getCalendarDataRequest')
           .then(() => {
-            cy.contains('La fête nationale')
+            cy.get('.cal-future:nth(14) .cal-day-badge')
+              .should('have.text', 1)
               .get('.editButton')
               .click()
               .get('#addCalendarUrl')
@@ -56,22 +58,22 @@ xdescribe('Calendar Widget tests', () => {
               .get('input')
               .eq(1)
               .type(`${icalUsaHolidays}`)
-              .get('#validateCalendarUrls')
+              .get('.validateButton')
               .click();
-            cy.wait(['@getFrenchCalendarData', '@getUSCalendarData']).then(() => {
-              cy.contains('Independence Day')
+            cy.wait(['@getCalendarDataRequest', '@getCalendarDataRequest']).then(() => {
+              cy.get('.cal-future:nth(4) .cal-day-badge')
                 .get('.editButton')
                 .click()
                 .get('.removeCalendarUrl')
                 .eq(1)
                 .click()
-                .get('#validateCalendarUrls')
+                .get('.validateButton')
                 .click()
-                .wait('@getFrenchCalendarData')
+                .wait('@getCalendarDataRequest')
                 .then(() =>
                   cy
-                    .get('.rbc-event')
-                    .should('have.length', 1)
+                    .get('.cal-day-badge')
+                    .should('have.length', 2)
                     .clock()
                     .then((clock) => {
                       clock.restore();
@@ -85,7 +87,6 @@ xdescribe('Calendar Widget tests', () => {
   it('Should delete previously added widget', () => {
     cy.intercept('DELETE', '/widget/deleteWidget/*')
       .as('deleteWidget')
-      .waitUntil(() => cy.get('.rbc-toolbar').should('be.visible'))
       .get('.deleteButton')
       .click()
       .get('h4')
