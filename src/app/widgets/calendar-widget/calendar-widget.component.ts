@@ -85,7 +85,7 @@ export class CalendarWidgetComponent {
     );
   };
 
-  public isFormValid = () => this.calendarUrls.length > 0;
+  public isFormValid = () => this.calendarUrls && this.calendarUrls.length > 0;
 
   public closeOpenMonthViewDay = () => (this.activeDayIsOpen = false);
 

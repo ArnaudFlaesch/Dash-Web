@@ -21,7 +21,7 @@ export class StravaWidgetComponent {
 
   private STRAVA_CLIENT_ID = 30391;
 
-  public loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.origin}/&response_type=code&scope=read,activity:read`;
+  public loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
 
   private STORAGE_STRAVA_TOKEN_KEY = 'strava_token';
   private STORAGE_STRAVA_REFRESH_TOKEN_KEY = 'strava_refresh_token';
