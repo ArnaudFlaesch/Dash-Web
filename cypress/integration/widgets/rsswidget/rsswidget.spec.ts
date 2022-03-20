@@ -73,6 +73,9 @@ describe('RSS Widget tests', () => {
       .then(() => {
         cy.get('.widget:nth(1) .rss-article')
           .should('have.length', NUMBER_OF_ARTICLES)
+          .waitUntil(() =>
+            cy.get('.widget:nth(1) .rss-article:nth(0)  .articleTitle').should('be.visible')
+          )
           .get('.widget:nth(1) .rss-article:nth(0)  .articleTitle')
           .click()
           .get('.widget:nth(1) .rss-article:nth(0) .rssPanelArticleTitle')
