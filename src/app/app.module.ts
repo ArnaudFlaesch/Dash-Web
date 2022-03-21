@@ -46,6 +46,7 @@ import { WidgetComponent } from './widgets/widget/widget.component';
 import { ImportConfigModalComponent } from './modals/import-config-modal/import-config-modal.component';
 import { ErrorHandlerService } from './services/error.handler.service';
 import { DateUtilsService } from './services/date.utils';
+import { EventDetailModalComponent } from './widgets/calendar-widget/event-detail-modal/event-detail-modal.component';
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -66,7 +67,8 @@ registerLocaleData(localeFr);
     GameDetailsComponent,
     SafePipe,
     CreateWidgetModalComponent,
-    ImportConfigModalComponent
+    ImportConfigModalComponent,
+    EventDetailModalComponent
   ],
   imports: [
     BrowserAnimationsModule,

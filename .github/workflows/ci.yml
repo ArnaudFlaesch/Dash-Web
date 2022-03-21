@@ -40,7 +40,8 @@ jobs:
 
       - name: Build
         run: |
-          npm run build -- --base-href=https://arnaudflaesch.github.io/Dash-Web/
+          npm run build -- --output-path docs --base-href=https://arnaudflaesch.github.io/Dash-Web/
+          cp dist/index.html dist/404.html
 
       - name: Test
         run: npm run test
@@ -97,7 +98,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Deploy with gh-pages
-        #  if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref == 'refs/heads/master'
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           npx gh-pages-clean

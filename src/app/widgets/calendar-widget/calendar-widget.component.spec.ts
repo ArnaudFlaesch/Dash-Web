@@ -1,14 +1,13 @@
-import { CalendarWidgetService } from './calendar-widget.service';
-import { DateAdapter } from 'angular-calendar';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { CalendarWidgetComponent } from './calendar-widget.component';
+import { MatDialogModule } from '@angular/material/dialog';
 import {
-  Spectator,
-  SpectatorHttp,
   createComponentFactory,
-  createHttpFactory
+  createHttpFactory,
+  Spectator,
+  SpectatorHttp
 } from '@ngneat/spectator';
+import { DateAdapter } from 'angular-calendar';
+import { CalendarWidgetComponent } from './calendar-widget.component';
+import { CalendarWidgetService } from './calendar-widget.service';
 
 describe('CalendarWidgetComponent', () => {
   let spectator: Spectator<CalendarWidgetComponent>;
@@ -16,6 +15,7 @@ describe('CalendarWidgetComponent', () => {
 
   const createComponent = createComponentFactory({
     component: CalendarWidgetComponent,
+    imports: [MatDialogModule],
     providers: [CalendarWidgetService, DateAdapter]
   });
   const createHttpRssWidgetService = createHttpFactory(CalendarWidgetService);
@@ -26,6 +26,6 @@ describe('CalendarWidgetComponent', () => {
   });
 
   it('should create', () => {
-    expect(spectator.component).toBeTruthy();
+    expect(spectator.component.calendarUrls).toEqual([]);
   });
 });

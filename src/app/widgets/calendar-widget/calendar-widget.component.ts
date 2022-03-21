@@ -3,6 +3,8 @@ import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { CalendarEvent, CalendarView, DateAdapter } from 'angular-calendar';
 import { addMonths, endOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { EventDetailModalComponent } from './event-detail-modal/event-detail-modal.component';
 
 @Component({
   selector: 'app-calendar-widget',
@@ -37,6 +39,7 @@ export class CalendarWidgetComponent {
   constructor(
     @Inject(LOCALE_ID) locale: string,
     private dateAdapter: DateAdapter,
+    public dialog: MatDialog,
     private calendarWidgetService: CalendarWidgetService
   ) {
     this.locale = locale;
@@ -68,10 +71,6 @@ export class CalendarWidgetComponent {
     this.events = [...this.events, ...parsedEvents];
   }
 
-  private isDateValid(date: Date): boolean {
-    return /*isToday(date) ||*/ date >= this.minDate && date <= this.maxDate;
-  }
-
   public getWidgetConfig = (): { calendarUrls: string[] } | null =>
     this.calendarUrls && this.calendarUrls.length ? { calendarUrls: this.calendarUrls } : null;
 
@@ -98,5 +97,10 @@ export class CalendarWidgetComponent {
   public handleEvent(action: string, event: CalendarEvent): void {
     console.log(action);
     console.log(event);
+    this.dialog.open(EventDetailModalComponent, {
+      height: '300px',
+      width: '500px',
+      data: event
+    });
   }
 }
