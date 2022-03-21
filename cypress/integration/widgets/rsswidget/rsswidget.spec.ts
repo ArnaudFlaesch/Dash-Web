@@ -76,7 +76,7 @@ describe('RSS Widget tests', () => {
           .waitUntil(() =>
             cy.get('.widget:nth(1) .rss-article:nth(0)  .articleTitle').should('be.visible')
           )
-          .get('.widget:nth(1) .rss-article:nth(0)  .articleTitle')
+          .get('.widget:nth(1) .rss-article:nth(0)')
           .click()
           .get('.widget:nth(1) .rss-article:nth(0) .rssPanelArticleTitle')
           .invoke('text')
