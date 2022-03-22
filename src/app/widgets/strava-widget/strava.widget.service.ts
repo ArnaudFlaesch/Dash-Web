@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
-import { IActivity, IAthlete } from './IStrava';
+import { IActivity, IAthlete, ITokenData } from './IStrava';
 
 @Injectable()
 export class StravaWidgetService {
@@ -12,20 +12,19 @@ export class StravaWidgetService {
 
   constructor(private http: HttpClient) {}
 
-  public loginToStrava() {
-    return this.http.get(
+  public loginToStrava(): Observable<ITokenData> {
+    return this.http.get<ITokenData>(
       `${environment.backend_url}/stravaWidget/login?frontendUrl=${location.origin}`,
       {
         headers: {
           Authorization: authorizationBearer()
-        },
-        responseType: 'text'
+        }
       }
     );
   }
 
-  public getToken(apiCode: string): Observable<string> {
-    return this.http.post<string>(
+  public getToken(apiCode: string): Observable<ITokenData> {
+    return this.http.post<ITokenData>(
       `${environment.backend_url}/stravaWidget/getToken`,
       { apiCode: apiCode },
       {
@@ -37,8 +36,8 @@ export class StravaWidgetService {
     );
   }
 
-  public getRefreshToken(refreshToken: string): Observable<string> {
-    return this.http.post<string>(
+  public getRefreshToken(refreshToken: string): Observable<ITokenData> {
+    return this.http.post<ITokenData>(
       `${environment.backend_url}/stravaWidget/getRefreshToken`,
       { refreshToken: refreshToken },
       {

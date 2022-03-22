@@ -1,4 +1,3 @@
-import { WidgetService } from './../../services/widget.service/widget.service';
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
@@ -9,8 +8,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 export class DeleteWidgetComponent {
   @Output() validateWidgetDeletion = new EventEmitter();
   @Output() cancelWidgetDeletion = new EventEmitter();
-
-  constructor(private widgetService: WidgetService) {}
 
   cancelButtonClicked() {
     this.cancelWidgetDeletion.emit();

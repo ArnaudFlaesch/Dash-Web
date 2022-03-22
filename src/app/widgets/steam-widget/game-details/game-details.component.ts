@@ -4,18 +4,6 @@ import { IGameInfo } from './../IGameInfo';
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
-interface IAchievement {
-  apiname: string;
-  achieved: number;
-  unlocktime: number;
-}
-
-interface IAchievementResponse {
-  playerstats: {
-    achievements: IAchievement[];
-  };
-}
-
 @Component({
   selector: 'app-game-details',
   templateUrl: './game-details.component.html',

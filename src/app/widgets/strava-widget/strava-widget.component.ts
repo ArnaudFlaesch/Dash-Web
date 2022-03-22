@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { format, isAfter } from 'date-fns';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { StravaWidgetService } from './strava.widget.service';
-import { IActivity, IAthlete } from './IStrava';
+import { IActivity, IAthlete, ITokenData } from './IStrava';
 
 @Component({
   selector: 'app-strava-widget',
@@ -61,7 +61,7 @@ export class StravaWidgetComponent {
 
   public getToken(apiCode: string) {
     this.stravaWidgetService.getToken(apiCode).subscribe({
-      next: (response: any) => {
+      next: (response: ITokenData) => {
         window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.access_token);
         window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refresh_token);
         window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expires_at);
@@ -75,7 +75,7 @@ export class StravaWidgetComponent {
   private refreshTokenFromApi() {
     if (this.refreshToken) {
       this.stravaWidgetService.getRefreshToken(this.refreshToken).subscribe({
-        next: (response: any) => {
+        next: (response: ITokenData) => {
           this.token = response.access_token;
           this.refreshToken = response.refresh_token;
           this.tokenExpirationDate = response.expires_at;

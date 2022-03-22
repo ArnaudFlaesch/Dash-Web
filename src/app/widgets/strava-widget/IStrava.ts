@@ -1,3 +1,10 @@
+export interface ITokenData {
+  access_token: string;
+  refresh_token: string;
+  expires_at: string;
+  athlete: IAthlete;
+}
+
 export interface IAthlete {
   id: number;
   username: string;

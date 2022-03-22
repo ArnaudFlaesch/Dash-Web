@@ -15,6 +15,6 @@ describe('CreateWidgetModalComponent', () => {
   });
 
   it('Dummy test', () => {
-    expect(true).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });

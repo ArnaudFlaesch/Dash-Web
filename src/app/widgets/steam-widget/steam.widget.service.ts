@@ -1,3 +1,4 @@
+import { IPlayerDataResponse, IOwnedGamesResponse, IAchievementResponse } from './ISteam';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -12,8 +13,8 @@ export class SteamWidgetService {
 
   constructor(private http: HttpClient) {}
 
-  public getPlayerData(): Observable<unknown> {
-    return this.http.get(`${environment.backend_url}/steamWidget/playerData`, {
+  public getPlayerData(): Observable<IPlayerDataResponse> {
+    return this.http.get<IPlayerDataResponse>(`${environment.backend_url}/steamWidget/playerData`, {
       headers: {
         Authorization: authorizationBearer(),
         'Content-type': 'application/json'
@@ -21,8 +22,8 @@ export class SteamWidgetService {
     });
   }
 
-  public getOwnedGames(): Observable<unknown> {
-    return this.http.get(`${environment.backend_url}/steamWidget/ownedGames`, {
+  public getOwnedGames(): Observable<IOwnedGamesResponse> {
+    return this.http.get<IOwnedGamesResponse>(`${environment.backend_url}/steamWidget/ownedGames`, {
       headers: {
         Authorization: authorizationBearer(),
         'Content-type': 'application/json'
@@ -30,16 +31,19 @@ export class SteamWidgetService {
     });
   }
 
-  public getAchievementList(appId: string): Observable<unknown> {
-    return this.http.get(`${environment.backend_url}/steamWidget/achievementList`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
-      },
-      params: {
-        appId: appId
+  public getAchievementList(appId: string): Observable<IAchievementResponse> {
+    return this.http.get<IAchievementResponse>(
+      `${environment.backend_url}/steamWidget/achievementList`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        },
+        params: {
+          appId: appId
+        }
       }
-    });
+    );
   }
 
   get STEAM_IMAGE_URL() {
