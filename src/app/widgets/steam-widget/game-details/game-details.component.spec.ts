@@ -1,5 +1,4 @@
 import { environment } from './../../../../environments/environment';
-import { IGameInfo } from './../IGameInfo';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
@@ -12,6 +11,7 @@ import {
 import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { SteamWidgetService } from '../steam.widget.service';
 import { GameDetailsComponent } from './game-details.component';
+import { IGameInfo } from '../ISteam';
 
 describe('GameDetailsComponent', () => {
   let spectator: Spectator<GameDetailsComponent>;
