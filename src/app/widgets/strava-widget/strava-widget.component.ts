@@ -109,7 +109,7 @@ export class StravaWidgetComponent {
       isAfter(new Date(Number.parseInt(this.tokenExpirationDate) * 1000), new Date())
     ) {
       this.stravaWidgetService.getActivities(this.token, this.paginationActivities).subscribe({
-        next: (response) => (this.activities = response.reverse()),
+        next: (response) => (this.activities = [...response].reverse()),
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACTIVITIES)
       });
@@ -117,16 +117,17 @@ export class StravaWidgetComponent {
   }
 
   public getActivitiesByMonth(): Record<string, number[]> {
-    const returnedActivities: Record<string, number[]> = {};
-    this.activities.reduce((activitiesByMonth: IActivity[], activity: IActivity) => {
-      const month = format(new Date(activity.start_date_local), 'yyyy-MM');
-      if (!returnedActivities[month]) {
-        returnedActivities[month] = [];
-      }
-      returnedActivities[month].push(Math.round(activity.distance * 1000) / 1000000);
-      return activitiesByMonth;
-    }, []);
-    return returnedActivities;
+    return this.activities.reduce(
+      (activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
+        const month = format(new Date(activity.start_date_local), 'yyyy-MM');
+        if (!activitiesByMonth[month]) {
+          activitiesByMonth[month] = [];
+        }
+        activitiesByMonth[month].push(Math.round(activity.distance * 1000) / 1000000);
+        return activitiesByMonth;
+      },
+      {}
+    );
   }
 
   public getStatsFromActivities() {
