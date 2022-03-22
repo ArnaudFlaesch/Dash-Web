@@ -95,8 +95,6 @@ export class CalendarWidgetComponent {
   public isCalendarViewDay = () => this.view === CalendarView.Day;
 
   public handleEvent(action: string, event: CalendarEvent): void {
-    console.log(action);
-    console.log(event);
     this.dialog.open(EventDetailModalComponent, {
       height: '300px',
       width: '500px',
