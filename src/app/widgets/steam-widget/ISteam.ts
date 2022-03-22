@@ -1,6 +1,3 @@
-import { IGameInfo } from './IGameInfo';
-import { IPlayerData } from './IPlayerData';
-
 export interface IPlayerDataResponse {
   response: {
     players: IPlayerData[];
@@ -32,7 +29,7 @@ export interface IAchievementResponse {
   };
 }
 
-interface IAchievement {
+export interface IAchievement {
   apiname: string;
   achieved: number;
   unlocktime: number;

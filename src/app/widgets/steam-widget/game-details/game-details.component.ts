@@ -1,8 +1,8 @@
 import { ErrorHandlerService } from './../../../services/error.handler.service';
 import { SteamWidgetService } from './../steam.widget.service';
-import { IGameInfo } from './../IGameInfo';
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { IGameInfo, IAchievement, IAchievementResponse } from '../ISteam';
 
 @Component({
   selector: 'app-game-details',
