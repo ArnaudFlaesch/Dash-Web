@@ -14,7 +14,7 @@ describe('CreateWidgetModalComponent', () => {
     spectator = createComponent();
   });
 
-  it('Dummy test', () => {
+  it('Should create the component', () => {
     expect(spectator.component).toBeTruthy();
   });
 });

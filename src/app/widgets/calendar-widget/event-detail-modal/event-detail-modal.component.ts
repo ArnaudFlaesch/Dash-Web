@@ -10,7 +10,6 @@ import { CalendarEvent } from 'angular-calendar';
 export class EventDetailModalComponent {
   public eventDetail: CalendarEvent;
   constructor(@Inject(MAT_DIALOG_DATA) public data: CalendarEvent) {
-    console.log(data);
     this.eventDetail = data;
   }
 }

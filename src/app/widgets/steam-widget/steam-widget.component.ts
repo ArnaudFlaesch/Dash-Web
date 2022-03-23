@@ -37,7 +37,7 @@ export class SteamWidgetComponent {
   public getOwnedGames(): void {
     this.steamWidgetService.getOwnedGames().subscribe({
       next: (response: IOwnedGamesResponse) =>
-        (this.ownedGames = (response.response.games as IGameInfo[]).sort((gameA, gameB) =>
+        (this.ownedGames = [...response.response.games].sort((gameA, gameB) =>
           gameA.name.localeCompare(gameB.name)
         )),
       error: (error: HttpErrorResponse) =>

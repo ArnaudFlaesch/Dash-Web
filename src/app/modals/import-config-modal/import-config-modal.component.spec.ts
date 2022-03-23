@@ -26,7 +26,7 @@ describe('ImportConfigModalComponent', () => {
     configService = createHttp();
   });
 
-  it('Dummy test', () => {
-    expect(true).toBeTruthy();
+  it('Should create the component', () => {
+    expect(spectator.component).toBeTruthy();
   });
 });
