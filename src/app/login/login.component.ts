@@ -1,14 +1,14 @@
-import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service/auth.service';
+import { ErrorHandlerService } from './../services/error.handler.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  public logoPath = './../assets/logo.png';
   public isLoading = false;
 
   public inputUsername = '';
@@ -18,7 +18,7 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private snackBar: MatSnackBar,
+    private errorHandlerService: ErrorHandlerService,
     private router: Router
   ) {}
 
@@ -30,10 +30,9 @@ export class LoginComponent {
           this.isLoading = false;
           this.router.navigate(['home']);
         },
-        error: (error: Error) => {
+        error: (error: HttpErrorResponse) => {
           this.isLoading = false;
-          console.log(error.message);
-          this.snackBar.open(this.ERROR_AUTHENTICATING_USER);
+          this.errorHandlerService.handleError(error.message, this.ERROR_AUTHENTICATING_USER);
         },
         complete: () => (this.isLoading = false)
       });

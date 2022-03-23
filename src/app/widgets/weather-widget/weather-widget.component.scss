@@ -1,0 +1,11 @@
+#header {
+  font-weight: bold;
+}
+
+.forecast-row {
+  overflow-x: scroll;
+}
+
+.forecast-container {
+  flex: 0 0 calc(100% / 3);
+}

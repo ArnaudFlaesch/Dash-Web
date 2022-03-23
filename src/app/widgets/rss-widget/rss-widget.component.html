@@ -1,0 +1,56 @@
+<app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()">
+  <ng-template #header>
+    <div class="h-10">
+      <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="flex flex-row">
+        <img class="max-h-8 max-w-1" src="{{ image?.url }}" alt="logo" />
+        <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">{{ this.title }}</div>
+      </a>
+    </div>
+  </ng-template>
+
+  <ng-template #editComponent>
+    <input id="rssFeedUrl" name="url" [(ngModel)]="this.urlFeed" placeholder="Saisissez l'URL du flux RSS" />
+  </ng-template>
+
+  <ng-template #additionalActions>
+    <div class="flex flex-row">
+      <mat-icon class="markAllArticlesAsRead" (click)="markAllFeedAsRead()">check</mat-icon>
+    </div>
+  </ng-template>
+
+  <ng-template #body>
+    <div *ngIf="this.urlFeed && this.feed.length">
+      <div class="font-bold">{{ this.description }}</div>
+      <div class="feed">
+        <mat-accordion>
+          <mat-expansion-panel
+            hideToggle
+            *ngFor="let article of feed"
+            class="rss-article"
+            (opened)="onOpenDetail(article.guid)"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title class="articleTitle" [ngClass]="{ 'is-read': isArticleRead(article.guid) }">
+                {{ this.formatTitleForArticle(article) }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ng-template matExpansionPanelContent>
+              <div class="border-2 border-gray-500 border-solid">
+                <div>
+                  <a class="rssPanelArticleTitle" [href]="article.link | safe: 'url'">{{ article.title }}</a>
+                </div>
+                <div class="articleContent">
+                  {{ stripHtmlFromContent(article.description) }}
+                </div>
+                <div class="articlePubDate">
+                  Publié le {{ dateUtilsService.formatDateFromUTC(article.pubDate || '') }}
+                  {{ article.author && 'par ' + article.author }}
+                </div>
+              </div>
+            </ng-template>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </ng-template>
+</app-widget>

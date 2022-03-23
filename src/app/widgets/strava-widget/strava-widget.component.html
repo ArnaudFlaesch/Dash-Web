@@ -1,0 +1,50 @@
+<app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()">
+  <ng-template #header>
+    <div id="stravaWidgetHeader">
+      <a [href]="getAthleteProfileUrl(athlete?.id)" class="flex flex-row">
+        <img class="h-9 w-9" [src]="athlete?.profile_medium" alt="athlete profile" />
+        <p>{{ athlete?.firstname }} {{ athlete?.lastname }}</p>
+      </a>
+    </div></ng-template
+  >
+
+  <ng-template #body>
+    <div class="flex flex-col">
+      <div *ngIf="this.isUserLoggedIn()">
+        <div class="max-h-48 overflow-y-scroll">
+          <div *ngFor="let activity of this.activities.slice().reverse(); let index = index" class="stravaActivity">
+            <mat-expansion-panel hideToggle>
+              <mat-expansion-panel-header>
+                <mat-panel-title> {{ getTitleToDisplay(activity) }} </mat-panel-title>
+              </mat-expansion-panel-header>
+              <ng-template matExpansionPanelContent>
+                <div>
+                  <div>
+                    <a href="https://www.strava.com/activities/{{ activity.id }}">
+                      {{ formatDate(activity.start_date_local) }}{{ activity.name }}
+                    </a>
+                  </div>
+                  <div>Distance : {{ roundDistance(activity.distance) / 1000 }} kms</div>
+                  <div>Durée : {{ convertDecimalTimeToTime(activity.moving_time / 60) }} mins</div>
+                  <div>Denivelé : {{ activity.total_elevation_gain }} mètres</div>
+                  <div>Trophées : {{ activity.achievement_count }}</div>
+                  <div>Vitesse moyenne : {{ activity.average_speed }}</div>
+                  <div>Vitesse max : {{ activity.max_speed }}</div>
+                  <div>Kudos : {{ activity.kudos_count }}</div>
+                  <div>Commentaires : {{ activity.comment_count }}</div>
+                </div>
+              </ng-template>
+            </mat-expansion-panel>
+          </div>
+        </div>
+
+        <div class="min-h-24 max-h-96">
+          <canvas baseChart [data]="getChartData()" [type]="'bar'"></canvas>
+        </div>
+      </div>
+      <a *ngIf="!this.isUserLoggedIn()">
+        <button (click)="loginToStrava()" mat-raised-button>Se connecter</button>
+      </a>
+    </div>
+  </ng-template>
+</app-widget>

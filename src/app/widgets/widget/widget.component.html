@@ -1,0 +1,38 @@
+<div class="widget">
+  <div *ngIf="isModeEdit()" class="flex flex-col">
+    <div class="grid justify-items-end m-2">
+      <mat-icon (click)="this.toDeleteMode()" aria-hidden="false">delete</mat-icon>
+    </div>
+    <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
+
+    <button class="validateButton" mat-raised-button (click)="onValidation()" [disabled]="!this.isFormValid">
+      Valider
+    </button>
+  </div>
+
+  <app-delete-widget
+    *ngIf="this.isModeDelete()"
+    (cancelWidgetDeletion)="toReadMode()"
+    (validateWidgetDeletion)="deleteWidget()"
+  ></app-delete-widget>
+
+  <div *ngIf="this.isModeRead()" class="h-96 m-2 border-2 border-solid border-black">
+    <div>
+      <div class="header h-10 flex flex-row justify-between sticky top-0">
+        <div class="font-bold w-1/2">
+          <ng-container *ngTemplateOutlet="header"> </ng-container>
+        </div>
+
+        <div class="flex flex-row max-w-1/2">
+          <span *ngIf="additionalActions"><ng-container *ngTemplateOutlet="additionalActions"> </ng-container></span>
+          <mat-icon *ngIf="this.editComponent" (click)="this.toEditMode()" class="editButton">settings</mat-icon>
+          <mat-icon (click)="this.refreshWidget()" class="refreshButton" aria-hidden="false">refresh</mat-icon>
+          <mat-icon (click)="this.toDeleteMode()" class="deleteButton" aria-hidden="false">delete</mat-icon>
+        </div>
+      </div>
+      <div class="max-h-80 overflow-y-scroll">
+        <ng-container *ngTemplateOutlet="body"> </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

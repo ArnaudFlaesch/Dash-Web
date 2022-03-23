@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ITab } from 'src/app/model/Tab';
+import { ITab } from '../../../app/model/Tab';
 import { environment } from '../../../environments/environment';
 import authorizationBearer from '../authorizationBearer/authorizationBearer';
 
@@ -53,8 +53,8 @@ export class TabService {
     });
   }
 
-  public deleteTab(id: number): Observable<unknown> {
-    return this.http.delete(`${environment.backend_url}/tab/deleteTab/?id=${id}`, {
+  public deleteTab(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.backend_url}/tab/deleteTab/?id=${id}`, {
       headers: {
         Authorization: authorizationBearer(),
         'Content-type': 'application/json'

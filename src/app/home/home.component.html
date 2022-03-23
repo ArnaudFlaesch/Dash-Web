@@ -1,12 +1,22 @@
 <div class="flex flex-row flex-wrap">
   <app-tab
-    class="tab"
-    [ngClass]="{ selectedItem: activeTab === tab.id }"
+    class="tab border-2 border-gray-800 border-opacity-100"
+    (click)="selectTab(tab.id)"
+    (tabDeletedEvent)="deleteTabFromDash($event)"
+    [ngClass]="{ 'selected-item': activeTab === tab.id }"
     *ngFor="let tab of this.tabs"
     [tab]="tab"
   ></app-tab>
-
-  <button id="logoutButton" mat-raised-button (click)="logout()">
-    Déconnexion
-  </button>
+  <mat-icon id="addNewTabButton" (click)="this.addNewTab()" aria-hidden="false">add_circle_outline</mat-icon>
+  <div>
+    <mat-icon id="openAddWidgetModal" (click)="this.openCreateWidgetModal()" aria-hidden="false"
+      >add_circle_outline</mat-icon
+    >
+    <mat-icon id="reloadAllWidgetsButton" aria-hidden="false">refresh</mat-icon>
+    <mat-icon id="downloadConfigButton" (click)="this.downloadConfig()" aria-hidden="false">download</mat-icon>
+    <mat-icon id="openImportConfigModal" (click)="this.openImportConfigModal()" aria-hidden="false">upload</mat-icon>
+    <button id="logoutButton" mat-raised-button (click)="logout()">Déconnexion</button>
+  </div>
 </div>
+
+<app-widget-list [widgetList]="this.activeWidgets" *ngIf="this.activeWidgets.length"></app-widget-list>

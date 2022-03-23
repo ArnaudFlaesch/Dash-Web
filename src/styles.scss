@@ -1,3 +1,5 @@
+@import '../node_modules/angular-calendar/css/angular-calendar.css';
+
 /* stylelint-disable */
 @tailwind base;
 @tailwind components;
@@ -12,4 +14,10 @@ body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+mat-expansion-panel-header {
+  &:hover {
+    font-weight: bold;
+  }
 }

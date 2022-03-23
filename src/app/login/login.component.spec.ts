@@ -1,3 +1,4 @@
+import { ErrorHandlerService } from './../services/error.handler.service';
 import { AuthService } from './../services/auth.service/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +10,7 @@ import {
   HttpMethod,
   Spectator,
   SpectatorHttp
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/jest';
 import { LoginComponent } from './login.component';
 import { environment } from '../../environments/environment';
 
@@ -20,17 +21,13 @@ describe('LoginComponent', () => {
   const createComponent = createComponentFactory({
     component: LoginComponent,
     imports: [HttpClientModule, FormsModule, MatSnackBarModule, RouterTestingModule],
-    providers: [AuthService]
+    providers: [AuthService, ErrorHandlerService]
   });
   const createHttp = createHttpFactory(AuthService);
 
   beforeEach(() => {
     spectator = createComponent();
     authService = createHttp();
-  });
-
-  it('should create the app', () => {
-    expect(spectator.component).toBeTruthy();
   });
 
   it('Should display the title', () => {
