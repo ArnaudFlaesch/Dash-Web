@@ -182,7 +182,7 @@ describe('WeatherWidgetComponent', () => {
     expect(spectator.component.forecast.length).toEqual(forecastData.list.length);
 
     if (spectator.component.cityData) {
-      expect(spectator.component.getWeatherChart(spectator.component.cityData).datasets).toEqual([
+      expect(spectator.component.weatherChart.datasets).toEqual([
         { borderColor: 'orange', data: [7.57, 6.76], label: 'Température' },
         { borderColor: 'red', data: [5.19, 3.67], label: 'Ressenti' }
       ]);
