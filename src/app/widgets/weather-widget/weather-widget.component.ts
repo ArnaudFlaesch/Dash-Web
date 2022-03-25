@@ -1,6 +1,6 @@
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { Component, ViewChild } from '@angular/core';
-import { ChartConfiguration, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartType, ChartTypeRegistry } from 'chart.js';
 import { format } from 'date-fns';
 import { BaseChartDirective } from 'ng2-charts';
 import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
@@ -24,6 +24,7 @@ export class WeatherWidgetComponent {
   public weather: IWeather | undefined;
   public forecast: IForecast[] = [];
   public cityData: ICity | undefined;
+  public weatherChart: ChartData<keyof ChartTypeRegistry, number[], string> | undefined = undefined;
   public forecastMode = ForecastMode.TODAY;
 
   public lineChartOptions: ChartConfiguration['options'] = {
@@ -56,6 +57,7 @@ export class WeatherWidgetComponent {
         next: (forecastApiResponse: IWeatherAPIResponse) => {
           this.forecast = forecastApiResponse.list;
           this.cityData = forecastApiResponse.city;
+          this.getWeatherChart(this.cityData);
         },
         error: (error) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_FORECAST_DATA)
@@ -94,7 +96,7 @@ export class WeatherWidgetComponent {
 
   public getWeatherChart(cityData: ICity) {
     const filteredData = this.filterForecastByMode(cityData, this.forecast);
-    return {
+    this.weatherChart = {
       labels: filteredData.map((forecastDay) => {
         if (
           this.forecastMode === ForecastMode.TODAY ||
@@ -139,7 +141,22 @@ export class WeatherWidgetComponent {
   public isForecastModeTomorrow = () => this.forecastMode === ForecastMode.TOMORROW;
   public isForecastModeWeek = () => this.forecastMode === ForecastMode.WEEK;
 
-  public selectTodayForecast = () => (this.forecastMode = ForecastMode.TODAY);
-  public selectTomorrowForecast = () => (this.forecastMode = ForecastMode.TOMORROW);
-  public selectWeekForecast = () => (this.forecastMode = ForecastMode.WEEK);
+  public selectTodayForecast = () => {
+    this.forecastMode = ForecastMode.TODAY;
+    this.updateChartData();
+  };
+  public selectTomorrowForecast = () => {
+    this.forecastMode = ForecastMode.TOMORROW;
+    this.updateChartData();
+  };
+  public selectWeekForecast = () => {
+    this.forecastMode = ForecastMode.WEEK;
+    this.updateChartData();
+  };
+
+  private updateChartData(): void {
+    if (this.cityData) {
+      this.getWeatherChart(this.cityData);
+    }
+  }
 }
