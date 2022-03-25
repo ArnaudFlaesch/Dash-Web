@@ -143,14 +143,20 @@ export class WeatherWidgetComponent {
 
   public selectTodayForecast = () => {
     this.forecastMode = ForecastMode.TODAY;
-    this.cityData ? this.getWeatherChart(this.cityData) : null;
+    this.updateChartData();
   };
   public selectTomorrowForecast = () => {
     this.forecastMode = ForecastMode.TOMORROW;
-    this.cityData ? this.getWeatherChart(this.cityData) : null;
+    this.updateChartData();
   };
   public selectWeekForecast = () => {
     this.forecastMode = ForecastMode.WEEK;
-    this.cityData ? this.getWeatherChart(this.cityData) : null;
+    this.updateChartData();
   };
+
+  private updateChartData(): void {
+    if (this.cityData) {
+      this.getWeatherChart(this.cityData);
+    }
+  }
 }
