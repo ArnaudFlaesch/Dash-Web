@@ -6,6 +6,7 @@ import { format, isAfter } from 'date-fns';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { StravaWidgetService } from './strava.widget.service';
 import { IActivity, IAthlete, ITokenData } from './IStrava';
+import { ChartData, ChartTypeRegistry } from 'chart.js';
 
 @Component({
   selector: 'app-strava-widget',
@@ -18,6 +19,8 @@ export class StravaWidgetComponent {
   public token: string | null = null;
   public refreshToken: string | null = null;
   public tokenExpirationDate: string | null = null;
+  public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
+    undefined;
 
   private STRAVA_CLIENT_ID = 30391;
 
@@ -109,7 +112,10 @@ export class StravaWidgetComponent {
       isAfter(new Date(Number.parseInt(this.tokenExpirationDate) * 1000), new Date())
     ) {
       this.stravaWidgetService.getActivities(this.token, this.paginationActivities).subscribe({
-        next: (response) => (this.activities = [...response].reverse()),
+        next: (response) => {
+          this.activities = [...response].reverse();
+          this.getChartData();
+        },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACTIVITIES)
       });
@@ -157,8 +163,8 @@ export class StravaWidgetComponent {
     );
   }
 
-  public getChartData() {
-    return {
+  public getChartData(): void {
+    this.activitiesChartData = {
       labels: this.getStatsFromActivities().map((data: any) => format(data.x, 'MMM yyyy')),
       datasets: [
         {

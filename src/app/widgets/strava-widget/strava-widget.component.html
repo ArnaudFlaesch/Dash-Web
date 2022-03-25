@@ -39,7 +39,7 @@
         </div>
 
         <div class="min-h-24 max-h-96">
-          <canvas baseChart [data]="getChartData()" [type]="'bar'"></canvas>
+          <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
         </div>
       </div>
       <a *ngIf="!this.isUserLoggedIn()">
