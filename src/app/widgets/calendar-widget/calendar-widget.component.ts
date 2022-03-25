@@ -5,6 +5,7 @@ import { addMonths, endOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { EventDetailModalComponent } from './event-detail-modal/event-detail-modal.component';
+import { ICalendarData } from './ICalendarData';
 
 @Component({
   selector: 'app-calendar-widget',
@@ -49,23 +50,23 @@ export class CalendarWidgetComponent {
     this.events = [];
     this.calendarUrls.forEach((calendarUrl: string) => {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
-        next: (calendarData) => this.parseEvents(calendarData.components),
+        next: (calendarData) => this.parseEvents(calendarData),
         error: (error) => console.error(error.message)
       });
     });
   }
 
-  private parseEvents(calendarData: any[]) {
+  private parseEvents(calendarData: ICalendarData[]) {
     const parsedEvents: CalendarEvent[] = calendarData
-      .filter((event) => event.startDate && event.endDate && event.summary)
+      .filter((event) => event.startDate && event.endDate && event.description)
       .map((event) => {
         return {
-          title: event.summary.value,
-          start: new Date(event.startDate.date),
-          end: new Date(event.endDate.date),
+          title: event.description,
+          start: new Date(event.startDate),
+          end: new Date(event.endDate),
           allDay:
-            new Date(event.endDate.date).getHours() === 0 &&
-            new Date(event.startDate.date).getHours() === 0
+            new Date(event.endDate).getDay() === new Date(event.startDate).getDay() + 1 &&
+            new Date(event.endDate).getHours() === new Date(event.startDate).getHours()
         };
       });
     this.events = [...this.events, ...parsedEvents];
