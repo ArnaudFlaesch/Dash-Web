@@ -10,7 +10,7 @@ describe('Config tests', () => {
   });
 
   it('Should export config', () => {
-    cy.intercept('GET', '/config/export')
+    cy.intercept('GET', '/dashConfig/export')
       .as('downloadConfig')
       .get('#downloadConfigButton')
       .click()
@@ -21,7 +21,7 @@ describe('Config tests', () => {
   });
 
   it('Should import config', () => {
-    cy.intercept('POST', '/config/import')
+    cy.intercept('POST', '/dashConfig/import')
       .as('importConfig')
       .get('#openImportConfigModal')
       .click()
