@@ -10,7 +10,7 @@ describe('Config error tests', () => {
   });
 
   it('Should fail to export config', () => {
-    cy.intercept('GET', '/config/export', { statusCode: 500 })
+    cy.intercept('GET', '/dashConfig/export', { statusCode: 500 })
       .as('downloadConfigError')
       .get('#downloadConfigButton')
       .click()
@@ -25,7 +25,7 @@ describe('Config error tests', () => {
   });
 
   it('Should fail to import config', () => {
-    cy.intercept('POST', '/config/import', { statusCode: 500 })
+    cy.intercept('POST', '/dashConfig/import', { statusCode: 500 })
       .as('importConfigError')
       .get('#openImportConfigModal')
       .click()

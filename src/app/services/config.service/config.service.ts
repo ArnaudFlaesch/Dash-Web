@@ -9,7 +9,7 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   public exportConfig(): Observable<BlobPart> {
-    return this.http.get(`${environment.backend_url}/config/export`, {
+    return this.http.get(`${environment.backend_url}/dashConfig/export`, {
       headers: {
         Authorization: authorizationBearer(),
         'Content-type': 'application/json'
@@ -21,7 +21,7 @@ export class ConfigService {
   public importConfig(file: File): Observable<boolean> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<boolean>(`${environment.backend_url}/config/import`, formData, {
+    return this.http.post<boolean>(`${environment.backend_url}/dashConfig/import`, formData, {
       headers: {
         Authorization: authorizationBearer()
       }
