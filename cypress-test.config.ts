@@ -8,8 +8,11 @@ export default defineConfig({
   screenshotOnRunFailure: true,
   video: false,
   videoCompression: false,
+  reporter: 'cypress-multi-reporters',
+  reporterOptions: {
+    configFile: 'reporter-e2e-config.json'
+  },
   env: {
-    coverage: false,
     backend_url: 'localhost:8080'
   },
   e2e: {
