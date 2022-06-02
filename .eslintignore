@@ -1,5 +1,8 @@
 .eslintrc.js
 
+cypress.config.ts
+cypress-test.config.ts
+
 node_modules
 dist
 build
