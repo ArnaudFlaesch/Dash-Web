@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Inject,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   TemplateRef
@@ -17,7 +18,7 @@ import { ModeEnum } from './../../enums/ModeEnum';
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss']
 })
-export class WidgetComponent implements OnInit {
+export class WidgetComponent implements OnInit, OnDestroy {
   @ContentChild('header', { static: false })
   header: TemplateRef<any> | null;
 
@@ -38,6 +39,8 @@ export class WidgetComponent implements OnInit {
 
   public mode: ModeEnum;
 
+  private timeoutRefresh: NodeJS.Timer | null = null;
+
   private ERROR_UPDATING_WIDGET_DATA =
     'Erreur lors de la mise à jour de la configuration du widget.';
 
@@ -57,6 +60,13 @@ export class WidgetComponent implements OnInit {
   public ngOnInit(): void {
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
+    this.timeoutRefresh = setInterval(this.refreshWidget, 60000);
+  }
+
+  public ngOnDestroy(): void {
+    if (this.timeoutRefresh) {
+      clearInterval(this.timeoutRefresh);
+    }
   }
 
   public onValidation() {
