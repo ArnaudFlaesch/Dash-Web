@@ -112,5 +112,8 @@
       }
     }
   },
-  "defaultProject": "Dash-Web"
+  "defaultProject": "Dash-Web",
+  "cli": {
+    "analytics": false
+  }
 }
