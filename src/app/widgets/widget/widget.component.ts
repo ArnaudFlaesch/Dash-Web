@@ -60,7 +60,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
-    this.timeoutRefresh = setInterval(this.refreshWidget, 60000);
+    this.timeoutRefresh = setInterval(this.refreshWidget, 300000);
   }
 
   public ngOnDestroy(): void {
