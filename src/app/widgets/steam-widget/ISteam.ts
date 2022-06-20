@@ -6,6 +6,7 @@ export interface IPlayerDataResponse {
 
 export interface IOwnedGamesResponse {
   response: {
+    game_count: number;
     games: IGameInfo[];
   };
 }

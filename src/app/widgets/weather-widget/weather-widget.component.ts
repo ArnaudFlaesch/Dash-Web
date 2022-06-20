@@ -1,15 +1,14 @@
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { Component, ViewChild } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType, ChartTypeRegistry } from 'chart.js';
-import { format } from 'date-fns';
+import { format, isToday, isTomorrow } from 'date-fns';
 import { BaseChartDirective } from 'ng2-charts';
 import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
 import { DateUtilsService } from '../../../app/services/date.utils';
 
 enum ForecastMode {
-  TODAY,
-  TOMORROW,
+  DAY,
   WEEK
 }
 
@@ -25,7 +24,8 @@ export class WeatherWidgetComponent {
   public forecast: IForecast[] = [];
   public cityData: ICity | undefined;
   public weatherChart: ChartData<keyof ChartTypeRegistry, number[], string> | undefined = undefined;
-  public forecastMode = ForecastMode.TODAY;
+  public forecastMode = ForecastMode.DAY;
+  public selectedDayForecast: Date = new Date();
 
   public lineChartOptions: ChartConfiguration['options'] = {
     maintainAspectRatio: false
@@ -76,18 +76,10 @@ export class WeatherWidgetComponent {
           return forecastElement.getHours() >= 15 && forecastElement.getHours() <= 18;
         });
       }
-      case ForecastMode.TOMORROW: {
+      case ForecastMode.DAY: {
         return forecastData.filter(
           (forecastDay) =>
-            new Date(forecastDay.dt * 1000).getDay() ===
-              new Date(+new Date() + 86400000).getDay() &&
-            new Date(forecastDay.dt * 1000).getHours() >= 7
-        );
-      }
-      case ForecastMode.TODAY: {
-        return forecastData.filter(
-          (forecastDay) =>
-            new Date(forecastDay.dt * 1000).getDay() === new Date().getDay() &&
+            new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast.getDay() &&
             new Date(forecastDay.dt * 1000).getHours() >= 7
         );
       }
@@ -98,10 +90,7 @@ export class WeatherWidgetComponent {
     const filteredData = this.filterForecastByMode(cityData, this.forecast);
     this.weatherChart = {
       labels: filteredData.map((forecastDay) => {
-        if (
-          this.forecastMode === ForecastMode.TODAY ||
-          this.forecastMode === ForecastMode.TOMORROW
-        ) {
+        if (this.forecastMode === ForecastMode.DAY) {
           return format(new Date(forecastDay.dt * 1000), 'HH');
         } else {
           return format(new Date(forecastDay.dt * 1000), 'EEE dd MMM');
@@ -137,18 +126,36 @@ export class WeatherWidgetComponent {
   public getIconFromWeatherApi = (icon: string) =>
     `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
-  public isForecastModeToday = () => this.forecastMode === ForecastMode.TODAY;
-  public isForecastModeTomorrow = () => this.forecastMode === ForecastMode.TOMORROW;
+  public getFiveDaysFromNow(): Date[] {
+    const numberOfSecondsInADay = 86400000;
+    return Array.from(Array(5).keys()).map(
+      (index) => new Date(+new Date() + numberOfSecondsInADay * index)
+    );
+  }
+
+  public formatDate(date: Date): string {
+    const dateFormat = 'dd/MM';
+    const formattedDate = format(date, dateFormat);
+    if (isToday(date)) {
+      return `Aujourd'hui ${formattedDate}`;
+    } else if (isTomorrow(date)) {
+      return `Demain ${formattedDate}`;
+    } else {
+      return formattedDate;
+    }
+  }
+
+  public isSelectedDay = (date: Date): boolean =>
+    this.forecastMode === ForecastMode.DAY && this.selectedDayForecast.getDay() === date.getDay();
+
   public isForecastModeWeek = () => this.forecastMode === ForecastMode.WEEK;
 
-  public selectTodayForecast = () => {
-    this.forecastMode = ForecastMode.TODAY;
+  public selectDayForecast = (date: Date) => {
+    this.forecastMode = ForecastMode.DAY;
+    this.selectedDayForecast = date;
     this.updateChartData();
   };
-  public selectTomorrowForecast = () => {
-    this.forecastMode = ForecastMode.TOMORROW;
-    this.updateChartData();
-  };
+
   public selectWeekForecast = () => {
     this.forecastMode = ForecastMode.WEEK;
     this.updateChartData();
