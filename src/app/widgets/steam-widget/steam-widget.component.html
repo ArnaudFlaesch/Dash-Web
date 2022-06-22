@@ -9,6 +9,13 @@
   </ng-template>
 
   <ng-template #body>
+    <form class="example-form">
+      <mat-form-field appearance="fill">
+        <mat-label>Recherchez un jeu</mat-label>
+        <input matInput [formControl]="searchFormControl" />
+      </mat-form-field>
+    </form>
+
     <div class="flex flex-col">
       <div *ngFor="let game of this.ownedGames; let index = index">
         <mat-expansion-panel hideToggle>
@@ -28,5 +35,14 @@
         </mat-expansion-panel>
       </div>
     </div>
+    <mat-paginator
+      (page)="onPageChanged($event)"
+      [length]="gameCount"
+      [pageSize]="pageSize"
+      [pageIndex]="pageNumber"
+      [pageSizeOptions]="pageSizeOptions"
+      aria-label="Sélectionnez une page"
+    >
+    </mat-paginator>
   </ng-template>
 </app-widget>

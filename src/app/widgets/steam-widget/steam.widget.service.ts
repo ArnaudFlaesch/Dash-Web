@@ -1,4 +1,9 @@
-import { IPlayerDataResponse, IOwnedGamesResponse, IAchievementResponse } from './ISteam';
+import {
+  IPlayerDataResponse,
+  IAchievementResponse,
+  IGameInfo,
+  IOwnedGamesResponse
+} from './ISteam';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -22,12 +27,20 @@ export class SteamWidgetService {
     });
   }
 
-  public getOwnedGames(): Observable<IOwnedGamesResponse> {
+  public getOwnedGames(search?: string, pageNumber?: number): Observable<IOwnedGamesResponse> {
+    const params: { search?: string; pageNumber?: number } = {};
+    if (search) {
+      params.search = search;
+    }
+    if (pageNumber) {
+      params.pageNumber = pageNumber;
+    }
     return this.http.get<IOwnedGamesResponse>(`${environment.backend_url}/steamWidget/ownedGames`, {
       headers: {
         Authorization: authorizationBearer(),
         'Content-type': 'application/json'
-      }
+      },
+      params: params
     });
   }
 
