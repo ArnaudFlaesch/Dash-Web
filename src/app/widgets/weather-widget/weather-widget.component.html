@@ -60,6 +60,7 @@
                 [color]="this.isSelectedDay(date) ? 'primary' : ''"
                 mat-raised-button
                 (click)="selectDayForecast(date)"
+                class="toggleForecast"
               >
                 {{ formatDate(date) }}
               </button>
