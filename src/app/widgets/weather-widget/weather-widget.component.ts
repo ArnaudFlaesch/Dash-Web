@@ -1,7 +1,7 @@
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { Component, ViewChild } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType, ChartTypeRegistry } from 'chart.js';
-import { format, isToday, isTomorrow } from 'date-fns';
+import { format, isToday, isTomorrow, startOfDay } from 'date-fns';
 import { BaseChartDirective } from 'ng2-charts';
 import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
@@ -23,6 +23,7 @@ export class WeatherWidgetComponent {
   public weather: IWeather | undefined;
   public forecast: IForecast[] = [];
   public cityData: ICity | undefined;
+  public fiveDaysOfForecast: Date[] = [];
   public weatherChart: ChartData<keyof ChartTypeRegistry, number[], string> | undefined = undefined;
   public forecastMode = ForecastMode.DAY;
   public selectedDayForecast: Date = new Date();
@@ -57,6 +58,9 @@ export class WeatherWidgetComponent {
         next: (forecastApiResponse: IWeatherAPIResponse) => {
           this.forecast = forecastApiResponse.list;
           this.cityData = forecastApiResponse.city;
+          this.fiveDaysOfForecast = [
+            ...new Set(this.forecast.map((data) => startOfDay(data.dt * 1000).getTime()))
+          ].map((data) => new Date(data));
           this.getWeatherChart(this.cityData);
         },
         error: (error) =>
@@ -125,13 +129,6 @@ export class WeatherWidgetComponent {
 
   public getIconFromWeatherApi = (icon: string) =>
     `https://openweathermap.org/img/wn/${icon}@2x.png`;
-
-  public getFiveDaysFromNow(): Date[] {
-    const numberOfSecondsInADay = 86400000;
-    return Array.from(Array(5).keys()).map(
-      (index) => new Date(+new Date() + numberOfSecondsInADay * index)
-    );
-  }
 
   public formatDate(date: Date): string {
     const dateFormat = 'dd/MM';

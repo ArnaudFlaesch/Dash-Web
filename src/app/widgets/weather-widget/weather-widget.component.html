@@ -54,9 +54,9 @@
         <div class="flex flex-row flex-wrap space-x-10">
           <span class="font-bold">Prévisions</span>
           <span class="flex flex-row space-x-1">
-            <div class="grid grid-cols-3 gap-2">
+            <div class="grid grid-cols-4 gap-2">
               <button
-                *ngFor="let date of getFiveDaysFromNow()"
+                *ngFor="let date of fiveDaysOfForecast"
                 [color]="this.isSelectedDay(date) ? 'primary' : ''"
                 mat-raised-button
                 (click)="selectDayForecast(date)"
