@@ -23,7 +23,7 @@ export class WeatherWidgetComponent {
   public weather: IWeather | undefined;
   public forecast: IForecast[] = [];
   public cityData: ICity | undefined;
-  public fiveDaysOfForecast: Date[] = [];
+  public forecastDays: Date[] = [];
   public weatherChart: ChartData<keyof ChartTypeRegistry, number[], string> | undefined = undefined;
   public forecastMode = ForecastMode.DAY;
   public selectedDayForecast: Date = new Date();
@@ -58,7 +58,7 @@ export class WeatherWidgetComponent {
         next: (forecastApiResponse: IWeatherAPIResponse) => {
           this.forecast = forecastApiResponse.list;
           this.cityData = forecastApiResponse.city;
-          this.fiveDaysOfForecast = [
+          this.forecastDays = [
             ...new Set(this.forecast.map((data) => startOfDay(data.dt * 1000).getTime()))
           ].map((data) => new Date(data));
           this.getWeatherChart(this.cityData);
