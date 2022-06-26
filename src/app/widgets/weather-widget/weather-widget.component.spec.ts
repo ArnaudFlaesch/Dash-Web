@@ -186,13 +186,13 @@ describe('WeatherWidgetComponent', () => {
         { borderColor: 'orange', data: [7.57, 6.76], label: 'Température' },
         { borderColor: 'red', data: [5.19, 3.67], label: 'Ressenti' }
       ]);
-      spectator.component.selectDayForecast(new Date(spectator.component.getFiveDaysFromNow()[0]));
+      spectator.component.selectDayForecast(new Date(spectator.component.forecastDays[0]));
       expect(
         spectator.component
           .filterForecastByMode(spectator.component.cityData, spectator.component.forecast)
           .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
       ).toEqual(['06-03-2022', '06-03-2022']);
-      spectator.component.selectDayForecast(new Date(spectator.component.getFiveDaysFromNow()[1]));
+      spectator.component.selectDayForecast(new Date(spectator.component.forecastDays[1]));
       expect(
         spectator.component
           .filterForecastByMode(spectator.component.cityData, spectator.component.forecast)

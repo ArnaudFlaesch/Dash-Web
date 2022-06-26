@@ -51,7 +51,7 @@ describe('Weather Widget tests', () => {
       .then((request: Interception[]) => {
         expect(request[0].response.statusCode).to.equal(200);
         expect(request[1].response.statusCode).to.equal(200);
-        cy.get('.widget:nth(1) .forecast').should('have.length.at.least', 5);
+        cy.get('.widget:nth(1) .forecast').should('have.length.at.least', 2);
       })
       .clock()
       .then((clock) => {
@@ -66,7 +66,7 @@ describe('Weather Widget tests', () => {
       .get('.widget:nth(1) .forecast-row')
       .scrollIntoView()
       .get('.widget:nth(1) .forecast')
-      .should('have.length.at.least', 5)
+      .should('have.length.at.least', 2)
       .get('.widget:nth(1) .toggleForecast:nth(1)')
       .click()
       .get('.forecast')
