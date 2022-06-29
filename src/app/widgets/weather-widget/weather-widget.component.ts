@@ -1,8 +1,7 @@
 import { ErrorHandlerService } from './../../services/error.handler.service';
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType, ChartTypeRegistry } from 'chart.js';
 import { format, isToday, isTomorrow, startOfDay } from 'date-fns';
-import { BaseChartDirective } from 'ng2-charts';
 import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
 import { DateUtilsService } from '../../../app/services/date.utils';
@@ -38,8 +37,6 @@ export class WeatherWidgetComponent {
     'Erreur lors de la récupération des données météorologiques.';
   private ERROR_GETTING_FORECAST_DATA =
     'Erreur lors de la récupération des prévisions météorologiques.';
-
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   constructor(
     private weatherWidgetService: WeatherWidgetService,
