@@ -51,7 +51,7 @@
     "@cypress/schematic": "2.0.0",
     "@ngneat/spectator": "11.1.0",
     "@types/jest": "28.1.4",
-    "@types/node": "16.11.42",
+    "@types/node": "16.11.43",
     "@typescript-eslint/eslint-plugin": "5.30.4",
     "@typescript-eslint/parser": "5.30.4",
     "angular-calendar": "0.29.0",
