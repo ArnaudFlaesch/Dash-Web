@@ -50,7 +50,7 @@
     "@angular/compiler-cli": "14.0.5",
     "@cypress/schematic": "2.0.0",
     "@ngneat/spectator": "11.1.0",
-    "@types/jest": "28.1.4",
+    "@types/jest": "28.1.5",
     "@types/node": "16.11.43",
     "@typescript-eslint/eslint-plugin": "5.30.6",
     "@typescript-eslint/parser": "5.30.6",
