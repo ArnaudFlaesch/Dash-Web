@@ -1,9 +1,11 @@
+import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -50,6 +52,8 @@ import { WeatherWidgetComponent } from './widgets/weather-widget/weather-widget.
 import { WeatherWidgetService } from './widgets/weather-widget/weather.widget.service';
 import { WidgetListComponent } from './widgets/widget-list/widget-list.component';
 import { WidgetComponent } from './widgets/widget/widget.component';
+import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -71,7 +75,8 @@ registerLocaleData(localeFr);
     SafePipe,
     CreateWidgetModalComponent,
     ImportConfigModalComponent,
-    EventDetailModalComponent
+    EventDetailModalComponent,
+    WorkoutWidgetComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -82,6 +87,8 @@ registerLocaleData(localeFr);
     MatSnackBarModule,
     FormsModule,
     MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
@@ -108,8 +115,11 @@ registerLocaleData(localeFr);
     ErrorHandlerService,
     DateUtilsService,
     SteamWidgetService,
+    WorkoutWidgetService,
     CalendarWidgetService,
     StravaWidgetService,
+    MatDatepickerModule,
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     AuthGuard,
     { provide: LOCALE_ID, useValue: 'fr-FR' }
   ],

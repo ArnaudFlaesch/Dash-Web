@@ -7,7 +7,9 @@
     *ngFor="let tab of this.tabs"
     [tab]="tab"
   ></app-tab>
-  <mat-icon id="addNewTabButton" (click)="this.addNewTab()" aria-hidden="false">add_circle_outline</mat-icon>
+  <div class="border-2 border-gray-800 border-opacity-100 bg-green-400">
+    <mat-icon id="addNewTabButton" (click)="this.addNewTab()" aria-hidden="false">add_circle_outline</mat-icon>
+  </div>
   <div>
     <mat-icon id="openAddWidgetModal" (click)="this.openCreateWidgetModal()" aria-hidden="false"
       >add_circle_outline</mat-icon
