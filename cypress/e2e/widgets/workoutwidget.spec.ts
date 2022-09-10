@@ -69,7 +69,8 @@ describe('Workout Widget tests', () => {
   });
 
   it('Should add a new workout exercise', () => {
-    cy.intercept('GET', '/workoutWidget/workoutExercises?workoutSessionId*')
+    cy.clock(new Date(2022, 9, 10, 0, 0, 0).getTime())
+      .intercept('GET', '/workoutWidget/workoutExercises?workoutSessionId*')
       .as('getWorkoutExercises')
       .intercept('POST', `/workoutWidget/addWorkoutExercise`)
       .as('addWorkoutExercise')
@@ -81,7 +82,7 @@ describe('Workout Widget tests', () => {
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
         cy.get('#workoutSessionDate')
-          .should('have.text', `Session du ${new Date().toLocaleDateString()}`)
+          .should('have.text', `Session du 10/09/2022`)
           .intercept('POST', '/workoutWidget/updateWorkoutExercise')
           .as('updateWorkoutExercise')
           .get('.addRepToWorkoutButton')
@@ -92,6 +93,10 @@ describe('Workout Widget tests', () => {
             expect(request.response.body.numberOfReps).to.equal(1);
             cy.get('.workoutNumberOfReps').should('have.text', 1);
           });
+      })
+      .clock()
+      .then((clock) => {
+        clock.restore();
       });
   });
 
