@@ -34,7 +34,7 @@ describe('Workout Widget tests', () => {
       .as('addWorkoutType')
       .get('.workoutTypeName')
       .should('have.length', 0)
-      .get('.workoutSession')
+      .get('.workout-session')
       .should('have.length', 0)
       .get('#addWorkoutInput')
       .type(newWorkoutTypeName)
@@ -53,7 +53,7 @@ describe('Workout Widget tests', () => {
       .as('createWorkoutSession')
       .get('.workoutTypeName')
       .should('have.length', 1)
-      .get('.workoutSession')
+      .get('.workout-session')
       .should('have.length', 0)
       .get('#workoutDatePickerField .mat-datepicker-toggle')
       .click()
@@ -64,7 +64,7 @@ describe('Workout Widget tests', () => {
       .wait('@createWorkoutSession')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workoutSession').should('have.length', 1);
+        cy.get('.workout-session').should('have.length', 1);
       });
   });
 
@@ -73,9 +73,9 @@ describe('Workout Widget tests', () => {
       .as('getWorkoutExercises')
       .intercept('POST', `/workoutWidget/addWorkoutExercise`)
       .as('addWorkoutExercise')
-      .get('.workoutSession')
+      .get('.workout-session')
       .should('have.length', 1)
-      .get('.workoutSession > div:nth(0)')
+      .get('.workout-session > div:nth(0)')
       .click()
       .wait('@getWorkoutExercises')
       .then((request: Interception) => {

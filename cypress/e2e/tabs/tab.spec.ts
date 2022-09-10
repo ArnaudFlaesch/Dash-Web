@@ -8,7 +8,7 @@ describe('Tab tests', () => {
   });
 
   it('Should create a new tab', () => {
-    cy.get('#addNewTabButton').click().get('.tab').should('have.length', 8);
+    cy.get('#addNewTabButton').click().get('.tab').should('have.length', 7);
   });
 
   it('Should edit the created tab', () => {
@@ -60,7 +60,7 @@ describe('Tab tests', () => {
       .click()
       .wait('@deleteTab')
       .then(() => {
-        cy.get('.tab').should('have.length', 7);
+        cy.get('.tab').should('have.length', 6);
       });
   });
 });
