@@ -28,7 +28,7 @@
         <h2>Sessions</h2>
         <div *ngFor="let workoutSession of this.workoutSessions">
           <ul>
-            <li class="workoutSession">
+            <li class="workout-session">
               <div (click)="editWorkoutSession(workoutSession)">{{ formatDate(workoutSession.workoutDate) }}</div>
             </li>
           </ul>

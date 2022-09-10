@@ -1,20 +1,19 @@
-import { IWorkoutType } from './model/Workout';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
-  Spectator,
-  SpectatorHttp,
   createComponentFactory,
   createHttpFactory,
-  HttpMethod
+  HttpMethod,
+  Spectator,
+  SpectatorHttp
 } from '@ngneat/spectator';
 import { ErrorHandlerService } from '../../services/error.handler.service';
+import { IWorkoutType } from './model/Workout';
 
-import { WorkoutWidgetComponent } from './workout-widget.component';
-import { WorkoutWidgetService } from './workout.widget.service';
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils';
+import { WorkoutWidgetComponent } from './workout-widget.component';
+import { WorkoutWidgetService } from './workout.widget.service';
 
 describe('WorkoutWidgetComponent', () => {
   let spectator: Spectator<WorkoutWidgetComponent>;

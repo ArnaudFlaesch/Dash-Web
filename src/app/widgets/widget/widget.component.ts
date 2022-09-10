@@ -20,16 +20,16 @@ import { ModeEnum } from './../../enums/ModeEnum';
 })
 export class WidgetComponent implements OnInit, OnDestroy {
   @ContentChild('header', { static: false })
-  header: TemplateRef<any> | null;
+  header: TemplateRef<unknown> | null;
 
   @ContentChild('additionalActions', { static: false })
-  additionalActions: TemplateRef<any> | null;
+  additionalActions: TemplateRef<unknown> | null;
 
   @ContentChild('body', { static: false })
-  body: TemplateRef<any> | null;
+  body: TemplateRef<unknown> | null;
 
   @ContentChild('editComponent', { static: false })
-  editComponent: TemplateRef<any> | null;
+  editComponent: TemplateRef<unknown> | null;
 
   public widgetId: number;
 

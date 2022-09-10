@@ -20,7 +20,7 @@ export class CalendarWidgetComponent {
 
   view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
-  refresh: Subject<any> = new Subject();
+  refresh: Subject<unknown> = new Subject();
   locale = 'fr';
   hourSegments: 1 | 2 | 4 | 6 = 1;
   weekStartsOn = 1;
@@ -79,7 +79,7 @@ export class CalendarWidgetComponent {
   public removeCalendarUrl = (calendarUrl: string) =>
     (this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl));
 
-  public onCalendarUrlUpdated = (event: any) => {
+  public onCalendarUrlUpdated = (event: unknown) => {
     this.calendarUrls = this.calendarUrls.map((url: string, index: number) =>
       index.toString() === event.target?.id ? event.target.value : url
     );
