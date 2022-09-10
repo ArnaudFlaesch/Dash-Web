@@ -79,7 +79,7 @@ export class CalendarWidgetComponent {
   public removeCalendarUrl = (calendarUrl: string) =>
     (this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl));
 
-  public onCalendarUrlUpdated = (event: unknown) => {
+  public onCalendarUrlUpdated = (event: any) => {
     this.calendarUrls = this.calendarUrls.map((url: string, index: number) =>
       index.toString() === event.target?.id ? event.target.value : url
     );
