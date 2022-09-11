@@ -154,5 +154,9 @@ describe('WorkoutWidgetComponent', () => {
       numberOfReps: 0
     } as IWorkoutExercise);
     expect(spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)).toEqual(0);
+
+    spectator.component.backToWorkoutSessionsList();
+    expect(spectator.component.workoutExercises).toEqual([]);
+    expect(spectator.component.currentWorkoutSessionToEdit).toEqual(null);
   });
 });
