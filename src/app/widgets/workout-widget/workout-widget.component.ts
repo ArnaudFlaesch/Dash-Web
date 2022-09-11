@@ -27,7 +27,7 @@ export class WorkoutWidgetComponent {
 
   public dateFormat = DEFAULT_DATE_FORMAT;
 
-  public currentWorkoutSessionToEdit = 0;
+  public currentWorkoutSessionToEdit: IWorkoutSession | null = null;
 
   public widgetViewEnum = WORKOUT_WIDGET_VIEW;
 
@@ -62,15 +62,15 @@ export class WorkoutWidgetComponent {
     });
   }
 
-  public editWorkoutSession(workoutSessionId: number) {
+  public editWorkoutSession(workoutSession: IWorkoutSession) {
     this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.EDIT_WORKOUT_SESSION_VIEW;
-    this.currentWorkoutSessionToEdit = workoutSessionId;
-    this.fetchWorkoutExercisesBySessionId(this.currentWorkoutSessionToEdit);
+    this.currentWorkoutSessionToEdit = workoutSession;
+    this.fetchWorkoutExercisesBySessionId(this.currentWorkoutSessionToEdit.id);
   }
 
   public backToWorkoutSessionsList() {
     this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
-    this.currentWorkoutSessionToEdit = 0;
+    this.currentWorkoutSessionToEdit = null;
     this.workoutExercises = [];
   }
 
@@ -147,7 +147,7 @@ export class WorkoutWidgetComponent {
     const oldNumberOfReps = this.getExerciceNumberOfReps(workoutTypeId);
     if (this.currentWorkoutSessionToEdit) {
       this.updateWorkoutExercise(
-        this.currentWorkoutSessionToEdit,
+        this.currentWorkoutSessionToEdit.id,
         workoutTypeId,
         oldNumberOfReps + numberOfRepsToAdd
       );

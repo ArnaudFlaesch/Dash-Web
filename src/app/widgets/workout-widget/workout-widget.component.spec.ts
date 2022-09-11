@@ -112,7 +112,7 @@ describe('WorkoutWidgetComponent', () => {
     expect(spectator.component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
 
     // Edit and add workout exercise
-    spectator.component.editWorkoutSession(mockedAddNewWorkoutSessionResponse.id);
+    spectator.component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
 
     const getWorkoutExercisesRequest = workoutWidgetService.expectOne(
       environment.backend_url +
@@ -123,7 +123,7 @@ describe('WorkoutWidgetComponent', () => {
     getWorkoutExercisesRequest.flush([]);
 
     expect(spectator.component.currentWorkoutSessionToEdit).toEqual(
-      mockedAddNewWorkoutSessionResponse.id
+      mockedAddNewWorkoutSessionResponse
     );
     expect(spectator.component.workoutExercises).toEqual([]);
 
