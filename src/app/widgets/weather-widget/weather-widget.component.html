@@ -101,10 +101,10 @@
             <div class="flex flex-row">
               <div>
                 <img
-                  [src]="getIconFromWeatherApi(forecastDay.weather[0]?.icon || '')"
+                  [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')"
                   class="max-h-14 max-w-14"
-                  [title]="forecastDay.weather[0]?.description"
-                  [alt]="forecastDay.weather[0]?.description"
+                  [title]="forecastDay.weather[0].description"
+                  [alt]="forecastDay.weather[0].description"
                 />
               </div>
               <div>

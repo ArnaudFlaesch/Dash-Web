@@ -135,14 +135,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result: WidgetTypes) => {
-      const type = WidgetTypes[result];
-      this.widgetService.addWidget(type, this.activeTab).subscribe({
-        next: (response: IWidgetConfig) => {
-          this.activeWidgets = [...this.activeWidgets, response];
-        },
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_WIDGET)
-      });
+      if (result) {
+        const type = WidgetTypes[result];
+        this.widgetService.addWidget(type, this.activeTab).subscribe({
+          next: (response: IWidgetConfig) => {
+            this.activeWidgets = [...this.activeWidgets, response];
+          },
+          error: (error: HttpErrorResponse) =>
+            this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_WIDGET)
+        });
+      }
     });
   }
 

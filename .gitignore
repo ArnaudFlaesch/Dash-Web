@@ -47,3 +47,6 @@ coverage-jest/
 cypress/results
 
 src/environments/env.vars.secret.ts
+
+cypress/downloads/
+cypress/screenshots/

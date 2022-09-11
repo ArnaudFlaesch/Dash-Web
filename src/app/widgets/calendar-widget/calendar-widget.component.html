@@ -71,6 +71,7 @@
         [locale]="locale"
         [viewDate]="viewDate"
         [events]="events"
+        [weekStartsOn]="weekStartsOn"
         [refresh]="refresh"
         [activeDayIsOpen]="activeDayIsOpen"
         (eventClicked)="handleEvent('Clicked', $event.event)"
@@ -80,6 +81,7 @@
       <mwl-calendar-week-view
         *ngSwitchCase="calendarView.Week"
         [viewDate]="viewDate"
+        [weekStartsOn]="weekStartsOn"
         [locale]="locale"
         [events]="events"
         [refresh]="refresh"

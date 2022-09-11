@@ -2,11 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
 import { ErrorHandlerService } from '../../services/error.handler.service';
-import { StravaWidgetService } from './strava.widget.service';
 import { IActivity, IAthlete, ITokenData } from './IStrava';
-import { ChartData, ChartTypeRegistry } from 'chart.js';
+import { StravaWidgetService } from './strava.widget.service';
 
 @Component({
   selector: 'app-strava-widget',
@@ -16,9 +16,6 @@ import { ChartData, ChartTypeRegistry } from 'chart.js';
 export class StravaWidgetComponent {
   public activities: IActivity[] = [];
   public athlete: IAthlete | undefined;
-  public token: string | null = null;
-  public refreshToken: string | null = null;
-  public tokenExpirationDate: string | null = null;
   public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
     undefined;
 
@@ -48,13 +45,10 @@ export class StravaWidgetComponent {
     if (apiCode) {
       this.getToken(apiCode);
     }
-    this.token = window.localStorage.getItem(this.STORAGE_STRAVA_TOKEN_KEY);
-    this.refreshToken = window.localStorage.getItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY);
-    this.tokenExpirationDate = window.localStorage.getItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY);
   }
 
   public refreshWidget() {
-    if (this.token) {
+    if (this.getTokenValue()) {
       this.activities = [];
       this.getAthleteData();
     } else {
@@ -76,12 +70,16 @@ export class StravaWidgetComponent {
   }
 
   private refreshTokenFromApi() {
-    if (this.refreshToken) {
-      this.stravaWidgetService.getRefreshToken(this.refreshToken).subscribe({
+    const refreshToken = this.getRefreshTokenValue();
+    if (refreshToken) {
+      this.stravaWidgetService.getRefreshToken(refreshToken).subscribe({
         next: (response: ITokenData) => {
-          this.token = response.access_token;
-          this.refreshToken = response.refresh_token;
-          this.tokenExpirationDate = response.expires_at;
+          window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.access_token);
+          window.localStorage.setItem(
+            this.STORAGE_STRAVA_REFRESH_TOKEN_KEY,
+            response.refresh_token
+          );
+          window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expires_at);
           this.athlete = response.athlete;
         },
         error: (error: HttpErrorResponse) =>
@@ -93,8 +91,9 @@ export class StravaWidgetComponent {
   }
 
   public getAthleteData() {
-    if (this.token) {
-      this.stravaWidgetService.getAthleteData(this.token).subscribe({
+    const token = this.getTokenValue();
+    if (token) {
+      this.stravaWidgetService.getAthleteData(token).subscribe({
         next: (response) => {
           this.athlete = response;
           this.getActivities();
@@ -106,12 +105,14 @@ export class StravaWidgetComponent {
   }
 
   public getActivities() {
+    const token = this.getTokenValue();
+    const tokenExpirationDate = this.getTokenExpiresAtValue();
     if (
-      this.token &&
-      this.tokenExpirationDate &&
-      isAfter(new Date(Number.parseInt(this.tokenExpirationDate) * 1000), new Date())
+      token &&
+      tokenExpirationDate &&
+      isAfter(new Date(Number.parseInt(tokenExpirationDate) * 1000), new Date())
     ) {
-      this.stravaWidgetService.getActivities(this.token, this.paginationActivities).subscribe({
+      this.stravaWidgetService.getActivities(token, this.paginationActivities).subscribe({
         next: (response) => {
           this.activities = [...response].reverse();
           this.getChartData();
@@ -155,11 +156,14 @@ export class StravaWidgetComponent {
   }
 
   public isUserLoggedIn(): boolean {
+    const token = this.getTokenValue();
+    const refreshToken = this.getRefreshTokenValue();
+    const tokenExpirationDate = this.getTokenExpiresAtValue();
     return (
-      this.token !== null &&
-      this.refreshToken !== null &&
-      this.tokenExpirationDate !== null &&
-      isAfter(new Date(Number.parseInt(this.tokenExpirationDate) * 1000), new Date())
+      token !== null &&
+      refreshToken !== null &&
+      tokenExpirationDate !== null &&
+      isAfter(new Date(Number.parseInt(tokenExpirationDate) * 1000), new Date())
     );
   }
 
@@ -192,5 +196,17 @@ export class StravaWidgetComponent {
     const decimalPart = decimalTime % 1;
     const convertedDecimalPart = Math.round(decimalPart * 6) / 10;
     return decimalTime - decimalPart + convertedDecimalPart;
+  }
+
+  public getTokenValue(): string | null {
+    return window.localStorage.getItem(this.STORAGE_STRAVA_TOKEN_KEY);
+  }
+
+  public getRefreshTokenValue(): string | null {
+    return window.localStorage.getItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY);
+  }
+
+  public getTokenExpiresAtValue(): string | null {
+    return window.localStorage.getItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY);
   }
 }

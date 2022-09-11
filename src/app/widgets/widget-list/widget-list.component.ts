@@ -18,6 +18,7 @@ import { SteamWidgetComponent } from '../steam-widget/steam-widget.component';
 import { WeatherWidgetComponent } from '../weather-widget/weather-widget.component';
 import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { StravaWidgetComponent } from '../strava-widget/strava-widget.component';
+import { WorkoutWidgetComponent } from '../workout-widget/workout-widget.component';
 
 @Component({
   selector: 'app-widget-list',
@@ -86,6 +87,10 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
           }
           case WidgetTypes.STEAM: {
             target.createComponent(SteamWidgetComponent, { injector: injector });
+            break;
+          }
+          case WidgetTypes.WORKOUT: {
+            target.createComponent(WorkoutWidgetComponent, { injector: injector });
             break;
           }
         }

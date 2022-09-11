@@ -40,7 +40,7 @@ describe('Tab error tests', () => {
     cy.intercept('POST', '/tab/addTab', { statusCode: 500 })
       .as('addTabError')
       .get('.tab')
-      .should('have.length', 5)
+      .should('have.length', 6)
       .get('#addNewTabButton')
       .click()
       .wait('@addTabError')
@@ -49,7 +49,7 @@ describe('Tab error tests', () => {
         cy.get('.mat-simple-snack-bar-content')
           .should('have.text', "Erreur lors de l'ajout d'un onglet.")
           .get('.tab')
-          .should('have.length', 5);
+          .should('have.length', 6);
       });
   });
 
@@ -76,7 +76,7 @@ describe('Tab error tests', () => {
           .should('have.text', "Erreur lors de la modification d'un onglet.")
           .reload()
           .get('.tab')
-          .should('have.length', 5)
+          .should('have.length', 6)
           .eq(0)
           .find('.tabLabel')
           .invoke('text')
@@ -90,7 +90,7 @@ describe('Tab error tests', () => {
     cy.intercept('DELETE', '/tab/deleteTab/*', { statusCode: 500 })
       .as('deleteTabError')
       .get('.tab')
-      .should('have.length', 5)
+      .should('have.length', 6)
       .eq(0)
       .dblclick()
       .get('.deleteTabButton')
@@ -101,7 +101,7 @@ describe('Tab error tests', () => {
         cy.get('.mat-simple-snack-bar-content')
           .should('have.text', "Erreur lors de la suppression d'un onglet.")
           .get('.tab')
-          .should('have.length', 5);
+          .should('have.length', 6);
       });
   });
 });

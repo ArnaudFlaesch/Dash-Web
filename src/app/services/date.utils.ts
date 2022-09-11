@@ -6,9 +6,20 @@ export class DateUtilsService {
     return new Date(timestamp * 1000 + offset * 1000);
   }
 
+  /**
+   * Ex: Fri Sep 09 2022 00:00:00 GMT+0200 (heure d’été d’Europe centrale)
+   * Returns : Fri Sep 09 2022 02:00:00 GMT+0200 (heure d’été d’Europe centrale)
+   * @param date
+   * @returns
+   */
+  public formatDateWithOffsetToUtc(date: Date) {
+    date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
+    return date;
+  }
+
   public formatDateFromUTC(date: string): string {
     const parsedDate = new Date(date);
-    return parsedDate.toLocaleString('fr');
+    return parsedDate.toLocaleDateString('fr');
   }
 
   public adjustTimeWithOffset(offset: number): number {

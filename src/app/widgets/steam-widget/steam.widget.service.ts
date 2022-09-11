@@ -1,9 +1,4 @@
-import {
-  IPlayerDataResponse,
-  IAchievementResponse,
-  IGameInfo,
-  IOwnedGamesResponse
-} from './ISteam';
+import { IPlayerDataResponse, IAchievementResponse, IOwnedGamesResponse } from './ISteam';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
