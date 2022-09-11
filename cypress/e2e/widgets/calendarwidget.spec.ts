@@ -49,7 +49,8 @@ describe('Calendar Widget tests', () => {
           .click()
           .wait('@getCalendarDataRequest')
           .then(() => {
-            cy.get('.cal-future:nth(14) .cal-day-badge')
+            cy.get('.cal-future:nth(15)')
+              .find('.cal-day-badge')
               .should('have.text', 1)
               .get('.editButton')
               .click()
@@ -64,7 +65,8 @@ describe('Calendar Widget tests', () => {
               (request: Interception[]) => {
                 expect(request[0].response.statusCode).to.equal(200);
                 expect(request[1].response.statusCode).to.equal(200);
-                cy.get('.cal-future:nth(4) .cal-day-badge')
+                cy.get('.cal-future:nth(4)')
+                  .scrollIntoView()
                   .get('.editButton')
                   .click()
                   .get('.removeCalendarUrl')

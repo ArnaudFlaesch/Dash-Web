@@ -3,6 +3,8 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Workout Widget tests', () => {
+  const mockedDateTime = new Date(2022, 8, 10, 0, 0, 0).getTime();
+
   beforeEach(() => {
     cy.loginAsAdmin()
       .visit('/')
@@ -40,7 +42,6 @@ describe('Workout Widget tests', () => {
       .type(newWorkoutTypeName)
       .get('#addWorkoutTypeButton')
       .click()
-
       .wait('@addWorkoutType')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
@@ -51,6 +52,7 @@ describe('Workout Widget tests', () => {
   it('Should add a new workout session', () => {
     cy.intercept('POST', `/workoutWidget/createWorkoutSession`)
       .as('createWorkoutSession')
+      .clock(mockedDateTime)
       .get('.workoutTypeName')
       .should('have.length', 1)
       .get('.workout-session')
@@ -65,11 +67,15 @@ describe('Workout Widget tests', () => {
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
         cy.get('.workout-session').should('have.length', 1);
+      })
+      .clock()
+      .then((clock) => {
+        clock.restore();
       });
   });
 
   it('Should add a new workout exercise', () => {
-    cy.clock(new Date(2022, 9, 10, 0, 0, 0).getTime())
+    cy.clock(mockedDateTime)
       .intercept('GET', '/workoutWidget/workoutExercises?workoutSessionId*')
       .as('getWorkoutExercises')
       .intercept('POST', `/workoutWidget/addWorkoutExercise`)
