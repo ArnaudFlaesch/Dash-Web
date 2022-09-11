@@ -8,7 +8,7 @@ import {
   SpectatorHttp
 } from '@ngneat/spectator';
 import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IWorkoutType } from './model/Workout';
+import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './model/Workout';
 
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils';
@@ -88,5 +88,71 @@ describe('WorkoutWidgetComponent', () => {
     const addWorkoutTypeResponse = { id: 1, name: newWorkoutTypeName } as IWorkoutType;
     addWorkoutTypeRequest.flush(addWorkoutTypeResponse);
     expect(spectator.component.workoutTypes).toEqual([addWorkoutTypeResponse]);
+  });
+
+  it('Should create a new workout session and add a rep to an exercise', () => {
+    const alreadyExistingWorkoutType = { id: 1, name: 'Abdos' } as IWorkoutType;
+    spectator.component.workoutTypes = [alreadyExistingWorkoutType];
+    const newWorkoutSessionDate = new Date(2022, 8, 1, 0, 0, 0).toString();
+    spectator.component.workoutDateFormControl.setValue(newWorkoutSessionDate);
+    spectator.component.createWorkoutSession();
+
+    const addNewWorkoutSessionRequest = workoutWidgetService.expectOne(
+      environment.backend_url + '/workoutWidget/createWorkoutSession',
+      HttpMethod.POST
+    );
+
+    const mockedAddNewWorkoutSessionResponse = {
+      id: 1,
+      workoutDate: newWorkoutSessionDate
+    } as IWorkoutSession;
+
+    addNewWorkoutSessionRequest.flush(mockedAddNewWorkoutSessionResponse);
+
+    expect(spectator.component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
+
+    // Edit and add workout exercise
+    spectator.component.editWorkoutSession(mockedAddNewWorkoutSessionResponse.id);
+
+    const getWorkoutExercisesRequest = workoutWidgetService.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutExercises?workoutSessionId=${mockedAddNewWorkoutSessionResponse.id}`,
+      HttpMethod.GET
+    );
+
+    getWorkoutExercisesRequest.flush([]);
+
+    expect(spectator.component.currentWorkoutSessionToEdit).toEqual(
+      mockedAddNewWorkoutSessionResponse.id
+    );
+    expect(spectator.component.workoutExercises).toEqual([]);
+
+    expect(spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)).toEqual(0);
+    const workoutExerciseId = {
+      workoutSessionId: mockedAddNewWorkoutSessionResponse.id,
+      workoutTypeId: alreadyExistingWorkoutType.id
+    };
+    spectator.component.incrementExerciceNumberOfReps(alreadyExistingWorkoutType.id);
+    const incrementWorkoutExerciseRequest = workoutWidgetService.expectOne(
+      environment.backend_url + `/workoutWidget/updateWorkoutExercise`,
+      HttpMethod.POST
+    );
+    incrementWorkoutExerciseRequest.flush({
+      workoutExerciseId: workoutExerciseId,
+      numberOfReps: 1
+    } as IWorkoutExercise);
+
+    expect(spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)).toEqual(1);
+
+    spectator.component.decrementExerciceNumberOfReps(alreadyExistingWorkoutType.id);
+    const decrementWorkoutExerciseRequest = workoutWidgetService.expectOne(
+      environment.backend_url + `/workoutWidget/updateWorkoutExercise`,
+      HttpMethod.POST
+    );
+    decrementWorkoutExerciseRequest.flush({
+      workoutExerciseId: workoutExerciseId,
+      numberOfReps: 0
+    } as IWorkoutExercise);
+    expect(spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)).toEqual(0);
   });
 });
