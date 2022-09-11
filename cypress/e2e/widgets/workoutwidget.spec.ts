@@ -7,13 +7,19 @@ describe('Workout Widget tests', () => {
 
   beforeEach(() => {
     cy.loginAsAdmin()
+      .intercept('GET', '/widget/*')
+      .as('getWidgets')
       .visit('/')
       .title()
       .should('equals', 'Dash')
       .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
       .get('.tab')
       .contains('Workout')
-      .click();
+      .click()
+      .wait('@getWidgets')
+      .then((request: Interception) => {
+        expect(request.response.statusCode).to.equal(200);
+      });
   });
 
   it('Should create a Workout Widget and add it to the dashboard', () => {
