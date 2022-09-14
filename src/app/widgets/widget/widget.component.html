@@ -1,4 +1,4 @@
-<div class="widget">
+<div class="widget rounded m-2">
   <div *ngIf="isModeEdit()" class="flex flex-col">
     <div class="grid justify-items-end m-2">
       <mat-icon (click)="this.toDeleteMode()" aria-hidden="false">delete</mat-icon>
@@ -16,10 +16,10 @@
     (validateWidgetDeletion)="deleteWidget()"
   ></app-delete-widget>
 
-  <div *ngIf="this.isModeRead()" class="h-96 m-2 border-2 border-solid border-black">
+  <div *ngIf="this.isModeRead()" class="h-96 border-2 border-solid border-black rounded">
     <div>
       <div class="header h-10 flex flex-row justify-between sticky top-0">
-        <div class="font-bold w-1/2">
+        <div class="font-bold w-1/2 ml-2">
           <ng-container *ngTemplateOutlet="header"> </ng-container>
         </div>
 

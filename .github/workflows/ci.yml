@@ -87,18 +87,18 @@ jobs:
 
       - name: Send coverage report
         run: |
-          curl -Os https://uploader.codecov.io/latest/linux/codecov 
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
           ./codecov -t ${{ secrets.CODECOV_TOKEN }} -F coverage-jest
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Deploy with gh-pages
-        if: success() && github.ref == 'refs/heads/master'
+        # if: success() && github.ref == 'refs/heads/master'
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           npx gh-pages-clean
