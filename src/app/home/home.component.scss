@@ -1,7 +1,12 @@
-.selected-item {
-  background-color: blue;
-}
-
 .tab {
+  cursor: pointer;
   background-color: white;
+
+  &:hover {
+    background-color: lightblue !important;
+  }
+
+  &.selected-item {
+    background-color: blue;
+  }
 }
