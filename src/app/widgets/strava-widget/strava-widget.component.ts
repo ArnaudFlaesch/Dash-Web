@@ -190,7 +190,7 @@ export class StravaWidgetComponent {
     `https://www.strava.com/athletes/${athleteId}`;
 
   public formatDate = (date: Date) => format(new Date(date), 'dd MMM');
-  public roundDistance = (distance: number) => Math.round(distance) / 1000;
+  public roundDistance = (distance: number) => Math.round(distance * 100) / 100;
 
   public convertDecimalTimeToTime(decimalTime: number): number {
     const decimalPart = decimalTime % 1;

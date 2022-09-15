@@ -1,6 +1,6 @@
 <div class="widget rounded m-2">
-  <div *ngIf="isModeEdit()" class="flex flex-col">
-    <div class="grid justify-items-end m-2">
+  <div *ngIf="isModeEdit()" class="h-96 flex flex-col">
+    <div class="justify-items-end m-2">
       <mat-icon (click)="this.toDeleteMode()" aria-hidden="false">delete</mat-icon>
     </div>
     <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
@@ -17,7 +17,7 @@
   ></app-delete-widget>
 
   <div *ngIf="this.isModeRead()" class="h-96 border-2 border-solid border-black rounded">
-    <div class="header h-10 flex flex-row justify-between sticky top-0">
+    <div class="header h-10 flex flex-row justify-between top-0">
       <div class="font-bold flex-auto header-widget mx-2">
         <ng-container *ngTemplateOutlet="header"> </ng-container>
       </div>
