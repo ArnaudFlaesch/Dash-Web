@@ -2,11 +2,11 @@
   cursor: pointer;
   background-color: white;
 
-  &:hover {
-    background-color: lightblue !important;
-  }
-
   &.selected-item {
     background-color: blue;
+  }
+
+  &:hover {
+    background-color: lightblue;
   }
 }

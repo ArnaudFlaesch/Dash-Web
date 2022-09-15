@@ -1,34 +1,32 @@
-<div class="flex flex-row">
-  <div class="grid grid-cols-3">
-    <div class="flex flex-row col-span-2 space-x-0.5 tab-list">
-      <app-tab
-        class="tab border-2 border-gray-800 border-opacity-100 rounded"
-        (click)="selectTab(tab.id)"
-        (tabDeletedEvent)="deleteTabFromDash($event)"
-        [ngClass]="{ 'selected-item': activeTab === tab.id }"
-        *ngFor="let tab of this.tabs"
-        [tab]="tab"
-      ></app-tab>
-      <button id="addNewTabButton" class="border-2 border-gray-800 border-opacity-100 bg-green-400" mat-raised-button>
-        <mat-icon (click)="this.addNewTab()" aria-hidden="false">add_circle_outline</mat-icon>
-      </button>
-    </div>
-    <div class="place-self-end space-x-1">
-      <button id="openAddWidgetModal" class="bg-green-500" mat-raised-button>
-        <mat-icon (click)="this.openCreateWidgetModal()" aria-hidden="false">add_circle_outline</mat-icon>
-      </button>
-      <button mat-raised-button id="reloadAllWidgetsButton" class="bg-blue-500">
-        <mat-icon aria-hidden="false">refresh</mat-icon>
-      </button>
-      <button mat-raised-button id="downloadConfigButton" class="bg-gray-500">
-        <mat-icon (click)="this.downloadConfig()" aria-hidden="false">download</mat-icon>
-      </button>
-      <button mat-raised-button id="openImportConfigModal" class="bg-lime-600">
-        <mat-icon (click)="this.openImportConfigModal()" aria-hidden="false">upload</mat-icon></button
-      ><button mat-raised-button id="logoutButton" class="bg-red-600">
-        <mat-icon mat-raised-button (click)="logout()">logout</mat-icon>
-      </button>
-    </div>
+<div class="flex flex-row justify-between mx-1">
+  <div class="flex flex-row space-x-0.5">
+    <app-tab
+      class="tab border-2 border-gray-800 border-opacity-100 rounded"
+      (click)="selectTab(tab.id)"
+      (tabDeletedEvent)="deleteTabFromDash($event)"
+      [ngClass]="{ 'selected-item': activeTab === tab.id }"
+      *ngFor="let tab of this.tabs"
+      [tab]="tab"
+    ></app-tab>
+    <button id="addNewTabButton" class="border-2 border-gray-800 border-opacity-100 bg-green-400" mat-raised-button>
+      <mat-icon (click)="this.addNewTab()" aria-hidden="false">add_circle_outline</mat-icon>
+    </button>
+  </div>
+  <div class="space-x-1">
+    <button id="openAddWidgetModal" class="bg-green-500" mat-raised-button>
+      <mat-icon (click)="this.openCreateWidgetModal()" aria-hidden="false">add_circle_outline</mat-icon>
+    </button>
+    <button mat-raised-button id="reloadAllWidgetsButton" class="bg-blue-500">
+      <mat-icon aria-hidden="false">refresh</mat-icon>
+    </button>
+    <button mat-raised-button id="downloadConfigButton" class="bg-gray-500">
+      <mat-icon (click)="this.downloadConfig()" aria-hidden="false">download</mat-icon>
+    </button>
+    <button mat-raised-button id="openImportConfigModal" class="bg-lime-600">
+      <mat-icon (click)="this.openImportConfigModal()" aria-hidden="false">upload</mat-icon></button
+    ><button mat-raised-button id="logoutButton" class="bg-red-600">
+      <mat-icon mat-raised-button (click)="logout()">logout</mat-icon>
+    </button>
   </div>
 </div>
 
