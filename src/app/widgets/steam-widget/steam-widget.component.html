@@ -1,15 +1,15 @@
 <app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
-    <div>
-      <a href="{{ playerData?.profileurl }}" class="flex flex-row">
-        <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
+    <div class="h-10">
+      <a href="{{ playerData?.profileurl }}" class="flex flex-row items-center space-x-2">
+        <img class="h-9 w-9 rounded" src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
         <p>{{ playerData?.personaname }}</p>
       </a>
     </div>
   </ng-template>
 
   <ng-template #body>
-    <form class="example-form">
+    <form>
       <mat-form-field appearance="fill">
         <mat-label>Recherchez un jeu</mat-label>
         <input matInput [formControl]="searchFormControl" />

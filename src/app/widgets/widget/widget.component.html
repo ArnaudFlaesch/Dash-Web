@@ -17,22 +17,20 @@
   ></app-delete-widget>
 
   <div *ngIf="this.isModeRead()" class="h-96 border-2 border-solid border-black rounded">
-    <div>
-      <div class="header h-10 flex flex-row justify-between sticky top-0">
-        <div class="font-bold w-1/2 ml-2">
-          <ng-container *ngTemplateOutlet="header"> </ng-container>
-        </div>
+    <div class="header h-10 flex flex-row justify-between sticky top-0">
+      <div class="font-bold flex-auto header-widget mx-2">
+        <ng-container *ngTemplateOutlet="header"> </ng-container>
+      </div>
 
-        <div class="flex flex-row max-w-1/2">
-          <span *ngIf="additionalActions"><ng-container *ngTemplateOutlet="additionalActions"> </ng-container></span>
-          <mat-icon *ngIf="this.editComponent" (click)="this.toEditMode()" class="editButton">settings</mat-icon>
-          <mat-icon (click)="this.refreshWidget()" class="refreshButton" aria-hidden="false">refresh</mat-icon>
-          <mat-icon (click)="this.toDeleteMode()" class="deleteButton" aria-hidden="false">delete</mat-icon>
-        </div>
+      <div class="flex flex-row widget-actions mx-2">
+        <span *ngIf="additionalActions"><ng-container *ngTemplateOutlet="additionalActions"> </ng-container></span>
+        <mat-icon *ngIf="this.editComponent" (click)="this.toEditMode()" class="editButton">settings</mat-icon>
+        <mat-icon (click)="this.refreshWidget()" class="refreshButton" aria-hidden="false">refresh</mat-icon>
+        <mat-icon (click)="this.toDeleteMode()" class="deleteButton" aria-hidden="false">delete</mat-icon>
       </div>
-      <div class="max-h-80 overflow-y-scroll">
-        <ng-container *ngTemplateOutlet="body"> </ng-container>
-      </div>
+    </div>
+    <div class="max-h-80 my-1 mx-2 overflow-y-scroll">
+      <ng-container *ngTemplateOutlet="body"> </ng-container>
     </div>
   </div>
 </div>

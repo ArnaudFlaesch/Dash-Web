@@ -9,5 +9,12 @@
     button {
       color: white;
     }
+
+    .header-widget {
+      width: calc(100% - 15vw);
+    }
+    .widget-actions {
+      max-width: 15vw;
+    }
   }
 }
