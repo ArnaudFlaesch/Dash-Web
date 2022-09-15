@@ -1,7 +1,7 @@
 <div class="flex flex-row justify-between mx-2 mt-1">
   <div class="flex flex-row flex-wrap space-x-0.5">
     <app-tab
-      class="tab border-2 border-gray-800 border-opacity-100 rounded"
+      class="tab border-2 border-gray-800 bg-white hover:bg-blue-200 border-opacity-100 rounded"
       (click)="selectTab(tab.id)"
       (tabDeletedEvent)="deleteTabFromDash($event)"
       [ngClass]="{ 'selected-item': activeTab === tab.id }"
