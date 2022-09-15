@@ -1,6 +1,6 @@
 <app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
-    <div id="stravaWidgetHeader h-10">
+    <div id="stravaWidgetHeader" class="h-10">
       <a [href]="getAthleteProfileUrl(athlete?.id)" class="flex flex-row items-center space-x-2">
         <img class="h-9 w-9 rounded" [src]="athlete?.profile_medium" alt="athlete profile" />
         <p>{{ athlete?.firstname }} {{ athlete?.lastname }}</p>
