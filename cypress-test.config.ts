@@ -2,7 +2,7 @@ import { defineConfig } from 'cypress';
 
 export default defineConfig({
   watchForFileChanges: false,
-  defaultCommandTimeout: 8000,
+  defaultCommandTimeout: 10000,
   viewportWidth: 1920,
   viewportHeight: 1080,
   screenshotOnRunFailure: true,

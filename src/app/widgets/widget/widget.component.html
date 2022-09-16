@@ -1,13 +1,23 @@
 <div class="widget rounded m-2">
   <div *ngIf="isModeEdit()" class="h-96 flex flex-col">
-    <div class="justify-items-end m-2">
-      <mat-icon (click)="this.toDeleteMode()" aria-hidden="false">delete</mat-icon>
+    <div class="flex m-2">
+      <button class="ml-auto">
+        <mat-icon (click)="this.toDeleteMode()" title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
+      </button>
     </div>
-    <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
+    <div class="items-center flex flex-col">
+      <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
 
-    <button class="validateButton" mat-raised-button (click)="onValidation()" [disabled]="!this.isFormValid">
-      Valider
-    </button>
+      <button
+        class="validateButton"
+        mat-raised-button
+        (click)="onValidation()"
+        color="primary"
+        [disabled]="!this.isFormValid"
+      >
+        Valider
+      </button>
+    </div>
   </div>
 
   <app-delete-widget
@@ -18,15 +28,21 @@
 
   <div *ngIf="this.isModeRead()" class="h-96 border-2 border-solid border-black rounded">
     <div class="header h-10 flex flex-row justify-between top-0">
-      <div class="font-bold flex-auto header-widget mx-2">
+      <div class="font-bold flex-auto header-widget ml-2 mt-1">
         <ng-container *ngTemplateOutlet="header"> </ng-container>
       </div>
 
-      <div class="flex flex-row widget-actions mx-2">
+      <div class="flex flex-row widget-actions">
         <span *ngIf="additionalActions"><ng-container *ngTemplateOutlet="additionalActions"> </ng-container></span>
-        <mat-icon *ngIf="this.editComponent" (click)="this.toEditMode()" class="editButton">settings</mat-icon>
-        <mat-icon (click)="this.refreshWidget()" class="refreshButton" aria-hidden="false">refresh</mat-icon>
-        <mat-icon (click)="this.toDeleteMode()" class="deleteButton" aria-hidden="false">delete</mat-icon>
+        <button>
+          <mat-icon *ngIf="this.editComponent" (click)="this.toEditMode()" class="editButton">settings</mat-icon>
+        </button>
+        <button>
+          <mat-icon (click)="this.refreshWidget()" class="refreshButton" aria-hidden="false">refresh</mat-icon>
+        </button>
+        <button>
+          <mat-icon (click)="this.toDeleteMode()" class="deleteButton" aria-hidden="false">delete</mat-icon>
+        </button>
       </div>
     </div>
     <div class="max-h-80 my-1 mx-2 overflow-y-scroll">
