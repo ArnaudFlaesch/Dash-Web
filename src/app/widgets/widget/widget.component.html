@@ -1,11 +1,11 @@
 <div class="widget rounded m-2">
   <div *ngIf="isModeEdit()" class="h-96 flex flex-col">
-    <div class="flex m-2">
+    <div class="header flex items-end">
       <button class="ml-auto">
         <mat-icon (click)="this.toDeleteMode()" title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
       </button>
     </div>
-    <div class="items-center flex flex-col">
+    <div class="items-center h-full flex flex-col space-y-4 mt-4 w-full text-center">
       <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
 
       <button
@@ -27,7 +27,7 @@
   ></app-delete-widget>
 
   <div *ngIf="this.isModeRead()" class="h-96 border-2 border-solid border-black rounded">
-    <div class="header h-10 flex flex-row justify-between top-0">
+    <div class="header flex flex-row justify-between">
       <div class="font-bold flex-auto header-widget ml-2 mt-1">
         <ng-container *ngTemplateOutlet="header"> </ng-container>
       </div>

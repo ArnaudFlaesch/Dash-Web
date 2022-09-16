@@ -50,7 +50,4 @@ export class GameDetailsComponent implements OnInit {
 
   public getAppIdLink = () =>
     `${this.steamWidgetService.STEAM_COMMUNITY_URL}${this.gameInfo?.appid}`;
-
-  public getImgLogoUrl = () =>
-    `${this.steamWidgetService.STEAM_IMAGE_URL}${this.gameInfo?.appid}/${this.gameInfo?.img_logo_url}.jpg`;
 }

@@ -1,7 +1,16 @@
 <app-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>La météo aujourd'hui à {{ city }}</ng-template>
-  <ng-template #editComponent
-    ><input id="cityNameInput" name="city" [(ngModel)]="this.city" placeholder="Saisissez de nom de la ville" />
+  <ng-template #editComponent>
+    <mat-form-field appearance="fill">
+      <mat-label>Ville</mat-label>
+      <input
+        id="cityNameInput"
+        name="city"
+        matInput
+        [(ngModel)]="this.city"
+        placeholder="Saisissez de nom de la ville"
+      />
+    </mat-form-field>
   </ng-template>
   <ng-template #body>
     <div *ngIf="city && weather && weather.weather" class="flex flex-col">
@@ -52,7 +61,7 @@
       </div>
       <div *ngIf="cityData && forecast">
         <div class="flex flex-row flex-wrap space-x-10">
-          <span class="font-bold">Prévisions</span>
+          <span class="mx-auto"><h3>Prévisions</h3></span>
           <span class="flex flex-row space-x-1">
             <div class="grid grid-cols-4 gap-2">
               <button

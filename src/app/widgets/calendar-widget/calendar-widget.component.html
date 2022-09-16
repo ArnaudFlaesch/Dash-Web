@@ -3,7 +3,7 @@
 
   <ng-template #editComponent>
     <div *ngFor="let calendarUrl of this.calendarUrls; let index = index">
-      <div class="flex flex-row">
+      <div class="flex flex-row space-x-4">
         <input
           id="{{ index.toString() }}"
           (change)="onCalendarUrlUpdated($event)"
@@ -14,7 +14,7 @@
         <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
       </div>
     </div>
-    <button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>
+    <button mat-raised-button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>
   </ng-template>
 
   <ng-template #body>

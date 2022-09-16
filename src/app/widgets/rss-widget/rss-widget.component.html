@@ -9,7 +9,10 @@
   </ng-template>
 
   <ng-template #editComponent>
-    <input id="rssFeedUrl" name="url" [(ngModel)]="this.urlFeed" placeholder="Saisissez l'URL du flux RSS" />
+    <mat-form-field appearance="fill">
+      <mat-label>URL</mat-label>
+      <input matInput id="rssFeedUrl" name="url" [(ngModel)]="this.urlFeed" placeholder="Saisissez l'URL du flux RSS" />
+    </mat-form-field>
   </ng-template>
 
   <ng-template #additionalActions>
