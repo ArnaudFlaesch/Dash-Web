@@ -128,15 +128,7 @@ export class WeatherWidgetComponent {
     `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
   public formatDate(date: Date): string {
-    const dateFormat = 'dd/MM';
-    const formattedDate = format(date, dateFormat);
-    if (isToday(date)) {
-      return `Aujourd'hui ${formattedDate}`;
-    } else if (isTomorrow(date)) {
-      return `Demain ${formattedDate}`;
-    } else {
-      return formattedDate;
-    }
+    return format(date, 'dd/MM');
   }
 
   public isSelectedDay = (date: Date): boolean =>

@@ -6,6 +6,7 @@ import { IArticle, ImageContent, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DateUtilsService } from '../../../app/services/date.utils';
+import { isThisYear, isToday } from 'date-fns';
 
 @Component({
   selector: 'app-rss-widget',
@@ -52,12 +53,8 @@ export class RssWidgetComponent {
   }
 
   public formatTitleForArticle(article: IArticle) {
-    const date = article.pubDate
-      ? new Date(article.pubDate).toLocaleTimeString('fr', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      : '';
+    const articleDate = new Date(article.pubDate);
+    const date = this.getPublicationDateToDisplay(articleDate);
     return `${date} ${article.title}`;
   }
 
@@ -91,6 +88,26 @@ export class RssWidgetComponent {
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_MARKING_FEED_AS_READ)
       });
+  }
+
+  private getPublicationDateToDisplay(articleDate: Date) {
+    if (isToday(articleDate)) {
+      return articleDate.toLocaleTimeString('fr', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } else if (isThisYear(articleDate)) {
+      return articleDate.toLocaleTimeString('fr', {
+        day: '2-digit',
+        month: '2-digit'
+      });
+    } else {
+      return articleDate.toLocaleTimeString('fr', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
   }
 
   public isArticleRead = (guid: string): boolean => this.readArticles.includes(guid);

@@ -17,7 +17,9 @@
 
   <ng-template #additionalActions>
     <div class="flex flex-row">
-      <mat-icon class="markAllArticlesAsRead" (click)="markAllFeedAsRead()">check</mat-icon>
+      <button (click)="markAllFeedAsRead()">
+        <mat-icon class="markAllArticlesAsRead">check</mat-icon>
+      </button>
     </div>
   </ng-template>
 
@@ -34,14 +36,14 @@
           >
             <mat-expansion-panel-header>
               <mat-panel-title class="articleTitle" [ngClass]="{ 'is-read': isArticleRead(article.guid) }">
-                {{ this.formatTitleForArticle(article) }}
+                <div class="line-clamp-2">{{ this.formatTitleForArticle(article) }}</div>
               </mat-panel-title>
             </mat-expansion-panel-header>
             <ng-template matExpansionPanelContent>
-              <div class="border-2 border-gray-500 border-solid">
-                <div>
-                  <a class="rssPanelArticleTitle" [href]="article.link | safe: 'url'">{{ article.title }}</a>
-                </div>
+              <div class="border-2 border-gray-500 border-solid rou,ded">
+                <a class="rssPanelArticleTitle" [href]="article.link | safe: 'url'"
+                  ><p class="font-bold">{{ article.title }}</p></a
+                >
                 <div class="articleContent">
                   {{ stripHtmlFromContent(article.description) }}
                 </div>

@@ -28,11 +28,11 @@
 
   <div *ngIf="this.isModeRead()" class="h-96 border-2 border-solid border-black rounded">
     <div class="header flex flex-row justify-between">
-      <div class="font-bold flex-auto header-widget ml-2 mt-1">
+      <div class="font-bold header-widget overflow-hidden text-ellipsis ml-2 mt-1">
         <ng-container *ngTemplateOutlet="header"> </ng-container>
       </div>
 
-      <div class="flex flex-row widget-actions">
+      <div class="flex flex-row space-x-1/2">
         <span *ngIf="additionalActions"><ng-container *ngTemplateOutlet="additionalActions"> </ng-container></span>
         <button>
           <mat-icon *ngIf="this.editComponent" (click)="this.toEditMode()" class="editButton">settings</mat-icon>
