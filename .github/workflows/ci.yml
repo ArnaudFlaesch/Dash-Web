@@ -44,7 +44,7 @@ jobs:
           cp dist/index.html dist/404.html
 
       - name: Deploy with gh-pages
-        if: success() && github.ref == 'refs/heads/master'
+        #if: success() && github.ref == 'refs/heads/master'
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           npx gh-pages-clean
