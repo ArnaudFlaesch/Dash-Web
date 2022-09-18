@@ -1,4 +1,9 @@
-<app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget
+  [widgetData]="getWidgetConfig()"
+  [isFormValid]="isFormValid()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #header> Agenda </ng-template>
 
   <ng-template #editComponent>

@@ -1,4 +1,8 @@
-<app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget
+  [widgetData]="{}"
+  (refreshWidgetAction)="this.refreshWidget()"
+  [isWidgetLoaded]="!this.isUserLoggedIn() || isWidgetLoaded()"
+>
   <ng-template #header>
     <div *ngIf="athlete" id="stravaWidgetHeader" class="h-10">
       <a [href]="getAthleteProfileUrl(athlete.id)" class="flex flex-row items-center space-x-2">

@@ -1,4 +1,9 @@
-<app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget
+  [widgetData]="getWidgetData()"
+  [isFormValid]="isFormValid()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #header>
     <div class="h-10">
       <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="flex flex-row items-center space-x-2">
@@ -48,7 +53,8 @@
                   {{ stripHtmlFromContent(article.description) }}
                 </div>
                 <div class="articlePubDate">
-                  Publié le {{ dateUtilsService.formatDateFromUTC(article.pubDate || '') }}
+                  Publié le
+                  {{ dateUtilsService.formatDateFromUTC((article.pubDate ? article.pubDate : article.updated) || '') }}
                   {{ article.author && 'par ' + article.author }}
                 </div>
               </div>

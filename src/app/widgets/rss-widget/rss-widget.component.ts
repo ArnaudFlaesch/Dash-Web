@@ -19,7 +19,9 @@ export class RssWidgetComponent {
   public link = '';
   public title = '';
   public image: ImageContent | undefined = undefined;
+  public isWidgetLoaded = false;
 
+  private ERROR_GETTING_RSS_FEED = 'Erreur pendant la récupération du flux RSS.';
   private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
 
   public isFeedClosed = true;
@@ -40,20 +42,30 @@ export class RssWidgetComponent {
     if (this.urlFeed) {
       this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
         next: (apiResult: unknown) => {
-          const res = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
-          this.description = res.description;
-          this.feed = res.item;
-          this.link = res.link;
-          this.title = res.title;
-          this.image = res.image;
+          if (apiResult) {
+            if ((apiResult as Record<string, unknown>)['channel'] != null) {
+              const res = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
+              this.description = res.description;
+              this.feed = res.item;
+              this.link = res.link;
+              this.title = res.title;
+              this.image = res.image;
+            } else {
+              const res = apiResult as Record<string, unknown>;
+              this.feed = res['entry'] as IArticle[];
+              this.title = res['title'] as string;
+            }
+          }
         },
-        error: (error) => this.errorHandlerService.handleError(error.message, 'erreur rss')
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_RSS_FEED),
+        complete: () => (this.isWidgetLoaded = true)
       });
     }
   }
 
   public formatTitleForArticle(article: IArticle) {
-    const articleDate = new Date(article.pubDate);
+    const articleDate = new Date(article.pubDate ? article.pubDate : article.updated);
     const date = this.getPublicationDateToDisplay(articleDate);
     return `${date} ${article.title}`;
   }

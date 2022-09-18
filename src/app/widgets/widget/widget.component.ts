@@ -34,6 +34,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
   public widgetId: number;
 
   @Input() isFormValid = false;
+  @Input() isWidgetLoaded = false;
   @Input() widgetData: Record<string, unknown> | null = null;
   @Output() refreshWidgetAction = new EventEmitter();
 

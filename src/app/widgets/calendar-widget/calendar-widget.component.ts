@@ -14,6 +14,7 @@ import { ICalendarData } from './ICalendarData';
 })
 export class CalendarWidgetComponent {
   public calendarUrls: string[] = [];
+  public isWidgetLoaded = false;
 
   calendarView = CalendarView;
   events: CalendarEvent[] = [];
@@ -51,7 +52,8 @@ export class CalendarWidgetComponent {
     this.calendarUrls.forEach((calendarUrl: string) => {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
         next: (calendarData) => this.parseEvents(calendarData),
-        error: (error) => console.error(error.message)
+        error: (error) => console.error(error.message),
+        complete: () => (this.isWidgetLoaded = true)
       });
     });
   }

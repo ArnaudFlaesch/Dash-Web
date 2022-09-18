@@ -152,4 +152,6 @@ export class WeatherWidgetComponent {
       this.getWeatherChart(this.cityData);
     }
   }
+
+  public isWidgetLoaded = (): boolean => this.city != null && this.weather != null;
 }

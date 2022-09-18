@@ -1,4 +1,8 @@
-<app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget
+  [widgetData]="getWidgetData()"
+  (refreshWidgetAction)="this.refreshWidget()"
+  [isWidgetLoaded]="isWidgetLoaded()"
+>
   <ng-template #header>
     <div class="h-10">
       <a href="{{ playerData?.profileurl }}" class="flex flex-row items-center space-x-2">

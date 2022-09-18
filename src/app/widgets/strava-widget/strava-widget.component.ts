@@ -29,8 +29,8 @@ export class StravaWidgetComponent {
 
   private ERROR_GETTING_TOKEN = 'Erreur lors de la connexion à Strava.';
   private ERROR_NO_REFRESH_TOKEN = "Vous n'êtes pas connecté à Strava.";
-  private ERROR_GETTING_ATHLETE_DATA = 'Erreur lors de la récupération de vos informations.';
-  private ERROR_GETTING_ACTIVITIES = 'Erreur lors de la récupération des activités.';
+  private ERROR_GETTING_ATHLETE_DATA = 'Erreur lors de la récupération de vos informations Strava.';
+  private ERROR_GETTING_ACTIVITIES = 'Erreur lors de la récupération des activités Strava.';
 
   private paginationActivities = 20;
 
@@ -209,4 +209,6 @@ export class StravaWidgetComponent {
   public getTokenExpiresAtValue(): string | null {
     return window.localStorage.getItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY);
   }
+
+  public isWidgetLoaded = (): boolean => this.athlete != null && this.activities.length > 0;
 }

@@ -71,4 +71,6 @@ export class SteamWidgetComponent {
     this.pageNumber = event.pageIndex;
     this.getOwnedGames(this.searchFormControl.value || undefined, this.pageNumber);
   }
+
+  public isWidgetLoaded = (): boolean => this.playerData != null && this.ownedGames.length > 0;
 }
