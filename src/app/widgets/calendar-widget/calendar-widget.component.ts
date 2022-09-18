@@ -1,3 +1,4 @@
+import { ErrorHandlerService } from './../../services/error.handler.service';
 import { CalendarWidgetService } from './calendar-widget.service';
 import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { CalendarEvent, CalendarView, DateAdapter } from 'angular-calendar';
@@ -38,11 +39,14 @@ export class CalendarWidgetComponent {
   prevBtnDisabled = false;
   nextBtnDisabled = false;
 
+  private ERROR_PARSING_EVENTS = 'Erreur lors de la récupération des évènements.';
+
   constructor(
     @Inject(LOCALE_ID) locale: string,
     private dateAdapter: DateAdapter,
     public dialog: MatDialog,
-    private calendarWidgetService: CalendarWidgetService
+    private calendarWidgetService: CalendarWidgetService,
+    private errorHandlerService: ErrorHandlerService
   ) {
     this.locale = locale;
   }
@@ -52,7 +56,8 @@ export class CalendarWidgetComponent {
     this.calendarUrls.forEach((calendarUrl: string) => {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
         next: (calendarData) => this.parseEvents(calendarData),
-        error: (error) => console.error(error.message),
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_PARSING_EVENTS),
         complete: () => (this.isWidgetLoaded = true)
       });
     });

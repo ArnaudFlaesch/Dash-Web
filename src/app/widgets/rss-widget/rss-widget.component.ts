@@ -65,14 +65,13 @@ export class RssWidgetComponent {
   }
 
   public formatTitleForArticle(article: IArticle) {
-    const articleDate = new Date(
-      article.pubDate ? article.pubDate : article.updated ? article.updated : ''
-    );
+    const articlePubDate = article.pubDate ? article.pubDate : article.updated;
+    const articleDate = new Date(articlePubDate ? articlePubDate : '');
     const date = this.getPublicationDateToDisplay(articleDate);
     return `${date} ${article.title}`;
   }
 
-  public stripHtmlFromContent(content?: string) {
+  public stripHtmlFromContent(content?: string): string {
     const div = document.createElement('div');
     div.innerHTML = content || '';
     return div.textContent || div.innerText || '';

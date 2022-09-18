@@ -10,6 +10,7 @@ import { DateAdapter } from 'angular-calendar';
 import { environment } from '../../../environments/environment';
 import { CalendarWidgetComponent } from './calendar-widget.component';
 import { CalendarWidgetService } from './calendar-widget.service';
+import { ErrorHandlerService } from './../../services/error.handler.service';
 
 describe('CalendarWidgetComponent', () => {
   let spectator: Spectator<CalendarWidgetComponent>;
@@ -18,7 +19,7 @@ describe('CalendarWidgetComponent', () => {
   const createComponent = createComponentFactory({
     component: CalendarWidgetComponent,
     imports: [MatDialogModule],
-    providers: [CalendarWidgetService, DateAdapter]
+    providers: [CalendarWidgetService, DateAdapter, ErrorHandlerService]
   });
   const createHttpRssWidgetService = createHttpFactory(CalendarWidgetService);
 

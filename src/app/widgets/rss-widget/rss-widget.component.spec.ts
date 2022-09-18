@@ -157,4 +157,10 @@ describe('RssWidgetComponent', () => {
       `15/03/2022, 19:00:02 ${article.title}`
     );
   });
+
+  it('Should remove html from article content', () => {
+    const expectedContent = 'RSS content';
+    const rssContent = `<div>${expectedContent}</div>`;
+    expect(spectator.component.stripHtmlFromContent(rssContent)).toEqual(expectedContent);
+  });
 });
