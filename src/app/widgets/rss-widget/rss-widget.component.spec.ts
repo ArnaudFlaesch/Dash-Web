@@ -141,7 +141,7 @@ describe('RssWidgetComponent', () => {
       link: 'https://www.jeuxvideo.com/news/1545197/fortnite-combien-d-argent-avez-vous-depense-dans-les-skins-et-les-v-bucks-voici-comment-savoir.htm',
       description:
         'Initialement sorti en juillet 2017 avec le mode de jeu Sauver le monde, Fortnite n&#039;a pas tardé à adopter la formule battle royale qui a contribué au succès de PUBG. Dès le mois de septembre 2017, le mode de jeu free-to-play a su conquérir les joueurs...',
-      pubDate: 'Tue, 15 Mar 2022 19:00:02 +0100',
+      pubDate: 'Tue, 15 Mar 2022 19:00:02',
       guid: 'https://www.jeuxvideo.com/news/1545197/fortnite-combien-d-argent-avez-vous-depense-dans-les-skins-et-les-v-bucks-voici-comment-savoir.htm'
     };
 
