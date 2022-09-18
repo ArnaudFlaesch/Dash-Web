@@ -1,15 +1,19 @@
-<app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget
+  [widgetData]="getWidgetData()"
+  (refreshWidgetAction)="this.refreshWidget()"
+  [isWidgetLoaded]="isWidgetLoaded()"
+>
   <ng-template #header>
-    <div>
-      <a href="{{ playerData?.profileurl }}" class="flex flex-row">
-        <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
+    <div class="h-10">
+      <a href="{{ playerData?.profileurl }}" class="flex flex-row items-center space-x-2">
+        <img class="w-9 rounded" src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
         <p>{{ playerData?.personaname }}</p>
       </a>
     </div>
   </ng-template>
 
   <ng-template #body>
-    <form class="example-form">
+    <form>
       <mat-form-field appearance="fill">
         <mat-label>Recherchez un jeu</mat-label>
         <input matInput [formControl]="searchFormControl" />
@@ -22,10 +26,12 @@
           <mat-expansion-panel-header>
             <mat-panel-title
               ><div class="gameInfo flex flex-row">
-                <div>
-                  <img [src]="getGameImgSrc(game.appid, game.img_icon_url)" alt="game icon" />
+                <div class="h-10">
+                  <div class="flex flex-row items-center space-x-2">
+                    <img [src]="getGameImgSrc(game.appid, game.img_icon_url)" alt="game icon" />
+                    <p>{{ game.name }}</p>
+                  </div>
                 </div>
-                <div>{{ game.name }}</div>
               </div>
             </mat-panel-title>
           </mat-expansion-panel-header>

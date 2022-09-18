@@ -25,6 +25,8 @@ export class WorkoutWidgetComponent {
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl('');
 
+  public isWidgetLoaded = false;
+
   public dateFormat = DEFAULT_DATE_FORMAT;
 
   public currentWorkoutSessionToEdit: IWorkoutSession | null = null;
@@ -52,7 +54,8 @@ export class WorkoutWidgetComponent {
     this.workoutWidgetService.getWorkoutTypes().subscribe({
       next: (workoutTypes) => (this.workoutTypes = workoutTypes),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_TYPES)
+        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_TYPES),
+      complete: () => (this.isWidgetLoaded = true)
     });
 
     this.workoutWidgetService.getWorkoutSessions().subscribe({

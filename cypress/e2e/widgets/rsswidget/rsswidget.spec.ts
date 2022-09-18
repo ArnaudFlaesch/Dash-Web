@@ -98,7 +98,7 @@ describe('RSS Widget tests', () => {
           )
           .get('.widget:nth(1) .mat-expansion-panel-header-title.is-read')
           .should('have.length', 1)
-          .get('.widget:nth(1) .markAllArticlesAsRead')
+          .get('.widget:nth(1) .markAllArticlesAsReadButton')
           .click()
           .wait('@markAllFeedAsRead')
           .then((request: Interception) => {

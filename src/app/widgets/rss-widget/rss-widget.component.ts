@@ -6,6 +6,7 @@ import { IArticle, ImageContent, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DateUtilsService } from '../../../app/services/date.utils';
+import { isThisYear, isToday } from 'date-fns';
 
 @Component({
   selector: 'app-rss-widget',
@@ -18,7 +19,9 @@ export class RssWidgetComponent {
   public link = '';
   public title = '';
   public image: ImageContent | undefined = undefined;
+  public isWidgetLoaded = false;
 
+  private ERROR_GETTING_RSS_FEED = 'Erreur pendant la récupération du flux RSS.';
   private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
 
   public isFeedClosed = true;
@@ -39,29 +42,36 @@ export class RssWidgetComponent {
     if (this.urlFeed) {
       this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
         next: (apiResult: unknown) => {
-          const res = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
-          this.description = res.description;
-          this.feed = res.item;
-          this.link = res.link;
-          this.title = res.title;
-          this.image = res.image;
+          if (apiResult) {
+            if ((apiResult as Record<string, unknown>)['channel'] != null) {
+              const res = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
+              this.description = res.description;
+              this.feed = res.item;
+              this.link = res.link;
+              this.title = res.title;
+              this.image = res.image;
+            } else {
+              const res = apiResult as Record<string, unknown>;
+              this.feed = res['entry'] as IArticle[];
+              this.title = res['title'] as string;
+            }
+          }
         },
-        error: (error) => this.errorHandlerService.handleError(error.message, 'erreur rss')
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_RSS_FEED),
+        complete: () => (this.isWidgetLoaded = true)
       });
     }
   }
 
   public formatTitleForArticle(article: IArticle) {
-    const date = article.pubDate
-      ? new Date(article.pubDate).toLocaleTimeString('fr', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      : '';
+    const articlePubDate = article.pubDate ? article.pubDate : article.updated;
+    const articleDate = new Date(articlePubDate ? articlePubDate : '');
+    const date = this.getPublicationDateToDisplay(articleDate);
     return `${date} ${article.title}`;
   }
 
-  public stripHtmlFromContent(content?: string) {
+  public stripHtmlFromContent(content?: string): string {
     const div = document.createElement('div');
     div.innerHTML = content || '';
     return div.textContent || div.innerText || '';
@@ -91,6 +101,26 @@ export class RssWidgetComponent {
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_MARKING_FEED_AS_READ)
       });
+  }
+
+  private getPublicationDateToDisplay(articleDate: Date) {
+    if (isToday(articleDate)) {
+      return articleDate.toLocaleTimeString('fr', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } else if (isThisYear(articleDate)) {
+      return articleDate.toLocaleTimeString('fr', {
+        day: '2-digit',
+        month: '2-digit'
+      });
+    } else {
+      return articleDate.toLocaleTimeString('fr', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
   }
 
   public isArticleRead = (guid: string): boolean => this.readArticles.includes(guid);

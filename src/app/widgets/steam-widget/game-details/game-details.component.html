@@ -1,20 +1,22 @@
-<div class="flex flex-row">
-  <div>{{ this.gameInfo?.name }}</div>
-  <a href="{{ this.getAppIdLink() }}">
-    <img src="{{ this.getImgLogoUrl() }}" alt="{{ this.gameInfo?.name }}" />
-  </a>
-</div>
-
-<div *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="flex flex-row">
+<div class="flex flex-row justify-between">
   <div class="flex flex-col">
-    <div class="totalachievements">Succès : {{ achievements.length }}</div>
-    <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
+    <div>
+      <a [href]="this.getAppIdLink()">
+        {{ this.gameInfo?.name }}
+      </a>
+    </div>
+    <div *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="flex flex-row">
+      <div class="flex flex-col">
+        <div class="totalachievements">Succès : {{ achievements.length }}</div>
+        <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
+      </div>
+    </div>
   </div>
-  <div class="spinner-container">
+
+  <div *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="spinner-container">
     <div class="progress-value">{{ spinner.value }}%</div>
     <mat-progress-spinner
       #spinner
-      class="example-margin"
       [color]="'primary'"
       [mode]="'determinate'"
       [value]="getCompletionStatus()"

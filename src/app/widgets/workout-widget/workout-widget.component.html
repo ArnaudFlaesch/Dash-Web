@@ -1,4 +1,8 @@
-<app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget
+  [widgetData]="getWidgetData()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #header>
     <div>Workout</div>
   </ng-template>

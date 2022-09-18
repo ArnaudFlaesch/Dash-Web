@@ -1,7 +1,7 @@
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { Component } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType, ChartTypeRegistry } from 'chart.js';
-import { format, isToday, isTomorrow, startOfDay } from 'date-fns';
+import { format, startOfDay } from 'date-fns';
 import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
 import { DateUtilsService } from '../../../app/services/date.utils';
@@ -128,15 +128,7 @@ export class WeatherWidgetComponent {
     `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
   public formatDate(date: Date): string {
-    const dateFormat = 'dd/MM';
-    const formattedDate = format(date, dateFormat);
-    if (isToday(date)) {
-      return `Aujourd'hui ${formattedDate}`;
-    } else if (isTomorrow(date)) {
-      return `Demain ${formattedDate}`;
-    } else {
-      return formattedDate;
-    }
+    return format(date, 'dd/MM');
   }
 
   public isSelectedDay = (date: Date): boolean =>
@@ -160,4 +152,6 @@ export class WeatherWidgetComponent {
       this.getWeatherChart(this.cityData);
     }
   }
+
+  public isWidgetLoaded = (): boolean => this.city != null && this.weather != null;
 }

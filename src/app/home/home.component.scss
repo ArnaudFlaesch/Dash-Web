@@ -1,3 +1,7 @@
-.selected-item {
-  background-color: blue;
+.tab {
+  cursor: pointer;
+
+  &.selected-item {
+    background-color: blue;
+  }
 }

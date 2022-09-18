@@ -23,7 +23,7 @@ export class SteamWidgetComponent {
 
   public searchFormControl = new FormControl('');
 
-  private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations.';
+  private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations Steam.';
   private ERROR_GETTING_OWNED_GAMES = 'Erreur lors de la récupération de la liste des jeux.';
 
   constructor(
@@ -71,4 +71,6 @@ export class SteamWidgetComponent {
     this.pageNumber = event.pageIndex;
     this.getOwnedGames(this.searchFormControl.value || undefined, this.pageNumber);
   }
+
+  public isWidgetLoaded = (): boolean => this.playerData != null && this.ownedGames.length > 0;
 }

@@ -1,9 +1,14 @@
-<app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget
+  [widgetData]="getWidgetConfig()"
+  [isFormValid]="isFormValid()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #header> Agenda </ng-template>
 
   <ng-template #editComponent>
     <div *ngFor="let calendarUrl of this.calendarUrls; let index = index">
-      <div class="flex flex-row">
+      <div class="flex flex-row space-x-4">
         <input
           id="{{ index.toString() }}"
           (change)="onCalendarUrlUpdated($event)"
@@ -14,12 +19,12 @@
         <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
       </div>
     </div>
-    <button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>
+    <button mat-raised-button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>
   </ng-template>
 
   <ng-template #body>
-    <div class="flex flex-row justify-between mx-4">
-      <div>
+    <div class="flex flex-row justify-between m-1">
+      <div class="space-x-1">
         <button
           mat-raised-button
           mwlCalendarPreviousView
@@ -28,7 +33,7 @@
           color="primary"
           (viewDateChange)="closeOpenMonthViewDay()"
         >
-          Previous
+          <mat-icon title="Previous" aria-hidden="false">arrow_back</mat-icon>
         </button>
         <button mat-raised-button mwlCalendarToday [(viewDate)]="viewDate">Today</button>
         <button
@@ -39,32 +44,39 @@
           color="primary"
           (viewDateChange)="closeOpenMonthViewDay()"
         >
-          Next
+          <mat-icon title="Next" aria-hidden="false">arrow_forward</mat-icon>
         </button>
       </div>
-      <div>
-        <h3>{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
+
+      <div class="flex flex-row space-x-1 items-start">
+        <button
+          mat-raised-button
+          (click)="setView(calendarView.Month)"
+          [color]="this.isCalendarViewMonth() ? 'primary' : ''"
+        >
+          Month
+        </button>
+        <button
+          mat-raised-button
+          (click)="setView(calendarView.Week)"
+          [color]="this.isCalendarViewWeek() ? 'primary' : ''"
+        >
+          Week
+        </button>
+        <button
+          mat-raised-button
+          (click)="setView(calendarView.Day)"
+          [color]="this.isCalendarViewDay() ? 'primary' : ''"
+        >
+          Day
+        </button>
       </div>
     </div>
-    <div class="flex flex-row">
-      <button
-        mat-raised-button
-        (click)="setView(calendarView.Month)"
-        [color]="this.isCalendarViewMonth() ? 'primary' : ''"
-      >
-        Month
-      </button>
-      <button
-        mat-raised-button
-        (click)="setView(calendarView.Week)"
-        [color]="this.isCalendarViewWeek() ? 'primary' : ''"
-      >
-        Week
-      </button>
-      <button mat-raised-button (click)="setView(calendarView.Day)" [color]="this.isCalendarViewDay() ? 'primary' : ''">
-        Day
-      </button>
+
+    <div class="ml-2">
+      <h3 class="font-black">{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
     </div>
+
     <div [ngSwitch]="view">
       <mwl-calendar-month-view
         *ngSwitchCase="calendarView.Month"

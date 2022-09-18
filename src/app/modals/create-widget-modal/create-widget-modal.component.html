@@ -1,13 +1,12 @@
 <h1 mat-dialog-title>Ajouter un widget</h1>
 
 <mat-dialog-content>
-  <div class="grid grid-cols-4 gap-3">
+  <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
     <mat-card *ngFor="let type of getWidgetTypesKeys()">
       <mat-card-content>
-        <div class="flex flex-col space-y-5">
-          <span>{{ type }}</span>
-          <span>Widget {{ type }}</span>
-          <span>Cliquez ci-dessous pour ajouter un widget {{ type }} au dashboard.</span>
+        <div class="flex flex-col space-y-5 items-center">
+          <mat-icon>{{ getWidgetTypeIconToDisplay(type) }}</mat-icon>
+          <span> {{ type }}</span>
         </div>
       </mat-card-content>
       <mat-card-actions>

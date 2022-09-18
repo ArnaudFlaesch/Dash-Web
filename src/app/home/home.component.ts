@@ -25,6 +25,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private refreshTimeout = 900000; // 15 minutes
 
+  public isDashboardLoaded: boolean;
+
   private ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
   private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
   private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
@@ -43,6 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private configService: ConfigService,
     private errorHandlerService: ErrorHandlerService
   ) {
+    this.isDashboardLoaded = false;
     this.initDashboard();
   }
 
@@ -66,7 +69,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD)
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD),
+      complete: () => (this.isDashboardLoaded = true)
     });
   }
 

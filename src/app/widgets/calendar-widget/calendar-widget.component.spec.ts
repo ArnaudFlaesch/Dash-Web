@@ -10,6 +10,8 @@ import { DateAdapter } from 'angular-calendar';
 import { environment } from '../../../environments/environment';
 import { CalendarWidgetComponent } from './calendar-widget.component';
 import { CalendarWidgetService } from './calendar-widget.service';
+import { ErrorHandlerService } from './../../services/error.handler.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('CalendarWidgetComponent', () => {
   let spectator: Spectator<CalendarWidgetComponent>;
@@ -17,8 +19,8 @@ describe('CalendarWidgetComponent', () => {
 
   const createComponent = createComponentFactory({
     component: CalendarWidgetComponent,
-    imports: [MatDialogModule],
-    providers: [CalendarWidgetService, DateAdapter]
+    imports: [MatDialogModule, MatSnackBarModule],
+    providers: [CalendarWidgetService, DateAdapter, ErrorHandlerService]
   });
   const createHttpRssWidgetService = createHttpFactory(CalendarWidgetService);
 
@@ -34,6 +36,7 @@ describe('CalendarWidgetComponent', () => {
     expect(spectator.component.isCalendarViewMonth()).toEqual(true);
     spectator.component.calendarUrls.push('http://calendar.ical');
     spectator.component.refreshWidget();
+    expect(spectator.component.isWidgetLoaded).toEqual(false);
     const getCalendarDataRequest = calendarWidgetService.expectOne(
       environment.backend_url + `/calendarWidget/`,
       HttpMethod.POST
@@ -72,6 +75,7 @@ describe('CalendarWidgetComponent', () => {
     ];
     getCalendarDataRequest.flush(getCalendarData);
     expect(spectator.component.events.length).toEqual(6);
+    expect(spectator.component.isWidgetLoaded).toEqual(true);
     const calendarEvent = spectator.component.events[0];
     expect(calendarEvent.title).toEqual('La Toussaint');
   });
