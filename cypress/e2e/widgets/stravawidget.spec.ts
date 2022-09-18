@@ -57,7 +57,7 @@ describe('Strava Widget tests', () => {
       expect(request.response.statusCode).to.equal(401);
       cy.get('.mat-simple-snack-bar-content').should(
         'have.text',
-        'Erreur lors de la récupération de vos informations.'
+        'Erreur lors de la récupération de vos informations Strava.'
       );
     });
   });
