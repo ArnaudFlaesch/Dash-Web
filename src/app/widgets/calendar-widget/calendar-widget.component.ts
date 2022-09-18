@@ -1,7 +1,7 @@
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { CalendarWidgetService } from './calendar-widget.service';
 import { Component, Inject, LOCALE_ID } from '@angular/core';
-import { CalendarEvent, CalendarView, DateAdapter } from 'angular-calendar';
+import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { addMonths, endOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -43,7 +43,6 @@ export class CalendarWidgetComponent {
 
   constructor(
     @Inject(LOCALE_ID) locale: string,
-    private dateAdapter: DateAdapter,
     public dialog: MatDialog,
     private calendarWidgetService: CalendarWidgetService,
     private errorHandlerService: ErrorHandlerService
