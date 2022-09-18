@@ -35,6 +35,7 @@ describe('WorkoutWidgetComponent', () => {
   it('should create', () => {
     expect(spectator.component.workoutTypes).toEqual([]);
     expect(spectator.component.workoutSessions).toEqual([]);
+    expect(spectator.component.isWidgetLoaded).toEqual(false);
 
     const workoutTypesFromDB = [{ id: 1, name: 'Abdos' }];
 
@@ -53,6 +54,7 @@ describe('WorkoutWidgetComponent', () => {
 
     workoutWidgetService.flushAll(dataRequest, [workoutTypesFromDB, []]);
 
+    expect(spectator.component.isWidgetLoaded).toEqual(true);
     expect(spectator.component.workoutTypes).toEqual(workoutTypesFromDB);
     expect(spectator.component.workoutSessions.length).toEqual(0);
   });

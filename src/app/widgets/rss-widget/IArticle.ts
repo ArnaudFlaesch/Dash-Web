@@ -21,7 +21,7 @@ export interface IArticle {
   description?: string;
   author?: string;
   pubDate: string;
-  updated: string;
+  updated?: string;
 }
 
 export interface ImageContent {

@@ -65,7 +65,9 @@ export class RssWidgetComponent {
   }
 
   public formatTitleForArticle(article: IArticle) {
-    const articleDate = new Date(article.pubDate ? article.pubDate : article.updated);
+    const articleDate = new Date(
+      article.pubDate ? article.pubDate : article.updated ? article.updated : ''
+    );
     const date = this.getPublicationDateToDisplay(articleDate);
     return `${date} ${article.title}`;
   }

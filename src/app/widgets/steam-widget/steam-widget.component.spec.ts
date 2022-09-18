@@ -32,6 +32,7 @@ describe('SteamWidgetComponent', () => {
   it('should create', () => {
     expect(spectator.component.playerData).toEqual(null);
     expect(spectator.component.ownedGames).toEqual([]);
+    expect(spectator.component.isWidgetLoaded()).toEqual(false);
     spectator.component.refreshWidget();
 
     const playerData = {
@@ -115,6 +116,7 @@ describe('SteamWidgetComponent', () => {
 
     steamWidgetService.flushAll(dataRequests, [playerData, ownedGamesData]);
 
+    expect(spectator.component.isWidgetLoaded()).toEqual(true);
     expect(spectator.component.playerData?.personaname).toEqual(
       playerData.response.players[0].personaname
     );

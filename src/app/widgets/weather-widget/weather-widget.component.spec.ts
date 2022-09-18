@@ -162,6 +162,7 @@ describe('WeatherWidgetComponent', () => {
     const cityName = 'Paris';
     expect(spectator.component.cityData).toEqual(undefined);
     expect(spectator.component.forecast).toEqual([]);
+    expect(spectator.component.isWidgetLoaded()).toEqual(false);
     spectator.component.city = cityName;
     spectator.component.refreshWidget();
 
@@ -180,6 +181,7 @@ describe('WeatherWidgetComponent', () => {
 
     expect(spectator.component.cityData?.name).toEqual(cityName);
     expect(spectator.component.forecast.length).toEqual(forecastData.list.length);
+    expect(spectator.component.isWidgetLoaded()).toEqual(true);
 
     if (spectator.component.cityData && spectator.component.weatherChart) {
       expect(spectator.component.weatherChart.datasets).toEqual([
