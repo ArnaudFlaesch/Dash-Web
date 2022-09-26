@@ -52,7 +52,7 @@
     "@ngneat/spectator": "11.2.0",
     "@tailwindcss/line-clamp": "0.4.2",
     "@types/jest": "28.1.8",
-    "@types/node": "16.11.60",
+    "@types/node": "16.11.61",
     "@typescript-eslint/eslint-plugin": "5.38.0",
     "@typescript-eslint/parser": "5.38.0",
     "angular-calendar": "0.30.1",
