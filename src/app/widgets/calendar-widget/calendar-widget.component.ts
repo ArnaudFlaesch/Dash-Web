@@ -68,13 +68,20 @@ export class CalendarWidgetComponent {
     const parsedEvents: CalendarEvent[] = calendarData
       .filter((event) => event.startDate && event.endDate && event.description)
       .map((event) => {
+        const startDate = new Date(event.startDate);
+        const endDate = new Date(event.endDate);
+        const isAllDay =
+          endDate.getDay() === startDate.getDay() + 1 &&
+          endDate.getHours() === startDate.getHours();
+        if (isAllDay) {
+          endDate.setDate(startDate.getDate());
+          endDate.setHours(23);
+        }
         return {
           title: event.description,
-          start: new Date(event.startDate),
-          end: new Date(event.endDate),
-          allDay:
-            new Date(event.endDate).getDay() === new Date(event.startDate).getDay() + 1 &&
-            new Date(event.endDate).getHours() === new Date(event.startDate).getHours()
+          start: startDate,
+          end: endDate,
+          allDay: isAllDay
         };
       });
     this.events = [...this.events, ...parsedEvents];
