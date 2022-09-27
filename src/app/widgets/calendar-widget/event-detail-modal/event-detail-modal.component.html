@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{ data.title }}</h1>
 <mat-dialog-content>
   <div>Début {{ data.start | dateFormat }}</div>
-  <div>Fin {{ data.end | dateFormat }}</div>
+  <div *ngIf="data.end">Fin {{ data.end | dateFormat }}</div>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-raised-button mat-dialog-close>Ok</button>
