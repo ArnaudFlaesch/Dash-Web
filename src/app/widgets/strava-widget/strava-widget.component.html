@@ -1,8 +1,4 @@
-<app-widget
-  [widgetData]="{}"
-  (refreshWidgetAction)="this.refreshWidget()"
-  [isWidgetLoaded]="!this.isUserLoggedIn() || isWidgetLoaded()"
->
+<app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()" [isWidgetLoaded]="this.isWidgetLoaded">
   <ng-template #header>
     <div *ngIf="athlete" id="stravaWidgetHeader" class="h-10">
       <a [href]="getAthleteProfileUrl(athlete.id)" class="flex flex-row items-center space-x-2">
@@ -14,7 +10,7 @@
   </ng-template>
 
   <ng-template #body>
-    <div *ngIf="this.isUserLoggedIn()">
+    <ng-template [ngIf]="this.isUserLoggedIn()" [ngIfElse]="isUserNotConnected">
       <div class="max-h-48 overflow-y-scroll">
         <div *ngFor="let activity of this.activities.slice().reverse(); let index = index" class="stravaActivity">
           <mat-expansion-panel hideToggle>
@@ -45,9 +41,12 @@
       <div class="min-h-24 max-h-96">
         <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
       </div>
-    </div>
-    <div *ngIf="!this.isUserLoggedIn()" class="my-auto text-center">
-      <button (click)="loginToStrava()" mat-raised-button color="primary">Se connecter</button>
-    </div>
+    </ng-template>
+
+    <ng-template #isUserNotConnected>
+      <div class="my-auto text-center">
+        <button (click)="loginToStrava()" mat-raised-button color="primary">Se connecter</button>
+      </div>
+    </ng-template>
   </ng-template>
 </app-widget>

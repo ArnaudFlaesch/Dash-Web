@@ -2,7 +2,7 @@ import { createHttpFactory, HttpMethod, SpectatorHttp } from '@ngneat/spectator/
 import { environment } from '../../../environments/environment';
 import { TabService } from './tab.service';
 
-describe('ApiService tests', () => {
+describe('Tab service tests', () => {
   let spectator: SpectatorHttp<TabService>;
   const createSpectator = createHttpFactory({
     service: TabService

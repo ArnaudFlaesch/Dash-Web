@@ -1,4 +1,5 @@
 @import '../node_modules/angular-calendar/css/angular-calendar.css';
+@import 'colors';
 
 /* stylelint-disable */
 @tailwind base;
@@ -9,7 +10,7 @@
 html,
 body {
   height: 100%;
-  background-color: rgba($color: #634f36, $alpha: 100%);
+  background-color: $dash-background-color;
 }
 
 body {
@@ -17,8 +18,10 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-mat-expansion-panel-header {
-  &:hover {
-    font-weight: bold;
+mat-expansion-panel {
+  mat-expansion-panel-header {
+    &:hover {
+      font-weight: bold;
+    }
   }
 }

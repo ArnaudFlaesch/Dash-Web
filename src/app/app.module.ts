@@ -30,9 +30,10 @@ import { LoginComponent } from './login/login.component';
 import { CreateWidgetModalComponent } from './modals/create-widget-modal/create-widget-modal.component';
 import { ImportConfigModalComponent } from './modals/import-config-modal/import-config-modal.component';
 import { SafePipe } from './pipes/safe.pipe';
+import { DateFormatPipe } from './pipes/date-format.pipe';
 import { AuthService } from './services/auth.service/auth.service';
 import { ConfigService } from './services/config.service/config.service';
-import { DateUtilsService } from './services/date.utils';
+import { DateUtilsService } from './services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './services/error.handler.service';
 import { TabService } from './services/tab.service/tab.service';
 import { WidgetService } from './services/widget.service/widget.service';
@@ -72,6 +73,7 @@ registerLocaleData(localeFr);
     CalendarWidgetComponent,
     SteamWidgetComponent,
     GameDetailsComponent,
+    DateFormatPipe,
     SafePipe,
     CreateWidgetModalComponent,
     ImportConfigModalComponent,

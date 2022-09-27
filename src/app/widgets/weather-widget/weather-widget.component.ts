@@ -4,7 +4,7 @@ import { ChartConfiguration, ChartData, ChartType, ChartTypeRegistry } from 'cha
 import { format, startOfDay } from 'date-fns';
 import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
-import { DateUtilsService } from '../../../app/services/date.utils';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 
 enum ForecastMode {
   DAY,

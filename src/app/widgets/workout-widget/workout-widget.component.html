@@ -33,7 +33,7 @@
         <div *ngFor="let workoutSession of this.workoutSessions">
           <ul>
             <li class="workout-session">
-              <div (click)="editWorkoutSession(workoutSession)">{{ formatDate(workoutSession.workoutDate) }}</div>
+              <div (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate | dateFormat }}</div>
             </li>
           </ul>
         </div>
@@ -55,7 +55,7 @@
         <button mat-raised-button (click)="backToWorkoutSessionsList()">Back</button>
         Edit
         <div *ngIf="currentWorkoutSessionToEdit">
-          <h3 id="workoutSessionDate">Session du {{ formatDate(currentWorkoutSessionToEdit.workoutDate) }}</h3>
+          <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat }}</h3>
 
           <ul *ngFor="let workoutType of this.workoutTypes">
             <li>

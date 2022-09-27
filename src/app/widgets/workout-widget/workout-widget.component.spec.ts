@@ -11,7 +11,7 @@ import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './model/Workout';
 
 import { environment } from '../../../environments/environment';
-import { DateUtilsService } from '../../services/date.utils';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { WorkoutWidgetComponent } from './workout-widget.component';
 import { WorkoutWidgetService } from './workout.widget.service';
 

@@ -1,4 +1,4 @@
-import { DateUtilsService } from './../../services/date.utils';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -133,10 +133,6 @@ export class WorkoutWidgetComponent {
   }
 
   public getWidgetData = () => <Record<string, string>>{};
-
-  public formatDate(date: string) {
-    return this.dateUtilsService.formatDateFromUTC(date);
-  }
 
   public decrementExerciceNumberOfReps(workoutTypeId: number) {
     this.updateNumberOfReps(workoutTypeId, -1);
