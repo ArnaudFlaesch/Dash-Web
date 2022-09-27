@@ -22,6 +22,4 @@ describe('Date utils service tests', () => {
       format(spectator.service.formatDateFromTimestamp(timestamp, timeOffset), dateFormat)
     ).toEqual('06/03/2022 15:29:48');
   });
-
-  it('Should format', () => {});
 });
