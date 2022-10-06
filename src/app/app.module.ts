@@ -55,6 +55,8 @@ import { WidgetListComponent } from './widgets/widget-list/widget-list.component
 import { WidgetComponent } from './widgets/widget/widget.component';
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { AirParifWidgetComponent } from './widgets/airparif-widget/airparif-widget.component';
+import { AirParifWidgetService } from './widgets/airparif-widget/airparif-widget.service';
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -78,7 +80,8 @@ registerLocaleData(localeFr);
     CreateWidgetModalComponent,
     ImportConfigModalComponent,
     EventDetailModalComponent,
-    WorkoutWidgetComponent
+    WorkoutWidgetComponent,
+    AirParifWidgetComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -117,6 +120,7 @@ registerLocaleData(localeFr);
     ErrorHandlerService,
     DateUtilsService,
     SteamWidgetService,
+    AirParifWidgetService,
     WorkoutWidgetService,
     CalendarWidgetService,
     StravaWidgetService,

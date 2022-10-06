@@ -19,6 +19,7 @@ import { WeatherWidgetComponent } from '../weather-widget/weather-widget.compone
 import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { StravaWidgetComponent } from '../strava-widget/strava-widget.component';
 import { WorkoutWidgetComponent } from '../workout-widget/workout-widget.component';
+import { AirParifWidgetComponent } from '../airparif-widget/airparif-widget.component';
 
 @Component({
   selector: 'app-widget-list',
@@ -35,8 +36,8 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
   constructor(private cdRef: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
-    this.createWidgets();
-    this.cdRef.detectChanges();
+    // this.createWidgets();
+    //this.cdRef.detectChanges();
   }
 
   ngOnChanges() {
@@ -91,6 +92,10 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
           }
           case WidgetTypes.WORKOUT: {
             target.createComponent(WorkoutWidgetComponent, { injector: injector });
+            break;
+          }
+          case WidgetTypes.AIRPARIF: {
+            target.createComponent(AirParifWidgetComponent, { injector: injector });
             break;
           }
         }

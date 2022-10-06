@@ -1,0 +1,17 @@
+<app-widget [widgetData]="{}" [isWidgetLoaded]="isWidgetLoaded" (refreshWidgetAction)="this.refreshWidget()">
+  <ng-template #header>
+    <div class="h-10">
+      <a [href]="'airparif' | safe">
+        <div>'airparif'</div>
+      </a>
+    </div>
+  </ng-template>
+
+  <ng-template #body>
+    <div class="map-container">
+      <div class="map-frame">
+        <div id="map"></div>
+      </div>
+    </div>
+  </ng-template>
+</app-widget>
