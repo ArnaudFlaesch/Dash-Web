@@ -1,23 +1,34 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { createComponentFactory, createHttpFactory, Spectator, SpectatorHttp } from '@ngneat/spectator/jest';
+import { ErrorHandlerService } from '../../services/error.handler.service';
 
-import { AirparifWidgetComponent } from './airparif-widget.component';
+import { AirParifWidgetComponent } from './airparif-widget.component';
+import { AirParifWidgetService } from './airparif-widget.service';
 
-describe('AirparifWidgetComponent', () => {
-  let component: AirparifWidgetComponent;
-  let fixture: ComponentFixture<AirparifWidgetComponent>;
+describe('AirParifWidgetComponent', () => {
+  let spectator: Spectator<AirParifWidgetComponent>;
+  let airParifWidgetService: SpectatorHttp<AirParifWidgetService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AirparifWidgetComponent ]
-    })
-    .compileComponents();
+  const communeInseeCode = "75112";
+  const airParifToken = "AIRPARIFTOKEN";
 
-    fixture = TestBed.createComponent(AirparifWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  const createComponent = createComponentFactory({
+    component: AirParifWidgetComponent,
+    imports: [MatSnackBarModule],
+    providers: [
+      AirParifWidgetService,
+      ErrorHandlerService
+    ]
+  });
+  const createHttpAirParifWidgetService = createHttpFactory(AirParifWidgetService);
+
+  beforeEach(() => {
+    spectator = createComponent();
+    airParifWidgetService = createHttpAirParifWidgetService();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  it("Should create", () => {
+    expect(spectator.component.airParifApiKey).toEqual(null)
+  })
+
+})

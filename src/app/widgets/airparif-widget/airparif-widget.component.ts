@@ -19,7 +19,6 @@ export class AirParifWidgetComponent implements AfterViewInit {
   public isWidgetLoaded = true;
 
   constructor(
-    @Inject('widgetId') private widgetId: number,
     private airParifWidgetService: AirParifWidgetService
   ) {}
 
@@ -38,6 +37,8 @@ export class AirParifWidgetComponent implements AfterViewInit {
   }
 
   private initMap(): void {
+    const mapContainerDocumentId = "map";
+    if (document.getElementById(mapContainerDocumentId)) {
     const southWest = L.latLng(48.12, 1.44),
       northEast = L.latLng(49.24, 3.56),
       bounds = L.latLngBounds(southWest, northEast);
@@ -67,7 +68,7 @@ export class AirParifWidgetComponent implements AfterViewInit {
       this.getIndiceWmsOptions()
     );*/
 
-    this.map = L.map('map', {
+    this.map = L.map(mapContainerDocumentId, {
       center: [48.8502, 2.3488],
       zoom: 11,
       maxBounds: bounds,
@@ -84,6 +85,7 @@ export class AirParifWidgetComponent implements AfterViewInit {
     };
 
     L.control.layers(baseMaps, overlayMaps).addTo(this.map);
+  }
   }
 
   private getWmsOptions(layer: string, attribution: string) {

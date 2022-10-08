@@ -23,11 +23,11 @@ describe('CalendarWidgetComponent', () => {
     imports: [MatDialogModule, MatSnackBarModule],
     providers: [CalendarWidgetService, DateAdapter, DateUtilsService, ErrorHandlerService]
   });
-  const createHttpRssWidgetService = createHttpFactory(CalendarWidgetService);
+  const createHttpCalendarWidgetService = createHttpFactory(CalendarWidgetService);
 
   beforeEach(() => {
     spectator = createComponent();
-    calendarWidgetService = createHttpRssWidgetService();
+    calendarWidgetService = createHttpCalendarWidgetService();
   });
 
   it('should create', () => {
