@@ -6,7 +6,7 @@ describe('Date utils service tests', () => {
   let spectator: SpectatorService<DateUtilsService>;
   const createService = createServiceFactory(DateUtilsService);
 
-  const dateFormat = 'dd/MM/yyyy H:mm:ss';
+  const dateFormat = 'dd/MM/yyyy';
 
   beforeEach(() => (spectator = createService()));
 
@@ -15,11 +15,11 @@ describe('Date utils service tests', () => {
     const timezone = 3600;
     const timeOffset = spectator.service.adjustTimeWithOffset(timezone);
     expect(format(spectator.service.formatDateFromTimestamp(timestamp), dateFormat)).toEqual(
-      '06/03/2022 18:29:48'
+      '06/03/2022'
     );
     expect(timeOffset).toEqual(-10800);
     expect(
       format(spectator.service.formatDateFromTimestamp(timestamp, timeOffset), dateFormat)
-    ).toEqual('06/03/2022 15:29:48');
+    ).toEqual('06/03/2022');
   });
 });
