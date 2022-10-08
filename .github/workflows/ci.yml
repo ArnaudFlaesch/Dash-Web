@@ -12,6 +12,7 @@ jobs:
       STEAM_USER_ID: ${{ secrets.STEAM_USER_ID }}
       STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
       STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+      AIRPARIF_API_TOKEN: ${{ secrets.AIRPARIF_API_TOKEN }}
 
     steps:
       - uses: actions/checkout@v3

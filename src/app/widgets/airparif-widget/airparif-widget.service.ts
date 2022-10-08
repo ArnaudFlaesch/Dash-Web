@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
+import { IAirParifCouleur, IForecast } from './model/IAirParif';
 
 @Injectable()
 export class AirParifWidgetService {
   constructor(private http: HttpClient) {}
-  private airparifToken = '1dfea964-b7ab-a47c-3602-ee56d6603217';
 
-  public getCommunePrevision(communeInseeCode: string): Observable<any> {
-    return this.http.get<any>(
+  public getCommunePrevision(communeInseeCode: string): Observable<IForecast[]> {
+    return this.http.get<IForecast[]>(
       `${environment.backend_url}/airParifWidget/previsionCommune?commune=${communeInseeCode}`,
       {
         headers: {
@@ -19,5 +19,14 @@ export class AirParifWidgetService {
         }
       }
     );
+  }
+
+  public getColors(): Observable<IAirParifCouleur> {
+    return this.http.get<IAirParifCouleur>(`${environment.backend_url}/airParifWidget/couleurs`, {
+      headers: {
+        Authorization: authorizationBearer(),
+        'Content-type': 'application/json'
+      }
+    });
   }
 }

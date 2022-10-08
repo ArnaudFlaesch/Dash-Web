@@ -59,7 +59,7 @@ describe('Tab tests', () => {
       .get('.deleteTabButton')
       .click()
       .wait('@deleteTab')
-      .then(() => {
+      .then((response: Interception) => {
         cy.get('.tab').should('have.length', 6);
       });
   });

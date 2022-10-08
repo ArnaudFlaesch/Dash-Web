@@ -1,0 +1,20 @@
+[
+  {
+    "date": "2022-10-08",
+    "no2": "MOYEN",
+    "o3": "BON",
+    "pm10": "BON",
+    "pm25": "BON",
+    "so2": "BON",
+    "indice": "MOYEN"
+  },
+  {
+    "date": "2022-10-09",
+    "no2": "MOYEN",
+    "o3": "MOYEN",
+    "pm10": "BON",
+    "pm25": "MOYEN",
+    "so2": "BON",
+    "indice": "MOYEN"
+  }
+]

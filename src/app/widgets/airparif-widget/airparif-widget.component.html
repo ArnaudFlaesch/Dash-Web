@@ -1,10 +1,38 @@
-<app-widget [widgetData]="{}" [isWidgetLoaded]="isWidgetLoaded" (refreshWidgetAction)="this.refreshWidget()">
+<app-widget
+  [widgetData]="getWidgetData()"
+  [isFormValid]="isFormValid()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #header>
     <div class="h-10">
-      <a [href]="'airparif' | safe">
-        <div>'airparif'</div>
+      <a [href]="[airParifWebsiteUrl | safe]">
+        <div>AirParif</div>
       </a>
     </div>
+  </ng-template>
+
+  <ng-template #editComponent>
+    <mat-form-field appearance="fill">
+      <mat-label>Clé d'API</mat-label>
+      <input
+        matInput
+        id="airParifApiKey"
+        name="apiKey"
+        [(ngModel)]="this.airParifApiKey"
+        placeholder="Saisissez la clé d'API AirParif"
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Code commune</mat-label>
+      <input
+        matInput
+        id="communeInseeCode"
+        name="communeInseeCode"
+        [(ngModel)]="this.communeInseeCode"
+        placeholder="Saisissez le code commune"
+      />
+    </mat-form-field>
   </ng-template>
 
   <ng-template #body>

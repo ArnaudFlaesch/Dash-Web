@@ -95,7 +95,13 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
             break;
           }
           case WidgetTypes.AIRPARIF: {
-            target.createComponent(AirParifWidgetComponent, { injector: injector });
+            component = target.createComponent(AirParifWidgetComponent, { injector: injector });
+            component.instance.airParifApiKey = widgetData
+              ? (widgetData['airParifApiKey'] as string)
+              : null;
+            component.instance.communeInseeCode = widgetData
+              ? (widgetData['communeInseeCode'] as string)
+              : null;
             break;
           }
         }

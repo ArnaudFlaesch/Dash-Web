@@ -1,0 +1,8 @@
+{
+  "bon": "#50f0e6",
+  "moyen": "#50ccaa",
+  "degrade": "#f0e641",
+  "mauvais": "#ff5050",
+  "tresMauvais": "#960032",
+  "extremementMauvais": "#7d2181"
+}
