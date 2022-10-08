@@ -1,5 +1,6 @@
-import { Component, AfterViewInit, Inject } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import * as L from 'leaflet';
+
 import { AirParifWidgetService } from './airparif-widget.service';
 
 @Component({

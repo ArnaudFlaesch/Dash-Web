@@ -93,6 +93,7 @@ function createNewTab(tabName: string): Cypress.Chainable {
         .click()
         .wait('@createTab')
         .then((createTabResponse) => {
+          expect(createTabResponse.response.statusCode).to.equal(200);
           cy.get('.tab:nth(-1) .tabLabel')
             .click()
             .dblclick()

@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { Interception } from "cypress/types/net-stubbing";
+
 describe('Tab tests', () => {
   beforeEach(() => {
     cy.loginAsAdmin()
@@ -60,6 +62,7 @@ describe('Tab tests', () => {
       .click()
       .wait('@deleteTab')
       .then((response: Interception) => {
+        expect(response.response.statusCode).to.equal(200);
         cy.get('.tab').should('have.length', 6);
       });
   });
