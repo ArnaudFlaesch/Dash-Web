@@ -1,8 +1,26 @@
-{
-  "bon": "#50f0e6",
-  "moyen": "#50ccaa",
-  "degrade": "#f0e641",
-  "mauvais": "#ff5050",
-  "tresMauvais": "#960032",
-  "extremementMauvais": "#7d2181"
-}
+[
+  {
+      "name": "BON",
+      "color": "#50f0e6"
+  },
+  {
+      "name": "MOYEN",
+      "color": "#50ccaa"
+  },
+  {
+      "name": "DEGRADE",
+      "color": "#f0e641"
+  },
+  {
+      "name": "MAUVAIS",
+      "color": "#ff5050"
+  },
+  {
+      "name": "TRES_MAUVAIS",
+      "color": "#960032"
+  },
+  {
+      "name": "EXTREMEMENT_MAUVAIS",
+      "color": "#7d2181"
+  }
+]

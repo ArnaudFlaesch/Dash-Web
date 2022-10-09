@@ -1,7 +1,14 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { createComponentFactory, createHttpFactory, Spectator, SpectatorHttp } from '@ngneat/spectator/jest';
-import { ErrorHandlerService } from '../../services/error.handler.service';
+import {
+  createComponentFactory,
+  createHttpFactory,
+  HttpMethod,
+  Spectator,
+  SpectatorHttp
+} from '@ngneat/spectator/jest';
+import { environment } from '../../../environments/environment';
 
+import { ErrorHandlerService } from '../../services/error.handler.service';
 import { AirParifWidgetComponent } from './airparif-widget.component';
 import { AirParifWidgetService } from './airparif-widget.service';
 
@@ -9,26 +16,110 @@ describe('AirParifWidgetComponent', () => {
   let spectator: Spectator<AirParifWidgetComponent>;
   let airParifWidgetService: SpectatorHttp<AirParifWidgetService>;
 
-  const communeInseeCode = "75112";
-  const airParifToken = "AIRPARIFTOKEN";
+  const communeInseeCode = '75112';
+  const airParifToken = 'AIRPARIFTOKEN';
+
+  const couleursIndicesData = [
+    {
+      name: 'BON',
+      color: '#50f0e6'
+    },
+    {
+      name: 'MOYEN',
+      color: '#50ccaa'
+    },
+    {
+      name: 'DEGRADE',
+      color: '#f0e641'
+    },
+    {
+      name: 'MAUVAIS',
+      color: '#ff5050'
+    },
+    {
+      name: 'TRES_MAUVAIS',
+      color: '#960032'
+    },
+    {
+      name: 'EXTREMEMENT_MAUVAIS',
+      color: '#7d2181'
+    }
+  ];
+
+  const forecastData = [
+    {
+      date: '2022-10-08',
+      no2: 'MOYEN',
+      o3: 'BON',
+      pm10: 'BON',
+      pm25: 'BON',
+      so2: 'BON',
+      indice: 'MOYEN'
+    },
+    {
+      date: '2022-10-09',
+      no2: 'MOYEN',
+      o3: 'MOYEN',
+      pm10: 'BON',
+      pm25: 'MOYEN',
+      so2: 'BON',
+      indice: 'MOYEN'
+    }
+  ];
 
   const createComponent = createComponentFactory({
     component: AirParifWidgetComponent,
     imports: [MatSnackBarModule],
-    providers: [
-      AirParifWidgetService,
-      ErrorHandlerService
-    ]
+    providers: [AirParifWidgetService, ErrorHandlerService]
   });
-  const createHttpAirParifWidgetService = createHttpFactory(AirParifWidgetService);
+  const createHttpAirParifWidgetService = createHttpFactory(
+    AirParifWidgetService
+  );
 
   beforeEach(() => {
     spectator = createComponent();
     airParifWidgetService = createHttpAirParifWidgetService();
   });
 
-  it("Should create", () => {
-    expect(spectator.component.airParifApiKey).toEqual(null)
-  })
+  it('Should create an AirParif Widget', () => {
+    expect(spectator.component.airParifApiKey).toEqual(null);
+    expect(spectator.component.communeInseeCode).toEqual(null);
+    expect(spectator.component.isFormValid()).toEqual(false);
+    expect(spectator.component.getWidgetData()).toEqual(null);
+    spectator.component.airParifApiKey = airParifToken;
+    spectator.component.communeInseeCode = communeInseeCode;
+    expect(spectator.component.isFormValid()).toEqual(true);
+    expect(spectator.component.getWidgetData()).toEqual({
+      airParifApiKey: airParifToken,
+      communeInseeCode: communeInseeCode
+    });
 
-})
+    expect(spectator.component.airParifForecast).toEqual([]);
+    expect(spectator.component.airParifCouleursIndices).toEqual([]);
+
+    spectator.component.refreshWidget();
+    const dataRequests = airParifWidgetService.expectConcurrent([
+      {
+        url:
+          environment.backend_url +
+          '/airParifWidget/previsionCommune?commune=' +
+          communeInseeCode,
+        method: HttpMethod.GET
+      },
+      {
+        url: environment.backend_url + '/airParifWidget/couleurs',
+        method: HttpMethod.GET
+      }
+    ]);
+
+    airParifWidgetService.flushAll(dataRequests, [
+      forecastData,
+      couleursIndicesData
+    ]);
+
+    expect(spectator.component.airParifForecast).toEqual(forecastData);
+    expect(spectator.component.airParifCouleursIndices).toEqual(
+      couleursIndicesData
+    );
+  });
+});

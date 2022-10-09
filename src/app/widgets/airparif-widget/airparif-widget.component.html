@@ -1,9 +1,5 @@
-<app-widget
-  [widgetData]="getWidgetData()"
-  [isFormValid]="isFormValid()"
-  [isWidgetLoaded]="isWidgetLoaded"
-  (refreshWidgetAction)="this.refreshWidget()"
->
+<app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
     <div class="h-10">
       <a [href]="[airParifWebsiteUrl | safe]">
@@ -15,23 +11,13 @@
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Clé d'API</mat-label>
-      <input
-        matInput
-        id="airParifApiKey"
-        name="apiKey"
-        [(ngModel)]="this.airParifApiKey"
-        placeholder="Saisissez la clé d'API AirParif"
-      />
+      <input matInput id="airParifApiKey" name="apiKey" [(ngModel)]="this.airParifApiKey"
+        placeholder="Saisissez la clé d'API AirParif" />
     </mat-form-field>
     <mat-form-field>
       <mat-label>Code commune</mat-label>
-      <input
-        matInput
-        id="communeInseeCode"
-        name="communeInseeCode"
-        [(ngModel)]="this.communeInseeCode"
-        placeholder="Saisissez le code commune"
-      />
+      <input matInput id="communeInseeCode" name="communeInseeCode" [(ngModel)]="this.communeInseeCode"
+        placeholder="Saisissez le code commune" />
     </mat-form-field>
   </ng-template>
 
@@ -40,6 +26,36 @@
       <div class="map-frame">
         <div id="map"></div>
       </div>
+    </div>
+
+    <div *ngIf="this.airParifForecast.length > 0">
+      <button mat-raised-button [color]="this.isForecastModeToday() ? 'primary' : ''"
+        (click)="this.selectTodayForecast()">Aujourd'hui</button>
+      <button mat-raised-button [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
+        (click)="this.selectTomorrowForecast()" [disabled]="this.airParifForecast.length < 1">Demain</button>
+
+
+      <!-- <div *ngIf="this.forecastToDisplay" id="airParifForecast grid grid-cols-2">
+        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice) }">
+          <span>Indice</span><span>{{this.forecastToDisplay.indice}}</span></div>
+        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice)">
+          <span>no2</span><span>{{this.forecastToDisplay.no2}}</span></div>
+        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice)">
+          <span>o3</span><span>{{this.forecastToDisplay.o3}}</span></div>
+        <div> <span>pm10</span><span>{{this.forecastToDisplay.pm10}}</span></div>
+        <div> <span>pm25</span><span>{{this.forecastToDisplay.pm25}}</span></div>
+        <div> <span>so2</span><span>{{this.forecastToDisplay.so2}}</span></div>
+      </div>
+    </div>
+
+    <div *ngIf="this.airParifCouleursIndices" class="h-4">
+      <span [style]="{ 'background-color': [color[1]] }" *ngFor="let color of this.getColorsIndicesToDisplay()">
+        {{color[0]}}
+      </span>
+      
+    </div>
+   -->
+
     </div>
   </ng-template>
 </app-widget>

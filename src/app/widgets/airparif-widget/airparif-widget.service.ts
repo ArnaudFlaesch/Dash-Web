@@ -9,7 +9,9 @@ import { IAirParifCouleur, IForecast } from './model/IAirParif';
 export class AirParifWidgetService {
   constructor(private http: HttpClient) {}
 
-  public getCommunePrevision(communeInseeCode: string): Observable<IForecast[]> {
+  public getCommunePrevision(
+    communeInseeCode: string
+  ): Observable<IForecast[]> {
     return this.http.get<IForecast[]>(
       `${environment.backend_url}/airParifWidget/previsionCommune?commune=${communeInseeCode}`,
       {
@@ -21,12 +23,15 @@ export class AirParifWidgetService {
     );
   }
 
-  public getColors(): Observable<IAirParifCouleur> {
-    return this.http.get<IAirParifCouleur>(`${environment.backend_url}/airParifWidget/couleurs`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+  public getColors(): Observable<IAirParifCouleur[]> {
+    return this.http.get<IAirParifCouleur[]>(
+      `${environment.backend_url}/airParifWidget/couleurs`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        }
       }
-    });
+    );
   }
 }

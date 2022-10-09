@@ -1,3 +1,17 @@
+export enum ForecastMode {
+  TODAY,
+  TOMORROW
+}
+
+export enum AirParifIndiceEnum {
+  BON = 'Bon',
+  MOYEN = 'Moyen',
+  DEGRADE = 'Dégradé',
+  MAUVAIS = 'Mauvais',
+  TRES_MAUVAIS = 'Très mauvais',
+  EXTREMEMENT_MAUVAIS = 'Extrêmement mauvais'
+}
+
 export interface IForecast {
   date: string;
   no2: AirParifIndiceEnum;
@@ -8,20 +22,7 @@ export interface IForecast {
   indice: AirParifIndiceEnum;
 }
 
-enum AirParifIndiceEnum {
-  BON,
-  MOYEN,
-  DEGRADE,
-  MAUVAIS,
-  TRES_MAUVAIS,
-  EXTREMEMENT_MAUVAIS
-}
-
 export interface IAirParifCouleur {
-  bon: string;
-  moyen: string;
-  degrade: string;
-  mauvais: string;
-  tresMauvais: string;
-  extremementMauvais: string;
+  name: AirParifIndiceEnum;
+  color: string;
 }
