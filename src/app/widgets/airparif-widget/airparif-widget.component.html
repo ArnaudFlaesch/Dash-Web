@@ -34,27 +34,31 @@
       <button mat-raised-button [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
         (click)="this.selectTomorrowForecast()" [disabled]="this.airParifForecast.length < 1">Demain</button>
 
-
-      <!-- <div *ngIf="this.forecastToDisplay" id="airParifForecast grid grid-cols-2">
+      <div *ngIf="this.forecastToDisplay" id="airParifForecast" class="flex flex-col">
         <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice) }">
-          <span>Indice</span><span>{{this.forecastToDisplay.indice}}</span></div>
-        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice)">
-          <span>no2</span><span>{{this.forecastToDisplay.no2}}</span></div>
-        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice)">
-          <span>o3</span><span>{{this.forecastToDisplay.o3}}</span></div>
-        <div> <span>pm10</span><span>{{this.forecastToDisplay.pm10}}</span></div>
-        <div> <span>pm25</span><span>{{this.forecastToDisplay.pm25}}</span></div>
-        <div> <span>so2</span><span>{{this.forecastToDisplay.so2}}</span></div>
-      </div>
-    </div>
+          <span>Indice global</span><span>{{this.forecastToDisplay.indice}}</span>
+        </div>
+        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.no2)}">
+          <span>Dioxyde d'Azote (NO₂)</span><span>{{this.forecastToDisplay.no2}}</span>
+        </div>
+        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.o3)}">
+          <span>Ozone (O₃)</span><span>{{this.forecastToDisplay.o3}}</span>
+        </div>
+        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm10)}">
+          <span>Particules (diamètre inférieur à 10µm) (PM₁₀)</span><span>{{this.forecastToDisplay.pm10}}</span>
+        </div>
+        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm25)}">
+          <span>pm25</span><span>{{this.forecastToDisplay.pm25}}</span>
+        </div>
+        <div [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.so2)}">
+          <span>Dioxyde de soufre (SO₂)</span><span>{{this.forecastToDisplay.so2}}</span>
+        </div>
 
-    <div *ngIf="this.airParifCouleursIndices" class="h-4">
-      <span [style]="{ 'background-color': [color[1]] }" *ngFor="let color of this.getColorsIndicesToDisplay()">
-        {{color[0]}}
+      </div>
+
+      <span [style]="{ 'background-color':indice.color }" *ngFor="let indice of this.airParifCouleursIndices">
+        {{indice.name}}
       </span>
-      
-    </div>
-   -->
 
     </div>
   </ng-template>

@@ -36,8 +36,8 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
   constructor(private cdRef: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
-    // this.createWidgets();
-    //this.cdRef.detectChanges();
+    this.createWidgets();
+    this.cdRef.detectChanges();
   }
 
   ngOnChanges() {
@@ -61,13 +61,21 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
         const widgetData = this.widgetList[index].data;
         switch (this.widgetList[index].type) {
           case WidgetTypes.WEATHER: {
-            component = target.createComponent(WeatherWidgetComponent, { injector: injector });
-            component.instance.city = widgetData ? (widgetData['city'] as string) : null;
+            component = target.createComponent(WeatherWidgetComponent, {
+              injector: injector
+            });
+            component.instance.city = widgetData
+              ? (widgetData['city'] as string)
+              : null;
             break;
           }
           case WidgetTypes.RSS: {
-            component = target.createComponent(RssWidgetComponent, { injector: injector });
-            component.instance.urlFeed = widgetData ? (widgetData['url'] as string) : null;
+            component = target.createComponent(RssWidgetComponent, {
+              injector: injector
+            });
+            component.instance.urlFeed = widgetData
+              ? (widgetData['url'] as string)
+              : null;
             component.instance.readArticles =
               widgetData && widgetData['readArticlesGuids']
                 ? (widgetData['readArticlesGuids'] as string[])
@@ -75,7 +83,9 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
             break;
           }
           case WidgetTypes.CALENDAR: {
-            component = target.createComponent(CalendarWidgetComponent, { injector: injector });
+            component = target.createComponent(CalendarWidgetComponent, {
+              injector: injector
+            });
             component.instance.calendarUrls =
               widgetData && widgetData['calendarUrls']
                 ? (widgetData['calendarUrls'] as string[])
@@ -83,19 +93,27 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
             break;
           }
           case WidgetTypes.STRAVA: {
-            target.createComponent(StravaWidgetComponent, { injector: injector });
+            target.createComponent(StravaWidgetComponent, {
+              injector: injector
+            });
             break;
           }
           case WidgetTypes.STEAM: {
-            target.createComponent(SteamWidgetComponent, { injector: injector });
+            target.createComponent(SteamWidgetComponent, {
+              injector: injector
+            });
             break;
           }
           case WidgetTypes.WORKOUT: {
-            target.createComponent(WorkoutWidgetComponent, { injector: injector });
+            target.createComponent(WorkoutWidgetComponent, {
+              injector: injector
+            });
             break;
           }
           case WidgetTypes.AIRPARIF: {
-            component = target.createComponent(AirParifWidgetComponent, { injector: injector });
+            component = target.createComponent(AirParifWidgetComponent, {
+              injector: injector
+            });
             component.instance.airParifApiKey = widgetData
               ? (widgetData['airParifApiKey'] as string)
               : null;

@@ -170,6 +170,20 @@ export class AirParifWidgetComponent implements AfterViewInit {
     this.forecastToDisplay = this.airParifForecast[1];
   }
 
+  public getColorFromIndice(indice: AirParifIndiceEnum) {
+    console.log(this.airParifCouleursIndices);
+    console.log(
+      this.airParifCouleursIndices.find(
+        (couleurIndice) => couleurIndice.name === indice
+      )
+    );
+    return (
+      this.airParifCouleursIndices.find(
+        (couleurIndice) => couleurIndice.name === indice
+      )?.color || ''
+    );
+  }
+
   public isForecastModeToday = () => this.forecastMode === ForecastMode.TODAY;
   public isForecastModeTomorrow = () =>
     this.forecastMode === ForecastMode.TOMORROW;
