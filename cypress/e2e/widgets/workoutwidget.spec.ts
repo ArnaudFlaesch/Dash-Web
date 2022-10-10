@@ -5,22 +5,13 @@ import { Interception } from 'cypress/types/net-stubbing';
 describe('Workout Widget tests', () => {
   const mockedDateTime = new Date(2022, 8, 10, 0, 0, 0).getTime();
 
-  beforeEach(() => {
-    cy.loginAsAdmin()
-      .intercept('GET', '/widget/*')
-      .as('getWidgets')
-      .visit('/')
-      .title()
-      .should('equals', 'Dash')
-      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
-      .get('.tab')
-      .contains('Workout')
-      .click()
-      .wait('@getWidgets')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-      });
-  });
+  const tabName = 'Workout';
+
+  beforeEach(() => cy.navigateToTab(tabName));
+
+  before(() => cy.createNewTab(tabName));
+
+  after(() => cy.deleteTab(tabName));
 
   it('Should create a Workout Widget and add it to the dashboard', () => {
     cy.intercept('POST', '/widget/addWidget')
@@ -51,7 +42,9 @@ describe('Workout Widget tests', () => {
       .wait('@addWorkoutType')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workoutTypeName').should('have.length', 1).should('have.text', newWorkoutTypeName);
+        cy.get('.workoutTypeName')
+          .should('have.length', 1)
+          .should('have.text', newWorkoutTypeName);
       });
   });
 
@@ -109,22 +102,6 @@ describe('Workout Widget tests', () => {
       .clock()
       .then((clock) => {
         clock.restore();
-      });
-  });
-
-  it('Should delete previously added widget', () => {
-    cy.intercept('DELETE', '/widget/deleteWidget/*')
-      .as('deleteWidget')
-      .get('.widget .deleteButton')
-      .click()
-      .get('h4')
-      .should('have.text', 'Êtes-vous sûr de vouloir supprimer ce widget ?')
-      .get('.validateDeletionButton')
-      .click()
-      .wait('@deleteWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 0);
       });
   });
 });

@@ -7,13 +7,13 @@ describe('AirParif Widget tests', () => {
 
   beforeEach(() => cy.navigateToTab(tabName));
 
-  //before(() => cy.createNewTab(tabName));
+  before(() => cy.createNewTab(tabName));
 
-  //after(() => cy.deleteTab(tabName));
+  after(() => cy.deleteTab(tabName));
 
   const AIR_PARIF_VALID_TOKEN = 'AIRPARIFTOKEN';
 
-  xit('Should create an AirParif Widget and add it to the dashboard', () => {
+  it('Should create an AirParif Widget and add it to the dashboard', () => {
     cy.intercept('POST', '/widget/addWidget')
       .as('addWidget')
       .get('#openAddWidgetModal')
