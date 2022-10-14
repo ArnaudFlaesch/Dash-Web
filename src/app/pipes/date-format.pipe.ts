@@ -7,10 +7,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class DateFormatPipe implements PipeTransform {
   constructor(protected sanitizer: DomSanitizer) {}
 
-  public transform(value: string | Date): string {
+  public transform(value: string | Date, arg = 'full'): string {
     if (typeof value === 'string') {
       value = new Date(value);
     }
-    return value.toLocaleString('fr');
+    return arg === 'short'
+      ? value.toLocaleDateString('fr')
+      : value.toLocaleString();
   }
 }

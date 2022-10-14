@@ -22,12 +22,7 @@ describe('Steam Widget tests', () => {
       .intercept('GET', `/steamWidget/achievementList?appId=420`, {
         fixture: 'steam/halfLife2Ep2Achievements.json'
       })
-      .as('getAchievementData')
-      .wait(['@getPlayerData', '@getGameData'])
-      .then((requests: Interception[]) => {
-        expect(requests[0].response.statusCode).to.equal(200);
-        expect(requests[1].response.statusCode).to.equal(200);
-      });
+      .as('getAchievementData');
   });
 
   it('Should create a Steam Widget and add it to the dashboard', () => {
@@ -40,7 +35,7 @@ describe('Steam Widget tests', () => {
       .wait('@addWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 2);
+        cy.get('.widget').should('have.length', 1);
       });
   });
 
@@ -49,7 +44,7 @@ describe('Steam Widget tests', () => {
       (requests: Interception[]) => {
         expect(requests[0].response.statusCode).to.equal(200);
         expect(requests[1].response.statusCode).to.equal(200);
-        cy.get('.widget:nth(1) .gameInfo')
+        cy.get('.widget .gameInfo')
           .should('have.length', 10)
           .contains('Half-Life 2: Episode Two')
           .scrollIntoView()
@@ -57,7 +52,7 @@ describe('Steam Widget tests', () => {
           .wait('@getAchievementData')
           .then((request: Interception) => {
             expect(request.response.statusCode).to.equal(200);
-            cy.get('.widget:nth(1) .totalachievements')
+            cy.get('.widget .totalachievements')
               .should('have.text', 'Succès : 23')
               .get('.completedAchievements')
               .should('have.text', 'Succès complétés : 19')

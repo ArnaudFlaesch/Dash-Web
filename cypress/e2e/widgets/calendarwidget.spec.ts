@@ -8,14 +8,15 @@ describe('Calendar Widget tests', () => {
   const icalUsaHolidays =
     'https://calendar.google.com/calendar/ical/fr.usa%23holiday%40group.v.calendar.google.com/public/basic.ics';
 
+  const tabName = 'Agenda';
+
+  before(() => cy.createNewTab(tabName));
+
+  after(() => cy.deleteTab(tabName));
+
   beforeEach(() => {
-    cy.loginAsAdmin()
-      .clock(new Date(2021, 6, 1, 0, 0, 0).getTime())
-      .visit('/')
-      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
-      .get('.tab')
-      .contains('Agenda')
-      .click();
+    // July 1st 2021
+    cy.clock(new Date(2021, 6, 1, 0, 0, 0).getTime()).navigateToTab(tabName);
   });
 
   it('Should create a Calendar Widget and add it to the dashboard', () => {
@@ -61,31 +62,32 @@ describe('Calendar Widget tests', () => {
               .type(`${icalUsaHolidays}`)
               .get('.validateButton')
               .click();
-            cy.wait(['@getCalendarDataRequest', '@getCalendarDataRequest']).then(
-              (request: Interception[]) => {
-                expect(request[0].response.statusCode).to.equal(200);
-                expect(request[1].response.statusCode).to.equal(200);
-                cy.get('.cal-future:nth(4)')
-                  .scrollIntoView()
-                  .get('.editButton')
-                  .click()
-                  .get('.removeCalendarUrl')
-                  .eq(1)
-                  .click()
-                  .get('.validateButton')
-                  .click()
-                  .wait('@getCalendarDataRequest')
-                  .then(() =>
-                    cy
-                      .get('.cal-day-badge')
-                      .should('have.length', 2)
-                      .clock()
-                      .then((clock) => {
-                        clock.restore();
-                      })
-                  );
-              }
-            );
+            cy.wait([
+              '@getCalendarDataRequest',
+              '@getCalendarDataRequest'
+            ]).then((request: Interception[]) => {
+              expect(request[0].response.statusCode).to.equal(200);
+              expect(request[1].response.statusCode).to.equal(200);
+              cy.get('.cal-future:nth(4)')
+                .scrollIntoView()
+                .get('.editButton')
+                .click()
+                .get('.removeCalendarUrl')
+                .eq(1)
+                .click()
+                .get('.validateButton')
+                .click()
+                .wait('@getCalendarDataRequest')
+                .then(() =>
+                  cy
+                    .get('.cal-day-badge')
+                    .should('have.length', 1)
+                    .clock()
+                    .then((clock) => {
+                      clock.restore();
+                    })
+                );
+            });
           });
       });
   });

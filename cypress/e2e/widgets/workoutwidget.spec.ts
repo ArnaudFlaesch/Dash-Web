@@ -3,7 +3,7 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Workout Widget tests', () => {
-  const mockedDateTime = new Date(2022, 8, 10, 0, 0, 0).getTime();
+  const mockedDateTime = new Date(2022, 6, 22, 0, 0, 0).getTime();
 
   const tabName = 'Workout';
 
@@ -87,7 +87,7 @@ describe('Workout Widget tests', () => {
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
         cy.get('#workoutSessionDate')
-          .should('have.text', `Session du 10/09/2022`)
+          .should('have.text', `Session du 22/07/2022`)
           .intercept('POST', '/workoutWidget/updateWorkoutExercise')
           .as('updateWorkoutExercise')
           .get('.addRepToWorkoutButton')
