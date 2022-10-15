@@ -34,6 +34,9 @@ export class CreateWidgetModalComponent {
       case WidgetTypes.WORKOUT.toString(): {
         return 'fitness_center';
       }
+      case WidgetTypes.AIRPARIF.toString(): {
+        return 'air';
+      }
       default: {
         return '';
       }
