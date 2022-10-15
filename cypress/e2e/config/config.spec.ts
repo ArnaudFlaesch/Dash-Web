@@ -48,7 +48,7 @@ describe('Config tests', () => {
           .click()
           .wait('@deleteTab')
           .then(() => {
-            cy.get('.tab').should('have.length', 6);
+            cy.get('.tab').should('have.length', 1);
           });
       });
   });
