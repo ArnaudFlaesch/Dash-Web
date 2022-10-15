@@ -160,4 +160,158 @@ describe('HomeComponent', () => {
     deleteTabRequest.flush(null, { status: 200, statusText: 'OK' });
     expect(spectator.component.tabs.length).toEqual(1);
   });
+
+  it('Should delete the last tab and select the first after', () => {
+    const tabsFromDatabase = [
+      { id: 1, label: 'Home', tabOrder: 1 },
+      { id: 2, label: 'RSS', tabOrder: 2 },
+      { id: 3, label: 'Weather', tabOrder: 3 }
+    ];
+
+    const getTabsRequest = tabService.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
+    getTabsRequest.flush(tabsFromDatabase);
+
+    const getWidgetsRequest = widgetService.expectOne(
+      environment.backend_url +
+        '/widget/?tabId=' +
+        spectator.component.activeTab,
+      HttpMethod.GET
+    );
+    getWidgetsRequest.flush([]);
+    expect(spectator.component.activeTab).toEqual(tabsFromDatabase[0].id);
+  });
+
+  it('Should delete the first tab and select the second after', () => {
+    const tabsFromDatabase = [
+      { id: 1, label: 'Home', tabOrder: 1 },
+      { id: 2, label: 'RSS', tabOrder: 2 },
+      { id: 3, label: 'Weather', tabOrder: 3 }
+    ];
+
+    const getTabsRequest = tabService.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
+    getTabsRequest.flush(tabsFromDatabase);
+
+    const getWidgetsRequest = widgetService.expectOne(
+      environment.backend_url +
+        '/widget/?tabId=' +
+        spectator.component.activeTab,
+      HttpMethod.GET
+    );
+    getWidgetsRequest.flush([]);
+
+    const tabIdToDelete = spectator.component.tabs[0].id;
+    spectator.component.deleteTabFromDash(tabIdToDelete);
+    const deleteTabRequest = widgetService.expectOne(
+      environment.backend_url + '/tab/deleteTab/?id=' + tabIdToDelete,
+      HttpMethod.DELETE
+    );
+    deleteTabRequest.flush(null);
+
+    const getTabWidgetsRequest = widgetService.expectOne(
+      environment.backend_url +
+        '/widget/?tabId=' +
+        spectator.component.activeTab,
+      HttpMethod.GET
+    );
+    getTabWidgetsRequest.flush([]);
+
+    expect(spectator.component.activeTab).toEqual(
+      spectator.component.tabs[0].id
+    );
+  });
+
+  it('Should delete the active tab and select the first one after', () => {
+    const tabsFromDatabase = [
+      { id: 1, label: 'Home', tabOrder: 1 },
+      { id: 2, label: 'RSS', tabOrder: 2 },
+      { id: 3, label: 'Weather', tabOrder: 3 }
+    ];
+
+    const getTabsRequest = tabService.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
+    getTabsRequest.flush(tabsFromDatabase);
+
+    const getWidgetsRequest = widgetService.expectOne(
+      environment.backend_url +
+        '/widget/?tabId=' +
+        spectator.component.activeTab,
+      HttpMethod.GET
+    );
+    getWidgetsRequest.flush([]);
+
+    spectator.component.selectTab(spectator.component.tabs[1].id);
+
+    const getSecondTabWidgetsRequest = widgetService.expectOne(
+      environment.backend_url +
+        '/widget/?tabId=' +
+        spectator.component.tabs[1].id,
+      HttpMethod.GET
+    );
+    getSecondTabWidgetsRequest.flush([]);
+
+    const tabIdToDelete = spectator.component.activeTab;
+
+    spectator.component.deleteTabFromDash(tabIdToDelete);
+    const deleteTabRequest = widgetService.expectOne(
+      environment.backend_url + '/tab/deleteTab/?id=' + tabIdToDelete,
+      HttpMethod.DELETE
+    );
+    deleteTabRequest.flush(null);
+
+    const getTabWidgetRequest = widgetService.expectOne(
+      environment.backend_url +
+        '/widget/?tabId=' +
+        spectator.component.activeTab,
+      HttpMethod.GET
+    );
+    getTabWidgetRequest.flush([]);
+    expect(spectator.component.activeTab).toEqual(tabsFromDatabase[0].id);
+  });
+
+  it('Should create a new tab when the last one is deleted', () => {
+    const tabsFromDatabase = [{ id: 1, label: 'Home', tabOrder: 1 }];
+
+    const getTabsRequest = tabService.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
+    getTabsRequest.flush(tabsFromDatabase);
+
+    const getWidgetsRequest = widgetService.expectOne(
+      environment.backend_url +
+        '/widget/?tabId=' +
+        spectator.component.activeTab,
+      HttpMethod.GET
+    );
+    getWidgetsRequest.flush([]);
+
+    const lastTabToDelete = spectator.component.activeTab;
+    spectator.component.deleteTabFromDash(lastTabToDelete);
+    const deleteLastTabRequest = tabService.expectOne(
+      environment.backend_url + '/tab/deleteTab/?id=' + lastTabToDelete,
+      HttpMethod.DELETE
+    );
+    deleteLastTabRequest.flush(null);
+
+    const addNewTabRequest = tabService.expectOne(
+      environment.backend_url + '/tab/addTab',
+      HttpMethod.POST
+    );
+    const newTabId = 5;
+    addNewTabRequest.flush({
+      id: newTabId,
+      label: 'Nouvel onglet',
+      tabOrder: 4
+    } as ITab);
+
+    expect(spectator.component.tabs.map((tab) => tab.id)).toEqual([newTabId]);
+  });
 });
