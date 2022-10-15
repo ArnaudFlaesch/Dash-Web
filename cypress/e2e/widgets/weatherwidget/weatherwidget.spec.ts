@@ -36,7 +36,7 @@ describe('Weather Widget tests', () => {
   });
 
   it('Should refresh Weather widget', () => {
-    cy.clock(new Date(2020, 6, 15, 0, 0, 0).getTime())
+    cy.clock(new Date(2022, 2, 6, 0, 0, 0).getTime())
       .get('#cityNameInput')
       .type('Paris')
       .get('.validateButton')
