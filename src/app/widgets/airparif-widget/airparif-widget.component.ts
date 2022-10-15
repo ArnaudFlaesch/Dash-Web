@@ -1,14 +1,14 @@
 import { AfterViewInit, Component } from '@angular/core';
 import * as L from 'leaflet';
+
 import { ErrorHandlerService } from './../../services/error.handler.service';
+import { AirParifWidgetService } from './airparif-widget.service';
 import {
   AirParifIndiceEnum,
   ForecastMode,
   IAirParifCouleur,
   IForecast
 } from './model/IAirParif';
-
-import { AirParifWidgetService } from './airparif-widget.service';
 
 @Component({
   selector: 'app-airparif-widget',
@@ -157,7 +157,7 @@ export class AirParifWidgetComponent implements AfterViewInit {
     this.map?.addLayer(this.airParifForecastTomorrowLayer);
   }
 
-  public getColorFromIndice(indice: AirParifIndiceEnum) {
+  public getColorFromIndice(indice: AirParifIndiceEnum): string {
     return (
       this.airParifCouleursIndices.find(
         (couleurIndice) => couleurIndice.name === indice

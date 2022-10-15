@@ -6,11 +6,12 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
-import { environment } from '../../../environments/environment';
 
+import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { AirParifWidgetComponent } from './airparif-widget.component';
 import { AirParifWidgetService } from './airparif-widget.service';
+import { AirParifIndiceEnum } from './model/IAirParif';
 
 describe('AirParifWidgetComponent', () => {
   let spectator: Spectator<AirParifWidgetComponent>;
@@ -121,5 +122,18 @@ describe('AirParifWidgetComponent', () => {
     expect(spectator.component.airParifCouleursIndices).toEqual(
       couleursIndicesData
     );
+
+    expect(
+      spectator.component.getColorFromIndice('BON' as AirParifIndiceEnum)
+    ).toEqual('#50f0e6');
+    expect(
+      spectator.component.getColorFromIndice('null' as AirParifIndiceEnum)
+    ).toEqual('');
+
+    expect(spectator.component.isForecastModeToday()).toEqual(true);
+    spectator.component.selectTomorrowForecast();
+    expect(spectator.component.isForecastModeTomorrow()).toEqual(true);
+    spectator.component.selectTodayForecast();
+    expect(spectator.component.forecastToDisplay?.no2).toEqual('MOYEN');
   });
 });
