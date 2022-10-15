@@ -9,7 +9,6 @@ import {
 } from './model/IAirParif';
 
 import { AirParifWidgetService } from './airparif-widget.service';
-import { format } from 'date-fns';
 
 @Component({
   selector: 'app-airparif-widget',
@@ -38,10 +37,28 @@ export class AirParifWidgetComponent implements AfterViewInit {
   private ERROR_GETTING_AIRPARIF_COLOR_INDICES =
     "Erreur lors de la récupération des couleurs d'indices d'AirParif.";
 
+  private airParifForecastTodayLayer: L.Layer;
+  private airParifForecastTomorrowLayer: L.Layer;
+
   constructor(
     private airParifWidgetService: AirParifWidgetService,
     private errorHandlerService: ErrorHandlerService
-  ) {}
+  ) {
+    this.airParifForecastTodayLayer = L.tileLayer.wms(
+      this.airParifUrl + 'siteweb/wms',
+      this.getWmsOptions(
+        'siteweb:vue_indice_atmo_2020_com',
+        `<a href="${this.airParifWebsiteUrl}">AirParif</a>`
+      )
+    );
+    this.airParifForecastTomorrowLayer = L.tileLayer.wms(
+      this.airParifUrl + 'siteweb/wms',
+      this.getWmsOptions(
+        'siteweb:vue_indice_atmo_2020_com_jp1',
+        `<a href="${this.airParifWebsiteUrl}">AirParif</a>`
+      )
+    );
+  }
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -91,43 +108,23 @@ export class AirParifWidgetComponent implements AfterViewInit {
         }
       );
 
-      const airParif = L.tileLayer.wms(
-        this.airParifUrl + 'siteweb/wms',
-        this.getWmsOptions(
-          'siteweb:vue_indice_atmo_2020_com',
-          `<a href="${this.airParifWebsiteUrl}">AirParif</a>`
-        )
-      );
-      const airParif2 = L.tileLayer.wms(
-        this.airParifUrl + 'siteweb/wms',
-        this.getWmsOptions(
-          'siteweb:vue_indice_atmo_2020_com_jp1',
-          `<a href="${this.airParifWebsiteUrl}">AirParif</a>`
-        )
-      );
-
-      /*   const airParif3 = L.tileLayer.wms(
-      'https://magellan.airparif.asso.fr/geoserver/apisHorAir/wms?',
-      this.getIndiceWmsOptions()
-    );*/
-
       this.map = L.map(mapContainerDocumentId, {
         center: [48.8502, 2.3488],
         zoom: 11,
         maxBounds: bounds,
-        layers: [openStreetMapLayer, airParif, airParif2]
+        layers: [openStreetMapLayer, this.airParifForecastTodayLayer]
       });
 
-      const baseMaps = {
-        OpenStreetMap: openStreetMapLayer
-      };
-
-      const overlayMaps = {
-        AirParif: airParif,
-        'AirParif demain': airParif2
-      };
-
-      L.control.layers(baseMaps, overlayMaps).addTo(this.map);
+      L.control
+        .layers(
+          {
+            OpenStreetMap: openStreetMapLayer
+          },
+          {
+            AirParif: this.airParifForecastTodayLayer
+          }
+        )
+        .addTo(this.map);
     }
   }
 
@@ -146,37 +143,21 @@ export class AirParifWidgetComponent implements AfterViewInit {
     };
   }
 
-  /* private getIndiceWmsOptions() {
-    return {
-      service: 'WMS',
-      version: '1.3',
-      layers: 'apisHorAir:indice_api',
-      tiled: true,
-      transparent: true,
-      format: 'image/png8',
-      styles: 'indice',
-      opacity: 0.5,
-      authkey: this.airparifToken
-    };
-  }*/
-
   public selectTodayForecast() {
+    this.map?.removeLayer(this.airParifForecastTomorrowLayer!);
     this.forecastMode = ForecastMode.TODAY;
     this.forecastToDisplay = this.airParifForecast[0];
+    this.map?.addLayer(this.airParifForecastTodayLayer);
   }
 
   public selectTomorrowForecast() {
+    this.map?.removeLayer(this.airParifForecastTodayLayer!);
     this.forecastMode = ForecastMode.TOMORROW;
     this.forecastToDisplay = this.airParifForecast[1];
+    this.map?.addLayer(this.airParifForecastTomorrowLayer);
   }
 
   public getColorFromIndice(indice: AirParifIndiceEnum) {
-    console.log(this.airParifCouleursIndices);
-    console.log(
-      this.airParifCouleursIndices.find(
-        (couleurIndice) => couleurIndice.name === indice
-      )
-    );
     return (
       this.airParifCouleursIndices.find(
         (couleurIndice) => couleurIndice.name === indice

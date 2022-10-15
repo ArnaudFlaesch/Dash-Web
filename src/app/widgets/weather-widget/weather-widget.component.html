@@ -1,6 +1,6 @@
 <app-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()" [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="this.refreshWidget()">
-  <ng-template #header>La météo aujourd'hui à {{ city }} {{getDate()}}</ng-template>
+  <ng-template #header>La météo aujourd'hui à {{ city }}</ng-template>
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Ville</mat-label>

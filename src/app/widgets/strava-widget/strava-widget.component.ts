@@ -5,7 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
 import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IActivity, IAthlete, ITokenData } from './IStrava';
+import {
+  IActivitiesStatsByMonth,
+  IActivity,
+  IAthlete,
+  ITokenData
+} from './IStrava';
 import { StravaWidgetService } from './strava.widget.service';
 
 @Component({
@@ -16,8 +21,9 @@ import { StravaWidgetService } from './strava.widget.service';
 export class StravaWidgetComponent {
   public activities: IActivity[] = [];
   public athlete: IAthlete | undefined;
-  public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
-    undefined;
+  public activitiesChartData:
+    | ChartData<keyof ChartTypeRegistry, number[], string>
+    | undefined = undefined;
 
   private STRAVA_CLIENT_ID = 30391;
 
@@ -29,8 +35,10 @@ export class StravaWidgetComponent {
 
   private ERROR_GETTING_TOKEN = 'Erreur lors de la connexion à Strava.';
   private ERROR_NO_REFRESH_TOKEN = "Vous n'êtes pas connecté à Strava.";
-  private ERROR_GETTING_ATHLETE_DATA = 'Erreur lors de la récupération de vos informations Strava.';
-  private ERROR_GETTING_ACTIVITIES = 'Erreur lors de la récupération des activités Strava.';
+  private ERROR_GETTING_ATHLETE_DATA =
+    'Erreur lors de la récupération de vos informations Strava.';
+  private ERROR_GETTING_ACTIVITIES =
+    'Erreur lors de la récupération des activités Strava.';
 
   private paginationActivities = 20;
 
@@ -70,13 +78,25 @@ export class StravaWidgetComponent {
     this.isWidgetLoaded = false;
     this.stravaWidgetService.getToken(apiCode).subscribe({
       next: (response: ITokenData) => {
-        window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.access_token);
-        window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refresh_token);
-        window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expires_at);
+        window.localStorage.setItem(
+          this.STORAGE_STRAVA_TOKEN_KEY,
+          response.access_token
+        );
+        window.localStorage.setItem(
+          this.STORAGE_STRAVA_REFRESH_TOKEN_KEY,
+          response.refresh_token
+        );
+        window.localStorage.setItem(
+          this.STORAGE_TOKEN_EXPIRATION_DATE_KEY,
+          response.expires_at
+        );
         this.router.navigate(['/']);
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_TOKEN)
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_GETTING_TOKEN
+        )
     });
   }
 
@@ -86,17 +106,26 @@ export class StravaWidgetComponent {
       this.isWidgetLoaded = false;
       this.stravaWidgetService.getRefreshToken(refreshToken).subscribe({
         next: (response: ITokenData) => {
-          window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.access_token);
+          window.localStorage.setItem(
+            this.STORAGE_STRAVA_TOKEN_KEY,
+            response.access_token
+          );
           window.localStorage.setItem(
             this.STORAGE_STRAVA_REFRESH_TOKEN_KEY,
             response.refresh_token
           );
-          window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expires_at);
+          window.localStorage.setItem(
+            this.STORAGE_TOKEN_EXPIRATION_DATE_KEY,
+            response.expires_at
+          );
           this.athlete = response.athlete;
           this.isWidgetLoaded = true;
         },
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_NO_REFRESH_TOKEN)
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_NO_REFRESH_TOKEN
+          )
       });
     } else {
       console.error('No refresh token');
@@ -114,7 +143,10 @@ export class StravaWidgetComponent {
           this.isWidgetLoaded = true;
         },
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ATHLETE_DATA)
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_GETTING_ATHLETE_DATA
+          )
       });
     }
   }
@@ -123,15 +155,20 @@ export class StravaWidgetComponent {
     const token = this.getTokenValue();
     if (token && this.isUserLoggedIn()) {
       this.isWidgetLoaded = false;
-      this.stravaWidgetService.getActivities(token, this.paginationActivities).subscribe({
-        next: (response) => {
-          this.activities = [...response].reverse();
-          this.getChartData();
-          this.isWidgetLoaded = true;
-        },
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACTIVITIES)
-      });
+      this.stravaWidgetService
+        .getActivities(token, this.paginationActivities)
+        .subscribe({
+          next: (response) => {
+            this.activities = [...response].reverse();
+            this.getChartData();
+            this.isWidgetLoaded = true;
+          },
+          error: (error: HttpErrorResponse) =>
+            this.errorHandlerService.handleError(
+              error.message,
+              this.ERROR_GETTING_ACTIVITIES
+            )
+        });
     }
   }
 
@@ -142,29 +179,33 @@ export class StravaWidgetComponent {
         if (!activitiesByMonth[month]) {
           activitiesByMonth[month] = [];
         }
-        activitiesByMonth[month].push(Math.round(activity.distance * 1000) / 1000000);
+        activitiesByMonth[month].push(
+          Math.round(activity.distance * 1000) / 1000000
+        );
         return activitiesByMonth;
       },
       {}
     );
   }
 
-  public getStatsFromActivities() {
+  public getStatsFromActivities(): IActivitiesStatsByMonth[] {
     const activitiesByMonthList = this.getActivitiesByMonth();
     return Object.keys(activitiesByMonthList).map((month) => {
       return {
         x: new Date(month),
         y: Math.round(
-          activitiesByMonthList[month].reduce((total: number, distance: number) => total + distance)
+          activitiesByMonthList[month].reduce(
+            (total: number, distance: number) => total + distance
+          )
         )
       };
     });
   }
 
   public getTitleToDisplay(activity: IActivity): string {
-    return `${format(new Date(activity.start_date_local), 'dd MMM')}  ${activity.name}  ${
-      Math.round(activity.distance * 1000) / 1000000
-    } kms`;
+    return `${format(new Date(activity.start_date_local), 'dd MMM')}  ${
+      activity.name
+    }  ${Math.round(activity.distance * 1000) / 1000000} kms`;
   }
 
   public isUserLoggedIn(): boolean {
@@ -180,12 +221,15 @@ export class StravaWidgetComponent {
   }
 
   public getChartData(): void {
+    const activitiesStats = this.getStatsFromActivities();
     this.activitiesChartData = {
-      labels: this.getStatsFromActivities().map((data: any) => format(data.x, 'MMM yyyy')),
+      labels: activitiesStats.map((data: IActivitiesStatsByMonth) =>
+        format(data.x, 'MMM yyyy')
+      ),
       datasets: [
         {
           label: 'Distance (kms)',
-          data: this.getStatsFromActivities().map((act) => act.y)
+          data: activitiesStats.map((act) => act.y)
         },
         {
           label: 'Activités',

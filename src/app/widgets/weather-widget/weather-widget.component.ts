@@ -182,8 +182,4 @@ export class WeatherWidgetComponent {
 
   public isWidgetLoaded = (): boolean =>
     this.city != null && this.weather != null;
-
-  public getDate() {
-    return new Date();
-  }
 }
