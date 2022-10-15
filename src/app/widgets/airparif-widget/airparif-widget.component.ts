@@ -144,14 +144,14 @@ export class AirParifWidgetComponent implements AfterViewInit {
   }
 
   public selectTodayForecast() {
-    this.map?.removeLayer(this.airParifForecastTomorrowLayer!);
+    this.map?.removeLayer(this.airParifForecastTomorrowLayer);
     this.forecastMode = ForecastMode.TODAY;
     this.forecastToDisplay = this.airParifForecast[0];
     this.map?.addLayer(this.airParifForecastTodayLayer);
   }
 
   public selectTomorrowForecast() {
-    this.map?.removeLayer(this.airParifForecastTodayLayer!);
+    this.map?.removeLayer(this.airParifForecastTodayLayer);
     this.forecastMode = ForecastMode.TOMORROW;
     this.forecastToDisplay = this.airParifForecast[1];
     this.map?.addLayer(this.airParifForecastTomorrowLayer);

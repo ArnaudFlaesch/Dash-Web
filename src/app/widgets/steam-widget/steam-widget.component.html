@@ -1,8 +1,5 @@
-<app-widget
-  [widgetData]="getWidgetData()"
-  (refreshWidgetAction)="this.refreshWidget()"
-  [isWidgetLoaded]="isWidgetLoaded()"
->
+<app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()"
+  [isWidgetLoaded]="isWidgetLoaded()">
   <ng-template #header>
     <div class="h-10">
       <a href="{{ playerData?.profileurl }}" class="flex flex-row items-center space-x-2">
@@ -10,6 +7,14 @@
         <p>{{ playerData?.personaname }}</p>
       </a>
     </div>
+  </ng-template>
+
+  <ng-template #editComponent>
+    <mat-form-field appearance="fill">
+      <mat-label>Utilisateur Steam</mat-label>
+      <input matInput id="steamUserId" name="userId" [(ngModel)]="this.steamUserId"
+        placeholder="Saisissez l'user ID du joueur Steam'" />
+    </mat-form-field>
   </ng-template>
 
   <ng-template #body>
@@ -24,8 +29,8 @@
       <div *ngFor="let game of this.ownedGames; let index = index">
         <mat-expansion-panel hideToggle>
           <mat-expansion-panel-header>
-            <mat-panel-title
-              ><div class="gameInfo flex flex-row">
+            <mat-panel-title>
+              <div class="gameInfo flex flex-row">
                 <div class="h-10">
                   <div class="flex flex-row items-center space-x-2">
                     <img [src]="getGameImgSrc(game.appid, game.img_icon_url)" alt="game icon" />
@@ -41,14 +46,8 @@
         </mat-expansion-panel>
       </div>
     </div>
-    <mat-paginator
-      (page)="onPageChanged($event)"
-      [length]="gameCount"
-      [pageSize]="pageSize"
-      [pageIndex]="pageNumber"
-      [pageSizeOptions]="pageSizeOptions"
-      aria-label="Sélectionnez une page"
-    >
+    <mat-paginator (page)="onPageChanged($event)" [length]="gameCount" [pageSize]="pageSize" [pageIndex]="pageNumber"
+      [pageSizeOptions]="pageSizeOptions" aria-label="Sélectionnez une page">
     </mat-paginator>
   </ng-template>
 </app-widget>

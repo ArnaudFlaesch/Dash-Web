@@ -40,8 +40,14 @@ describe('Steam Widget tests', () => {
   });
 
   it('Should refresh Steam widget and validate data', () => {
-    cy.wait(['@getPlayerData', '@getGameData']).then(
-      (requests: Interception[]) => {
+    cy.get('.validateButton')
+      .should('be.disabled')
+      .get('input')
+      .type('steamUserId')
+      .get('.validateButton')
+      .click()
+      .wait(['@getPlayerData', '@getGameData'])
+      .then((requests: Interception[]) => {
         expect(requests[0].response.statusCode).to.equal(200);
         expect(requests[1].response.statusCode).to.equal(200);
         cy.get('.widget .gameInfo')
@@ -59,7 +65,6 @@ describe('Steam Widget tests', () => {
               .get('.progress-value')
               .should('have.text', '83%');
           });
-      }
-    );
+      });
   });
 });
