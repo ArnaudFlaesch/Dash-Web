@@ -18,8 +18,15 @@ describe('Weather Widget tests', () => {
         fixture: 'weather/parisForecastSample.json'
       })
       .as('getForecast')
+      .clock(new Date(2022, 2, 9, 0, 0, 0).getTime())
       .navigateToTab(tabName);
   });
+
+  afterEach(() =>
+    cy.clock().then((clock) => {
+      clock.restore();
+    })
+  );
 
   it('Should create a Weather Widget and add it to the dashboard', () => {
     cy.intercept('POST', '/widget/addWidget')
@@ -36,8 +43,7 @@ describe('Weather Widget tests', () => {
   });
 
   it('Should refresh Weather widget', () => {
-    cy.clock(new Date(2022, 2, 9, 0, 0, 0).getTime())
-      .get('#cityNameInput')
+    cy.get('#cityNameInput')
       .type('Paris')
       .get('.validateButton')
       .click()
@@ -46,16 +52,11 @@ describe('Weather Widget tests', () => {
         expect(request[0].response.statusCode).to.equal(200);
         expect(request[1].response.statusCode).to.equal(200);
         cy.get('.widget .forecast').should('have.length.at.least', 2);
-      })
-      .clock()
-      .then((clock) => {
-        clock.restore();
       });
   });
 
   it("Should toggle between today's, tomorrow's and the week's forecasts", () => {
-    cy.clock(new Date(2020, 6, 15, 0, 0, 0).getTime())
-      .get('.widget .toggleForecast:nth(0)')
+    cy.get('.widget .toggleForecast:nth(0)')
       .click()
       .get('.widget .forecast-row')
       .scrollIntoView()
@@ -68,10 +69,6 @@ describe('Weather Widget tests', () => {
       .get('.widget #toggleWeekForecast')
       .click()
       .get('.widget .forecast')
-      .should('have.length', 5)
-      .clock()
-      .then((clock) => {
-        clock.restore();
-      });
+      .should('have.length', 5);
   });
 });
