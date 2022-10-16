@@ -40,6 +40,15 @@ describe('WorkoutWidgetComponent', () => {
   beforeEach(() => {
     spectator = createComponent();
     workoutWidgetService = createHttp();
+    const userData = {
+      accessToken: 'accessToken',
+      id: 2,
+      username: 'admintest',
+      email: 'admin@email.com',
+      roles: ['ROLE_ADMIN'],
+      tokenType: 'Bearer'
+    };
+    window.localStorage.setItem('user', JSON.stringify(userData));
   });
 
   it('should create', () => {
