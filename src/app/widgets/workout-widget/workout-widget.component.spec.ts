@@ -24,6 +24,8 @@ describe('WorkoutWidgetComponent', () => {
   let spectator: Spectator<WorkoutWidgetComponent>;
   let workoutWidgetService: SpectatorHttp<WorkoutWidgetService>;
 
+  const userId = 2;
+
   const createComponent = createComponentFactory({
     component: WorkoutWidgetComponent,
     imports: [MatSnackBarModule],
@@ -42,7 +44,7 @@ describe('WorkoutWidgetComponent', () => {
     workoutWidgetService = createHttp();
     const userData = {
       accessToken: 'accessToken',
-      id: 2,
+      id: userId,
       username: 'admintest',
       email: 'admin@email.com',
       roles: ['ROLE_ADMIN'],
@@ -62,11 +64,15 @@ describe('WorkoutWidgetComponent', () => {
 
     const dataRequest = workoutWidgetService.expectConcurrent([
       {
-        url: environment.backend_url + '/workoutWidget/workoutTypes',
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutTypes?userId=${userId}`,
         method: HttpMethod.GET
       },
       {
-        url: environment.backend_url + '/workoutWidget/workoutSessions',
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutSessions?userId=${userId}`,
         method: HttpMethod.GET
       }
     ]);
@@ -86,11 +92,15 @@ describe('WorkoutWidgetComponent', () => {
 
     const dataRequest = workoutWidgetService.expectConcurrent([
       {
-        url: environment.backend_url + '/workoutWidget/workoutTypes',
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutTypes?userId=${userId}`,
         method: HttpMethod.GET
       },
       {
-        url: environment.backend_url + '/workoutWidget/workoutSessions',
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutSessions?userId=${userId}`,
         method: HttpMethod.GET
       }
     ]);
