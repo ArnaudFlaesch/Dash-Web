@@ -61,24 +61,27 @@ export class WorkoutWidgetComponent {
   ) {}
 
   public refreshWidget() {
-    this.workoutWidgetService.getWorkoutTypes().subscribe({
-      next: (workoutTypes) => (this.workoutTypes = workoutTypes),
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_GETTING_WORKOUT_TYPES
-        ),
-      complete: () => (this.isWidgetLoaded = true)
-    });
+    const userId = this.authService.getCurrentUserData()?.id;
+    if (userId) {
+      this.workoutWidgetService.getWorkoutTypes(userId).subscribe({
+        next: (workoutTypes) => (this.workoutTypes = workoutTypes),
+        error: (error: HttpErrorResponse) =>
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_GETTING_WORKOUT_TYPES
+          ),
+        complete: () => (this.isWidgetLoaded = true)
+      });
 
-    this.workoutWidgetService.getWorkoutSessions().subscribe({
-      next: (workoutSessions) => (this.workoutSessions = workoutSessions),
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_GETTING_WORKOUT_SESSIONS
-        )
-    });
+      this.workoutWidgetService.getWorkoutSessions(userId).subscribe({
+        next: (workoutSessions) => (this.workoutSessions = workoutSessions),
+        error: (error: HttpErrorResponse) =>
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_GETTING_WORKOUT_SESSIONS
+          )
+      });
+    }
   }
 
   public editWorkoutSession(workoutSession: IWorkoutSession) {
