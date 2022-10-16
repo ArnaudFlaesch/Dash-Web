@@ -90,6 +90,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (insertedTab: ITab) => {
         this.tabs = [...this.tabs, insertedTab];
         this.activeTab = insertedTab.id;
+        this.activeWidgets = [];
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(

@@ -3,7 +3,11 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
-import { IWorkoutType, IWorkoutExercise, IWorkoutSession } from './model/Workout';
+import {
+  IWorkoutType,
+  IWorkoutExercise,
+  IWorkoutSession
+} from './model/Workout';
 import {
   IAddWorkoutTypePayload,
   ICreateWorkoutSessionPayload,
@@ -14,16 +18,19 @@ import {
 export class WorkoutWidgetService {
   constructor(private http: HttpClient) {}
 
-  public getWorkoutTypes(): Observable<IWorkoutType[]> {
-    return this.http.get<IWorkoutType[]>(`${environment.backend_url}/workoutWidget/workoutTypes`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+  public getWorkoutTypes(userId: number): Observable<IWorkoutType[]> {
+    return this.http.get<IWorkoutType[]>(
+      `${environment.backend_url}/workoutWidget/workoutTypes`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        }
       }
-    });
+    );
   }
 
-  public getWorkoutSessions(): Observable<IWorkoutSession[]> {
+  public getWorkoutSessions(userId: number): Observable<IWorkoutSession[]> {
     return this.http.get<IWorkoutSession[]>(
       `${environment.backend_url}/workoutWidget/workoutSessions`,
       {
@@ -35,7 +42,9 @@ export class WorkoutWidgetService {
     );
   }
 
-  public getWorkoutExercises(workoutSessionId: number): Observable<IWorkoutExercise[]> {
+  public getWorkoutExercises(
+    workoutSessionId: number
+  ): Observable<IWorkoutExercise[]> {
     return this.http.get<IWorkoutExercise[]>(
       `${environment.backend_url}/workoutWidget/workoutExercises?workoutSessionId=${workoutSessionId}`,
       {
@@ -47,8 +56,14 @@ export class WorkoutWidgetService {
     );
   }
 
-  public addWorkoutType(newWorkoutType: string): Observable<IWorkoutType> {
-    const addWorkoutTypePayload: IAddWorkoutTypePayload = { workoutType: newWorkoutType };
+  public addWorkoutType(
+    newWorkoutType: string,
+    userId: number
+  ): Observable<IWorkoutType> {
+    const addWorkoutTypePayload: IAddWorkoutTypePayload = {
+      workoutType: newWorkoutType,
+      userId: userId
+    };
     return this.http.post<IWorkoutType>(
       `${environment.backend_url}/workoutWidget/addWorkoutType`,
       addWorkoutTypePayload,
@@ -61,9 +76,13 @@ export class WorkoutWidgetService {
     );
   }
 
-  public createWorkoutSession(workoutSessionDate: Date): Observable<IWorkoutSession> {
+  public createWorkoutSession(
+    workoutSessionDate: Date,
+    userId: number
+  ): Observable<IWorkoutSession> {
     const createWorkoutSessionPayload: ICreateWorkoutSessionPayload = {
-      workoutDate: workoutSessionDate
+      workoutDate: workoutSessionDate,
+      userId: userId
     };
     return this.http.post<IWorkoutSession>(
       `${environment.backend_url}/workoutWidget/createWorkoutSession`,

@@ -82,14 +82,20 @@ export class WidgetComponent implements OnInit, OnDestroy {
           this.refreshWidget();
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_WIDGET_DATA)
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_UPDATING_WIDGET_DATA
+          )
       });
   }
 
-  public deleteWidget = () => this.widgetService._widgetDeletedEvent.next(this.widgetId);
+  public deleteWidget() {
+    this.widgetService._widgetDeletedEvent.next(this.widgetId);
+  }
 
   public refreshWidget = () => this.refreshWidgetAction.emit();
-  public toEditMode = () => (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
+  public toEditMode = () =>
+    (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
   public toReadMode = () => (this.mode = ModeEnum.READ);
   public toDeleteMode = () => (this.mode = ModeEnum.DELETE);
   public isModeRead = (): boolean => this.mode === ModeEnum.READ;

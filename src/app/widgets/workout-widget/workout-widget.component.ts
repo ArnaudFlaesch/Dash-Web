@@ -1,10 +1,15 @@
+import { AuthService } from './../../services/auth.service/auth.service';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
 import { DEFAULT_DATE_FORMAT } from '../../../app/utils/Constants';
-import { IWorkoutExercise, IWorkoutType, IWorkoutSession } from './model/Workout';
+import {
+  IWorkoutExercise,
+  IWorkoutType,
+  IWorkoutSession
+} from './model/Workout';
 import { WorkoutWidgetService } from './workout.widget.service';
 
 enum WORKOUT_WIDGET_VIEW {
@@ -33,35 +38,46 @@ export class WorkoutWidgetComponent {
 
   public widgetViewEnum = WORKOUT_WIDGET_VIEW;
 
-  public WIDGET_VIEW: WORKOUT_WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
+  public WIDGET_VIEW: WORKOUT_WIDGET_VIEW =
+    WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
 
   private ERROR_GETTING_WORKOUT_TYPES =
     "Erreur lors de la récupération de la liste des types d'exercices.";
   private ERROR_GETTING_WORKOUT_SESSIONS =
     "Erreur lors de la récupération de la liste des sessions d'exercices.";
-  private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
+  private ERROR_GETTING_WORKOUT_EXERCISES =
+    'Erreur lors de la récupération des exercices.';
 
-  private ERROR_CREATING_WORKOUT_TYPE = "Erreur lors de la création d'un type d'exercice.";
-  private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
+  private ERROR_CREATING_WORKOUT_TYPE =
+    "Erreur lors de la création d'un type d'exercice.";
+  private ERROR_CREATING_WORKOUT_EXERCISE =
+    "Erreur lors de l'ajout d'un exercice.";
 
   constructor(
     private errorHandlerService: ErrorHandlerService,
     private workoutWidgetService: WorkoutWidgetService,
-    public dateUtilsService: DateUtilsService
+    public dateUtilsService: DateUtilsService,
+    private authService: AuthService
   ) {}
 
   public refreshWidget() {
     this.workoutWidgetService.getWorkoutTypes().subscribe({
       next: (workoutTypes) => (this.workoutTypes = workoutTypes),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_TYPES),
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_GETTING_WORKOUT_TYPES
+        ),
       complete: () => (this.isWidgetLoaded = true)
     });
 
     this.workoutWidgetService.getWorkoutSessions().subscribe({
       next: (workoutSessions) => (this.workoutSessions = workoutSessions),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_SESSIONS)
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_GETTING_WORKOUT_SESSIONS
+        )
     });
   }
 
@@ -78,29 +94,44 @@ export class WorkoutWidgetComponent {
   }
 
   public addWorkoutType() {
-    if (this.workoutNameInput) {
-      this.workoutWidgetService.addWorkoutType(this.workoutNameInput).subscribe({
-        next: (addedWorkoutType) => {
-          this.workoutTypes = [...this.workoutTypes, addedWorkoutType];
-          this.workoutNameInput = '';
-        },
-        error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_TYPE)
-      });
+    const userId = this.authService.getCurrentUserData()?.id;
+    if (this.workoutNameInput && userId) {
+      this.workoutWidgetService
+        .addWorkoutType(this.workoutNameInput, userId)
+        .subscribe({
+          next: (addedWorkoutType) => {
+            this.workoutTypes = [...this.workoutTypes, addedWorkoutType];
+            this.workoutNameInput = '';
+          },
+          error: (error) =>
+            this.errorHandlerService.handleError(
+              error.message,
+              this.ERROR_CREATING_WORKOUT_TYPE
+            )
+        });
     }
   }
 
   public createWorkoutSession() {
-    if (this.workoutDateFormControl.value) {
+    const userId = this.authService.getCurrentUserData()?.id;
+    if (this.workoutDateFormControl.value && userId) {
       const workoutDate = this.dateUtilsService.formatDateWithOffsetToUtc(
         new Date(Date.parse(this.workoutDateFormControl.value))
       );
-      this.workoutWidgetService.createWorkoutSession(workoutDate).subscribe({
-        next: (addedWorkoutSession) =>
-          (this.workoutSessions = [...this.workoutSessions, addedWorkoutSession]),
-        error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_TYPE)
-      });
+      this.workoutWidgetService
+        .createWorkoutSession(workoutDate, userId)
+        .subscribe({
+          next: (addedWorkoutSession) =>
+            (this.workoutSessions = [
+              ...this.workoutSessions,
+              addedWorkoutSession
+            ]),
+          error: (error) =>
+            this.errorHandlerService.handleError(
+              error.message,
+              this.ERROR_CREATING_WORKOUT_TYPE
+            )
+        });
     }
   }
 
@@ -108,7 +139,10 @@ export class WorkoutWidgetComponent {
     this.workoutWidgetService.getWorkoutExercises(workoutSessionId).subscribe({
       next: (workoutExercises) => (this.workoutExercises = workoutExercises),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_EXERCISES)
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_GETTING_WORKOUT_EXERCISES
+        )
     });
   }
 
@@ -128,7 +162,10 @@ export class WorkoutWidgetComponent {
             addedWorkoutExercise
           ]),
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_EXERCISE)
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_CREATING_WORKOUT_EXERCISE
+          )
       });
   }
 
@@ -155,7 +192,8 @@ export class WorkoutWidgetComponent {
 
   public getExerciceNumberOfReps(workoutTypeId: number): number {
     const workoutType = this.workoutExercises.find(
-      (workoutExercise) => workoutExercise.workoutExerciseId.workoutTypeId === workoutTypeId
+      (workoutExercise) =>
+        workoutExercise.workoutExerciseId.workoutTypeId === workoutTypeId
     );
     if (workoutType) {
       return workoutType.numberOfReps;
