@@ -1,14 +1,15 @@
-import { AuthService } from './../../services/auth.service/auth.service';
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
 import { DEFAULT_DATE_FORMAT } from '../../../app/utils/Constants';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { AuthService } from './../../services/auth.service/auth.service';
 import {
   IWorkoutExercise,
-  IWorkoutType,
-  IWorkoutSession
+  IWorkoutSession,
+  IWorkoutType
 } from './model/Workout';
 import { WorkoutWidgetService } from './workout.widget.service';
 

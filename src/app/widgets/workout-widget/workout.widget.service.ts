@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
+
 import { environment } from '../../../environments/environment';
+import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import {
-  IWorkoutType,
   IWorkoutExercise,
-  IWorkoutSession
+  IWorkoutSession,
+  IWorkoutType
 } from './model/Workout';
 import {
   IAddWorkoutTypePayload,
