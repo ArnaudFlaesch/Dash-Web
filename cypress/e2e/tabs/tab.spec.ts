@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { Interception } from 'cypress/types/net-stubbing';
+
 describe('Tab tests', () => {
   beforeEach(() => {
     cy.loginAsAdmin()
@@ -8,7 +10,7 @@ describe('Tab tests', () => {
   });
 
   it('Should create a new tab', () => {
-    cy.get('#addNewTabButton').click().get('.tab').should('have.length', 7);
+    cy.get('#addNewTabButton').click().get('.tab').should('have.length', 2);
   });
 
   it('Should edit the created tab', () => {
@@ -59,8 +61,9 @@ describe('Tab tests', () => {
       .get('.deleteTabButton')
       .click()
       .wait('@deleteTab')
-      .then(() => {
-        cy.get('.tab').should('have.length', 6);
+      .then((response: Interception) => {
+        expect(response.response.statusCode).to.equal(200);
+        cy.get('.tab').should('have.length', 1);
       });
   });
 });

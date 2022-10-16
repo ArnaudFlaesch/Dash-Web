@@ -12,6 +12,7 @@ import { CalendarWidgetComponent } from './calendar-widget.component';
 import { CalendarWidgetService } from './calendar-widget.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 
 describe('CalendarWidgetComponent', () => {
   let spectator: Spectator<CalendarWidgetComponent>;
@@ -20,13 +21,13 @@ describe('CalendarWidgetComponent', () => {
   const createComponent = createComponentFactory({
     component: CalendarWidgetComponent,
     imports: [MatDialogModule, MatSnackBarModule],
-    providers: [CalendarWidgetService, DateAdapter, ErrorHandlerService]
+    providers: [CalendarWidgetService, DateAdapter, DateUtilsService, ErrorHandlerService]
   });
-  const createHttpRssWidgetService = createHttpFactory(CalendarWidgetService);
+  const createHttpCalendarWidgetService = createHttpFactory(CalendarWidgetService);
 
   beforeEach(() => {
     spectator = createComponent();
-    calendarWidgetService = createHttpRssWidgetService();
+    calendarWidgetService = createHttpCalendarWidgetService();
   });
 
   it('should create', () => {

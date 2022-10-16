@@ -199,7 +199,7 @@ describe('StravaWidgetComponent', () => {
     window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
     initComponent();
     expect(spectator.component.isUserLoggedIn()).toBe(true);
-    expect(spectator.component.isWidgetLoaded()).toEqual(false);
+    expect(spectator.component.isWidgetLoaded).toEqual(true);
     expect(spectator.component.activities).toEqual([]);
     spectator.component.refreshWidget();
     const getAthleteDataRequest = stravaWidgetService.expectOne(
@@ -214,7 +214,7 @@ describe('StravaWidgetComponent', () => {
     );
     getActivitiesRequest.flush(activitiesData);
 
-    expect(spectator.component.isWidgetLoaded()).toEqual(true);
+    expect(spectator.component.isWidgetLoaded).toEqual(true);
     expect(spectator.component.activities.length).toEqual(3);
     expect(spectator.component.getActivitiesByMonth()).toEqual({
       '2021-10': [6.3304, 8.6087],

@@ -1,31 +1,18 @@
-<app-widget
-  [isFormValid]="isFormValid()"
-  [widgetData]="getWidgetData()"
-  [isWidgetLoaded]="isWidgetLoaded()"
-  (refreshWidgetAction)="this.refreshWidget()"
->
+<app-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()" [isWidgetLoaded]="isWidgetLoaded()"
+  (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>La météo aujourd'hui à {{ city }}</ng-template>
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Ville</mat-label>
-      <input
-        id="cityNameInput"
-        name="city"
-        matInput
-        [(ngModel)]="this.city"
-        placeholder="Saisissez de nom de la ville"
-      />
+      <input id="cityNameInput" name="city" matInput [(ngModel)]="this.city"
+        placeholder="Saisissez de nom de la ville" />
     </mat-form-field>
   </ng-template>
   <ng-template #body>
     <div *ngIf="city && weather && weather.weather" class="flex flex-col">
       <div class="flex flex-row">
-        <img
-          class="w-16"
-          [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
-          [title]="weather.weather[0].description"
-          [alt]="weather.weather[0].description"
-        />
+        <img class="w-16" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
+          [title]="weather.weather[0].description" [alt]="weather.weather[0].description" />
         <div class="flex flex-row place-items-center">
           <div class="flex flex-col mr-5">
             <div>{{ weather.weather[0].description }}</div>
@@ -39,17 +26,17 @@
               <div>
                 <mat-icon>wb_sunny</mat-icon>
                 {{
-                  this.dateUtils
-                    .formatDateFromTimestamp(weather.sys.sunrise, this.dateUtils.adjustTimeWithOffset(weather.timezone))
-                    .toLocaleTimeString('fr')
+                this.dateUtils
+                .formatDateFromTimestamp(weather.sys.sunrise, this.dateUtils.adjustTimeWithOffset(weather.timezone))
+                .toLocaleTimeString('fr')
                 }}
               </div>
               <div>
                 <mat-icon>brightness_3</mat-icon>
                 {{
-                  this.dateUtils
-                    .formatDateFromTimestamp(weather.sys.sunset, this.dateUtils.adjustTimeWithOffset(weather.timezone))
-                    .toLocaleTimeString('fr')
+                this.dateUtils
+                .formatDateFromTimestamp(weather.sys.sunset, this.dateUtils.adjustTimeWithOffset(weather.timezone))
+                .toLocaleTimeString('fr')
                 }}
               </div>
             </div>
@@ -57,34 +44,27 @@
               <mat-icon>schedule</mat-icon>
               <span>{{
                 this.dateUtils
-                  .formatDateFromTimestamp(weather.dt, this.dateUtils.adjustTimeWithOffset(weather.timezone))
-                  .toLocaleString('fr')
-              }}</span>
+                .formatDateFromTimestamp(weather.dt, this.dateUtils.adjustTimeWithOffset(weather.timezone))
+                .toLocaleString('fr')
+                }}</span>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="cityData && forecast">
         <div class="flex flex-row flex-wrap space-x-10">
-          <span class="mx-auto"><h3>Prévisions</h3></span>
+          <span class="mx-auto">
+            <h3>Prévisions</h3>
+          </span>
           <span class="flex flex-row space-x-1">
             <div class="grid grid-cols-4 gap-2">
-              <button
-                *ngFor="let date of forecastDays"
-                [color]="this.isSelectedDay(date) ? 'primary' : ''"
-                mat-raised-button
-                (click)="selectDayForecast(date)"
-                class="toggleForecast"
-              >
+              <button *ngFor="let date of forecastDays" [color]="this.isSelectedDay(date) ? 'primary' : ''"
+                mat-raised-button (click)="selectDayForecast(date)" class="toggleForecast">
                 {{ formatDate(date) }}
               </button>
 
-              <button
-                [color]="this.isForecastModeWeek() ? 'primary' : ''"
-                mat-raised-button
-                id="toggleWeekForecast"
-                (click)="selectWeekForecast()"
-              >
+              <button [color]="this.isForecastModeWeek() ? 'primary' : ''" mat-raised-button id="toggleWeekForecast"
+                (click)="selectWeekForecast()">
                 Semaine
               </button>
             </div>
@@ -92,34 +72,22 @@
         </div>
         <br />
         <div class="min-h-24 max-x-full">
-          <canvas
-            baseChart
-            width="400"
-            height="170"
-            [data]="weatherChart"
-            [options]="lineChartOptions"
-            [type]="lineChartType"
-          ></canvas>
+          <canvas baseChart width="400" height="170" [data]="weatherChart" [options]="lineChartOptions"
+            [type]="lineChartType"></canvas>
         </div>
       </div>
 
       <div *ngIf="this.cityData" class="flex flex-row forecast-row">
-        <div
-          class="forecast-container border-2 border-r-0 last:border-r-2 border-solid border-black rounded"
-          *ngFor="let forecastDay of this.filterForecastByMode(this.cityData, this.forecast)"
-        >
+        <div class="forecast-container border-2 border-r-0 last:border-r-2 border-solid border-black rounded"
+          *ngFor="let forecastDay of this.filterForecastByMode(this.cityData, this.forecast)">
           <div class="forecast">
             <div class="ml-1" *ngIf="forecastDay">
               {{ getDateToDisplay(forecastDay.dt, this.cityData.timezone) }}
             </div>
             <div class="flex flex-row">
               <div>
-                <img
-                  [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')"
-                  class="max-h-14 max-w-14"
-                  [title]="forecastDay.weather[0].description"
-                  [alt]="forecastDay.weather[0].description"
-                />
+                <img [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')" class="max-h-14 max-w-14"
+                  [title]="forecastDay.weather[0].description" [alt]="forecastDay.weather[0].description" />
               </div>
               <div>
                 <div>

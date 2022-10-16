@@ -1,25 +1,17 @@
 <ng-template [ngIf]="this.isDashboardLoaded" [ngIfElse]="isDashboardLoading">
   <div class="flex flex-row justify-between mx-2 mt-1">
     <div class="flex flex-row flex-wrap space-x-0.5">
-      <app-tab
-        class="tab border-2 border-gray-800 bg-white hover:bg-blue-200 border-opacity-100 rounded"
-        (click)="selectTab(tab.id)"
-        (tabDeletedEvent)="deleteTabFromDash($event)"
-        [ngClass]="{ 'selected-item': activeTab === tab.id }"
-        *ngFor="let tab of this.tabs"
-        [tab]="tab"
-      ></app-tab>
-      <button
-        (click)="this.addNewTab()"
-        id="addNewTabButton"
-        class="border-2 border-gray-800 border-opacity-100 bg-green-400"
-        mat-raised-button
-      >
+      <app-tab class="tab border-2 border-gray-800 bg-white hover:bg-blue-200 border-opacity-100 rounded"
+        (click)="selectTab(tab.id)" (tabDeletedEvent)="deleteTabFromDash($event)"
+        [ngClass]="{ 'selected-item': activeTab === tab.id }" *ngFor="let tab of this.tabs" [tab]="tab"></app-tab>
+      <button (click)="this.addNewTab()" id="addNewTabButton"
+        class="border-2 border-gray-800 border-opacity-100 bg-green-400" mat-raised-button>
         <mat-icon title="Add a new tab" aria-hidden="false">add_circle_outline</mat-icon>
       </button>
     </div>
     <div class="sm:grid sm:grid-cols-2 md:flex md:flex-row space-x-1 items-start">
-      <button (click)="this.openCreateWidgetModal()" id="openAddWidgetModal" class="bg-green-500" mat-raised-button>
+      <button [disabled]="this.tabs.length < 1" (click)="this.openCreateWidgetModal()" id="openAddWidgetModal"
+        class="bg-green-500" mat-raised-button>
         <mat-icon title="Add a new widget" aria-hidden="false">add_circle_outline</mat-icon>
       </button>
       <button mat-raised-button id="reloadAllWidgetsButton" class="bg-blue-500">
@@ -41,5 +33,7 @@
 </ng-template>
 
 <ng-template #isDashboardLoading>
-  <div class="h-full flex items-center justify-center"><mat-spinner></mat-spinner></div>
+  <div class="h-full flex items-center justify-center">
+    <mat-spinner></mat-spinner>
+  </div>
 </ng-template>

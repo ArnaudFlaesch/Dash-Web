@@ -20,7 +20,12 @@ describe('LoginComponent', () => {
 
   const createComponent = createComponentFactory({
     component: LoginComponent,
-    imports: [HttpClientModule, FormsModule, MatSnackBarModule, RouterTestingModule],
+    imports: [
+      HttpClientModule,
+      FormsModule,
+      MatSnackBarModule,
+      RouterTestingModule
+    ],
     providers: [AuthService, ErrorHandlerService]
   });
   const createHttp = createHttpFactory(AuthService);
@@ -44,7 +49,7 @@ describe('LoginComponent', () => {
     spectator.fixture.detectChanges();
   });
 
-  it('Should login', () => {
+  it('Should login as demo', () => {
     const userData = {
       accessToken: 'accessToken',
       id: 2,
@@ -54,12 +59,31 @@ describe('LoginComponent', () => {
       tokenType: 'Bearer'
     };
     const loginSpy = jest.spyOn(authService.service, 'login');
-    spectator.component.inputUsername = 'username';
-    spectator.component.inputPassword = 'password';
-    spectator.component.handleLogin();
-    const request = authService.expectOne(environment.backend_url + '/auth/login', HttpMethod.POST);
+    spectator.component.loginAsDemoAccount();
+    const request = authService.expectOne(
+      environment.backend_url + '/auth/login',
+      HttpMethod.POST
+    );
     request.flush(userData);
     spectator.fixture.detectChanges();
-    expect(loginSpy).toHaveBeenCalledWith('username', 'password');
+    expect(loginSpy).toHaveBeenCalledWith('demo', 'demo');
+  });
+
+  it('Should fail to login with wrong credentials', () => {
+    const userName = 'userName';
+    const password = 'password';
+
+    spectator.component.inputUsername = userName;
+    spectator.component.inputPassword = password;
+    spectator.component.handleLogin();
+    const request = authService.expectOne(
+      environment.backend_url + '/auth/login',
+      HttpMethod.POST
+    );
+    request.flush('Bad credentials', {
+      status: 400,
+      statusText: 'Bad Request'
+    });
+    expect(spectator.component.isLoading).toEqual(false);
   });
 });

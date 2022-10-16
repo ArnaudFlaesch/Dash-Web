@@ -12,14 +12,9 @@ export class DateUtilsService {
    * @param date
    * @returns
    */
-  public formatDateWithOffsetToUtc(date: Date) {
+  public formatDateWithOffsetToUtc(date: Date): Date {
     date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
     return date;
-  }
-
-  public formatDateFromUTC(date: string): string {
-    const parsedDate = new Date(date);
-    return parsedDate.toLocaleDateString('fr');
   }
 
   public adjustTimeWithOffset(offset: number): number {

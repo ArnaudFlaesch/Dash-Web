@@ -11,17 +11,15 @@
 
       <input id="inputPassword" placeholder="Password" [(ngModel)]="inputPassword" type="password" />
 
-      <button
-        mat-raised-button
-        id="loginButton"
-        [disabled]="!this.inputUsername || !inputPassword || isLoading"
-        (click)="handleLogin()"
-        color="primary"
-      >
+      <button mat-raised-button id="loginButton" [disabled]="!this.inputUsername || !inputPassword || isLoading"
+        (click)="handleLogin()" color="primary">
         <span class="flex flex-row items-center">
           <mat-spinner diameter="30" *ngIf="isLoading" class="mr-5"></mat-spinner>
-          <span>Se connecter</span>
+          <span class="mx-auto">Se connecter</span>
         </span>
+      </button>
+
+      <button mat-raised-button color="accent" (click)="loginAsDemoAccount()">Démo
       </button>
     </div>
   </div>

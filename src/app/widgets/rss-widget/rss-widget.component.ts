@@ -5,7 +5,7 @@ import { Component, Inject } from '@angular/core';
 import { IArticle, ImageContent, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DateUtilsService } from '../../../app/services/date.utils';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { isThisYear, isToday } from 'date-fns';
 
 @Component({

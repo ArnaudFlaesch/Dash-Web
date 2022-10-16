@@ -1,3 +1,8 @@
+export interface IActivitiesStatsByMonth {
+  x: Date;
+  y: number;
+}
+
 export interface ITokenData {
   access_token: string;
   refresh_token: string;

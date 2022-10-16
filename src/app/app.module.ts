@@ -30,9 +30,10 @@ import { LoginComponent } from './login/login.component';
 import { CreateWidgetModalComponent } from './modals/create-widget-modal/create-widget-modal.component';
 import { ImportConfigModalComponent } from './modals/import-config-modal/import-config-modal.component';
 import { SafePipe } from './pipes/safe.pipe';
+import { DateFormatPipe } from './pipes/date-format.pipe';
 import { AuthService } from './services/auth.service/auth.service';
 import { ConfigService } from './services/config.service/config.service';
-import { DateUtilsService } from './services/date.utils';
+import { DateUtilsService } from './services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './services/error.handler.service';
 import { TabService } from './services/tab.service/tab.service';
 import { WidgetService } from './services/widget.service/widget.service';
@@ -54,6 +55,8 @@ import { WidgetListComponent } from './widgets/widget-list/widget-list.component
 import { WidgetComponent } from './widgets/widget/widget.component';
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { AirParifWidgetComponent } from './widgets/airparif-widget/airparif-widget.component';
+import { AirParifWidgetService } from './widgets/airparif-widget/airparif-widget.service';
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -72,11 +75,13 @@ registerLocaleData(localeFr);
     CalendarWidgetComponent,
     SteamWidgetComponent,
     GameDetailsComponent,
+    DateFormatPipe,
     SafePipe,
     CreateWidgetModalComponent,
     ImportConfigModalComponent,
     EventDetailModalComponent,
-    WorkoutWidgetComponent
+    WorkoutWidgetComponent,
+    AirParifWidgetComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -115,6 +120,7 @@ registerLocaleData(localeFr);
     ErrorHandlerService,
     DateUtilsService,
     SteamWidgetService,
+    AirParifWidgetService,
     WorkoutWidgetService,
     CalendarWidgetService,
     StravaWidgetService,

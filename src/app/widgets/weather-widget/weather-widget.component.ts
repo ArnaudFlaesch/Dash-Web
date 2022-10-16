@@ -1,10 +1,15 @@
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { Component } from '@angular/core';
-import { ChartConfiguration, ChartData, ChartType, ChartTypeRegistry } from 'chart.js';
+import {
+  ChartConfiguration,
+  ChartData,
+  ChartType,
+  ChartTypeRegistry
+} from 'chart.js';
 import { format, startOfDay } from 'date-fns';
 import { ICity, IForecast, IWeather, IWeatherAPIResponse } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
-import { DateUtilsService } from '../../../app/services/date.utils';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 
 enum ForecastMode {
   DAY,
@@ -23,7 +28,9 @@ export class WeatherWidgetComponent {
   public forecast: IForecast[] = [];
   public cityData: ICity | undefined;
   public forecastDays: Date[] = [];
-  public weatherChart: ChartData<keyof ChartTypeRegistry, number[], string> | undefined = undefined;
+  public weatherChart:
+    | ChartData<keyof ChartTypeRegistry, number[], string>
+    | undefined = undefined;
   public forecastMode = ForecastMode.DAY;
   public selectedDayForecast: Date = new Date();
 
@@ -49,24 +56,35 @@ export class WeatherWidgetComponent {
       this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
         next: (weatherData) => (this.weather = weatherData),
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WEATHER_DATA)
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_GETTING_WEATHER_DATA
+          )
       });
       this.weatherWidgetService.fetchForecastData(this.city).subscribe({
         next: (forecastApiResponse: IWeatherAPIResponse) => {
           this.forecast = forecastApiResponse.list;
           this.cityData = forecastApiResponse.city;
           this.forecastDays = [
-            ...new Set(this.forecast.map((data) => startOfDay(data.dt * 1000).getTime()))
+            ...new Set(
+              this.forecast.map((data) => startOfDay(data.dt * 1000).getTime())
+            )
           ].map((data) => new Date(data));
           this.getWeatherChart(this.cityData);
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_FORECAST_DATA)
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_GETTING_FORECAST_DATA
+          )
       });
     }
   }
 
-  public filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {
+  public filterForecastByMode(
+    cityData: ICity,
+    forecastData: IForecast[]
+  ): IForecast[] {
     switch (this.forecastMode) {
       case ForecastMode.WEEK: {
         return forecastData.filter((forecastDay) => {
@@ -74,13 +92,16 @@ export class WeatherWidgetComponent {
             forecastDay.dt,
             this.dateUtils.adjustTimeWithOffset(cityData.timezone)
           );
-          return forecastElement.getHours() >= 15 && forecastElement.getHours() <= 18;
+          return (
+            forecastElement.getHours() >= 15 && forecastElement.getHours() <= 18
+          );
         });
       }
       case ForecastMode.DAY: {
         return forecastData.filter(
           (forecastDay) =>
-            new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast.getDay() &&
+            new Date(forecastDay.dt * 1000).getDay() ===
+              this.selectedDayForecast.getDay() &&
             new Date(forecastDay.dt * 1000).getHours() >= 7
         );
       }
@@ -112,12 +133,17 @@ export class WeatherWidgetComponent {
     };
   }
 
-  public getWidgetData = (): { city: string } | null => (this.city ? { city: this.city } : null);
-  public isFormValid = (): boolean => this.city !== null && this.city.length > 0;
+  public getWidgetData = (): { city: string } | null =>
+    this.city ? { city: this.city } : null;
+  public isFormValid = (): boolean =>
+    this.city !== null && this.city.length > 0;
 
   public getDateToDisplay = (dateTime: number, timezone: number) =>
     this.dateUtils
-      .formatDateFromTimestamp(dateTime, this.dateUtils.adjustTimeWithOffset(timezone))
+      .formatDateFromTimestamp(
+        dateTime,
+        this.dateUtils.adjustTimeWithOffset(timezone)
+      )
       .toLocaleString('fr', {
         weekday: 'short',
         day: 'numeric',
@@ -132,7 +158,8 @@ export class WeatherWidgetComponent {
   }
 
   public isSelectedDay = (date: Date): boolean =>
-    this.forecastMode === ForecastMode.DAY && this.selectedDayForecast.getDay() === date.getDay();
+    this.forecastMode === ForecastMode.DAY &&
+    this.selectedDayForecast.getDay() === date.getDay();
 
   public isForecastModeWeek = () => this.forecastMode === ForecastMode.WEEK;
 
@@ -153,5 +180,6 @@ export class WeatherWidgetComponent {
     }
   }
 
-  public isWidgetLoaded = (): boolean => this.city != null && this.weather != null;
+  public isWidgetLoaded = (): boolean =>
+    this.city != null && this.weather != null;
 }

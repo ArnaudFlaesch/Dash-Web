@@ -27,14 +27,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public isDashboardLoaded: boolean;
 
-  private ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
+  private ERROR_MESSAGE_INIT_DASHBOARD =
+    "Erreur lors de l'initialisation du dashboard.";
   private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
-  private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
+  private ERROR_MESSAGE_DELETE_TAB =
+    "Erreur lors de la suppression d'un onglet.";
   private ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
-  private ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
-  private ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
+  private ERROR_EXPORT_CONFIGURATION =
+    "Erreur lors de l'export de la configuration.";
+  private ERROR_MESSAGE_DELETE_WIDGET =
+    "Erreur lors de la suppression d'un widget.";
 
-  private ERROR_MESSAGE_GET_WIDGETS = 'Erreur lors de la récupération des widgets.';
+  private ERROR_MESSAGE_GET_WIDGETS =
+    'Erreur lors de la récupération des widgets.';
 
   constructor(
     public dialog: MatDialog,
@@ -66,10 +71,15 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (tabs.length) {
           this.activeTab = tabs[0].id;
           this.loadWidgets(this.activeTab);
+        } else {
+          this.addNewTab();
         }
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD),
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_MESSAGE_INIT_DASHBOARD
+        ),
       complete: () => (this.isDashboardLoaded = true)
     });
   }
@@ -80,9 +90,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (insertedTab: ITab) => {
         this.tabs = [...this.tabs, insertedTab];
         this.activeTab = insertedTab.id;
+        this.activeWidgets = [];
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_TAB)
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_MESSAGE_ADD_TAB
+        )
     });
   }
 
@@ -95,14 +109,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.widgetService.getWidgets(activeTabId).subscribe({
       next: (widgets) => (this.activeWidgets = widgets),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_GET_WIDGETS)
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_MESSAGE_GET_WIDGETS
+        )
     });
   }
 
   public deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_WIDGET),
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_MESSAGE_DELETE_WIDGET
+        ),
       complete: () =>
         (this.activeWidgets = this.activeWidgets.filter(
           (widget: IWidgetConfig) => widget.id !== id
@@ -113,7 +133,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   public deleteTabFromDash(tabId: number): void {
     this.tabService.deleteTab(tabId).subscribe({
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_TAB),
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_MESSAGE_DELETE_TAB
+        ),
       complete: () => this.deleteTabFromDashboard(tabId)
     });
   }
@@ -130,6 +153,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     }
     this.tabs = this.tabs.filter((tab) => tab.id !== tabId);
+    if (this.tabs.length < 1) {
+      this.addNewTab();
+    }
   }
 
   public openCreateWidgetModal(): void {
@@ -146,7 +172,10 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.activeWidgets = [...this.activeWidgets, response];
           },
           error: (error: HttpErrorResponse) =>
-            this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_WIDGET)
+            this.errorHandlerService.handleError(
+              error.message,
+              this.ERROR_MESSAGE_ADD_WIDGET
+            )
         });
       }
     });
@@ -171,7 +200,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         link.click();
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_EXPORT_CONFIGURATION)
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_EXPORT_CONFIGURATION
+        )
     });
   }
 

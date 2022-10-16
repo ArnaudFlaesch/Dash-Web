@@ -6,7 +6,7 @@
 >
   <ng-template #header>
     <div class="h-10">
-      <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="flex flex-row items-center space-x-2">
+      <a *ngIf="this.image" [href]="this.image.link | safe" class="flex flex-row items-center space-x-2">
         <img class="w-9 rounded" src="{{ image.url }}" alt="logo" />
         <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">{{ this.title }}</div>
       </a>
@@ -46,7 +46,7 @@
             </mat-expansion-panel-header>
             <ng-template matExpansionPanelContent>
               <div class="border-2 border-gray-500 border-solid rounded">
-                <a class="rssPanelArticleTitle" [href]="article.link | safe: 'url'"
+                <a class="rssPanelArticleTitle" [href]="article.link | safe"
                   ><p class="font-bold">{{ article.title }}</p></a
                 >
                 <div class="articleContent">
@@ -54,7 +54,7 @@
                 </div>
                 <div class="articlePubDate">
                   Publié le
-                  {{ dateUtilsService.formatDateFromUTC((article.pubDate ? article.pubDate : article.updated) || '') }}
+                  {{ (article.pubDate ? article.pubDate : article.updated) || '' | dateFormat }}
                   {{ article.author && 'par ' + article.author }}
                 </div>
               </div>

@@ -1,3 +1,4 @@
+import { DateFormatPipe } from './../../../pipes/date-format.pipe';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
 import { CalendarEvent } from 'angular-calendar';
@@ -16,6 +17,7 @@ describe('EventDetailModalComponent', () => {
   const createComponent = createComponentFactory({
     component: EventDetailModalComponent,
     imports: [MatDialogModule],
+    declarations:[DateFormatPipe],
     providers: [{ provide: MAT_DIALOG_DATA, useValue: calendarEvent }]
   });
 

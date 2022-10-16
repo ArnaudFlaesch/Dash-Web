@@ -36,7 +36,7 @@ describe('Config tests', () => {
           .intercept('DELETE', '/tab/deleteTab/*')
           .as('deleteTab')
           .get('.tab')
-          .should('have.length', 7)
+          .should('have.length', 2)
           .contains('Perso')
           .click()
           .get('.widget')
@@ -48,7 +48,7 @@ describe('Config tests', () => {
           .click()
           .wait('@deleteTab')
           .then(() => {
-            cy.get('.tab').should('have.length', 6);
+            cy.get('.tab').should('have.length', 1);
           });
       });
   });

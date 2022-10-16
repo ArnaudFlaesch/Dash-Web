@@ -11,7 +11,7 @@ import {
 import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { DateUtilsService } from '../../services/date.utils';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { format } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
 

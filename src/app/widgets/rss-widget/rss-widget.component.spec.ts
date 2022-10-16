@@ -7,7 +7,7 @@ import {
   SpectatorHttp
 } from '@ngneat/spectator/jest';
 import { environment } from '../../../environments/environment';
-import { DateUtilsService } from '../../services/date.utils';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
 import { IArticle } from './IArticle';
