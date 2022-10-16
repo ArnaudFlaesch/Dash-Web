@@ -8,12 +8,17 @@ import {
   SpectatorHttp
 } from '@ngneat/spectator';
 import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './model/Workout';
+import {
+  IWorkoutExercise,
+  IWorkoutSession,
+  IWorkoutType
+} from './model/Workout';
 
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { WorkoutWidgetComponent } from './workout-widget.component';
 import { WorkoutWidgetService } from './workout.widget.service';
+import { AuthService } from '../../services/auth.service/auth.service';
 
 describe('WorkoutWidgetComponent', () => {
   let spectator: Spectator<WorkoutWidgetComponent>;
@@ -22,7 +27,12 @@ describe('WorkoutWidgetComponent', () => {
   const createComponent = createComponentFactory({
     component: WorkoutWidgetComponent,
     imports: [MatSnackBarModule],
-    providers: [DateUtilsService, WorkoutWidgetService, ErrorHandlerService],
+    providers: [
+      DateUtilsService,
+      WorkoutWidgetService,
+      AuthService,
+      ErrorHandlerService
+    ],
     schemas: [NO_ERRORS_SCHEMA]
   });
   const createHttp = createHttpFactory(WorkoutWidgetService);
@@ -87,7 +97,10 @@ describe('WorkoutWidgetComponent', () => {
       HttpMethod.POST
     );
 
-    const addWorkoutTypeResponse = { id: 1, name: newWorkoutTypeName } as IWorkoutType;
+    const addWorkoutTypeResponse = {
+      id: 1,
+      name: newWorkoutTypeName
+    } as IWorkoutType;
     addWorkoutTypeRequest.flush(addWorkoutTypeResponse);
     expect(spectator.component.workoutTypes).toEqual([addWorkoutTypeResponse]);
   });
@@ -111,7 +124,9 @@ describe('WorkoutWidgetComponent', () => {
 
     addNewWorkoutSessionRequest.flush(mockedAddNewWorkoutSessionResponse);
 
-    expect(spectator.component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
+    expect(spectator.component.workoutSessions).toEqual([
+      mockedAddNewWorkoutSessionResponse
+    ]);
 
     // Edit and add workout exercise
     spectator.component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
@@ -129,12 +144,16 @@ describe('WorkoutWidgetComponent', () => {
     );
     expect(spectator.component.workoutExercises).toEqual([]);
 
-    expect(spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)).toEqual(0);
+    expect(
+      spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)
+    ).toEqual(0);
     const workoutExerciseId = {
       workoutSessionId: mockedAddNewWorkoutSessionResponse.id,
       workoutTypeId: alreadyExistingWorkoutType.id
     };
-    spectator.component.incrementExerciceNumberOfReps(alreadyExistingWorkoutType.id);
+    spectator.component.incrementExerciceNumberOfReps(
+      alreadyExistingWorkoutType.id
+    );
     const incrementWorkoutExerciseRequest = workoutWidgetService.expectOne(
       environment.backend_url + `/workoutWidget/updateWorkoutExercise`,
       HttpMethod.POST
@@ -144,9 +163,13 @@ describe('WorkoutWidgetComponent', () => {
       numberOfReps: 1
     } as IWorkoutExercise);
 
-    expect(spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)).toEqual(1);
+    expect(
+      spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)
+    ).toEqual(1);
 
-    spectator.component.decrementExerciceNumberOfReps(alreadyExistingWorkoutType.id);
+    spectator.component.decrementExerciceNumberOfReps(
+      alreadyExistingWorkoutType.id
+    );
     const decrementWorkoutExerciseRequest = workoutWidgetService.expectOne(
       environment.backend_url + `/workoutWidget/updateWorkoutExercise`,
       HttpMethod.POST
@@ -155,7 +178,9 @@ describe('WorkoutWidgetComponent', () => {
       workoutExerciseId: workoutExerciseId,
       numberOfReps: 0
     } as IWorkoutExercise);
-    expect(spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)).toEqual(0);
+    expect(
+      spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)
+    ).toEqual(0);
 
     spectator.component.backToWorkoutSessionsList();
     expect(spectator.component.workoutExercises).toEqual([]);
