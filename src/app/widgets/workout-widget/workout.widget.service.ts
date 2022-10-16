@@ -21,7 +21,7 @@ export class WorkoutWidgetService {
 
   public getWorkoutTypes(userId: number): Observable<IWorkoutType[]> {
     return this.http.get<IWorkoutType[]>(
-      `${environment.backend_url}/workoutWidget/workoutTypes`,
+      `${environment.backend_url}/workoutWidget/workoutTypes?userId=${userId}`,
       {
         headers: {
           Authorization: authorizationBearer(),
@@ -33,7 +33,7 @@ export class WorkoutWidgetService {
 
   public getWorkoutSessions(userId: number): Observable<IWorkoutSession[]> {
     return this.http.get<IWorkoutSession[]>(
-      `${environment.backend_url}/workoutWidget/workoutSessions`,
+      `${environment.backend_url}/workoutWidget/workoutSessions?userId=${userId}`,
       {
         headers: {
           Authorization: authorizationBearer(),
