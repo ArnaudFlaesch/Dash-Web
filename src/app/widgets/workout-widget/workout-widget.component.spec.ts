@@ -166,10 +166,6 @@ describe('WorkoutWidgetComponent', () => {
     expect(
       spectator.component.getExerciceNumberOfReps(alreadyExistingWorkoutType.id)
     ).toEqual(0);
-    const workoutExerciseId = {
-      workoutSessionId: mockedAddNewWorkoutSessionResponse.id,
-      workoutTypeId: alreadyExistingWorkoutType.id
-    };
     spectator.component.incrementExerciceNumberOfReps(
       alreadyExistingWorkoutType.id
     );
@@ -178,7 +174,8 @@ describe('WorkoutWidgetComponent', () => {
       HttpMethod.POST
     );
     incrementWorkoutExerciseRequest.flush({
-      workoutExerciseId: workoutExerciseId,
+      workoutSessionId: mockedAddNewWorkoutSessionResponse.id,
+      workoutTypeId: alreadyExistingWorkoutType.id,
       numberOfReps: 1
     } as IWorkoutExercise);
 
@@ -194,7 +191,8 @@ describe('WorkoutWidgetComponent', () => {
       HttpMethod.POST
     );
     decrementWorkoutExerciseRequest.flush({
-      workoutExerciseId: workoutExerciseId,
+      workoutSessionId: mockedAddNewWorkoutSessionResponse.id,
+      workoutTypeId: alreadyExistingWorkoutType.id,
       numberOfReps: 0
     } as IWorkoutExercise);
     expect(

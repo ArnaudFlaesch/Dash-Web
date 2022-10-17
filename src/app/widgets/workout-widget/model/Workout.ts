@@ -11,11 +11,7 @@ export interface IWorkoutSession {
 }
 
 export interface IWorkoutExercise {
-  workoutExerciseId: IWorkoutExerciseId;
-  numberOfReps: number;
-}
-
-interface IWorkoutExerciseId {
   workoutSessionId: number;
   workoutTypeId: number;
+  numberOfReps: number;
 }
