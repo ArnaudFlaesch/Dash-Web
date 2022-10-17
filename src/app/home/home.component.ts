@@ -143,7 +143,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private deleteTabFromDashboard(tabId: number) {
     this.activeWidgets = this.activeWidgets.filter(
-      (widget: IWidgetConfig) => widget.tab.id !== tabId
+      (widget: IWidgetConfig) => widget.tabId !== tabId
     );
     if (this.tabs.length > 1) {
       if (this.tabs[0].id === tabId) {

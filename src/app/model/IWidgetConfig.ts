@@ -5,7 +5,5 @@ export interface IWidgetConfig {
   type: WidgetTypes;
   data?: Record<string, unknown>;
   widgetOrder: number;
-  tab: {
-    id: number;
-  };
+  tabId: number;
 }
