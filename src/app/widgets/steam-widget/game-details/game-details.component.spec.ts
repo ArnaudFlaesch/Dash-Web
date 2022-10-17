@@ -31,6 +31,7 @@ describe('GameDetailsComponent', () => {
   });
 
   it('should create', () => {
+    const steamUserId = '1237';
     const appId = '1337';
     const achievementsData = {
       playerstats: {
@@ -68,10 +69,20 @@ describe('GameDetailsComponent', () => {
     };
     expect(spectator.component.achievements).toEqual([]);
     expect(spectator.component.completedAchievements).toEqual([]);
-    spectator.component.gameInfo = { appid: appId, name: 'Super Game' } as IGameInfo;
-    spectator.component.loadAchievementsData(spectator.component?.gameInfo);
+    spectator.component.gameInfo = {
+      appid: appId,
+      name: 'Super Game'
+    } as IGameInfo;
+    spectator.component.loadAchievementsData(
+      steamUserId,
+      spectator.component.gameInfo
+    );
     const getAchievementsRequest = steamWidgetService.expectOne(
-      environment.backend_url + '/steamWidget/achievementList?appId=' + appId,
+      environment.backend_url +
+        '/steamWidget/achievementList?steamUserId=' +
+        steamUserId +
+        '&appId=' +
+        appId,
       HttpMethod.GET
     );
     getAchievementsRequest.flush(achievementsData);
