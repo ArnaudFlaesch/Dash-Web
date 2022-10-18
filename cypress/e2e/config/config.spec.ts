@@ -47,7 +47,8 @@ describe('Config tests', () => {
           .get('.deleteTabButton')
           .click()
           .wait('@deleteTab')
-          .then(() => {
+          .then((request: Interception) => {
+            expect(request.response.statusCode).to.equal(200);
             cy.get('.tab').should('have.length', 1);
           });
       });

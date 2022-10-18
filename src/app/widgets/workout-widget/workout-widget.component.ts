@@ -161,7 +161,7 @@ export class WorkoutWidgetComponent {
         next: (addedWorkoutExercise) =>
           (this.workoutExercises = [
             ...this.workoutExercises.filter(
-              (ex) => ex.workoutExerciseId.workoutTypeId !== workoutTypeId
+              (ex) => ex.workoutTypeId !== workoutTypeId
             ),
             addedWorkoutExercise
           ]),
@@ -196,8 +196,7 @@ export class WorkoutWidgetComponent {
 
   public getExerciceNumberOfReps(workoutTypeId: number): number {
     const workoutType = this.workoutExercises.find(
-      (workoutExercise) =>
-        workoutExercise.workoutExerciseId.workoutTypeId === workoutTypeId
+      (workoutExercise) => workoutExercise.workoutTypeId === workoutTypeId
     );
     if (workoutType) {
       return workoutType.numberOfReps;

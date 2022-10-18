@@ -1,4 +1,8 @@
-import { IPlayerDataResponse, IAchievementResponse, IOwnedGamesResponse } from './ISteam';
+import {
+  IPlayerDataResponse,
+  IAchievementResponse,
+  IOwnedGamesResponse
+} from './ISteam';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -13,16 +17,23 @@ export class SteamWidgetService {
 
   constructor(private http: HttpClient) {}
 
-  public getPlayerData(): Observable<IPlayerDataResponse> {
-    return this.http.get<IPlayerDataResponse>(`${environment.backend_url}/steamWidget/playerData`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+  public getPlayerData(steamUserId: string): Observable<IPlayerDataResponse> {
+    return this.http.get<IPlayerDataResponse>(
+      `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        }
       }
-    });
+    );
   }
 
-  public getOwnedGames(search?: string, pageNumber?: number): Observable<IOwnedGamesResponse> {
+  public getOwnedGames(
+    steamUserId: string,
+    search?: string,
+    pageNumber?: number
+  ): Observable<IOwnedGamesResponse> {
     const params: { search?: string; pageNumber?: number } = {};
     if (search) {
       params.search = search;
@@ -30,16 +41,22 @@ export class SteamWidgetService {
     if (pageNumber) {
       params.pageNumber = pageNumber;
     }
-    return this.http.get<IOwnedGamesResponse>(`${environment.backend_url}/steamWidget/ownedGames`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
-      },
-      params: params
-    });
+    return this.http.get<IOwnedGamesResponse>(
+      `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        },
+        params: params
+      }
+    );
   }
 
-  public getAchievementList(appId: string): Observable<IAchievementResponse> {
+  public getAchievementList(
+    steamUserId: string,
+    appId: string
+  ): Observable<IAchievementResponse> {
     return this.http.get<IAchievementResponse>(
       `${environment.backend_url}/steamWidget/achievementList`,
       {
@@ -48,6 +65,7 @@ export class SteamWidgetService {
           'Content-type': 'application/json'
         },
         params: {
+          steamUserId: steamUserId,
           appId: appId
         }
       }

@@ -58,14 +58,14 @@ describe('HomeComponent', () => {
       id: 1,
       type: WidgetTypes.RSS,
       data: { url: 'url.rss.xml' },
-      tab: { id: 1 },
+      tabId: 1,
       widgetOrder: 1
     },
     {
       id: 2,
       type: WidgetTypes.RSS,
       data: { url: 'url.rss.xml' },
-      tab: { id: 1 },
+      tabId: 1,
       widgetOrder: 2
     }
   ] as IWidgetConfig[];

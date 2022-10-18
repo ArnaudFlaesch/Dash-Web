@@ -4,6 +4,7 @@ import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Steam Widget tests', () => {
   const tabName = 'Steam';
+  const steamUserId = '1246578';
 
   before(() => cy.createNewTab(tabName));
 
@@ -19,9 +20,13 @@ describe('Steam Widget tests', () => {
         fixture: 'steam/gameData.json'
       })
       .as('getGameData')
-      .intercept('GET', `/steamWidget/achievementList?appId=420`, {
-        fixture: 'steam/halfLife2Ep2Achievements.json'
-      })
+      .intercept(
+        'GET',
+        `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`,
+        {
+          fixture: 'steam/halfLife2Ep2Achievements.json'
+        }
+      )
       .as('getAchievementData');
   });
 
@@ -43,7 +48,7 @@ describe('Steam Widget tests', () => {
     cy.get('.validateButton')
       .should('be.disabled')
       .get('input')
-      .type('steamUserId')
+      .type(steamUserId)
       .get('.validateButton')
       .click()
       .wait(['@getPlayerData', '@getGameData'])
