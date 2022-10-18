@@ -30,7 +30,9 @@ describe('WeatherWidgetComponent', () => {
 
   const weatherData = {
     coord: { lon: 2.3488, lat: 48.8534 },
-    weather: [{ id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01d' }],
+    weather: [
+      { id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01d' }
+    ],
     base: 'stations',
     main: {
       temp: 7.57,
@@ -44,7 +46,13 @@ describe('WeatherWidgetComponent', () => {
     wind: { speed: 7.2, deg: 50 },
     clouds: { all: 0 },
     dt: 1646586617,
-    sys: { type: 2, id: 2041230, country: 'FR', sunrise: 1646547788, sunset: 1646588459 },
+    sys: {
+      type: 2,
+      id: 2041230,
+      country: 'FR',
+      sunrise: 1646547788,
+      sunset: 1646588459
+    },
     timezone: 3600,
     id: 2988507,
     name: 'Paris',
@@ -69,7 +77,9 @@ describe('WeatherWidgetComponent', () => {
           humidity: 45,
           temp_kf: 0.34
         },
-        weather: [{ id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01n' }],
+        weather: [
+          { id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01n' }
+        ],
         clouds: { all: 0 },
         wind: { speed: 3.68, deg: 43, gust: 7.45 },
         visibility: 10000,
@@ -90,7 +100,9 @@ describe('WeatherWidgetComponent', () => {
           humidity: 49,
           temp_kf: 1.61
         },
-        weather: [{ id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01n' }],
+        weather: [
+          { id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01n' }
+        ],
         clouds: { all: 3 },
         wind: { speed: 4.71, deg: 38, gust: 10.19 },
         visibility: 10000,
@@ -111,7 +123,9 @@ describe('WeatherWidgetComponent', () => {
           humidity: 56,
           temp_kf: 1.39
         },
-        weather: [{ id: 800, main: 'Sunny', description: 'Ensoleillé', icon: '01n' }],
+        weather: [
+          { id: 800, main: 'Sunny', description: 'Ensoleillé', icon: '01n' }
+        ],
         clouds: { all: 6 },
         wind: { speed: 4.26, deg: 41, gust: 9.9 },
         visibility: 10000,
@@ -132,7 +146,9 @@ describe('WeatherWidgetComponent', () => {
           humidity: 66,
           temp_kf: 0
         },
-        weather: [{ id: 800, main: 'Cloudy', description: 'Nuageux', icon: '01n' }],
+        weather: [
+          { id: 800, main: 'Cloudy', description: 'Nuageux', icon: '01n' }
+        ],
         clouds: { all: 6 },
         wind: { speed: 3.54, deg: 39, gust: 8.33 },
         visibility: 10000,
@@ -168,11 +184,13 @@ describe('WeatherWidgetComponent', () => {
 
     const dataRequests = weatherWidgetService.expectConcurrent([
       {
-        url: environment.backend_url + '/weatherWidget/weather?city=' + cityName,
+        url:
+          environment.backend_url + '/weatherWidget/weather?city=' + cityName,
         method: HttpMethod.GET
       },
       {
-        url: environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
+        url:
+          environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
         method: HttpMethod.GET
       }
     ]);
@@ -180,7 +198,9 @@ describe('WeatherWidgetComponent', () => {
     weatherWidgetService.flushAll(dataRequests, [weatherData, forecastData]);
 
     expect(spectator.component.cityData?.name).toEqual(cityName);
-    expect(spectator.component.forecast.length).toEqual(forecastData.list.length);
+    expect(spectator.component.forecast.length).toEqual(
+      forecastData.list.length
+    );
     expect(spectator.component.isWidgetLoaded()).toEqual(true);
 
     if (spectator.component.cityData && spectator.component.weatherChart) {
@@ -188,24 +208,49 @@ describe('WeatherWidgetComponent', () => {
         { borderColor: 'orange', data: [7.57, 6.76], label: 'Température' },
         { borderColor: 'red', data: [5.19, 3.67], label: 'Ressenti' }
       ]);
-      spectator.component.selectDayForecast(new Date(spectator.component.forecastDays[0]));
+      spectator.component.selectDayForecast(
+        new Date(spectator.component.forecastDays[0])
+      );
       expect(
         spectator.component
-          .filterForecastByMode(spectator.component.cityData, spectator.component.forecast)
+          .filterForecastByMode(
+            spectator.component.cityData,
+            spectator.component.forecast
+          )
           .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
       ).toEqual(['06-03-2022', '06-03-2022']);
-      spectator.component.selectDayForecast(new Date(spectator.component.forecastDays[1]));
+      spectator.component.selectDayForecast(
+        new Date(spectator.component.forecastDays[1])
+      );
       expect(
         spectator.component
-          .filterForecastByMode(spectator.component.cityData, spectator.component.forecast)
+          .filterForecastByMode(
+            spectator.component.cityData,
+            spectator.component.forecast
+          )
           .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
       ).toEqual(['07-03-2022']);
       spectator.component.selectWeekForecast();
       expect(
         spectator.component
-          .filterForecastByMode(spectator.component.cityData, spectator.component.forecast)
+          .filterForecastByMode(
+            spectator.component.cityData,
+            spectator.component.forecast
+          )
           .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
       ).toEqual(['09-03-2022']);
     }
+  });
+
+  it('Should get weather icons', () => {
+    const icon = 'sunny';
+    expect(spectator.component.getIconFromWeatherApi(icon)).toEqual(
+      `https://openweathermap.org/img/wn/${icon}@2x.png`
+    );
+  });
+
+  it('Should format date', () => {
+    const date = new Date(2022, 5, 1);
+    expect(spectator.component.formatDate(date)).toEqual('01/06');
   });
 });
