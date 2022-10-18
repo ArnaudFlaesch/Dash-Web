@@ -99,9 +99,13 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
             break;
           }
           case WidgetTypes.STEAM: {
-            target.createComponent(SteamWidgetComponent, {
+            component = target.createComponent(SteamWidgetComponent, {
               injector: injector
             });
+            component.instance.steamUserId =
+              widgetData && widgetData['steamUserId']
+                ? (widgetData['steamUserId'] as string)
+                : undefined;
             break;
           }
           case WidgetTypes.WORKOUT: {

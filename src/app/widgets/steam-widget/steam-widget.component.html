@@ -1,5 +1,6 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()"
   [isWidgetLoaded]="isWidgetLoaded()">
+
   <ng-template #header>
     <div class="h-10">
       <a href="{{ playerData?.profileurl }}" class="flex flex-row items-center space-x-2">
@@ -41,7 +42,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <ng-template matExpansionPanelContent>
-            <app-game-details [gameInfo]="game"></app-game-details>
+            <app-game-details [steamUserId]="this.steamUserId" [gameInfo]="game"></app-game-details>
           </ng-template>
         </mat-expansion-panel>
       </div>
