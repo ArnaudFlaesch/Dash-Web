@@ -175,6 +175,8 @@ describe('WeatherWidgetComponent', () => {
   });
 
   it('should create', () => {
+    expect(spectator.component.getWidgetData()).toEqual(null);
+    expect(spectator.component.isFormValid()).toEqual(false);
     const cityName = 'Paris';
     expect(spectator.component.cityData).toEqual(undefined);
     expect(spectator.component.forecast).toEqual([]);
