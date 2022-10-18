@@ -44,7 +44,9 @@ describe('TabComponent', () => {
     expect(spectator.component.editMode).toEqual(true);
     const updatedTabLabel = 'Journaux';
     spectator.component.tab.label = updatedTabLabel;
-    spectator.component.enterSaveTabName(new KeyboardEvent('keydown', { key: 'Enter' }));
+    spectator.component.enterSaveTabName(
+      new KeyboardEvent('keydown', { key: 'Enter' })
+    );
     const updatedTabData = {
       id: 1,
       label: updatedTabLabel,
@@ -57,6 +59,24 @@ describe('TabComponent', () => {
     request.flush(updatedTabData);
     expect(spectator.component.editMode).toEqual(false);
     spectator.detectChanges();
-    expect(spectator.query('.tabLabel')?.textContent?.trim()).toEqual(updatedTabLabel);
+    expect(spectator.query('.tabLabel')?.textContent?.trim()).toEqual(
+      updatedTabLabel
+    );
+  });
+
+  it('Should delete a tab when it exists', () => {
+    const deletedEventSpy = jest.spyOn(
+      spectator.component.tabDeletedEvent,
+      'emit'
+    );
+    spectator.component.deleteTabFromDash();
+    expect(deletedEventSpy).toBeCalledTimes(0);
+    spectator.component.tab = {
+      id: 1,
+      label: 'Nouvel onglet',
+      tabOrder: 1
+    } as ITab;
+    spectator.component.deleteTabFromDash();
+    expect(deletedEventSpy).toBeCalledTimes(1);
   });
 });

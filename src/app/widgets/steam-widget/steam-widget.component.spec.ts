@@ -157,4 +157,10 @@ describe('SteamWidgetComponent', () => {
       HttpMethod.GET
     );
   });
+
+  it('Should get game icon link', () => {
+    expect(spectator.component.getGameImgSrc('13', 'URL')).toEqual(
+      'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/13/URL.jpg'
+    );
+  });
 });
