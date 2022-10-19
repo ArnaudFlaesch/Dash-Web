@@ -111,9 +111,7 @@ export class SteamWidgetComponent {
   }
 
   public isFormValid = (): boolean =>
-    this.steamUserId !== null &&
-    this.steamUserId !== undefined &&
-    this.steamUserId?.length > 0;
+    !!this.steamUserId && this.steamUserId?.length > 0;
 
   public isWidgetLoaded(): boolean {
     return (

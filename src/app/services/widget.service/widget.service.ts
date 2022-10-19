@@ -8,21 +8,17 @@ import { IWidgetConfig } from './../../model/IWidgetConfig';
 @Injectable()
 export class WidgetService {
   public _widgetDeletedEvent: ReplaySubject<number> = new ReplaySubject(0);
-  public readonly widgetDeleted: Observable<number> =
-    this._widgetDeletedEvent.asObservable();
+  public readonly widgetDeleted: Observable<number> = this._widgetDeletedEvent.asObservable();
 
   constructor(private http: HttpClient) {}
 
   public getWidgets(tabId: number): Observable<IWidgetConfig[]> {
-    return this.http.get<IWidgetConfig[]>(
-      `${environment.backend_url}/widget/?tabId=${tabId}`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
-        }
+    return this.http.get<IWidgetConfig[]>(`${environment.backend_url}/widget/?tabId=${tabId}`, {
+      headers: {
+        Authorization: authorizationBearer(),
+        'Content-type': 'application/json'
       }
-    );
+    });
   }
 
   public addWidget(type: string, tabId: number): Observable<IWidgetConfig> {
@@ -38,10 +34,7 @@ export class WidgetService {
     );
   }
 
-  public updateWidgetData(
-    id: number,
-    data: unknown
-  ): Observable<IWidgetConfig> {
+  public updateWidgetData(id: number, data: unknown): Observable<IWidgetConfig> {
     return this.http.patch<IWidgetConfig>(
       `${environment.backend_url}/widget/updateWidgetData/${id}`,
       { data: data },
@@ -55,14 +48,11 @@ export class WidgetService {
   }
 
   public deleteWidget(id: number): Observable<void> {
-    return this.http.delete<void>(
-      `${environment.backend_url}/widget/deleteWidget/?id=${id}`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
-        }
+    return this.http.delete<void>(`${environment.backend_url}/widget/deleteWidget/?id=${id}`, {
+      headers: {
+        Authorization: authorizationBearer(),
+        'Content-type': 'application/json'
       }
-    );
+    });
   }
 }

@@ -94,20 +94,19 @@ export class AirParifWidgetComponent implements AfterViewInit {
 
   private initMap(): void {
     const mapContainerDocumentId = 'map';
+
+    const southWest = L.latLng(48.12, 1.44),
+      northEast = L.latLng(49.24, 3.56),
+      bounds = L.latLngBounds(southWest, northEast);
+    const openStreetMapLayer = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 18,
+        attribution:
+          '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }
+    );
     if (document.getElementById(mapContainerDocumentId)) {
-      const southWest = L.latLng(48.12, 1.44),
-        northEast = L.latLng(49.24, 3.56),
-        bounds = L.latLngBounds(southWest, northEast);
-
-      const openStreetMapLayer = L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-          maxZoom: 18,
-          attribution:
-            '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }
-      );
-
       this.map = L.map(mapContainerDocumentId, {
         center: [48.8502, 2.3488],
         zoom: 11,

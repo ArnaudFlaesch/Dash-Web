@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -26,7 +25,7 @@ import { AirParifWidgetComponent } from '../airparif-widget/airparif-widget.comp
   templateUrl: './widget-list.component.html',
   styleUrls: ['./widget-list.component.scss']
 })
-export class WidgetListComponent implements AfterViewInit, OnChanges {
+export class WidgetListComponent implements OnChanges {
   @ViewChildren('dynamic', { read: ViewContainerRef })
   private widgetTargets: QueryList<ViewContainerRef> | undefined;
 
@@ -34,11 +33,6 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
   @Output() widgetDeletedEvent = new EventEmitter<number>();
 
   constructor(private cdRef: ChangeDetectorRef) {}
-
-  ngAfterViewInit(): void {
-    this.createWidgets();
-    this.cdRef.detectChanges();
-  }
 
   ngOnChanges() {
     this.cdRef.detectChanges();
@@ -64,18 +58,14 @@ export class WidgetListComponent implements AfterViewInit, OnChanges {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector
             });
-            component.instance.city = widgetData
-              ? (widgetData['city'] as string)
-              : null;
+            component.instance.city = widgetData ? (widgetData['city'] as string) : null;
             break;
           }
           case WidgetTypes.RSS: {
             component = target.createComponent(RssWidgetComponent, {
               injector: injector
             });
-            component.instance.urlFeed = widgetData
-              ? (widgetData['url'] as string)
-              : null;
+            component.instance.urlFeed = widgetData ? (widgetData['url'] as string) : null;
             component.instance.readArticles =
               widgetData && widgetData['readArticlesGuids']
                 ? (widgetData['readArticlesGuids'] as string[])
