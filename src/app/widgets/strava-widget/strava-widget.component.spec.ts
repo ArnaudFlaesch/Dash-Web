@@ -7,7 +7,9 @@ import {
   SpectatorRouting
 } from '@ngneat/spectator/jest';
 import { addDays, getTime } from 'date-fns';
+
 import { ErrorHandlerService } from '../../services/error.handler.service';
+import { IActivity, IAthlete } from './IStrava';
 import { StravaWidgetComponent } from './strava-widget.component';
 import { StravaWidgetService } from './strava.widget.service';
 
@@ -35,7 +37,8 @@ describe('StravaWidgetComponent', () => {
     sex: 'M',
     profile_medium:
       'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg',
-    profile: 'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
+    profile:
+      'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
   };
 
   const activitiesData = [
@@ -54,8 +57,8 @@ describe('StravaWidgetComponent', () => {
       start_date_local: '2022-02-13T16:07:22Z',
       timezone: '(GMT+01:00) Europe/Paris',
       utc_offset: 3600.0,
-      location_city: null,
-      location_state: null,
+      location_city: undefined,
+      location_state: undefined,
       location_country: 'France',
       achievement_count: 10,
       kudos_count: 0,
@@ -77,7 +80,7 @@ describe('StravaWidgetComponent', () => {
       elev_high: 56.8,
       elev_low: 30.2,
       upload_id: 7101918838,
-      upload_id_str: '7101918838',
+      upload_id_str: 7101918838,
       external_id: '73ca9a31-3269-4420-9134-61892b35cf6e-activity.fit',
       from_accepted_tag: false,
       pr_count: 4,
@@ -99,8 +102,8 @@ describe('StravaWidgetComponent', () => {
       start_date_local: '2021-10-16T17:31:10Z',
       timezone: '(GMT+01:00) Europe/Paris',
       utc_offset: 7200.0,
-      location_city: null,
-      location_state: null,
+      location_city: undefined,
+      location_state: undefined,
       location_country: 'France',
       achievement_count: 1,
       kudos_count: 1,
@@ -122,7 +125,7 @@ describe('StravaWidgetComponent', () => {
       elev_high: 62.8,
       elev_low: 28.0,
       upload_id: 6505950938,
-      upload_id_str: '6505950938',
+      upload_id_str: 6505950938,
       external_id: 'c6a0a1c1-7116-4309-90a5-b7e35eeb86ac-activity.fit',
       from_accepted_tag: false,
       pr_count: 1,
@@ -144,8 +147,8 @@ describe('StravaWidgetComponent', () => {
       start_date_local: '2021-10-05T18:23:43Z',
       timezone: '(GMT+01:00) Europe/Paris',
       utc_offset: 7200.0,
-      location_city: null,
-      location_state: null,
+      location_city: undefined,
+      location_state: undefined,
       location_country: 'France',
       achievement_count: 6,
       kudos_count: 2,
@@ -167,14 +170,14 @@ describe('StravaWidgetComponent', () => {
       elev_high: 58.1,
       elev_low: 25.0,
       upload_id: 6448673229,
-      upload_id_str: '6448673229',
+      upload_id_str: 6448673229,
       external_id: 'b7ee329b-e1ad-414b-8aa6-12f0ebea27b8-activity.fit',
       from_accepted_tag: false,
       pr_count: 6,
       total_photo_count: 0,
       has_kudoed: false
     }
-  ];
+  ] as IActivity[];
 
   const createComponent = createRoutingFactory({
     component: StravaWidgetComponent,
@@ -196,7 +199,10 @@ describe('StravaWidgetComponent', () => {
   it('should create a widget with a token and a refresh token', () => {
     window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
-    window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
+    window.localStorage.setItem(
+      STRAVA_TOKEN_EXPIRATION_DATE_KEY,
+      TOKEN_EXPIRATION_DATE
+    );
     initComponent();
     expect(spectator.component.isUserLoggedIn()).toBe(true);
     expect(spectator.component.isWidgetLoaded).toEqual(true);
@@ -230,5 +236,18 @@ describe('StravaWidgetComponent', () => {
     expect(spectator.component.convertDecimalTimeToTime(10.34)).toEqual(10.2);
     expect(spectator.component.convertDecimalTimeToTime(1.8)).toEqual(1.5);
     expect(spectator.component.convertDecimalTimeToTime(1.85)).toEqual(1.5);
+  });
+
+  it('Should display athlete url', () => {
+    spectator.component.athlete = athleteData as IAthlete;
+    expect(spectator.component.getAthleteProfileUrl()).toEqual(
+      'https://www.strava.com/athletes/' + athleteData.id
+    );
+  });
+
+  it('Should display activity title', () => {
+    const activity = activitiesData[0];
+    const actual = spectator.component.getTitleToDisplay(activity);
+    expect(actual).toEqual('13 Feb  Afternoon Run  12.5188 kms');
   });
 });

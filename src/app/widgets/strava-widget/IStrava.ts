@@ -47,14 +47,14 @@ export interface IActivity {
   id: number;
   external_id: string;
   upload_id: number;
-  start_date: Date;
-  start_date_local: Date;
+  start_date: string;
+  start_date_local: string;
   timezone: string;
   utc_offset: number;
   start_latlng: [number, number];
   end_latlng: [number, number];
-  location_city: string;
-  location_state: string;
+  location_city?: string;
+  location_state?: string;
   location_country: string;
   start_latitude: number;
   start_longitude: number;
