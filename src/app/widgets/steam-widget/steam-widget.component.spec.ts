@@ -111,15 +111,11 @@ describe('SteamWidgetComponent', () => {
 
     const dataRequests = steamWidgetService.expectConcurrent([
       {
-        url:
-          environment.backend_url +
-          `/steamWidget/playerData?steamUserId=${steamUserId}`,
+        url: environment.backend_url + `/steamWidget/playerData?steamUserId=${steamUserId}`,
         method: HttpMethod.GET
       },
       {
-        url:
-          environment.backend_url +
-          `/steamWidget/ownedGames?steamUserId=${steamUserId}`,
+        url: environment.backend_url + `/steamWidget/ownedGames?steamUserId=${steamUserId}`,
         method: HttpMethod.GET
       }
     ]);
@@ -146,8 +142,7 @@ describe('SteamWidgetComponent', () => {
     expect(spectator.component.pageNumber).toEqual(0);
     const steamUserId = '1337';
     spectator.component.steamUserId = steamUserId;
-    spectator.component.ownedGames = ownedGamesData.response
-      .games as unknown as IGameInfo[];
+    spectator.component.ownedGames = ownedGamesData.response.games as unknown as IGameInfo[];
     spectator.component.onPageChanged(pageEvent);
     expect(spectator.component.pageNumber).toEqual(pageIndex);
 

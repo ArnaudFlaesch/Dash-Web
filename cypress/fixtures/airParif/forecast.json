@@ -1,20 +1,20 @@
 [
   {
-      "date": "2021-01-15",
-      "no2": "BON",
-      "o3": "MAUVAIS",
-      "pm10": "MOYEN",
-      "pm25": "DEGRADE",
-      "so2": "BON",
-      "indice": "DEGRADE"
+    "date": "2021-01-15",
+    "no2": "BON",
+    "o3": "MAUVAIS",
+    "pm10": "MOYEN",
+    "pm25": "DEGRADE",
+    "so2": "BON",
+    "indice": "DEGRADE"
   },
   {
-      "date": "2021-01-16",
-      "no2": "BON",
-      "o3": "MAUVAIS",
-      "pm10": "DEGRADE",
-      "pm25": "MOYEN",
-      "so2": "DEGRADE",
-      "indice": "BON"
+    "date": "2021-01-16",
+    "no2": "BON",
+    "o3": "MAUVAIS",
+    "pm10": "DEGRADE",
+    "pm25": "MOYEN",
+    "so2": "DEGRADE",
+    "indice": "BON"
   }
 ]

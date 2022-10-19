@@ -4,11 +4,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
-import {
-  IWorkoutExercise,
-  IWorkoutSession,
-  IWorkoutType
-} from './model/Workout';
+import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './model/Workout';
 import {
   IAddWorkoutTypePayload,
   ICreateWorkoutSessionPayload,
@@ -43,9 +39,7 @@ export class WorkoutWidgetService {
     );
   }
 
-  public getWorkoutExercises(
-    workoutSessionId: number
-  ): Observable<IWorkoutExercise[]> {
+  public getWorkoutExercises(workoutSessionId: number): Observable<IWorkoutExercise[]> {
     return this.http.get<IWorkoutExercise[]>(
       `${environment.backend_url}/workoutWidget/workoutExercises?workoutSessionId=${workoutSessionId}`,
       {
@@ -57,10 +51,7 @@ export class WorkoutWidgetService {
     );
   }
 
-  public addWorkoutType(
-    newWorkoutType: string,
-    userId: number
-  ): Observable<IWorkoutType> {
+  public addWorkoutType(newWorkoutType: string, userId: number): Observable<IWorkoutType> {
     const addWorkoutTypePayload: IAddWorkoutTypePayload = {
       workoutType: newWorkoutType,
       userId: userId

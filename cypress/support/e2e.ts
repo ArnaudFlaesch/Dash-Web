@@ -43,10 +43,7 @@ Cypress.Commands.add('deleteTab', (tabName: string): Cypress.Chainable => {
   return deleteTab(tabName);
 });
 
-function loginAs(
-  username: string,
-  password: string
-): Cypress.Chainable<Response> {
+function loginAs(username: string, password: string): Cypress.Chainable<Response> {
   return cy
     .request('POST', `${Cypress.env('backend_url')}/auth/login`, {
       username: username,

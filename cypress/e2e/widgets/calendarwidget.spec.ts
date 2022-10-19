@@ -62,32 +62,31 @@ describe('Calendar Widget tests', () => {
               .type(`${icalUsaHolidays}`)
               .get('.validateButton')
               .click();
-            cy.wait([
-              '@getCalendarDataRequest',
-              '@getCalendarDataRequest'
-            ]).then((request: Interception[]) => {
-              expect(request[0].response.statusCode).to.equal(200);
-              expect(request[1].response.statusCode).to.equal(200);
-              cy.get('.cal-future:nth(4)')
-                .scrollIntoView()
-                .get('.editButton')
-                .click()
-                .get('.removeCalendarUrl')
-                .eq(1)
-                .click()
-                .get('.validateButton')
-                .click()
-                .wait('@getCalendarDataRequest')
-                .then(() =>
-                  cy
-                    .get('.cal-day-badge')
-                    .should('have.length', 1)
-                    .clock()
-                    .then((clock) => {
-                      clock.restore();
-                    })
-                );
-            });
+            cy.wait(['@getCalendarDataRequest', '@getCalendarDataRequest']).then(
+              (request: Interception[]) => {
+                expect(request[0].response.statusCode).to.equal(200);
+                expect(request[1].response.statusCode).to.equal(200);
+                cy.get('.cal-future:nth(4)')
+                  .scrollIntoView()
+                  .get('.editButton')
+                  .click()
+                  .get('.removeCalendarUrl')
+                  .eq(1)
+                  .click()
+                  .get('.validateButton')
+                  .click()
+                  .wait('@getCalendarDataRequest')
+                  .then(() =>
+                    cy
+                      .get('.cal-day-badge')
+                      .should('have.length', 1)
+                      .clock()
+                      .then((clock) => {
+                        clock.restore();
+                      })
+                  );
+              }
+            );
           });
       });
   });

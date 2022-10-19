@@ -73,9 +73,7 @@ describe('AirParifWidgetComponent', () => {
     imports: [MatSnackBarModule],
     providers: [AirParifWidgetService, ErrorHandlerService]
   });
-  const createHttpAirParifWidgetService = createHttpFactory(
-    AirParifWidgetService
-  );
+  const createHttpAirParifWidgetService = createHttpFactory(AirParifWidgetService);
 
   beforeEach(() => {
     spectator = createComponent();
@@ -102,9 +100,7 @@ describe('AirParifWidgetComponent', () => {
     const dataRequests = airParifWidgetService.expectConcurrent([
       {
         url:
-          environment.backend_url +
-          '/airParifWidget/previsionCommune?commune=' +
-          communeInseeCode,
+          environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode,
         method: HttpMethod.GET
       },
       {
@@ -113,22 +109,13 @@ describe('AirParifWidgetComponent', () => {
       }
     ]);
 
-    airParifWidgetService.flushAll(dataRequests, [
-      forecastData,
-      couleursIndicesData
-    ]);
+    airParifWidgetService.flushAll(dataRequests, [forecastData, couleursIndicesData]);
 
     expect(spectator.component.airParifForecast).toEqual(forecastData);
-    expect(spectator.component.airParifCouleursIndices).toEqual(
-      couleursIndicesData
-    );
+    expect(spectator.component.airParifCouleursIndices).toEqual(couleursIndicesData);
 
-    expect(
-      spectator.component.getColorFromIndice('BON' as AirParifIndiceEnum)
-    ).toEqual('#50f0e6');
-    expect(
-      spectator.component.getColorFromIndice('null' as AirParifIndiceEnum)
-    ).toEqual('');
+    expect(spectator.component.getColorFromIndice('BON' as AirParifIndiceEnum)).toEqual('#50f0e6');
+    expect(spectator.component.getColorFromIndice('null' as AirParifIndiceEnum)).toEqual('');
 
     expect(spectator.component.isForecastModeToday()).toEqual(true);
     spectator.component.selectTomorrowForecast();

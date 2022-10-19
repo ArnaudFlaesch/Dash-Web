@@ -3,12 +3,7 @@ import * as L from 'leaflet';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { AirParifWidgetService } from './airparif-widget.service';
-import {
-  AirParifIndiceEnum,
-  ForecastMode,
-  IAirParifCouleur,
-  IForecast
-} from './model/IAirParif';
+import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from './model/IAirParif';
 
 @Component({
   selector: 'app-airparif-widget',
@@ -66,23 +61,17 @@ export class AirParifWidgetComponent implements AfterViewInit {
 
   public refreshWidget() {
     if (this.airParifApiKey && this.communeInseeCode) {
-      this.airParifWidgetService
-        .getCommunePrevision(this.communeInseeCode)
-        .subscribe({
-          next: (forecast) => {
-            this.airParifForecast = forecast;
-            this.selectTodayForecast();
-          },
-          error: (error) =>
-            this.errorHandlerService.handleError(
-              error.message,
-              this.ERROR_GETTING_AIRPARIF_FORECAST
-            )
-        });
+      this.airParifWidgetService.getCommunePrevision(this.communeInseeCode).subscribe({
+        next: (forecast) => {
+          this.airParifForecast = forecast;
+          this.selectTodayForecast();
+        },
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_AIRPARIF_FORECAST)
+      });
 
       this.airParifWidgetService.getColors().subscribe({
-        next: (airParifColors) =>
-          (this.airParifCouleursIndices = airParifColors),
+        next: (airParifColors) => (this.airParifCouleursIndices = airParifColors),
         error: (error) =>
           this.errorHandlerService.handleError(
             error.message,
@@ -99,14 +88,10 @@ export class AirParifWidgetComponent implements AfterViewInit {
         northEast = L.latLng(49.24, 3.56),
         bounds = L.latLngBounds(southWest, northEast);
 
-      const openStreetMapLayer = L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-          maxZoom: 18,
-          attribution:
-            '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }
-      );
+      const openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      });
 
       this.map = L.map(mapContainerDocumentId, {
         center: [48.8502, 2.3488],
@@ -159,15 +144,13 @@ export class AirParifWidgetComponent implements AfterViewInit {
 
   public getColorFromIndice(indice: AirParifIndiceEnum): string {
     return (
-      this.airParifCouleursIndices.find(
-        (couleurIndice) => couleurIndice.name === indice
-      )?.color || ''
+      this.airParifCouleursIndices.find((couleurIndice) => couleurIndice.name === indice)?.color ||
+      ''
     );
   }
 
   public isForecastModeToday = () => this.forecastMode === ForecastMode.TODAY;
-  public isForecastModeTomorrow = () =>
-    this.forecastMode === ForecastMode.TOMORROW;
+  public isForecastModeTomorrow = () => this.forecastMode === ForecastMode.TOMORROW;
 
   public isFormValid = (): boolean =>
     this.airParifApiKey !== null &&

@@ -74,10 +74,7 @@ describe('GameDetailsComponent', () => {
       appid: appId,
       name: 'Super Game'
     } as IGameInfo;
-    spectator.component.loadAchievementsData(
-      steamUserId,
-      spectator.component.gameInfo
-    );
+    spectator.component.loadAchievementsData(steamUserId, spectator.component.gameInfo);
     const getAchievementsRequest = steamWidgetService.expectOne(
       environment.backend_url +
         '/steamWidget/achievementList?steamUserId=' +
@@ -98,8 +95,6 @@ describe('GameDetailsComponent', () => {
       appid: appId,
       name: 'Super Game'
     } as IGameInfo;
-    expect(spectator.component.getAppIdLink()).toEqual(
-      'https://steamcommunity.com/app/1337'
-    );
+    expect(spectator.component.getAppIdLink()).toEqual('https://steamcommunity.com/app/1337');
   });
 });

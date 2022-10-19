@@ -5,12 +5,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
-import {
-  IGameInfo,
-  IOwnedGamesResponse,
-  IPlayerData,
-  IPlayerDataResponse
-} from './ISteam';
+import { IGameInfo, IOwnedGamesResponse, IPlayerData, IPlayerDataResponse } from './ISteam';
 import { SteamWidgetService } from './steam.widget.service';
 
 @Component({
@@ -31,10 +26,8 @@ export class SteamWidgetComponent {
 
   public searchFormControl = new FormControl('');
 
-  private ERROR_GETTING_PLAYER_DATA =
-    'Erreur lors de la récupération de vos informations Steam.';
-  private ERROR_GETTING_OWNED_GAMES =
-    'Erreur lors de la récupération de la liste des jeux.';
+  private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations Steam.';
+  private ERROR_GETTING_OWNED_GAMES = 'Erreur lors de la récupération de la liste des jeux.';
 
   constructor(
     private errorHandlerService: ErrorHandlerService,
@@ -62,34 +55,21 @@ export class SteamWidgetComponent {
 
   public getPlayerData(steamUserId: string): void {
     this.steamWidgetService.getPlayerData(steamUserId).subscribe({
-      next: (response: IPlayerDataResponse) =>
-        (this.playerData = response.response.players[0]),
+      next: (response: IPlayerDataResponse) => (this.playerData = response.response.players[0]),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_GETTING_PLAYER_DATA
-        )
+        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_PLAYER_DATA)
     });
   }
 
-  public getOwnedGames(
-    steamUserId: string,
-    search?: string,
-    pageNumber?: number
-  ): void {
-    this.steamWidgetService
-      .getOwnedGames(steamUserId, search, pageNumber)
-      .subscribe({
-        next: (response: IOwnedGamesResponse) => {
-          this.gameCount = response.response.game_count;
-          this.ownedGames = response.response.games;
-        },
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_GETTING_OWNED_GAMES
-          )
-      });
+  public getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {
+    this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).subscribe({
+      next: (response: IOwnedGamesResponse) => {
+        this.gameCount = response.response.game_count;
+        this.ownedGames = response.response.games;
+      },
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_OWNED_GAMES)
+    });
   }
 
   public getGameImgSrc = (gameAppId: string, imgIconUrl: string) =>
@@ -111,14 +91,9 @@ export class SteamWidgetComponent {
   }
 
   public isFormValid = (): boolean =>
-    this.steamUserId !== null &&
-    this.steamUserId !== undefined &&
-    this.steamUserId?.length > 0;
+    this.steamUserId !== null && this.steamUserId !== undefined && this.steamUserId?.length > 0;
 
   public isWidgetLoaded(): boolean {
-    return (
-      !this.steamUserId ||
-      (this.playerData != null && this.ownedGames.length > 0)
-    );
+    return !this.steamUserId || (this.playerData != null && this.ownedGames.length > 0);
   }
 }

@@ -20,13 +20,9 @@ describe('Steam Widget tests', () => {
         fixture: 'steam/gameData.json'
       })
       .as('getGameData')
-      .intercept(
-        'GET',
-        `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`,
-        {
-          fixture: 'steam/halfLife2Ep2Achievements.json'
-        }
-      )
+      .intercept('GET', `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`, {
+        fixture: 'steam/halfLife2Ep2Achievements.json'
+      })
       .as('getAchievementData');
   });
 
