@@ -1,26 +1,26 @@
 [
   {
-      "name": "BON",
-      "color": "#50f0e6"
+    "name": "BON",
+    "color": "#50f0e6"
   },
   {
-      "name": "MOYEN",
-      "color": "#50ccaa"
+    "name": "MOYEN",
+    "color": "#50ccaa"
   },
   {
-      "name": "DEGRADE",
-      "color": "#f0e641"
+    "name": "DEGRADE",
+    "color": "#f0e641"
   },
   {
-      "name": "MAUVAIS",
-      "color": "#ff5050"
+    "name": "MAUVAIS",
+    "color": "#ff5050"
   },
   {
-      "name": "TRES_MAUVAIS",
-      "color": "#960032"
+    "name": "TRES_MAUVAIS",
+    "color": "#960032"
   },
   {
-      "name": "EXTREMEMENT_MAUVAIS",
-      "color": "#7d2181"
+    "name": "EXTREMEMENT_MAUVAIS",
+    "color": "#7d2181"
   }
 ]

@@ -42,9 +42,7 @@ describe('Workout Widget tests', () => {
       .wait('@addWorkoutType')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workoutTypeName')
-          .should('have.length', 1)
-          .should('have.text', newWorkoutTypeName);
+        cy.get('.workoutTypeName').should('have.length', 1).should('have.text', newWorkoutTypeName);
       });
   });
 

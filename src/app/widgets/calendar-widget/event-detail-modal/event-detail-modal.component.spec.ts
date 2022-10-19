@@ -17,7 +17,7 @@ describe('EventDetailModalComponent', () => {
   const createComponent = createComponentFactory({
     component: EventDetailModalComponent,
     imports: [MatDialogModule],
-    declarations:[DateFormatPipe],
+    declarations: [DateFormatPipe],
     providers: [{ provide: MAT_DIALOG_DATA, useValue: calendarEvent }]
   });
 

@@ -59,6 +59,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    console.log('ng on init widget ' + JSON.stringify(this.widgetData));
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
     this.timeoutRefresh = setInterval(this.refreshWidget, 300000);
@@ -82,10 +83,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
           this.refreshWidget();
         },
         error: (error) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_UPDATING_WIDGET_DATA
-          )
+          this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_WIDGET_DATA)
       });
   }
 
@@ -94,8 +92,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
   }
 
   public refreshWidget = () => this.refreshWidgetAction.emit();
-  public toEditMode = () =>
-    (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
+  public toEditMode = () => (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
   public toReadMode = () => (this.mode = ModeEnum.READ);
   public toDeleteMode = () => (this.mode = ModeEnum.DELETE);
   public isModeRead = (): boolean => this.mode === ModeEnum.READ;
