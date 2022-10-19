@@ -7,9 +7,10 @@ import {
   SpectatorRouting
 } from '@ngneat/spectator/jest';
 import { addDays, getTime } from 'date-fns';
+import { environment } from '../../../environments/environment';
 
 import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IActivity, IAthlete } from './IStrava';
+import { IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetComponent } from './strava-widget.component';
 import { StravaWidgetService } from './strava.widget.service';
 
@@ -248,5 +249,30 @@ describe('StravaWidgetComponent', () => {
     const activity = activitiesData[0];
     const actual = spectator.component.getTitleToDisplay(activity);
     expect(actual).toEqual('13 Feb  Afternoon Run  12.5188 kms');
+  });
+
+  it('Should get api token', () => {
+    spectator.component.getToken('apicode');
+    const response = {
+      token_type: 'Bearer',
+      expires_at: '1644882561',
+      expires_in: 10384,
+      refresh_token: 'REFRESH_TOKEN',
+      access_token: 'TOKEN',
+      athlete: {
+        id: 25345795,
+        username: 'af',
+        resource_state: 2,
+        firstname: 'A',
+        lastname: 'F'
+      }
+    } as unknown as ITokenData;
+
+    const getTokenDataRequest = stravaWidgetService.expectOne(
+      `${environment.backend_url}/stravaWidget/getToken`,
+      HttpMethod.POST
+    );
+    getTokenDataRequest.flush(response);
+    expect(spectator.component.getTokenValue()).toEqual('TOKEN');
   });
 });
