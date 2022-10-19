@@ -28,7 +28,7 @@ export class StravaWidgetComponent {
   private STRAVA_CLIENT_ID = 30391;
 
   public loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
-  private STRAVA_ATHLETE_URL = "https://www.strava.com/athletes/"
+  private STRAVA_ATHLETE_URL = 'https://www.strava.com/athletes/';
 
   private STORAGE_STRAVA_TOKEN_KEY = 'strava_token';
   private STORAGE_STRAVA_REFRESH_TOKEN_KEY = 'strava_refresh_token';
@@ -243,10 +243,10 @@ export class StravaWidgetComponent {
   }
 
   public loginToStrava = () => window.open(this.loginToStravaUrl, '_self');
-  public getAthleteProfileUrl = (athleteId?: number) =>
+  public getAthleteProfileUrl = (athleteId: number) =>
     `${this.STRAVA_ATHLETE_URL}${athleteId}`;
 
-  public formatDate = (date: Date) => format(new Date(date), 'dd MMM');
+  public formatDate = (date: string) => format(new Date(date), 'dd MMM');
   public roundDistance = (distance: number) => Math.round(distance * 100) / 100;
 
   public convertDecimalTimeToTime(decimalTime: number): number {

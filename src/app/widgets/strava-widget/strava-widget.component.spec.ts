@@ -239,8 +239,7 @@ describe('StravaWidgetComponent', () => {
   });
 
   it('Should display athlete url', () => {
-    spectator.component.athlete = athleteData as IAthlete;
-    expect(spectator.component.getAthleteProfileUrl()).toEqual(
+    expect(spectator.component.getAthleteProfileUrl(athleteData.id)).toEqual(
       'https://www.strava.com/athletes/' + athleteData.id
     );
   });
