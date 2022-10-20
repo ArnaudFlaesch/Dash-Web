@@ -3,7 +3,7 @@ name: Node.js CI
 on: ["push"]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,9 +36,27 @@ jobs:
           npm run build -- --base-href=https://arnaudflaesch.github.io/Dash-Web/
           cp dist/index.html dist/404.html
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
       - name: Test
         run: npm run test
 
+      - name: Send coverage report
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -F coverage-jest
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -78,18 +96,11 @@ jobs:
           name: Cypress report
           path: cypress/reports/html
 
-      - name: Send coverage report
-        run: |
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -F coverage-jest
+  deploy:
+    needs: ["build", "test", "test-e2e"]
+    runs-on: ubuntu-latest
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+    steps:
       - name: Deploy with gh-pages
         if: success() && github.ref == 'refs/heads/master'
         run: |
