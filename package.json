@@ -62,7 +62,7 @@
     "cypress-file-upload": "5.0.8",
     "cypress-multi-reporters": "1.6.1",
     "cypress-wait-until": "1.7.2",
-    "eslint": "8.25.0",
+    "eslint": "8.26.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-cypress": "2.12.1",
     "gh-pages": "4.0.0",
