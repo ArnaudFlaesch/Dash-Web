@@ -15,22 +15,6 @@ Le projet est déployé via Github Pages et accessible à cette addresse : https
 
 ## Démarrage
 
-- Récupération de l'image Docker de la base de données
-  > docker pull postgres:13.2-alpine
-- Démarrage de la base de données
-
-  > docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash postgres:13.2-alpine
-
-- Récupération de l'image Docker du backend
-
-  > docker pull arnaudf93/dashwebservices:latest
-
-Cette étape permet de récupérer la version équivalente au code présent sur la branche master du projet https://github.com/ArnaudFlaesch/Dash-WebServices. Il est aussi possible de cloner directement ce projet et de le lancer via les sources.
-
-- Démarrage du backend
-
-  > docker run -p 8080:8080 -d -e POSTGRES_URL=jdbc:postgresql://localhost:5432/dash arnaudf93/dashwebservices:latest
-
 - Installation des dépendances
 
   > npm install
@@ -39,6 +23,31 @@ Cette étape permet de récupérer la version équivalente au code présent sur 
   > npm start
 
 L'application est ensuite accessible à l'addresse http://localhost:4200.
+
+- Démarrage du backend
+
+Il est nécessaire d'exécuter le backend et sa base de données pour que l'application fonctionne. Les sources et le README sont accessibles ici :https://github.com/ArnaudFlaesch/Dash-WebServices.
+
+Pour lancer le frontend sans avoir à utiliser le backend en local, il est possible d'exécuter la commande :
+
+> npm run start:prod:backend
+
+Cette commande va permettre de se connecter au backend déployé sur Heroku directement.
+
+Sinon, il est possible de récupérer le backend via Docker en commençant par sa base de données :
+
+> docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash postgres:13.2-alpine;
+
+et son image Docker :
+
+> docker pull arnaudf93/dashwebservices:latest
+
+puis de l'exécuter en via la commande :
+
+> docker run -p 8080:8080 -d -e OPENWEATHERMAP_KEY=${OPENWEATHERMAP_KEY} -e STRAVA_CLIENT_ID=${STRAVA_CLIENT_ID} -e STRAVA_CLIENT_SECRET=${STRAVA_CLIENT_SECRET} -e STEAM_API_KEY=${STEAM_API_KEY} -e AIRPARIF_API_TOKEN=${AIRPARIF_API_TOKEN} arnaudf93/dashwebservices:latest
+
+en renseignant les variables d'environnements nécessaires en suivant le README du backend ici :
+https://github.com/ArnaudFlaesch/Dash-Webservices#demarrage
 
 ## Commandes utiles
 
