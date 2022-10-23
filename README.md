@@ -9,7 +9,9 @@
 
 ## Description
 
-L'application a pour but de proposer à un utilisateur de créer un dashboard sur lequel il peut créer plusieurs widgets, comme par exemple un lecteur de flux RSS, un calendrier listant des évènements à partir d'un lien ICal et un affichage de prévisions météorologiques et les répartir sur plusieurs onglets.
+L'application a pour but de proposer à un utilisateur de créer un dashboard sur lequel il peut créer plusieurs widgets,
+comme par exemple un lecteur de flux RSS, un calendrier listant des évènements à partir d'un lien ICal et un affichage
+de prévisions météorologiques. Il est possible de répartir ces widgets sur plusieurs onglets.
 
 Le projet est déployé via Github Pages et accessible à cette addresse : https://arnaudflaesch.github.io/Dash-Web/.
 
@@ -36,17 +38,18 @@ Cette commande va permettre de se connecter au backend déployé sur Heroku dire
 
 Sinon, il est possible de récupérer le backend via Docker en commençant par sa base de données :
 
+> docker pull postgres:13.2-alpine
 > docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash postgres:13.2-alpine;
 
 et son image Docker :
 
 > docker pull arnaudf93/dashwebservices:latest
 
-puis de l'exécuter en via la commande :
+puis de l'exécuter via la commande :
 
 > docker run -p 8080:8080 -d -e OPENWEATHERMAP_KEY=${OPENWEATHERMAP_KEY} -e STRAVA_CLIENT_ID=${STRAVA_CLIENT_ID} -e STRAVA_CLIENT_SECRET=${STRAVA_CLIENT_SECRET} -e STEAM_API_KEY=${STEAM_API_KEY} -e AIRPARIF_API_TOKEN=${AIRPARIF_API_TOKEN} arnaudf93/dashwebservices:latest
 
-en renseignant les variables d'environnements nécessaires en suivant le README du backend ici :
+en renseignant les variables d'environnement nécessaires en suivant le README du backend ici :
 https://github.com/ArnaudFlaesch/Dash-Webservices#demarrage
 
 ## Commandes utiles
