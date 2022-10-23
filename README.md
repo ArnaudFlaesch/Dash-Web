@@ -51,7 +51,7 @@ puis de l'exécuter via la commande :
 > docker run -p 8080:8080 -d -e OPENWEATHERMAP_KEY=${OPENWEATHERMAP_KEY} -e STRAVA_CLIENT_ID=${STRAVA_CLIENT_ID} -e STRAVA_CLIENT_SECRET=${STRAVA_CLIENT_SECRET} -e STEAM_API_KEY=${STEAM_API_KEY} -e AIRPARIF_API_TOKEN=${AIRPARIF_API_TOKEN} arnaudf93/dashwebservices:latest
 
 en renseignant les variables d'environnement nécessaires en suivant le README du backend ici :
-https://github.com/ArnaudFlaesch/Dash-Webservices#demarrage
+https://github.com/ArnaudFlaesch/Dash-Webservices#d%C3%A9marrage
 
 ## Commandes utiles
 
@@ -75,6 +75,6 @@ Affiche la liste des erreurs liées au code Typescript à partir des règles dé
 
 Affiche la liste des erreurs liées au code CSS/Sass à partir des conventions et règles définies dans le fichier **.stylelintrc.json**.
 
-### Coverage
+### Couverture de code
 
 ![Coverage](https://codecov.io/gh/ArnaudFlaesch/Dash-Web/branch/master/graphs/sunburst.svg)
