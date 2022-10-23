@@ -39,7 +39,6 @@ describe('Login tests', () => {
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
         cy.url()
-          .url()
           .should('be.equal', `${Cypress.config('baseUrl')}home`)
           .get('#logoutButton')
           .click()
