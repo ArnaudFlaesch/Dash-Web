@@ -22,6 +22,7 @@ Le projet est déployé via Github Pages et accessible à cette addresse : https
   > npm install
 
 - Démarrage de l'application
+
   > npm start
 
 L'application est ensuite accessible à l'addresse http://localhost:4200.
