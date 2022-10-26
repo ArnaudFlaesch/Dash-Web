@@ -1,14 +1,10 @@
 export interface IPlayerDataResponse {
-  response: {
-    players: IPlayerData[];
-  };
+  players: IPlayerData[];
 }
 
 export interface IOwnedGamesResponse {
-  response: {
-    game_count: number;
-    games: IGameInfo[];
-  };
+  game_count: number;
+  games: IGameInfo[];
 }
 
 export interface IPlayerData {

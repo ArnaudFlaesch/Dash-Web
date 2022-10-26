@@ -63,7 +63,7 @@ export class SteamWidgetComponent {
   public getPlayerData(steamUserId: string): void {
     this.steamWidgetService.getPlayerData(steamUserId).subscribe({
       next: (response: IPlayerDataResponse) =>
-        (this.playerData = response.response.players[0]),
+        (this.playerData = response.players[0]),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(
           error.message,
@@ -81,8 +81,8 @@ export class SteamWidgetComponent {
       .getOwnedGames(steamUserId, search, pageNumber)
       .subscribe({
         next: (response: IOwnedGamesResponse) => {
-          this.gameCount = response.response.game_count;
-          this.ownedGames = response.response.games;
+          this.gameCount = response.game_count;
+          this.ownedGames = response.games;
         },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(
