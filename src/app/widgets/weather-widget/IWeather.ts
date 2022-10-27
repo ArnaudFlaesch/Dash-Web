@@ -1,4 +1,4 @@
-export interface IWeatherAPIResponse {
+export interface IForecastAPIResponse {
   cod: string;
   message: number;
   cnt: number;
@@ -6,33 +6,9 @@ export interface IWeatherAPIResponse {
   city: ICity;
 }
 
-export interface ICity {
-  id: number;
-  name: string;
-  coord: {
-    lat: number;
-    lon: number;
-  };
-  country: string;
-  population: number;
-  timezone: number;
-  sunrise: number;
-  sunset: number;
-}
-
-export interface IWeather {
-  coord: {
-    lon: number;
-    lat: number;
-  };
-  weather: [
-    {
-      id: number;
-      main: string;
-      description: string;
-      icon: string;
-    }
-  ];
+export interface IWeatherAPIResponse {
+  coord: LatLng;
+  weather: IWeather[];
   base: string;
   main: {
     temp: number;
@@ -65,6 +41,17 @@ export interface IWeather {
   cod: number;
 }
 
+export interface ICity {
+  id: number;
+  name: string;
+  coord: LatLng;
+  country: string;
+  population: number;
+  timezone: number;
+  sunrise: number;
+  sunset: number;
+}
+
 export interface IForecast {
   dt: number;
   dt_text: string;
@@ -79,14 +66,7 @@ export interface IForecast {
     humidity: number;
     temp_kf: number;
   };
-  weather: [
-    {
-      id: number;
-      main: string;
-      description: string;
-      icon: string;
-    }
-  ];
+  weather: IWeather[];
   clouds: {
     all: number;
   };
@@ -98,4 +78,16 @@ export interface IForecast {
   sys: {
     pod: string;
   };
+}
+
+interface IWeather {
+  id: number;
+  main: string;
+  description: string;
+  icon: string;
+}
+
+interface LatLng {
+  lon: number;
+  lat: number;
 }

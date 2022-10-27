@@ -4,16 +4,16 @@ export interface IActivitiesStatsByMonth {
 }
 
 export interface ITokenData {
-  access_token: string;
-  refresh_token: string;
-  expires_at: string;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: string;
   athlete: IAthlete;
 }
 
 export interface IAthlete {
   id: number;
   username: string;
-  resource_state: 2;
+  resourceState: number;
   firstname: string;
   lastname: string;
   city: string;
@@ -22,10 +22,10 @@ export interface IAthlete {
   sex: string;
   premium: boolean;
   summit: boolean;
-  created_at: Date;
-  updated_at: Date;
-  badge_type_id: number;
-  profile_medium: string;
+  createdAt: Date;
+  updatedAt: Date;
+  badgeTypeId: number;
+  profileMedium: string;
   profile: string;
   friend: unknown;
   follower: unknown;

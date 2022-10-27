@@ -29,16 +29,17 @@ describe('StravaWidgetComponent', () => {
   const athleteData = {
     id: 25345795,
     username: 'aflaesch',
-    resource_state: 2,
+    resourceState: 2,
     firstname: 'Arnaud',
     lastname: 'Flaesch',
     city: 'Paris',
     state: '',
     country: 'France',
     sex: 'M',
-    profile_medium:
+    profileMedium:
       'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg',
-    profile: 'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
+    profile:
+      'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
   };
 
   const activitiesData = [
@@ -199,7 +200,10 @@ describe('StravaWidgetComponent', () => {
   it('should create a widget with a token and a refresh token', () => {
     window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
-    window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
+    window.localStorage.setItem(
+      STRAVA_TOKEN_EXPIRATION_DATE_KEY,
+      TOKEN_EXPIRATION_DATE
+    );
     initComponent();
     expect(spectator.component.isUserLoggedIn()).toBe(true);
     expect(spectator.component.isWidgetLoaded).toEqual(true);
@@ -251,10 +255,10 @@ describe('StravaWidgetComponent', () => {
     spectator.component.getToken('apicode');
     const response = {
       token_type: 'Bearer',
-      expires_at: '1644882561',
-      expires_in: 10384,
-      refresh_token: 'REFRESH_TOKEN',
-      access_token: 'TOKEN',
+      expiresAt: '1644882561',
+      expiresIn: 10384,
+      refreshToken: 'REFRESH_TOKEN',
+      accessToken: 'TOKEN',
       athlete: {
         id: 25345795,
         username: 'af',
