@@ -21,17 +21,17 @@
               <div>
                 <div>
                   <a href="https://www.strava.com/activities/{{ activity.id }}">
-                    {{ formatDate(activity.start_date_local) }}{{ activity.name }}
+                    {{ formatDate(activity.startDateLocal) }}{{ activity.name }}
                   </a>
                 </div>
                 <div>Distance : {{ roundDistance(activity.distance) / 1000 }} kms</div>
-                <div>Durée : {{ convertDecimalTimeToTime(activity.moving_time / 60) }} mins</div>
-                <div>Denivelé : {{ activity.total_elevation_gain }} mètres</div>
-                <div>Trophées : {{ activity.achievement_count }}</div>
-                <div>Vitesse moyenne : {{ activity.average_speed }}</div>
-                <div>Vitesse max : {{ activity.max_speed }}</div>
-                <div>Kudos : {{ activity.kudos_count }}</div>
-                <div>Commentaires : {{ activity.comment_count }}</div>
+                <div>Durée : {{ convertDecimalTimeToTime(activity.movingTime / 60) }} mins</div>
+                <div>Denivelé : {{ activity.totalElevationGain }} mètres</div>
+                <div>Trophées : {{ activity.achievementCount }}</div>
+                <div>Vitesse moyenne : {{ activity.averageSpeed }}</div>
+                <div>Vitesse max : {{ activity.maxSpeed }}</div>
+                <div>Kudos : {{ activity.kudosCount }}</div>
+                <div>Commentaires : {{ activity.commentCount }}</div>
               </div>
             </ng-template>
           </mat-expansion-panel>

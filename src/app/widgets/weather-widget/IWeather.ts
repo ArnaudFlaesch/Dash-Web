@@ -13,8 +13,8 @@ export interface IWeatherAPIResponse {
   main: {
     temp: number;
     feels_like: number;
-    temp_min: number;
-    temp_max: number;
+    tempMin: number;
+    tempMax: number;
     pressure: number;
     humidity: number;
   };
@@ -54,17 +54,17 @@ export interface ICity {
 
 export interface IForecast {
   dt: number;
-  dt_text: string;
+  dtText: string;
   main: {
     temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
+    feelsLike: number;
+    tempMin: number;
+    tempMax: number;
     pressure: number;
-    sea_level: number;
-    grnd_level: number;
+    seaLevel: number;
+    grndLevel: number;
     humidity: number;
-    temp_kf: number;
+    tempKf: number;
   };
   weather: IWeather[];
   clouds: {

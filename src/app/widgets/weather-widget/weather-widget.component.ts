@@ -127,12 +127,12 @@ export class WeatherWidgetComponent {
         {
           label: 'Température',
           borderColor: 'orange',
-          data: filteredData.map((forecastDay) => forecastDay.main.temp_max)
+          data: filteredData.map((forecastDay) => forecastDay.main.tempMax)
         },
         {
           label: 'Ressenti',
           borderColor: 'red',
-          data: filteredData.map((forecastDay) => forecastDay.main.feels_like)
+          data: filteredData.map((forecastDay) => forecastDay.main.feelsLike)
         }
       ]
     };

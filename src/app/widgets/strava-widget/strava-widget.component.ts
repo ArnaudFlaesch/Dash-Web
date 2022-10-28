@@ -176,7 +176,7 @@ export class StravaWidgetComponent {
   public getActivitiesByMonth(): Record<string, number[]> {
     return this.activities.reduce(
       (activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
-        const month = format(new Date(activity.start_date_local), 'yyyy-MM');
+        const month = format(new Date(activity.startDateLocal), 'yyyy-MM');
         if (!activitiesByMonth[month]) {
           activitiesByMonth[month] = [];
         }
@@ -204,7 +204,7 @@ export class StravaWidgetComponent {
   }
 
   public getTitleToDisplay(activity: IActivity): string {
-    return `${format(new Date(activity.start_date_local), 'dd MMM')}  ${
+    return `${format(new Date(activity.startDateLocal), 'dd MMM')}  ${
       activity.name
     }  ${Math.round(activity.distance * 1000) / 1000000} kms`;
   }

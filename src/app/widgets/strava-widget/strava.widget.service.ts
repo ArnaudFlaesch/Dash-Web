@@ -7,9 +7,6 @@ import { IActivity, IAthlete, ITokenData } from './IStrava';
 
 @Injectable()
 export class StravaWidgetService {
-  public GET_ATHLETE_DATA_URL = 'https://www.strava.com/api/v3/athlete';
-  public GET_ACTIVITIES_URL = 'https://www.strava.com/api/v3/athlete/activities?page=1&per_page=';
-
   constructor(private http: HttpClient) {}
 
   public loginToStrava(): Observable<ITokenData> {
@@ -50,14 +47,29 @@ export class StravaWidgetService {
   }
 
   public getAthleteData(token: string): Observable<IAthlete> {
-    return this.http.get<IAthlete>(this.GET_ATHLETE_DATA_URL, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    return this.http.get<IAthlete>(
+      `${environment.backend_url}/stravaWidget/getAthleteData?token=${token}`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        }
+      }
+    );
   }
 
-  public getActivities(token: string, numberOfActivities: number): Observable<IActivity[]> {
-    return this.http.get<IActivity[]>(this.GET_ACTIVITIES_URL + numberOfActivities.toString(), {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  public getActivities(
+    token: string,
+    numberOfActivities?: number
+  ): Observable<IActivity[]> {
+    return this.http.get<IActivity[]>(
+      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${token}&numberOfActivities=${numberOfActivities}`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        }
+      }
+    );
   }
 }

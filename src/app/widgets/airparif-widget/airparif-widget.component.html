@@ -31,6 +31,7 @@
     <div *ngIf="this.airParifForecast.length > 0">
       <button mat-raised-button [color]="this.isForecastModeToday() ? 'primary' : ''"
         (click)="this.selectTodayForecast()">Aujourd'hui</button>
+      <!-- TODO NgIf si le forecast de demain n'existe pas-->
       <button mat-raised-button [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
         (click)="this.selectTomorrowForecast()" [disabled]="this.airParifForecast.length < 1">Demain</button>
 
