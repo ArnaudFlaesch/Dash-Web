@@ -1,4 +1,8 @@
-import { IPlayerDataResponse, IAchievementResponse, IOwnedGamesResponse } from './ISteam';
+import {
+  IPlayerDataResponse,
+  IAchievementResponse,
+  IOwnedGamesResponse
+} from './ISteam';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -13,8 +17,8 @@ export class SteamWidgetService {
 
   constructor(private http: HttpClient) {}
 
-  public getPlayerData(steamUserId: string): Observable<IPlayerDataResponse> {
-    return this.http.get<IPlayerDataResponse>(
+  public getPlayerData(steamUserId: string): Observable<IPlayerDataResponse[]> {
+    return this.http.get<IPlayerDataResponse[]>(
       `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`,
       {
         headers: {
@@ -49,7 +53,10 @@ export class SteamWidgetService {
     );
   }
 
-  public getAchievementList(steamUserId: string, appId: string): Observable<IAchievementResponse> {
+  public getAchievementList(
+    steamUserId: string,
+    appId: string
+  ): Observable<IAchievementResponse> {
     return this.http.get<IAchievementResponse>(
       `${environment.backend_url}/steamWidget/achievementList`,
       {

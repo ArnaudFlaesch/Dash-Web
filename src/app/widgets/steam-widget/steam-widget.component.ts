@@ -5,12 +5,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
-import {
-  IGameInfo,
-  IOwnedGamesResponse,
-  IPlayerData,
-  IPlayerDataResponse
-} from './ISteam';
+import { IGameInfo, IOwnedGamesResponse, IPlayerDataResponse } from './ISteam';
 import { SteamWidgetService } from './steam.widget.service';
 
 @Component({
@@ -19,7 +14,7 @@ import { SteamWidgetService } from './steam.widget.service';
   styleUrls: ['./steam-widget.component.scss']
 })
 export class SteamWidgetComponent {
-  public playerData: IPlayerData | null = null;
+  public playerData: IPlayerDataResponse | null = null;
   public gameCount = 0;
   public pageSize = 25;
   public pageSizeOptions = [25];
@@ -62,8 +57,8 @@ export class SteamWidgetComponent {
 
   public getPlayerData(steamUserId: string): void {
     this.steamWidgetService.getPlayerData(steamUserId).subscribe({
-      next: (response: IPlayerDataResponse) =>
-        (this.playerData = response.players[0]),
+      next: (response: IPlayerDataResponse[]) =>
+        (this.playerData = response[0]),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(
           error.message,
@@ -81,7 +76,7 @@ export class SteamWidgetComponent {
       .getOwnedGames(steamUserId, search, pageNumber)
       .subscribe({
         next: (response: IOwnedGamesResponse) => {
-          this.gameCount = response.game_count;
+          this.gameCount = response.gameCount;
           this.ownedGames = response.games;
         },
         error: (error: HttpErrorResponse) =>

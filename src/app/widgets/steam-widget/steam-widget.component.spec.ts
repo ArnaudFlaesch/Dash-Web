@@ -26,66 +26,64 @@ describe('SteamWidgetComponent', () => {
   });
   const createHttp = createHttpFactory(SteamWidgetService);
 
-  const playerData = {
-    players: [
-      {
-        steamid: '76561198046131373',
-        communityvisibilitystate: 3,
-        profilestate: 1,
-        personaname: 'Nono',
-        profileurl: 'https://steamcommunity.com/id/Nauno93/',
-        avatar:
-          'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3.jpg',
-        avatarmedium:
-          'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3_medium.jpg',
-        avatarfull:
-          'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3_full.jpg',
-        avatarhash: 'd16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3',
-        lastlogoff: 1621716524,
-        personastate: 0,
-        primaryclanid: '103582791433898853',
-        timecreated: 1312033216,
-        personastateflags: 0,
-        loccountrycode: 'FR',
-        locstatecode: 'A8',
-        loccityid: 16153
-      }
-    ]
-  };
+  const playerData = [
+    {
+      steamid: '76561198046131373',
+      communityvisibilitystate: 3,
+      profilestate: 1,
+      personaname: 'Nono',
+      profileurl: 'https://steamcommunity.com/id/Nauno93/',
+      avatar:
+        'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3.jpg',
+      avatarmedium:
+        'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3_medium.jpg',
+      avatarfull:
+        'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3_full.jpg',
+      avatarhash: 'd16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3',
+      lastlogoff: 1621716524,
+      personastate: 0,
+      primaryclanid: '103582791433898853',
+      timecreated: 1312033216,
+      personastateflags: 0,
+      loccountrycode: 'FR',
+      locstatecode: 'A8',
+      loccityid: 16153
+    }
+  ];
 
   const ownedGamesData = {
-    game_count: 10,
+    gameCount: 10,
     games: [
       {
         appid: 220,
         name: 'Half-Life 2',
-        playtime_forever: 2480,
-        img_icon_url: 'fcfb366051782b8ebf2aa297f3b746395858cb62',
-        img_logo_url: 'e4ad9cf1b7dc8475c1118625daf9abd4bdcbcad0',
-        has_community_visible_stats: true,
-        playtime_windows_forever: 0,
-        playtime_mac_forever: 0,
-        playtime_linux_forever: 0
+        playtimeForever: 2480,
+        imgIconUrl: 'fcfb366051782b8ebf2aa297f3b746395858cb62',
+        imgLogoUrl: 'e4ad9cf1b7dc8475c1118625daf9abd4bdcbcad0',
+        hasCommunityVisibleStats: true,
+        playtimeWindowsForever: 0,
+        playtimeMacForever: 0,
+        playtimeLinuxForever: 0
       },
       {
         appid: 340,
         name: 'Half-Life 2: Lost Coast',
-        playtime_forever: 32,
-        img_icon_url: '795e85364189511f4990861b578084deef086cb1',
-        img_logo_url: '867cce5c4f37d5ed4aeffb57c60e220ddffe4134',
-        playtime_windows_forever: 0,
-        playtime_mac_forever: 0,
-        playtime_linux_forever: 0
+        playtimeForever: 32,
+        imgIconUrl: '795e85364189511f4990861b578084deef086cb1',
+        imgLogoUrl: '867cce5c4f37d5ed4aeffb57c60e220ddffe4134',
+        playtimeWindowsForever: 0,
+        playtimeMacForever: 0,
+        playtimeLinuxForever: 0
       },
       {
         appid: 280,
         name: 'Half-Life: Source',
-        playtime_forever: 774,
-        img_icon_url: 'b4f572a6cc5a6a84ae84634c31414b9123d2f26b',
-        img_logo_url: 'a612dd944b768e55389140298dcfda2165db8ced',
-        playtime_windows_forever: 0,
-        playtime_mac_forever: 0,
-        playtime_linux_forever: 0
+        playtimeForever: 774,
+        imgIconUrl: 'b4f572a6cc5a6a84ae84634c31414b9123d2f26b',
+        imgLogoUrl: 'a612dd944b768e55389140298dcfda2165db8ced',
+        playtimeWindowsForever: 0,
+        playtimeMacForever: 0,
+        playtimeLinuxForever: 0
       }
     ]
   };
