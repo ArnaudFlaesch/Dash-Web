@@ -74,7 +74,6 @@ export interface IForecast {
     speed: number;
     deg: number;
   };
-  city: ICity;
   sys: {
     pod: string;
   };

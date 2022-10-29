@@ -62,7 +62,7 @@ export interface IActivity {
   athleteCount: number;
   photoCount: number;
   map: {
-    id: number;
+    id: string;
     summaryPolyline: string;
     resourceState: number;
   };

@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { SteamWidgetComponent } from './steam-widget.component';
 import { SteamWidgetService } from './steam.widget.service';
-import { IGameInfo } from './ISteam';
+import { IGameInfo, IPlayerDataResponse } from './ISteam';
 
 describe('SteamWidgetComponent', () => {
   let spectator: Spectator<SteamWidgetComponent>;
@@ -26,31 +26,14 @@ describe('SteamWidgetComponent', () => {
   });
   const createHttp = createHttpFactory(SteamWidgetService);
 
-  const playerData = [
+  const playerData: IPlayerDataResponse[] = [
     {
-      steamid: '76561198046131373',
-      communityvisibilitystate: 3,
-      profilestate: 1,
       personaname: 'Nono',
       profileurl: 'https://steamcommunity.com/id/Nauno93/',
       avatar:
-        'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3.jpg',
-      avatarmedium:
-        'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3_medium.jpg',
-      avatarfull:
-        'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3_full.jpg',
-      avatarhash: 'd16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3',
-      lastlogoff: 1621716524,
-      personastate: 0,
-      primaryclanid: '103582791433898853',
-      timecreated: 1312033216,
-      personastateflags: 0,
-      loccountrycode: 'FR',
-      locstatecode: 'A8',
-      loccityid: 16153
+        'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3.jpg'
     }
   ];
-
   const ownedGamesData = {
     gameCount: 10,
     games: [
@@ -122,7 +105,7 @@ describe('SteamWidgetComponent', () => {
 
     expect(spectator.component.isWidgetLoaded()).toEqual(true);
     expect(spectator.component.playerData?.personaname).toEqual(
-      playerData.players[0].personaname
+      playerData[0].personaname
     );
     expect(spectator.component.ownedGames.length).toEqual(3);
   });
