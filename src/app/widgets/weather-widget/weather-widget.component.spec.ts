@@ -14,7 +14,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { format } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
-import { IForecast, IForecastAPIResponse } from './IWeather';
+import { IForecastAPIResponse } from './IWeather';
 
 describe('WeatherWidgetComponent', () => {
   let spectator: Spectator<WeatherWidgetComponent>;
