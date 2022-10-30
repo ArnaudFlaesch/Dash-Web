@@ -1,7 +1,7 @@
 {
   "id": 25345795,
   "username": "aflaesch",
-  "resource_state": 2,
+  "resourceState": 2,
   "firstname": "Arnaud",
   "lastname": "Flaesch",
   "bio": "",
@@ -11,12 +11,10 @@
   "sex": "M",
   "premium": false,
   "summit": false,
-  "created_at": "2017-09-28T21:10:11Z",
-  "updated_at": "2022-02-13T19:02:04Z",
-  "badge_type_id": 0,
+  "createdAt": "2017-09-28T21:10:11Z",
+  "updatedAt": "2022-02-13T19:02:04Z",
+  "badgeTypeId": 0,
   "weight": 0.0,
-  "profile_medium": "https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg",
-  "profile": "https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg",
-  "friend": null,
-  "follower": null
+  "profileMedium": "https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg",
+  "profile": "https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg"
 }

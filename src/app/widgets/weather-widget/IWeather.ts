@@ -1,4 +1,4 @@
-export interface IWeatherAPIResponse {
+export interface IForecastAPIResponse {
   cod: string;
   message: number;
   cnt: number;
@@ -6,39 +6,15 @@ export interface IWeatherAPIResponse {
   city: ICity;
 }
 
-export interface ICity {
-  id: number;
-  name: string;
-  coord: {
-    lat: number;
-    lon: number;
-  };
-  country: string;
-  population: number;
-  timezone: number;
-  sunrise: number;
-  sunset: number;
-}
-
-export interface IWeather {
-  coord: {
-    lon: number;
-    lat: number;
-  };
-  weather: [
-    {
-      id: number;
-      main: string;
-      description: string;
-      icon: string;
-    }
-  ];
+export interface IWeatherAPIResponse {
+  coord: LatLng;
+  weather: IWeather[];
   base: string;
   main: {
     temp: number;
     feels_like: number;
-    temp_min: number;
-    temp_max: number;
+    tempMin: number;
+    tempMax: number;
     pressure: number;
     humidity: number;
   };
@@ -65,28 +41,32 @@ export interface IWeather {
   cod: number;
 }
 
+export interface ICity {
+  id: number;
+  name: string;
+  coord: LatLng;
+  country: string;
+  population: number;
+  timezone: number;
+  sunrise: number;
+  sunset: number;
+}
+
 export interface IForecast {
   dt: number;
-  dt_text: string;
+  dtText: string;
   main: {
     temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
+    feelsLike: number;
+    tempMin: number;
+    tempMax: number;
     pressure: number;
-    sea_level: number;
-    grnd_level: number;
+    seaLevel: number;
+    grndLevel: number;
     humidity: number;
-    temp_kf: number;
+    tempKf: number;
   };
-  weather: [
-    {
-      id: number;
-      main: string;
-      description: string;
-      icon: string;
-    }
-  ];
+  weather: IWeather[];
   clouds: {
     all: number;
   };
@@ -94,8 +74,19 @@ export interface IForecast {
     speed: number;
     deg: number;
   };
-  city: ICity;
   sys: {
     pod: string;
   };
+}
+
+interface IWeather {
+  id: number;
+  main: string;
+  description: string;
+  icon: string;
+}
+
+interface LatLng {
+  lon: number;
+  lat: number;
 }

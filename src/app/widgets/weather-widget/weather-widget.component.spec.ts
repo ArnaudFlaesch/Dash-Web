@@ -14,6 +14,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { format } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
+import { IForecastAPIResponse } from './IWeather';
 
 describe('WeatherWidgetComponent', () => {
   let spectator: Spectator<WeatherWidgetComponent>;
@@ -59,7 +60,7 @@ describe('WeatherWidgetComponent', () => {
     cod: 200
   };
 
-  const forecastData = {
+  const forecastData: IForecastAPIResponse = {
     cod: '200',
     message: 0,
     cnt: 40,
@@ -68,93 +69,85 @@ describe('WeatherWidgetComponent', () => {
         dt: 1646589600,
         main: {
           temp: 7.57,
-          feels_like: 5.19,
-          temp_min: 7.23,
-          temp_max: 7.57,
+          feelsLike: 5.19,
+          tempMin: 7.23,
+          tempMax: 7.57,
           pressure: 1022,
-          sea_level: 1022,
-          grnd_level: 1018,
+          seaLevel: 1022,
+          grndLevel: 1018,
           humidity: 45,
-          temp_kf: 0.34
+          tempKf: 0.34
         },
         weather: [
           { id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01n' }
         ],
         clouds: { all: 0 },
-        wind: { speed: 3.68, deg: 43, gust: 7.45 },
-        visibility: 10000,
-        pop: 0,
+        wind: { speed: 3.68, deg: 43 },
         sys: { pod: 'n' },
-        dt_txt: '2022-03-06 18:00:00'
+        dtText: '2022-03-06 18:00:00'
       },
       {
         dt: 1646600400,
         main: {
           temp: 6.76,
-          feels_like: 3.67,
-          temp_min: 5.15,
-          temp_max: 6.76,
+          feelsLike: 3.67,
+          tempMin: 5.15,
+          tempMax: 6.76,
           pressure: 1023,
-          sea_level: 1023,
-          grnd_level: 1019,
+          seaLevel: 1023,
+          grndLevel: 1019,
           humidity: 49,
-          temp_kf: 1.61
+          tempKf: 1.61
         },
         weather: [
           { id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01n' }
         ],
         clouds: { all: 3 },
-        wind: { speed: 4.71, deg: 38, gust: 10.19 },
-        visibility: 10000,
-        pop: 0,
+        wind: { speed: 4.71, deg: 38 },
         sys: { pod: 'n' },
-        dt_txt: '2022-03-06 21:00:00'
+        dtText: '2022-03-06 21:00:00'
       },
       {
         dt: 1646643600,
         main: {
           temp: 4.78,
-          feels_like: 1.44,
-          temp_min: 3.39,
-          temp_max: 4.78,
+          feelsLike: 1.44,
+          tempMin: 3.39,
+          tempMax: 4.78,
           pressure: 1023,
-          sea_level: 1023,
-          grnd_level: 1019,
+          seaLevel: 1023,
+          grndLevel: 1019,
           humidity: 56,
-          temp_kf: 1.39
+          tempKf: 1.39
         },
         weather: [
           { id: 800, main: 'Sunny', description: 'Ensoleillé', icon: '01n' }
         ],
         clouds: { all: 6 },
-        wind: { speed: 4.26, deg: 41, gust: 9.9 },
-        visibility: 10000,
-        pop: 0,
+        wind: { speed: 4.26, deg: 41 },
         sys: { pod: 'n' },
-        dt_txt: '2022-03-07 00:00:00'
+        dtText: '2022-03-07 00:00:00'
       },
       {
         dt: 1646841600,
         main: {
           temp: 1.93,
-          feels_like: -1.6,
-          temp_min: 1.93,
-          temp_max: 1.93,
+          feelsLike: -1.6,
+          tempMin: 1.93,
+          tempMax: 1.93,
           pressure: 1023,
-          sea_level: 1023,
-          grnd_level: 1018,
+          seaLevel: 1023,
+          grndLevel: 1018,
           humidity: 66,
-          temp_kf: 0
+          tempKf: 0
         },
         weather: [
           { id: 800, main: 'Cloudy', description: 'Nuageux', icon: '01n' }
         ],
         clouds: { all: 6 },
-        wind: { speed: 3.54, deg: 39, gust: 8.33 },
-        visibility: 10000,
-        pop: 0,
+        wind: { speed: 3.54, deg: 39 },
         sys: { pod: 'n' },
-        dt_txt: '2022-03-07 03:00:00'
+        dtText: '2022-03-07 03:00:00'
       }
     ],
     city: {

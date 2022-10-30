@@ -7,10 +7,10 @@ import {
   SpectatorRouting
 } from '@ngneat/spectator/jest';
 import { addDays, getTime } from 'date-fns';
-import { environment } from '../../../environments/environment';
 
+import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IActivity, ITokenData } from './IStrava';
+import { IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetComponent } from './strava-widget.component';
 import { StravaWidgetService } from './strava.widget.service';
 
@@ -29,155 +29,221 @@ describe('StravaWidgetComponent', () => {
   const athleteData = {
     id: 25345795,
     username: 'aflaesch',
-    resource_state: 2,
+    resourceState: 2,
     firstname: 'Arnaud',
     lastname: 'Flaesch',
     city: 'Paris',
     state: '',
     country: 'France',
     sex: 'M',
-    profile_medium:
+    profileMedium:
       'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg',
-    profile: 'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
-  };
+    profile:
+      'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
+  } as IAthlete;
 
-  const activitiesData = [
+  const activitiesData: IActivity[] = [
     {
-      resource_state: 2,
-      athlete: { id: 25345795, resource_state: 1 },
-      name: 'Afternoon Run',
-      distance: 12518.8,
-      moving_time: 2506,
-      elapsed_time: 2677,
-      total_elevation_gain: 78.7,
-      type: 'Run',
-      workout_type: 0,
-      id: 6678022130,
-      start_date: '2022-02-13T15:07:22Z',
-      start_date_local: '2022-02-13T16:07:22Z',
-      timezone: '(GMT+01:00) Europe/Paris',
-      utc_offset: 3600.0,
-      location_city: undefined,
-      location_state: undefined,
-      location_country: 'France',
-      achievement_count: 10,
-      kudos_count: 0,
-      comment_count: 0,
-      athlete_count: 1,
-      photo_count: 0,
-      trainer: false,
-      commute: false,
-      manual: false,
-      private: false,
-      visibility: 'everyone',
-      flagged: false,
-      gear_id: 'g2726529',
-      average_speed: 4.996,
-      max_speed: 35.688,
-      has_heartrate: false,
-      heartrate_opt_out: false,
-      display_hide_heartrate_option: false,
-      elev_high: 56.8,
-      elev_low: 30.2,
-      upload_id: 7101918838,
-      upload_id_str: 7101918838,
-      external_id: '73ca9a31-3269-4420-9134-61892b35cf6e-activity.fit',
-      from_accepted_tag: false,
-      pr_count: 4,
-      total_photo_count: 0,
-      has_kudoed: false
-    },
-    {
-      resource_state: 2,
-      athlete: { id: 25345795, resource_state: 1 },
-      name: 'Afternoon Run',
-      distance: 8608.7,
-      moving_time: 2136,
-      elapsed_time: 2140,
-      total_elevation_gain: 111.8,
-      type: 'Run',
-      workout_type: 0,
-      id: 6122134363,
-      start_date: '2021-10-16T15:31:10Z',
-      start_date_local: '2021-10-16T17:31:10Z',
-      timezone: '(GMT+01:00) Europe/Paris',
-      utc_offset: 7200.0,
-      location_city: undefined,
-      location_state: undefined,
-      location_country: 'France',
-      achievement_count: 1,
-      kudos_count: 1,
-      comment_count: 0,
-      athlete_count: 1,
-      photo_count: 0,
-      trainer: false,
-      commute: false,
-      manual: false,
-      private: false,
-      visibility: 'everyone',
-      flagged: false,
-      gear_id: 'g2726529',
-      average_speed: 4.03,
-      max_speed: 28.2,
-      has_heartrate: false,
-      heartrate_opt_out: false,
-      display_hide_heartrate_option: false,
-      elev_high: 62.8,
-      elev_low: 28.0,
-      upload_id: 6505950938,
-      upload_id_str: 6505950938,
-      external_id: 'c6a0a1c1-7116-4309-90a5-b7e35eeb86ac-activity.fit',
-      from_accepted_tag: false,
-      pr_count: 1,
-      total_photo_count: 0,
-      has_kudoed: false
-    },
-    {
-      resource_state: 2,
-      athlete: { id: 25345795, resource_state: 1 },
+      resourceState: 2,
+      athlete: { id: 25345795, resourceState: 0 },
       name: 'Evening Run',
-      distance: 6330.4,
-      moving_time: 1515,
-      elapsed_time: 1621,
-      total_elevation_gain: 71.2,
+      distance: 10704.7,
+      movingTime: 2958,
+      elapsedTime: 3118,
+      totalElevationGain: 49.2,
       type: 'Run',
-      workout_type: 0,
-      id: 6067954599,
-      start_date: '2021-10-05T16:23:43Z',
-      start_date_local: '2021-10-05T18:23:43Z',
+      workoutType: 0,
+      id: 7.993416249e9,
+      externalId: 'ad38998a-3d06-41ee-9e9d-b6bb7c143edf-activity.fit',
+      uploadId: 8.550990828e9,
+      startDate: '2022-10-20T16:34:39Z',
+      startDateLocal: '2022-10-20T18:34:39Z',
       timezone: '(GMT+01:00) Europe/Paris',
-      utc_offset: 7200.0,
-      location_city: undefined,
-      location_state: undefined,
-      location_country: 'France',
-      achievement_count: 6,
-      kudos_count: 2,
-      comment_count: 0,
-      athlete_count: 1,
-      photo_count: 0,
+      utcOffset: 7200.0,
+      startLatlng: [48, 2],
+      endLatlng: [48, 2],
+      locationCity: undefined,
+      locationState: undefined,
+      locationCountry: 'France',
+      startLatitude: 0,
+      startLongitude: 0,
+      achievementCount: 1,
+      kudosCount: 2,
+      commentCount: 0,
+      athleteCount: 1,
+      photoCount: 0,
+      map: { id: 'a7993416249', summaryPolyline: '', resourceState: 0 },
       trainer: false,
       commute: false,
       manual: false,
       private: false,
       visibility: 'everyone',
       flagged: false,
-      gear_id: 'g2726529',
-      average_speed: 4.178,
-      max_speed: 19.1,
-      has_heartrate: false,
-      heartrate_opt_out: false,
-      display_hide_heartrate_option: false,
-      elev_high: 58.1,
-      elev_low: 25.0,
-      upload_id: 6448673229,
-      upload_id_str: 6448673229,
-      external_id: 'b7ee329b-e1ad-414b-8aa6-12f0ebea27b8-activity.fit',
-      from_accepted_tag: false,
-      pr_count: 6,
-      total_photo_count: 0,
-      has_kudoed: false
+      gearId: 'g11571174',
+      fromAcceptedTag: false,
+      uploadIdStr: 8.550990828e9,
+      averageSpeed: 3.619,
+      maxSpeed: 16.919,
+      hasHeartrate: false,
+      heartrateOptOut: false,
+      displayHideHeartrateOption: false,
+      elevHigh: 57.0,
+      elevLow: 34.6,
+      prCount: 0,
+      totalPhotoCount: 0,
+      hasKudoed: false
+    },
+    {
+      resourceState: 2,
+      athlete: { id: 25345795, resourceState: 0 },
+      name: 'Evening Run',
+      distance: 12397.6,
+      movingTime: 2611,
+      elapsedTime: 2916,
+      totalElevationGain: 102.2,
+      type: 'Run',
+      workoutType: 0,
+      id: 7.978046184e9,
+      externalId: '55bbcb3c-6b6c-4e5e-9ddd-310a03a7e0a4-activity.fit',
+      uploadId: 8.533704724e9,
+      startDate: '2022-10-17T16:12:50Z',
+      startDateLocal: '2022-10-17T18:12:50Z',
+      timezone: '(GMT+01:00) Europe/Paris',
+      utcOffset: 7200.0,
+      startLatlng: [48, 2],
+      endLatlng: [48, 2],
+      locationCity: undefined,
+      locationState: undefined,
+      locationCountry: 'France',
+      startLatitude: 0,
+      startLongitude: 0,
+      achievementCount: 0,
+      kudosCount: 0,
+      commentCount: 0,
+      athleteCount: 1,
+      photoCount: 0,
+      map: { id: 'a7978046184', summaryPolyline: '', resourceState: 0 },
+      trainer: false,
+      commute: false,
+      manual: false,
+      private: false,
+      visibility: 'everyone',
+      flagged: false,
+      gearId: 'g11571174',
+      fromAcceptedTag: false,
+      uploadIdStr: 8.533704724e9,
+      averageSpeed: 4.748,
+      maxSpeed: 25.746,
+      hasHeartrate: false,
+      heartrateOptOut: false,
+      displayHideHeartrateOption: false,
+      elevHigh: 60.1,
+      elevLow: 28.1,
+      prCount: 0,
+      totalPhotoCount: 0,
+      hasKudoed: false
+    },
+    {
+      resourceState: 2,
+      athlete: { id: 25345795, resourceState: 0 },
+      name: 'Lunch Run',
+      distance: 10529.8,
+      movingTime: 2397,
+      elapsedTime: 2489,
+      totalElevationGain: 63.6,
+      type: 'Run',
+      workoutType: 0,
+      id: 7.935092006e9,
+      externalId: 'fb87134a-6899-4de5-899d-52e268350771-activity.fit',
+      uploadId: 8.484120451e9,
+      startDate: '2022-10-09T09:44:01Z',
+      startDateLocal: '2022-10-09T11:44:01Z',
+      timezone: '(GMT+01:00) Europe/Paris',
+      utcOffset: 7200.0,
+      startLatlng: [48, 2],
+      endLatlng: [48, 2],
+      locationCity: undefined,
+      locationState: undefined,
+      locationCountry: 'France',
+      startLatitude: 0,
+      startLongitude: 0,
+      achievementCount: 0,
+      kudosCount: 1,
+      commentCount: 0,
+      athleteCount: 1,
+      photoCount: 0,
+      map: { id: 'a7935092006', summaryPolyline: '', resourceState: 0 },
+      trainer: false,
+      commute: false,
+      manual: false,
+      private: false,
+      visibility: 'everyone',
+      flagged: false,
+      gearId: 'g11571174',
+      fromAcceptedTag: false,
+      uploadIdStr: 8.484120451e9,
+      averageSpeed: 4.393,
+      maxSpeed: 27.142,
+      hasHeartrate: false,
+      heartrateOptOut: false,
+      displayHideHeartrateOption: false,
+      elevHigh: 52.7,
+      elevLow: 31.6,
+      prCount: 0,
+      totalPhotoCount: 0,
+      hasKudoed: false
+    },
+    {
+      resourceState: 2,
+      athlete: { id: 25345795, resourceState: 0 },
+      name: 'Afternoon Run',
+      distance: 11666.4,
+      movingTime: 2331,
+      elapsedTime: 2555,
+      totalElevationGain: 101.5,
+      type: 'Run',
+      workoutType: 0,
+      id: 7.849958186e9,
+      externalId: 'a03d0c6a-47dd-49e7-93dc-3e82316376e7-activity.fit',
+      uploadId: 8.388107116e9,
+      startDate: '2022-09-22T15:31:15Z',
+      startDateLocal: '2022-09-22T17:31:15Z',
+      timezone: '(GMT+01:00) Europe/Paris',
+      utcOffset: 7200.0,
+      startLatlng: [48, 2],
+      endLatlng: [48, 2],
+      locationCity: undefined,
+      locationState: undefined,
+      locationCountry: 'France',
+      startLatitude: 0,
+      startLongitude: 0,
+      achievementCount: 0,
+      kudosCount: 0,
+      commentCount: 0,
+      athleteCount: 1,
+      photoCount: 0,
+      map: { id: 'a7849958186', summaryPolyline: '', resourceState: 0 },
+      trainer: false,
+      commute: false,
+      manual: false,
+      private: false,
+      visibility: 'everyone',
+      flagged: false,
+      gearId: 'g2726529',
+      fromAcceptedTag: false,
+      uploadIdStr: 8.388107116e9,
+      averageSpeed: 5.005,
+      maxSpeed: 36.188,
+      hasHeartrate: false,
+      heartrateOptOut: false,
+      displayHideHeartrateOption: false,
+      elevHigh: 52.7,
+      elevLow: 29.8,
+      prCount: 0,
+      totalPhotoCount: 0,
+      hasKudoed: false
     }
-  ] as IActivity[];
+  ];
 
   const createComponent = createRoutingFactory({
     component: StravaWidgetComponent,
@@ -199,33 +265,36 @@ describe('StravaWidgetComponent', () => {
   it('should create a widget with a token and a refresh token', () => {
     window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
-    window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
+    window.localStorage.setItem(
+      STRAVA_TOKEN_EXPIRATION_DATE_KEY,
+      TOKEN_EXPIRATION_DATE
+    );
     initComponent();
     expect(spectator.component.isUserLoggedIn()).toBe(true);
     expect(spectator.component.isWidgetLoaded).toEqual(true);
     expect(spectator.component.activities).toEqual([]);
     spectator.component.refreshWidget();
     const getAthleteDataRequest = stravaWidgetService.expectOne(
-      stravaWidgetService.service.GET_ATHLETE_DATA_URL,
+      `${environment.backend_url}/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`,
       HttpMethod.GET
     );
     getAthleteDataRequest.flush(athleteData);
 
     const getActivitiesRequest = stravaWidgetService.expectOne(
-      stravaWidgetService.service.GET_ACTIVITIES_URL + '20',
+      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&numberOfActivities=20`,
       HttpMethod.GET
     );
     getActivitiesRequest.flush(activitiesData);
 
     expect(spectator.component.isWidgetLoaded).toEqual(true);
-    expect(spectator.component.activities.length).toEqual(3);
+    expect(spectator.component.activities.length).toEqual(4);
     expect(spectator.component.getActivitiesByMonth()).toEqual({
-      '2021-10': [6.3304, 8.6087],
-      '2022-02': [12.5188]
+      '2022-09': [11.6664],
+      '2022-10': [10.5298, 12.3976, 10.7047]
     });
     const statsFromActivities = spectator.component.getStatsFromActivities();
-    expect(statsFromActivities[0].y).toEqual(15);
-    expect(statsFromActivities[1].y).toEqual(13);
+    expect(statsFromActivities[0].y).toEqual(12);
+    expect(statsFromActivities[1].y).toEqual(34);
   });
 
   it('Should convert a time', () => {
@@ -244,17 +313,17 @@ describe('StravaWidgetComponent', () => {
   it('Should display activity title', () => {
     const activity = activitiesData[0];
     const actual = spectator.component.getTitleToDisplay(activity);
-    expect(actual).toEqual('13 Feb  Afternoon Run  12.5188 kms');
+    expect(actual).toEqual('20 Oct  Evening Run  10.7047 kms');
   });
 
   it('Should get api token', () => {
     spectator.component.getToken('apicode');
     const response = {
       token_type: 'Bearer',
-      expires_at: '1644882561',
-      expires_in: 10384,
-      refresh_token: 'REFRESH_TOKEN',
-      access_token: 'TOKEN',
+      expiresAt: '1644882561',
+      expiresIn: 10384,
+      refreshToken: 'REFRESH_TOKEN',
+      accessToken: 'TOKEN',
       athlete: {
         id: 25345795,
         username: 'af',

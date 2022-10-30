@@ -1,27 +1,19 @@
 export interface IPlayerDataResponse {
-  response: {
-    players: IPlayerData[];
-  };
-}
-
-export interface IOwnedGamesResponse {
-  response: {
-    game_count: number;
-    games: IGameInfo[];
-  };
-}
-
-export interface IPlayerData {
   personaname: string;
   profileurl: string;
   avatar: string;
 }
 
+export interface IOwnedGamesResponse {
+  gameCount: number;
+  games: IGameInfo[];
+}
+
 export interface IGameInfo {
   appid: string;
   name: string;
-  img_icon_url: string;
-  img_logo_url: string;
+  imgIconUrl: string;
+  imgLogoUrl: string;
 }
 
 export interface IAchievementResponse {
