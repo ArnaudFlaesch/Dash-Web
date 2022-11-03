@@ -50,7 +50,7 @@ jobs:
           docker pull postgres:13.2-alpine
           docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash postgres:13.2-alpine
 
-      - name: Pull backend image
+      - name: Pull backend and mock server images
         run: |
           if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' && ${GITHUB_REF#refs/*/} != 'master' ]]; then
             docker pull arnaudf93/dashmockserver:${GITHUB_REF#refs/*/}

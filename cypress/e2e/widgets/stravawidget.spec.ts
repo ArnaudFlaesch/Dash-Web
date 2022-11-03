@@ -60,13 +60,9 @@ describe('Strava Widget tests', () => {
       'strava_token_expires_at',
       TOKEN_EXPIRATION_DATE.toString()
     );
-    cy.intercept('/stravaWidget/getAthleteData*', {
-      fixture: 'strava/strava_athleteData.json'
-    })
+    cy.intercept('/stravaWidget/getAthleteData*')
       .as('getAthleteData')
-      .intercept('/stravaWidget/getAthleteActivities*', {
-        fixture: 'strava/strava_activities.json'
-      })
+      .intercept('/stravaWidget/getAthleteActivities*')
       .as('getActivities')
       .reload()
       .navigateToTab(tabName)

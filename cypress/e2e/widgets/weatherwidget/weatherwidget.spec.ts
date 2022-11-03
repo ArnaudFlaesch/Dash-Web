@@ -10,13 +10,9 @@ describe('Weather Widget tests', () => {
   after(() => cy.deleteTab(tabName));
 
   beforeEach(() => {
-    cy.intercept('GET', `/weatherWidget/weather?city=*`, {
-      fixture: 'weather/parisWeatherSample.json'
-    })
+    cy.intercept('GET', `/weatherWidget/weather?city=*`)
       .as('getWeather')
-      .intercept('GET', `/weatherWidget/forecast?city=*`, {
-        fixture: 'weather/parisForecastSample.json'
-      })
+      .intercept('GET', `/weatherWidget/forecast?city=*`)
       .as('getForecast')
       .clock(new Date(2022, 2, 9, 0, 0, 0).getTime())
       .navigateToTab(tabName);
