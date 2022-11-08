@@ -30,24 +30,12 @@ describe('Strava Widget tests', () => {
   });
 
   it('Should fail to load date because of wrong token', () => {
-    window.localStorage.setItem('strava_token', STRAVA_TOKEN);
-    window.localStorage.setItem('strava_refresh_token', STRAVA_REFRESH_TOKEN);
+    window.localStorage.setItem('strava_token', null);
+    window.localStorage.setItem('strava_refresh_token', null);
     window.localStorage.setItem(
       'strava_token_expires_at',
       TOKEN_EXPIRATION_DATE.toString()
     );
-    cy.intercept(`/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`)
-      .as('getAthleteData')
-      .reload()
-      .navigateToTab(tabName)
-      .wait('@getAthleteData')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(500);
-        cy.get('.mat-simple-snack-bar-content').should(
-          'have.text',
-          'Erreur lors de la récupération de vos informations Strava.'
-        );
-      });
   });
 
   it('Should load the widget with a fake token', () => {
@@ -78,9 +66,9 @@ describe('Strava Widget tests', () => {
             .should('have.text', 'Arnaud Flaesch')
             .get('.widget')
             .find('.stravaActivity')
-            .should('have.length', 5)
+            .should('have.length', 6)
             .first()
-            .contains('Afternoon Run 12.5188 kms');
+            .contains('Evening Run 10.7047 kms');
         });
       });
   });

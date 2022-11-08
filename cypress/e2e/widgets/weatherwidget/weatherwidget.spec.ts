@@ -14,7 +14,7 @@ describe('Weather Widget tests', () => {
       .as('getWeather')
       .intercept('GET', `/weatherWidget/forecast?city=*`)
       .as('getForecast')
-      .clock(new Date(2022, 2, 9, 0, 0, 0).getTime())
+      .clock(new Date(2022, 9, 29, 0, 0, 0).getTime())
       .navigateToTab(tabName);
   });
 
@@ -65,6 +65,6 @@ describe('Weather Widget tests', () => {
       .get('.widget #toggleWeekForecast')
       .click()
       .get('.widget .forecast')
-      .should('have.length', 5);
+      .should('have.length', 3);
   });
 });
