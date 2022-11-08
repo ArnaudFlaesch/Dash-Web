@@ -57,7 +57,7 @@ jobs:
             docker run -p 5000:5000 -d --network="host" arnaudf93/dashmockserver:${GITHUB_REF#refs/*/}
           else
             docker pull arnaudf93/dashmockserver:latest
-            docker run -p 5000:5000 -d arnaudf93/dashmockserver:latest
+            docker run -p 5000:5000 -d --network="host" arnaudf93/dashmockserver:latest
           fi
 
       - name: Pull backend image
