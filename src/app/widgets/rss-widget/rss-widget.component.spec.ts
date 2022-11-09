@@ -43,7 +43,8 @@ describe('RssWidgetComponent', () => {
     channel: {
       title: ' PC - jeuxvideo.com',
       link: 'https://www.jeuxvideo.com',
-      description: 'Le média de référence des gamers - Jeux Vidéo PC et Consoles - PC',
+      description:
+        'Le média de référence des gamers - Jeux Vidéo PC et Consoles - PC',
       language: 'fr-fr',
       copyright: 'Copyright 1997-2022 Webedia jeuxvideo.com',
       category: 'Jeux Video',
@@ -130,7 +131,9 @@ describe('RssWidgetComponent', () => {
 
     expect(spectator.component.isWidgetLoaded).toEqual(true);
     expect(spectator.component.readArticles.length).toEqual(feedLength);
-    expect(spectator.component.isArticleRead(rssFeedData.channel.item[0].guid)).toEqual(true);
+    expect(
+      spectator.component.isArticleRead(rssFeedData.channel.item[0].guid)
+    ).toEqual(true);
   });
 
   it('Should get date to display', () => {
@@ -145,22 +148,26 @@ describe('RssWidgetComponent', () => {
       guid: 'https://www.jeuxvideo.com/news/1545197/fortnite-combien-d-argent-avez-vous-depense-dans-les-skins-et-les-v-bucks-voici-comment-savoir.htm'
     };
 
-    expect(spectator.component.formatTitleForArticle(article)).toEqual(`19:00 ${article.title}`);
+    expect(spectator.component.formatTitleForArticle(article)).toEqual(
+      `19:00 ${article.title}`
+    );
 
     advanceTo(new Date(2022, 1, 15, 0, 0, 0)); // 15/02/2022
     expect(spectator.component.formatTitleForArticle(article)).toEqual(
-      `15/03, 19:00:02 ${article.title}`
+      `15/03 19:00:02 ${article.title}`
     );
 
     advanceTo(new Date(2021, 1, 5, 0, 0, 0)); // 05/02/2021
     expect(spectator.component.formatTitleForArticle(article)).toEqual(
-      `15/03/2022, 19:00:02 ${article.title}`
+      `15/03/2022 19:00:02 ${article.title}`
     );
   });
 
   it('Should remove html from article content', () => {
     const expectedContent = 'RSS content';
     const rssContent = `<div>${expectedContent}</div>`;
-    expect(spectator.component.stripHtmlFromContent(rssContent)).toEqual(expectedContent);
+    expect(spectator.component.stripHtmlFromContent(rssContent)).toEqual(
+      expectedContent
+    );
   });
 });
