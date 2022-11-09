@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "engines": {
-    "node": "16.x",
+    "node": "18.x",
     "npm": "8.x"
   },
   "scripts": {
@@ -55,7 +55,7 @@
     "@tailwindcss/line-clamp": "0.4.2",
     "@types/jest": "28.1.8",
     "@types/leaflet": "1.9.0",
-    "@types/node": "16.18.3",
+    "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "5.42.1",
     "@typescript-eslint/parser": "5.42.1",
     "angular-calendar": "0.30.1",
