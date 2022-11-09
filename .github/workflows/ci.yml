@@ -64,10 +64,10 @@ jobs:
         run: |
           if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' ]]; then
             docker pull arnaudf93/dashwebservices:${GITHUB_REF#refs/*/}
-            docker run -p 8080:8080 -d -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test arnaudf93/dashwebservices:${GITHUB_REF#refs/*/}
+            docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test arnaudf93/dashwebservices:${GITHUB_REF#refs/*/}
           else
             docker pull arnaudf93/dashwebservices:latest
-            docker run -p 8080:8080 -d  -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test arnaudf93/dashwebservices:latest
+            docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test arnaudf93/dashwebservices:latest
           fi
 
       - name: E2E Tests
