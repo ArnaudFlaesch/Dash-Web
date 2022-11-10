@@ -4,7 +4,7 @@
   "private": true,
   "engines": {
     "node": "18.x",
-    "npm": "8.x"
+    "npm": "9.x"
   },
   "scripts": {
     "start": "ng serve",
@@ -28,12 +28,12 @@
   },
   "dependencies": {
     "@angular/animations": "14.2.10",
-    "@angular/cdk": "14.2.6",
+    "@angular/cdk": "14.2.7",
     "@angular/common": "14.2.10",
     "@angular/compiler": "14.2.10",
     "@angular/core": "14.2.10",
     "@angular/forms": "14.2.10",
-    "@angular/material": "14.2.6",
+    "@angular/material": "14.2.7",
     "@angular/platform-browser": "14.2.10",
     "@angular/platform-browser-dynamic": "14.2.10",
     "@angular/router": "14.2.10",
