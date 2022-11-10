@@ -10,15 +10,11 @@ describe('Weather Widget tests', () => {
   after(() => cy.deleteTab(tabName));
 
   beforeEach(() => {
-    cy.intercept('GET', `/weatherWidget/weather?city=*`, {
-      fixture: 'weather/parisWeatherSample.json'
-    })
+    cy.intercept('GET', `/weatherWidget/weather?city=*`)
       .as('getWeather')
-      .intercept('GET', `/weatherWidget/forecast?city=*`, {
-        fixture: 'weather/parisForecastSample.json'
-      })
+      .intercept('GET', `/weatherWidget/forecast?city=*`)
       .as('getForecast')
-      .clock(new Date(2022, 2, 9, 0, 0, 0).getTime())
+      .clock(new Date(2022, 9, 29, 0, 0, 0).getTime())
       .navigateToTab(tabName);
   });
 
@@ -69,6 +65,6 @@ describe('Weather Widget tests', () => {
       .get('.widget #toggleWeekForecast')
       .click()
       .get('.widget .forecast')
-      .should('have.length', 5);
+      .should('have.length.at.least', 3);
   });
 });

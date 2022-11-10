@@ -33,13 +33,12 @@ describe('AirParif Widget tests', () => {
       .type(AIR_PARIF_VALID_TOKEN)
       .get('#communeInseeCode')
       .type(communeInseeCode)
-      .intercept('GET', `/airParifWidget/previsionCommune?commune=${communeInseeCode}`, {
-        fixture: 'airParif/forecast.json'
-      })
+      .intercept(
+        'GET',
+        `/airParifWidget/previsionCommune?commune=${communeInseeCode}`
+      )
       .as('getForecastData')
-      .intercept('GET', `/airParifWidget/couleurs*`, {
-        fixture: 'airParif/colors.json'
-      })
+      .intercept('GET', `/airParifWidget/couleurs*`)
       .as('getColorsData')
       .get('.validateButton')
       .click()
