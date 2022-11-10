@@ -65,6 +65,6 @@ describe('Weather Widget tests', () => {
       .get('.widget #toggleWeekForecast')
       .click()
       .get('.widget .forecast')
-      .should('have.length', 3);
+      .should('have.length.at.least', 3);
   });
 });
