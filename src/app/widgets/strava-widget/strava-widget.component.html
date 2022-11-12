@@ -12,7 +12,7 @@
   <ng-template #body>
     <ng-template [ngIf]="this.isUserLoggedIn()" [ngIfElse]="isUserNotConnected">
       <div class="max-h-48 overflow-y-scroll">
-        <app-strava-activities [activities]="this.activities.slice().reverse()"></app-strava-activities>
+        <app-strava-activities [activities]="this.activities"></app-strava-activities>
       </div>
 
       <div class="min-h-24 max-h-96">
