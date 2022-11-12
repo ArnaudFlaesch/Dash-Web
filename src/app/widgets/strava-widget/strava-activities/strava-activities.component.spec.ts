@@ -1,45 +1,10 @@
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createHttpFactory,
-  createRoutingFactory,
-  HttpMethod,
-  SpectatorHttp,
-  SpectatorRouting
-} from '@ngneat/spectator/jest';
-import { addDays, getTime } from 'date-fns';
+import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
+import { IActivity } from '../IStrava';
 
-import { environment } from '../../../environments/environment';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IActivity, IAthlete, ITokenData } from './IStrava';
-import { StravaWidgetComponent } from './strava-widget.component';
-import { StravaWidgetService } from './strava.widget.service';
+import { StravaActivitiesComponent } from './strava-activities.component';
 
-describe('StravaWidgetComponent', () => {
-  let spectator: SpectatorRouting<StravaWidgetComponent>;
-  let stravaWidgetService: SpectatorHttp<StravaWidgetService>;
-
-  const STRAVA_TOKEN = 'FAKE_TOKEN';
-  const STRAVA_REFRESH_TOKEN = 'FAKE_REFRESH_TOKEN';
-  const TOKEN_EXPIRATION_DATE = getTime(addDays(new Date(), 4)).toString();
-
-  const STRAVA_TOKEN_KEY = 'strava_token';
-  const STRAVA_REFRESH_TOKEN_KEY = 'strava_refresh_token';
-  const STRAVA_TOKEN_EXPIRATION_DATE_KEY = 'strava_token_expires_at';
-
-  const athleteData = {
-    id: 25345795,
-    username: 'aflaesch',
-    resourceState: 2,
-    firstname: 'Arnaud',
-    lastname: 'Flaesch',
-    city: 'Paris',
-    state: '',
-    country: 'France',
-    sex: 'M',
-    profileMedium:
-      'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg',
-    profile: 'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
-  } as IAthlete;
+describe('StravaActivitiesComponent', () => {
+  let spectator: Spectator<StravaActivitiesComponent>;
 
   const activitiesData: IActivity[] = [
     {
@@ -244,83 +209,28 @@ describe('StravaWidgetComponent', () => {
     }
   ];
 
-  const createComponent = createRoutingFactory({
-    component: StravaWidgetComponent,
-    imports: [MatSnackBarModule],
-    providers: [StravaWidgetService, ErrorHandlerService]
+  const createComponent = createComponentFactory({
+    component: StravaActivitiesComponent,
+    imports: [],
+    providers: []
   });
-  const createHttp = createHttpFactory(StravaWidgetService);
 
-  function initComponent() {
+  beforeEach(() => {
     spectator = createComponent();
-    stravaWidgetService = createHttp();
-  }
-
-  it('Should display the interface to log in', () => {
-    initComponent();
-    expect(spectator.component.isUserLoggedIn()).toBe(false);
   });
 
-  it('should create a widget with a token and a refresh token', () => {
-    window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
-    window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
-    window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
-    initComponent();
-    expect(spectator.component.isUserLoggedIn()).toBe(true);
-    expect(spectator.component.isWidgetLoaded).toEqual(true);
-    expect(spectator.component.activities).toEqual([]);
-    spectator.component.refreshWidget();
-    const getAthleteDataRequest = stravaWidgetService.expectOne(
-      `${environment.backend_url}/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`,
-      HttpMethod.GET
-    );
-    getAthleteDataRequest.flush(athleteData);
-
-    const getActivitiesRequest = stravaWidgetService.expectOne(
-      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&numberOfActivities=20`,
-      HttpMethod.GET
-    );
-    getActivitiesRequest.flush(activitiesData);
-
-    expect(spectator.component.isWidgetLoaded).toEqual(true);
-    expect(spectator.component.activities.length).toEqual(4);
-    expect(spectator.component.getActivitiesByMonth()).toEqual({
-      '2022-09': [11.6664],
-      '2022-10': [10.5298, 12.3976, 10.7047]
-    });
-    const statsFromActivities = spectator.component.getStatsFromActivities();
-    expect(statsFromActivities[0].y).toEqual(12);
-    expect(statsFromActivities[1].y).toEqual(34);
+  it('Should convert a time', () => {
+    spectator.component.activities = activitiesData;
+    expect(spectator.component.convertDecimalTimeToTime(1000)).toEqual(1000);
+    expect(spectator.component.convertDecimalTimeToTime(10.34)).toEqual(10.2);
+    expect(spectator.component.convertDecimalTimeToTime(1.8)).toEqual(1.5);
+    expect(spectator.component.convertDecimalTimeToTime(1.85)).toEqual(1.5);
   });
 
-  it('Should display athlete url', () => {
-    expect(spectator.component.getAthleteProfileUrl(athleteData.id)).toEqual(
-      'https://www.strava.com/athletes/' + athleteData.id
-    );
-  });
-
-  it('Should get api token', () => {
-    spectator.component.getToken('apicode');
-    const response = {
-      token_type: 'Bearer',
-      expiresAt: '1644882561',
-      expiresIn: 10384,
-      refreshToken: 'REFRESH_TOKEN',
-      accessToken: 'TOKEN',
-      athlete: {
-        id: 25345795,
-        username: 'af',
-        resource_state: 2,
-        firstname: 'A',
-        lastname: 'F'
-      }
-    } as unknown as ITokenData;
-
-    const getTokenDataRequest = stravaWidgetService.expectOne(
-      `${environment.backend_url}/stravaWidget/getToken`,
-      HttpMethod.POST
-    );
-    getTokenDataRequest.flush(response);
-    expect(spectator.component.getTokenValue()).toEqual('TOKEN');
+  it('Should display activity title', () => {
+    const activity = activitiesData[0];
+    spectator.component.activities = activitiesData;
+    const actual = spectator.component.getTitleToDisplay(activity);
+    expect(actual).toEqual('20 Oct  Evening Run  10.7047 kms');
   });
 });

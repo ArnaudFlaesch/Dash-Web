@@ -77,36 +77,8 @@
         </div>
       </div>
 
-      <div *ngIf="this.cityData" class="flex flex-row forecast-row">
-        <div class="forecast-container border-2 border-r-0 last:border-r-2 border-solid border-black rounded"
-          *ngFor="let forecastDay of this.filterForecastByMode(this.cityData, this.forecast)">
-          <div class="forecast">
-            <div class="ml-1" *ngIf="forecastDay">
-              {{ getDateToDisplay(forecastDay.dt, this.cityData.timezone) }}
-            </div>
-            <div class="flex flex-row">
-              <div>
-                <img [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')" class="max-h-14 max-w-14"
-                  [title]="forecastDay.weather[0].description" [alt]="forecastDay.weather[0].description" />
-              </div>
-              <div>
-                <div>
-                  <mat-icon [ngStyle]="{ color: 'crimson' }" class="m-r-1">device_thermostat</mat-icon>
-                  {{ forecastDay.main.tempMax }}°
-                </div>
-                <div>
-                  <mat-icon [ngStyle]="{ color: 'blue' }" class="m-r-1">device_thermostat</mat-icon>
-                  {{ forecastDay.main.tempMin }}°
-                </div>
-                <div>
-                  <mat-icon [ngStyle]="{ color: 'lightblue' }" class="m-r-1">opacity</mat-icon>
-                  {{ forecastDay.main.humidity }}%
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-weather-forecast *ngIf="this.cityData" [forecast]="this.filterForecastByMode(this.cityData, this.forecast)"
+        [timezone]="this.cityData.timezone"></app-weather-forecast>
     </div>
   </ng-template>
 </app-widget>

@@ -57,6 +57,9 @@ import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { AirParifWidgetComponent } from './widgets/airparif-widget/airparif-widget.component';
 import { AirParifWidgetService } from './widgets/airparif-widget/airparif-widget.service';
+import { RssFeedComponent } from './widgets/rss-widget/rss-feed/rss-feed.component';
+import { StravaActivitiesComponent } from './widgets/strava-widget/strava-activities/strava-activities.component';
+import { WeatherForecastComponent } from './widgets/weather-widget/weather-forecast/weather-forecast.component';
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -81,7 +84,10 @@ registerLocaleData(localeFr);
     ImportConfigModalComponent,
     EventDetailModalComponent,
     WorkoutWidgetComponent,
-    AirParifWidgetComponent
+    AirParifWidgetComponent,
+    RssFeedComponent,
+    StravaActivitiesComponent,
+    WeatherForecastComponent
   ],
   imports: [
     BrowserAnimationsModule,
