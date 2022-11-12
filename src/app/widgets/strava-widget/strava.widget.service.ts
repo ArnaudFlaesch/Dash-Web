@@ -9,17 +9,6 @@ import { IActivity, IAthlete, ITokenData } from './IStrava';
 export class StravaWidgetService {
   constructor(private http: HttpClient) {}
 
-  public loginToStrava(): Observable<ITokenData> {
-    return this.http.get<ITokenData>(
-      `${environment.backend_url}/stravaWidget/login?frontendUrl=${location.origin}`,
-      {
-        headers: {
-          Authorization: authorizationBearer()
-        }
-      }
-    );
-  }
-
   public getToken(apiCode: string): Observable<ITokenData> {
     return this.http.post<ITokenData>(
       `${environment.backend_url}/stravaWidget/getToken`,
@@ -58,7 +47,10 @@ export class StravaWidgetService {
     );
   }
 
-  public getActivities(token: string, numberOfActivities?: number): Observable<IActivity[]> {
+  public getActivities(
+    token: string,
+    numberOfActivities?: number
+  ): Observable<IActivity[]> {
     return this.http.get<IActivity[]>(
       `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${token}&numberOfActivities=${numberOfActivities}`,
       {

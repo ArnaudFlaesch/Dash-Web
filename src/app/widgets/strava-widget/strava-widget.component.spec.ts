@@ -38,7 +38,8 @@ describe('StravaWidgetComponent', () => {
     sex: 'M',
     profileMedium:
       'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg',
-    profile: 'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
+    profile:
+      'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
   } as IAthlete;
 
   const activitiesData: IActivity[] = [
@@ -264,7 +265,10 @@ describe('StravaWidgetComponent', () => {
   it('should create a widget with a token and a refresh token', () => {
     window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
-    window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
+    window.localStorage.setItem(
+      STRAVA_TOKEN_EXPIRATION_DATE_KEY,
+      TOKEN_EXPIRATION_DATE
+    );
     initComponent();
     expect(spectator.component.isUserLoggedIn()).toBe(true);
     expect(spectator.component.isWidgetLoaded).toEqual(true);
@@ -322,5 +326,31 @@ describe('StravaWidgetComponent', () => {
     );
     getTokenDataRequest.flush(response);
     expect(spectator.component.getTokenValue()).toEqual('TOKEN');
+  });
+
+  it('Should get refresh token', () => {
+    window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
+    spectator.component.getUserData();
+    const response = {
+      token_type: 'Bearer',
+      expiresAt: '1644882561',
+      expiresIn: 10384,
+      refreshToken: 'REFRESH_TOKEN',
+      accessToken: 'TOKEN',
+      athlete: {
+        id: 25345795,
+        username: 'af',
+        resource_state: 2,
+        firstname: 'A',
+        lastname: 'F'
+      }
+    } as unknown as ITokenData;
+
+    const getRefreshTokenDataRequest = stravaWidgetService.expectOne(
+      `${environment.backend_url}/stravaWidget/getRefreshToken`,
+      HttpMethod.POST
+    );
+    getRefreshTokenDataRequest.flush(response);
+    expect(spectator.component.getRefreshTokenValue()).toEqual('REFRESH_TOKEN');
   });
 });
