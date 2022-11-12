@@ -203,12 +203,6 @@ export class StravaWidgetComponent {
     });
   }
 
-  public getTitleToDisplay(activity: IActivity): string {
-    return `${format(new Date(activity.startDateLocal), 'dd MMM')}  ${
-      activity.name
-    }  ${Math.round(activity.distance * 1000) / 1000000} kms`;
-  }
-
   public isUserLoggedIn(): boolean {
     const token = this.getTokenValue();
     const refreshToken = this.getRefreshTokenValue();
@@ -245,15 +239,6 @@ export class StravaWidgetComponent {
   public loginToStrava = () => window.open(this.loginToStravaUrl, '_self');
   public getAthleteProfileUrl = (athleteId: number) =>
     `${this.STRAVA_ATHLETE_URL}${athleteId}`;
-
-  public formatDate = (date: string) => format(new Date(date), 'dd MMM');
-  public roundDistance = (distance: number) => Math.round(distance * 100) / 100;
-
-  public convertDecimalTimeToTime(decimalTime: number): number {
-    const decimalPart = decimalTime % 1;
-    const convertedDecimalPart = Math.round(decimalPart * 6) / 10;
-    return decimalTime - decimalPart + convertedDecimalPart;
-  }
 
   public getTokenValue(): string | null {
     return window.localStorage.getItem(this.STORAGE_STRAVA_TOKEN_KEY);

@@ -140,23 +140,9 @@ export class WeatherWidgetComponent {
 
   public getWidgetData = (): { city: string } | null =>
     this.city ? { city: this.city } : null;
+
   public isFormValid = (): boolean =>
     this.city !== null && this.city.length > 0;
-
-  public getDateToDisplay = (dateTime: number, timezone: number) =>
-    this.dateUtils
-      .formatDateFromTimestamp(
-        dateTime,
-        this.dateUtils.adjustTimeWithOffset(timezone)
-      )
-      .toLocaleString('fr', {
-        weekday: 'short',
-        day: 'numeric',
-        hour: '2-digit'
-      });
-
-  public getIconFromWeatherApi = (icon: string) =>
-    `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
   public formatDate(date: Date): string {
     return format(date, 'dd/MM');
@@ -185,6 +171,11 @@ export class WeatherWidgetComponent {
     }
   }
 
-  public isWidgetLoaded = (): boolean =>
-    this.city != null && this.weather != null;
+  public isWidgetLoaded(): boolean {
+    return this.city != null && this.weather != null;
+  }
+
+  public getIconFromWeatherApi(icon: string) {
+    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+  }
 }

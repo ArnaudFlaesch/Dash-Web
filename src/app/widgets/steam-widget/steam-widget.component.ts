@@ -105,13 +105,11 @@ export class SteamWidgetComponent {
     }
   }
 
-  public isFormValid = (): boolean =>
-    !!this.steamUserId && this.steamUserId?.length > 0;
+  public isFormValid(): boolean {
+    return !!this.steamUserId && this.steamUserId?.length > 0;
+  }
 
   public isWidgetLoaded(): boolean {
-    return (
-      !this.steamUserId ||
-      (this.playerData != null && this.ownedGames.length > 0)
-    );
+    return this.steamUserId != null && this.playerData != null;
   }
 }

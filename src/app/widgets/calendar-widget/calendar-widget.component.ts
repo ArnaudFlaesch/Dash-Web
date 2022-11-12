@@ -1,4 +1,3 @@
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { CalendarWidgetService } from './calendar-widget.service';
 import { Component, Inject, LOCALE_ID } from '@angular/core';
@@ -47,8 +46,7 @@ export class CalendarWidgetComponent {
     @Inject(LOCALE_ID) locale: string,
     public dialog: MatDialog,
     private calendarWidgetService: CalendarWidgetService,
-    private errorHandlerService: ErrorHandlerService,
-    private dateUtilsService: DateUtilsService
+    private errorHandlerService: ErrorHandlerService
   ) {
     this.locale = locale;
   }
