@@ -12,9 +12,9 @@ export class StravaActivitiesComponent {
   public activities: IActivity[] = [];
 
   public getTitleToDisplay(activity: IActivity): string {
-    return `${format(new Date(activity.startDateLocal), 'dd MMM')}  ${
-      activity.name
-    }  ${Math.round(activity.distance * 1000) / 1000000} kms`;
+    return `${format(new Date(activity.startDateLocal), 'dd MMM')}  ${activity.name}  ${
+      Math.round(activity.distance * 1000) / 1000000
+    } kms`;
   }
 
   public formatDate = (date: string) => format(new Date(date), 'dd MMM');

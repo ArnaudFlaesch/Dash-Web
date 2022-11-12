@@ -18,10 +18,7 @@ export class WeatherForecastComponent {
 
   public getDateToDisplay = (dateTime: number, timezone: number) =>
     this.dateUtils
-      .formatDateFromTimestamp(
-        dateTime,
-        this.dateUtils.adjustTimeWithOffset(timezone)
-      )
+      .formatDateFromTimestamp(dateTime, this.dateUtils.adjustTimeWithOffset(timezone))
       .toLocaleString('fr', {
         weekday: 'short',
         day: 'numeric',

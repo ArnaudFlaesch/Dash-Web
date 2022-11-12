@@ -32,22 +32,14 @@ describe('Strava Widget tests', () => {
   it('Should fail to load date because of wrong token', () => {
     window.localStorage.setItem('strava_token', null);
     window.localStorage.setItem('strava_refresh_token', null);
-    window.localStorage.setItem(
-      'strava_token_expires_at',
-      TOKEN_EXPIRATION_DATE.toString()
-    );
+    window.localStorage.setItem('strava_token_expires_at', TOKEN_EXPIRATION_DATE.toString());
   });
 
   it('Should load the widget with a fake token', () => {
     window.localStorage.setItem('strava_refresh_token', STRAVA_REFRESH_TOKEN);
-    cy.intercept('/stravaWidget/getRefreshToken')
-      .as('refreshToken')
-      .navigateToTab(tabName);
+    cy.intercept('/stravaWidget/getRefreshToken').as('refreshToken').navigateToTab(tabName);
     window.localStorage.setItem('strava_token', STRAVA_TOKEN);
-    window.localStorage.setItem(
-      'strava_token_expires_at',
-      TOKEN_EXPIRATION_DATE.toString()
-    );
+    window.localStorage.setItem('strava_token_expires_at', TOKEN_EXPIRATION_DATE.toString());
     cy.intercept('/stravaWidget/getAthleteData*')
       .as('getAthleteData')
       .intercept('/stravaWidget/getAthleteActivities*')

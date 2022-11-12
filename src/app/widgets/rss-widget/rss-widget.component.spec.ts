@@ -43,8 +43,7 @@ describe('RssWidgetComponent', () => {
     channel: {
       title: ' PC - jeuxvideo.com',
       link: 'https://www.jeuxvideo.com',
-      description:
-        'Le média de référence des gamers - Jeux Vidéo PC et Consoles - PC',
+      description: 'Le média de référence des gamers - Jeux Vidéo PC et Consoles - PC',
       language: 'fr-fr',
       copyright: 'Copyright 1997-2022 Webedia jeuxvideo.com',
       category: 'Jeux Video',

@@ -29,9 +29,7 @@ describe('RssFeedComponent', () => {
       guid: 'https://www.jeuxvideo.com/news/1545197/fortnite-combien-d-argent-avez-vous-depense-dans-les-skins-et-les-v-bucks-voici-comment-savoir.htm'
     };
 
-    expect(spectator.component.formatTitleForArticle(article)).toEqual(
-      `19:00 ${article.title}`
-    );
+    expect(spectator.component.formatTitleForArticle(article)).toEqual(`19:00 ${article.title}`);
 
     advanceTo(new Date(2022, 1, 15, 0, 0, 0)); // 15/02/2022
     expect(spectator.component.formatTitleForArticle(article)).toEqual(
@@ -47,8 +45,6 @@ describe('RssFeedComponent', () => {
   it('Should remove html from article content', () => {
     const expectedContent = 'RSS content';
     const rssContent = `<div>${expectedContent}</div>`;
-    expect(spectator.component.stripHtmlFromContent(rssContent)).toEqual(
-      expectedContent
-    );
+    expect(spectator.component.stripHtmlFromContent(rssContent)).toEqual(expectedContent);
   });
 });

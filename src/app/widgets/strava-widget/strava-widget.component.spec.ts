@@ -38,8 +38,7 @@ describe('StravaWidgetComponent', () => {
     sex: 'M',
     profileMedium:
       'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg',
-    profile:
-      'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
+    profile: 'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
   } as IAthlete;
 
   const activitiesData: IActivity[] = [
@@ -265,10 +264,7 @@ describe('StravaWidgetComponent', () => {
   it('should create a widget with a token and a refresh token', () => {
     window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
-    window.localStorage.setItem(
-      STRAVA_TOKEN_EXPIRATION_DATE_KEY,
-      TOKEN_EXPIRATION_DATE
-    );
+    window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
     initComponent();
     expect(spectator.component.isUserLoggedIn()).toBe(true);
     expect(spectator.component.isWidgetLoaded).toEqual(true);
