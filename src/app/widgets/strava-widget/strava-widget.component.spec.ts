@@ -297,23 +297,10 @@ describe('StravaWidgetComponent', () => {
     expect(statsFromActivities[1].y).toEqual(34);
   });
 
-  it('Should convert a time', () => {
-    expect(spectator.component.convertDecimalTimeToTime(1000)).toEqual(1000);
-    expect(spectator.component.convertDecimalTimeToTime(10.34)).toEqual(10.2);
-    expect(spectator.component.convertDecimalTimeToTime(1.8)).toEqual(1.5);
-    expect(spectator.component.convertDecimalTimeToTime(1.85)).toEqual(1.5);
-  });
-
   it('Should display athlete url', () => {
     expect(spectator.component.getAthleteProfileUrl(athleteData.id)).toEqual(
       'https://www.strava.com/athletes/' + athleteData.id
     );
-  });
-
-  it('Should display activity title', () => {
-    const activity = activitiesData[0];
-    const actual = spectator.component.getTitleToDisplay(activity);
-    expect(actual).toEqual('20 Oct  Evening Run  10.7047 kms');
   });
 
   it('Should get api token', () => {

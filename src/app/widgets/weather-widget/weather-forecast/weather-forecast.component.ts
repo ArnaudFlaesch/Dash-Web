@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DateUtilsService } from 'src/app/services/date.utils.service/date.utils.service';
+import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { IForecast } from '../IWeather';
 
 @Component({

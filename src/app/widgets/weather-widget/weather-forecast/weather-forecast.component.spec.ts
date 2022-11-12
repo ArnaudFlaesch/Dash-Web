@@ -1,23 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Spectator, createComponentFactory } from '@ngneat/spectator/jest';
+import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 
 import { WeatherForecastComponent } from './weather-forecast.component';
 
 describe('WeatherForecastComponent', () => {
-  let component: WeatherForecastComponent;
-  let fixture: ComponentFixture<WeatherForecastComponent>;
+  let spectator: Spectator<WeatherForecastComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ WeatherForecastComponent ]
-    })
-    .compileComponents();
+  const createComponent = createComponentFactory({
+    component: WeatherForecastComponent,
+    imports: [],
+    providers: [DateUtilsService]
+  });
 
-    fixture = TestBed.createComponent(WeatherForecastComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  beforeEach(() => {
+    spectator = createComponent();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });
