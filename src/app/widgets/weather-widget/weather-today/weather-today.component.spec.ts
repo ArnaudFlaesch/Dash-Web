@@ -11,7 +11,6 @@ import { WeatherTodayComponent } from './weather-today.component';
 
 describe('WeatherTodayComponent', () => {
   let spectator: Spectator<WeatherTodayComponent>;
-  let weatherWidgetService: SpectatorHttp<WeatherWidgetService>;
   const createHttp = createHttpFactory(WeatherWidgetService);
 
   const createComponent = createComponentFactory({
@@ -22,7 +21,7 @@ describe('WeatherTodayComponent', () => {
 
   beforeEach(() => {
     spectator = createComponent();
-    weatherWidgetService = createHttp();
+    createHttp();
   });
 
   it('Should get weather icons', () => {
