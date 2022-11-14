@@ -22,52 +22,77 @@
   </ng-template>
 
   <ng-template #body>
+
+    <div id="sidebar" class="leaflet-sidebar collapsed">
+      <div class="leaflet-sidebar-tabs">
+        <ul role="tablist">
+          <li>
+            <a href="#home" role="tab">
+              <mat-icon>home</mat-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Tab panes -->
+      <div class="leaflet-sidebar-content">
+        <div class="leaflet-sidebar-pane" id="home">
+          <div class="leaflet-sidebar-header">
+            <div class="leaflet-sidebar-close">
+              <mat-icon>close</mat-icon>
+            </div>
+          </div>
+
+          <div *ngIf="this.airParifForecast.length > 0">
+            <button mat-raised-button [color]="this.isForecastModeToday() ? 'primary' : ''"
+              (click)="this.selectTodayForecast()">Aujourd'hui</button>
+            <button mat-raised-button [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
+              (click)="this.selectTomorrowForecast()" *ngIf="this.airParifForecast.length > 1">Demain</button>
+
+            <div *ngIf="this.forecastToDisplay" id="airParifForecast" class="flex flex-col">
+              <div class="flex justify-between"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice) }">
+                <span>Indice global</span><span>{{this.forecastToDisplay.indice}}</span>
+              </div>
+              <div class="flex justify-between"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.no2)}">
+                <span>Dioxyde d'Azote (NO₂)</span><span>{{this.forecastToDisplay.no2}}</span>
+              </div>
+              <div class="flex justify-between"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.o3)}">
+                <span>Ozone (O₃)</span><span>{{this.forecastToDisplay.o3}}</span>
+              </div>
+              <div class="flex justify-between"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm10)}">
+                <span>Particules (diamètre inférieur à 10µm) (PM₁₀)</span><span>{{this.forecastToDisplay.pm10}}</span>
+              </div>
+              <div class="flex justify-between"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm25)}">
+                <span>pm25</span><span>{{this.forecastToDisplay.pm25}}</span>
+              </div>
+              <div class="flex justify-between"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.so2)}">
+                <span>Dioxyde de soufre (SO₂)</span><span>{{this.forecastToDisplay.so2}}</span>
+              </div>
+
+            </div>
+
+            <span class="rounded" [style]="{ 'background-color':indice.color }"
+              *ngFor="let indice of this.airParifCouleursIndices">
+              {{indice.name}}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
     <div class="map-container">
       <div class="map-frame">
         <div id="map"></div>
       </div>
-    </div>
-
-    <div *ngIf="this.airParifForecast.length > 0">
-      <button mat-raised-button [color]="this.isForecastModeToday() ? 'primary' : ''"
-        (click)="this.selectTodayForecast()">Aujourd'hui</button>
-      <!-- TODO NgIf si le forecast de demain n'existe pas-->
-      <button mat-raised-button [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
-        (click)="this.selectTomorrowForecast()" [disabled]="this.airParifForecast.length < 1">Demain</button>
-
-      <div *ngIf="this.forecastToDisplay" id="airParifForecast" class="flex flex-col">
-        <div class="flex justify-between"
-          [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice) }">
-          <span>Indice global</span><span>{{this.forecastToDisplay.indice}}</span>
-        </div>
-        <div class="flex justify-between"
-          [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.no2)}">
-          <span>Dioxyde d'Azote (NO₂)</span><span>{{this.forecastToDisplay.no2}}</span>
-        </div>
-        <div class="flex justify-between"
-          [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.o3)}">
-          <span>Ozone (O₃)</span><span>{{this.forecastToDisplay.o3}}</span>
-        </div>
-        <div class="flex justify-between"
-          [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm10)}">
-          <span>Particules (diamètre inférieur à 10µm) (PM₁₀)</span><span>{{this.forecastToDisplay.pm10}}</span>
-        </div>
-        <div class="flex justify-between"
-          [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm25)}">
-          <span>pm25</span><span>{{this.forecastToDisplay.pm25}}</span>
-        </div>
-        <div class="flex justify-between"
-          [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.so2)}">
-          <span>Dioxyde de soufre (SO₂)</span><span>{{this.forecastToDisplay.so2}}</span>
-        </div>
-
-      </div>
-
-      <span class="rounded" [style]="{ 'background-color':indice.color }"
-        *ngFor="let indice of this.airParifCouleursIndices">
-        {{indice.name}}
-      </span>
-
     </div>
   </ng-template>
 </app-widget>
