@@ -216,9 +216,9 @@ describe('WeatherWidgetComponent', () => {
           )
           .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
       ).toEqual(['06-03-2022', '06-03-2022']);
-      spectator.component.selectDayForecast(
-        new Date(spectator.component.forecastDays[1])
-      );
+      const dateToSelect = new Date(spectator.component.forecastDays[1]);
+      spectator.component.selectDayForecast(dateToSelect);
+      expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(true);
       expect(
         spectator.component
           .filterForecastByMode(

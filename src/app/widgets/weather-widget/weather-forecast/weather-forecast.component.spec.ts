@@ -1,8 +1,7 @@
 import {
   createComponentFactory,
   createHttpFactory,
-  Spectator,
-  SpectatorHttp
+  Spectator
 } from '@ngneat/spectator/jest';
 
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
@@ -25,7 +24,10 @@ describe('WeatherForecastComponent', () => {
     createHttp();
   });
 
-  it('should create', () => {
-    expect(spectator.component).toBeTruthy();
+  it('Should get weather icons', () => {
+    const icon = 'sunny';
+    expect(spectator.component.getIconFromWeatherApi(icon)).toEqual(
+      `https://openweathermap.org/img/wn/${icon}@2x.png`
+    );
   });
 });

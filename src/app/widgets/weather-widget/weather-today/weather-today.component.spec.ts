@@ -1,8 +1,7 @@
 import {
   createComponentFactory,
   createHttpFactory,
-  Spectator,
-  SpectatorHttp
+  Spectator
 } from '@ngneat/spectator/jest';
 
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';

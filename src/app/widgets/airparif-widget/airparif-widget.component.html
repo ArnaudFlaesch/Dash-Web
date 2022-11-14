@@ -28,13 +28,12 @@
         <ul role="tablist">
           <li>
             <a href="#home" role="tab">
-              <mat-icon>home</mat-icon>
+              <mat-icon>menu</mat-icon>
             </a>
           </li>
         </ul>
       </div>
 
-      <!-- Tab panes -->
       <div class="leaflet-sidebar-content">
         <div class="leaflet-sidebar-pane" id="home">
           <div class="leaflet-sidebar-header">
@@ -44,10 +43,12 @@
           </div>
 
           <div *ngIf="this.airParifForecast.length > 0">
-            <button mat-raised-button [color]="this.isForecastModeToday() ? 'primary' : ''"
-              (click)="this.selectTodayForecast()">Aujourd'hui</button>
-            <button mat-raised-button [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
-              (click)="this.selectTomorrowForecast()" *ngIf="this.airParifForecast.length > 1">Demain</button>
+            <div class="mb-2">
+              <button mat-raised-button [color]="this.isForecastModeToday() ? 'primary' : ''"
+                (click)="this.selectTodayForecast()">Aujourd'hui</button>
+              <button mat-raised-button [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
+                (click)="this.selectTomorrowForecast()" *ngIf="this.airParifForecast.length > 1">Demain</button>
+            </div>
 
             <div *ngIf="this.forecastToDisplay" id="airParifForecast" class="flex flex-col">
               <div class="flex justify-between"
@@ -83,9 +84,7 @@
             </span>
 
           </div>
-
         </div>
-
       </div>
     </div>
 
