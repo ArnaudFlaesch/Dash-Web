@@ -2,6 +2,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   createComponentFactory,
   createHttpFactory,
+  createSpyObject,
   HttpMethod,
   Spectator,
   SpectatorHttp
@@ -73,14 +74,14 @@ describe('AirParifWidgetComponent', () => {
     imports: [MatSnackBarModule],
     providers: [AirParifWidgetService, ErrorHandlerService]
   });
-  const createHttpAirParifWidgetService = createHttpFactory(AirParifWidgetService);
-
-  beforeEach(() => {
-    spectator = createComponent();
-    airParifWidgetService = createHttpAirParifWidgetService();
-  });
+  const createHttpAirParifWidgetService = createHttpFactory(
+    AirParifWidgetService
+  );
 
   it('Should create an AirParif Widget', () => {
+    spectator = createComponent();
+    airParifWidgetService = createHttpAirParifWidgetService();
+
     expect(spectator.component.airParifApiKey).toEqual(null);
     expect(spectator.component.communeInseeCode).toEqual(null);
     expect(spectator.component.isFormValid()).toEqual(false);
@@ -100,7 +101,9 @@ describe('AirParifWidgetComponent', () => {
     const dataRequests = airParifWidgetService.expectConcurrent([
       {
         url:
-          environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode,
+          environment.backend_url +
+          '/airParifWidget/previsionCommune?commune=' +
+          communeInseeCode,
         method: HttpMethod.GET
       },
       {
@@ -109,18 +112,59 @@ describe('AirParifWidgetComponent', () => {
       }
     ]);
 
-    airParifWidgetService.flushAll(dataRequests, [forecastData, couleursIndicesData]);
+    airParifWidgetService.flushAll(dataRequests, [
+      forecastData,
+      couleursIndicesData
+    ]);
 
     expect(spectator.component.airParifForecast).toEqual(forecastData);
-    expect(spectator.component.airParifCouleursIndices).toEqual(couleursIndicesData);
+    expect(spectator.component.airParifCouleursIndices).toEqual(
+      couleursIndicesData
+    );
 
-    expect(spectator.component.getColorFromIndice('BON' as AirParifIndiceEnum)).toEqual('#50f0e6');
-    expect(spectator.component.getColorFromIndice('null' as AirParifIndiceEnum)).toEqual('');
+    expect(
+      spectator.component.getColorFromIndice('BON' as AirParifIndiceEnum)
+    ).toEqual('#50f0e6');
+    expect(
+      spectator.component.getColorFromIndice('null' as AirParifIndiceEnum)
+    ).toEqual('');
 
     expect(spectator.component.isForecastModeToday()).toEqual(true);
     spectator.component.selectTomorrowForecast();
     expect(spectator.component.isForecastModeTomorrow()).toEqual(true);
     spectator.component.selectTodayForecast();
     expect(spectator.component.forecastToDisplay?.no2).toEqual('MOYEN');
+  });
+
+  it('should display error messages', () => {
+    const errorHandlerService = createSpyObject(ErrorHandlerService);
+
+    spectator = createComponent({
+      providers: [
+        { provide: ErrorHandlerService, useValue: errorHandlerService }
+      ]
+    });
+    airParifWidgetService = createHttpAirParifWidgetService();
+
+    spectator.component.airParifApiKey = airParifToken;
+    spectator.component.communeInseeCode = communeInseeCode;
+    spectator.component.refreshWidget();
+
+    airParifWidgetService.controller
+      .expectOne(
+        environment.backend_url +
+          '/airParifWidget/previsionCommune?commune=' +
+          communeInseeCode,
+        HttpMethod.GET
+      )
+      .error(new ProgressEvent('Server error'));
+    airParifWidgetService.controller
+      .expectOne(
+        environment.backend_url + '/airParifWidget/couleurs',
+        HttpMethod.GET
+      )
+      .error(new ProgressEvent('Server error'));
+
+    expect(errorHandlerService.handleError).toHaveBeenCalledTimes(2);
   });
 });
