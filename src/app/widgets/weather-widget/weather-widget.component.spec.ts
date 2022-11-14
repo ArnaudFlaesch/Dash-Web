@@ -4,6 +4,7 @@ import { ErrorHandlerService } from './../../services/error.handler.service';
 import {
   createComponentFactory,
   createHttpFactory,
+  createSpyObject,
   HttpMethod,
   Spectator,
   SpectatorHttp
@@ -162,12 +163,10 @@ describe('WeatherWidgetComponent', () => {
     }
   };
 
-  beforeEach(() => {
+  it('should create', () => {
     spectator = createComponent();
     weatherWidgetService = createHttp();
-  });
 
-  it('should create', () => {
     expect(spectator.component.getWidgetData()).toEqual(null);
     expect(spectator.component.isFormValid()).toEqual(false);
     const cityName = 'Paris';
@@ -240,7 +239,42 @@ describe('WeatherWidgetComponent', () => {
   });
 
   it('Should format date', () => {
+    spectator = createComponent();
+    weatherWidgetService = createHttp();
+
     const date = new Date(2022, 5, 1);
     expect(spectator.component.formatDate(date)).toEqual('01/06');
+  });
+
+  it('should display error messages', () => {
+    const errorHandlerService = createSpyObject(ErrorHandlerService);
+
+    spectator = createComponent({
+      providers: [
+        { provide: ErrorHandlerService, useValue: errorHandlerService }
+      ]
+    });
+    weatherWidgetService = createHttp();
+
+    const cityName = 'Paris';
+    spectator.component.city = cityName;
+    spectator.component.refreshWidget();
+
+    weatherWidgetService.controller
+      .expectOne(
+        environment.backend_url + '/weatherWidget/weather?city=' + cityName,
+        HttpMethod.GET
+      )
+      .error(new ProgressEvent('Server error'));
+    weatherWidgetService.controller
+      .expectOne(
+        environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
+        HttpMethod.GET
+      )
+      .error(new ProgressEvent('Server error'));
+
+    expect(spectator.component.weather).toEqual(undefined);
+    expect(spectator.component.forecastResponse).toEqual([]);
+    expect(errorHandlerService.handleError).toHaveBeenCalledTimes(2);
   });
 });
