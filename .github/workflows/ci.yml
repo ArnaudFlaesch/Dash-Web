@@ -82,7 +82,8 @@ jobs:
           npm run report:generate
           npm run report:copyScreenshots
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Cypress report
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Cypress report
@@ -100,9 +101,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        if: success() && github.ref == 'refs/heads/master'
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        #   if: success() && github.ref == 'refs/heads/master'
         with:
           path: ./public
 
@@ -112,7 +113,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: test
-    if: success() && github.ref == 'refs/heads/master'
+    # if: success() && github.ref == 'refs/heads/master'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
