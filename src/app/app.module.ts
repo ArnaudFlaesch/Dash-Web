@@ -60,6 +60,7 @@ import { AirParifWidgetService } from './widgets/airparif-widget/airparif-widget
 import { RssFeedComponent } from './widgets/rss-widget/rss-feed/rss-feed.component';
 import { StravaActivitiesComponent } from './widgets/strava-widget/strava-activities/strava-activities.component';
 import { WeatherForecastComponent } from './widgets/weather-widget/weather-forecast/weather-forecast.component';
+import { WeatherTodayComponent } from './widgets/weather-widget/weather-today/weather-today.component';
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -87,7 +88,8 @@ registerLocaleData(localeFr);
     AirParifWidgetComponent,
     RssFeedComponent,
     StravaActivitiesComponent,
-    WeatherForecastComponent
+    WeatherForecastComponent,
+    WeatherTodayComponent
   ],
   imports: [
     BrowserAnimationsModule,

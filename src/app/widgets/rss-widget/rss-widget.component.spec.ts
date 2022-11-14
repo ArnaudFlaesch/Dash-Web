@@ -6,14 +6,13 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
+
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
-import { IArticle } from './IArticle';
 import { RssWidgetComponent } from './rss-widget.component';
 import { RssWidgetService } from './rss.widget.service';
-import { advanceTo } from 'jest-date-mock';
 
 describe('RssWidgetComponent', () => {
   let spectator: Spectator<RssWidgetComponent>;
@@ -43,7 +42,8 @@ describe('RssWidgetComponent', () => {
     channel: {
       title: ' PC - jeuxvideo.com',
       link: 'https://www.jeuxvideo.com',
-      description: 'Le média de référence des gamers - Jeux Vidéo PC et Consoles - PC',
+      description:
+        'Le média de référence des gamers - Jeux Vidéo PC et Consoles - PC',
       language: 'fr-fr',
       copyright: 'Copyright 1997-2022 Webedia jeuxvideo.com',
       category: 'Jeux Video',

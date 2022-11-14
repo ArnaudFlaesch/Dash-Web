@@ -1,3 +1,8 @@
+<div class="min-h-24 max-x-full">
+    <canvas baseChart width="400" height="170" [data]="weatherChart" [options]="lineChartOptions"
+        [type]="lineChartType"></canvas>
+</div>
+
 <div class="flex flex-row forecast-row">
     <div class="forecast-container border-2 border-r-0 last:border-r-2 border-solid border-black rounded"
         *ngFor="let forecastDay of this.forecast">

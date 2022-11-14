@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Use Node.js
+      - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
           node-version: 18.12.1
@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: |
           npm run build -- --base-href=https://arnaudflaesch.github.io/Dash-Web/
-          cp dist/index.html dist/404.html
+          cp public/index.html public/404.html
 
       - name: Test
         run: npm run test
@@ -82,7 +82,8 @@ jobs:
           npm run report:generate
           npm run report:copyScreenshots
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Cypress report
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Cypress report
@@ -100,11 +101,27 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Deploy with gh-pages
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v1
         if: success() && github.ref == 'refs/heads/master'
-        run: |
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          npx gh-pages-clean
-          npx gh-pages -d dist -u "github-actions-bot <support+actions@github.com>"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: ./public
+
+  deploy:
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    needs: test
+    if: success() && github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

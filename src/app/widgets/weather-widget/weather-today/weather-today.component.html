@@ -1,0 +1,45 @@
+<div *ngIf="weather && weather.weather" class="flex flex-col">
+    <div class="flex flex-row">
+        <img class="w-16" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
+            [title]="weather.weather[0].description" [alt]="weather.weather[0].description" />
+        <div class="flex flex-row place-items-center">
+            <div class="flex flex-col mr-5">
+                <div>{{ weather.weather[0].description }}</div>
+                <div>
+                    <mat-icon>device_thermostat</mat-icon>
+                    {{ weather.main.temp }}°
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <div class="flex justify-between">
+                    <div>
+                        <mat-icon>wb_sunny</mat-icon>
+                        {{
+                        this.dateUtils
+                        .formatDateFromTimestamp(weather.sys.sunrise,
+                        this.dateUtils.adjustTimeWithOffset(weather.timezone))
+                        .toLocaleTimeString('fr')
+                        }}
+                    </div>
+                    <div>
+                        <mat-icon>brightness_3</mat-icon>
+                        {{
+                        this.dateUtils
+                        .formatDateFromTimestamp(weather.sys.sunset,
+                        this.dateUtils.adjustTimeWithOffset(weather.timezone))
+                        .toLocaleTimeString('fr')
+                        }}
+                    </div>
+                </div>
+                <div>
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{
+                        this.dateUtils
+                        .formatDateFromTimestamp(weather.dt, this.dateUtils.adjustTimeWithOffset(weather.timezone))
+                        .toLocaleString('fr')
+                        }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

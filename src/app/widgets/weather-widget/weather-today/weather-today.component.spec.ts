@@ -6,15 +6,14 @@ import {
 
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { WeatherWidgetService } from '../weather.widget.service';
-import { WeatherForecastComponent } from './weather-forecast.component';
+import { WeatherTodayComponent } from './weather-today.component';
 
-describe('WeatherForecastComponent', () => {
-  let spectator: Spectator<WeatherForecastComponent>;
-
+describe('WeatherTodayComponent', () => {
+  let spectator: Spectator<WeatherTodayComponent>;
   const createHttp = createHttpFactory(WeatherWidgetService);
 
   const createComponent = createComponentFactory({
-    component: WeatherForecastComponent,
+    component: WeatherTodayComponent,
     imports: [],
     providers: [WeatherWidgetService, DateUtilsService]
   });

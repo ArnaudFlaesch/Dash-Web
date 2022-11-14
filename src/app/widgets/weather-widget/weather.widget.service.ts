@@ -10,15 +10,18 @@ export class WeatherWidgetService {
   constructor(private http: HttpClient) {}
 
   public fetchWeatherData(cityName: string): Observable<IWeatherAPIResponse> {
-    return this.http.get<IWeatherAPIResponse>(`${environment.backend_url}/weatherWidget/weather`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
-      },
-      params: {
-        city: cityName
+    return this.http.get<IWeatherAPIResponse>(
+      `${environment.backend_url}/weatherWidget/weather`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        },
+        params: {
+          city: cityName
+        }
       }
-    });
+    );
   }
 
   public fetchForecastData(cityName: string): Observable<IForecastAPIResponse> {
@@ -34,5 +37,9 @@ export class WeatherWidgetService {
         }
       }
     );
+  }
+
+  public getIconFromWeatherApi(icon: string) {
+    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
   }
 }

@@ -1,6 +1,13 @@
 import { Component, Input } from '@angular/core';
+import {
+  ChartConfiguration,
+  ChartData,
+  ChartType,
+  ChartTypeRegistry
+} from 'chart.js';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { IForecast } from '../IWeather';
+import { WeatherWidgetService } from '../weather.widget.service';
 
 @Component({
   selector: 'app-weather-forecast',
@@ -14,11 +21,28 @@ export class WeatherForecastComponent {
   @Input()
   public timezone = 0;
 
-  constructor(private dateUtils: DateUtilsService) {}
+  @Input()
+  public weatherChart:
+    | ChartData<keyof ChartTypeRegistry, number[], string>
+    | undefined = undefined;
+
+  public lineChartOptions: ChartConfiguration['options'] = {
+    maintainAspectRatio: false
+  };
+
+  public lineChartType: ChartType = 'line';
+
+  constructor(
+    private weatherWidgetService: WeatherWidgetService,
+    private dateUtils: DateUtilsService
+  ) {}
 
   public getDateToDisplay = (dateTime: number, timezone: number) =>
     this.dateUtils
-      .formatDateFromTimestamp(dateTime, this.dateUtils.adjustTimeWithOffset(timezone))
+      .formatDateFromTimestamp(
+        dateTime,
+        this.dateUtils.adjustTimeWithOffset(timezone)
+      )
       .toLocaleString('fr', {
         weekday: 'short',
         day: 'numeric',
@@ -26,6 +50,6 @@ export class WeatherForecastComponent {
       });
 
   public getIconFromWeatherApi(icon: string) {
-    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+    return this.weatherWidgetService.getIconFromWeatherApi(icon);
   }
 }
