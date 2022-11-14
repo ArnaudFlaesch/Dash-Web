@@ -1,20 +1,16 @@
-import { ErrorHandlerService } from './../../services/error.handler.service';
 import { Component } from '@angular/core';
-import {
-  ChartConfiguration,
-  ChartData,
-  ChartType,
-  ChartTypeRegistry
-} from 'chart.js';
+import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, startOfDay } from 'date-fns';
+
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { ErrorHandlerService } from './../../services/error.handler.service';
 import {
   ICity,
   IForecast,
-  IWeatherAPIResponse,
-  IForecastAPIResponse
+  IForecastAPIResponse,
+  IWeatherAPIResponse
 } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 
 enum ForecastMode {
   DAY,

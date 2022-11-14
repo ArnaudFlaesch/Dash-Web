@@ -1,12 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
-import { WeatherWidgetService } from '../weather.widget.service';
 import {
   createComponentFactory,
   createHttpFactory,
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
+
+import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
+import { WeatherWidgetService } from '../weather.widget.service';
 import { WeatherTodayComponent } from './weather-today.component';
 
 describe('WeatherTodayComponent', () => {

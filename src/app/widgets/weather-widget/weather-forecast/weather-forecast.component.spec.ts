@@ -1,12 +1,12 @@
 import {
-  Spectator,
   createComponentFactory,
   createHttpFactory,
+  Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
+
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { WeatherWidgetService } from '../weather.widget.service';
-
 import { WeatherForecastComponent } from './weather-forecast.component';
 
 describe('WeatherForecastComponent', () => {
