@@ -32,7 +32,7 @@ export class WorkoutWidgetComponent {
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl('');
 
-  private selectedMonthTimestamp: number;
+  private selectedMonthTimestamp: number = startOfMonth(new Date()).getTime();
   public workoutMonths: number[] = [];
   public workoutSessionsByMonth: IWorkoutSession[] = [];
 
@@ -64,9 +64,7 @@ export class WorkoutWidgetComponent {
     private workoutWidgetService: WorkoutWidgetService,
     public dateUtilsService: DateUtilsService,
     private authService: AuthService
-  ) {
-    this.selectedMonthTimestamp = startOfMonth(new Date()).getTime();
-  }
+  ) {}
 
   public refreshWidget(): void {
     const userId = this.authService.getCurrentUserData()?.id;
