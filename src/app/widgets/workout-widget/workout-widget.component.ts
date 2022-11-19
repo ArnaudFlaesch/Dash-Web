@@ -32,7 +32,7 @@ export class WorkoutWidgetComponent {
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl('');
 
-  private selectedMonthTimestamp: number = startOfMonth(new Date()).getTime();
+  private selectedMonthTimestamp: number;
   public workoutMonths: number[] = [];
   public workoutSessionsByMonth: IWorkoutSession[] = [];
 
@@ -64,7 +64,9 @@ export class WorkoutWidgetComponent {
     private workoutWidgetService: WorkoutWidgetService,
     public dateUtilsService: DateUtilsService,
     private authService: AuthService
-  ) {}
+  ) {
+    this.selectedMonthTimestamp = startOfMonth(new Date()).getTime();
+  }
 
   public refreshWidget(): void {
     const userId = this.authService.getCurrentUserData()?.id;
@@ -83,7 +85,9 @@ export class WorkoutWidgetComponent {
         next: (workoutSessions) => {
           this.workoutSessions = workoutSessions;
           this.workoutMonths = this.getWorkoutMonths();
-          this.selectMonth(this.workoutMonths[this.workoutMonths.length - 1]);
+          if (this.workoutSessions.length) {
+            this.selectMonth(this.workoutMonths[this.workoutMonths.length - 1]);
+          }
         },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(
@@ -141,6 +145,7 @@ export class WorkoutWidgetComponent {
             ];
             // Refresh de la liste des entraînements par mois
             // au cas où l'entraînement ajouté aurait eu lieu ce mois ci
+            this.workoutMonths = this.getWorkoutMonths();
             this.selectMonth(this.selectedMonthTimestamp);
           },
           error: (error) =>
