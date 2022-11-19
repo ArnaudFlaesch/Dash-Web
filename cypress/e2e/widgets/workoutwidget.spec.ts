@@ -42,7 +42,9 @@ describe('Workout Widget tests', () => {
       .wait('@addWorkoutType')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workoutTypeName').should('have.length', 1).should('have.text', newWorkoutTypeName);
+        cy.get('.workoutTypeName')
+          .should('have.length', 1)
+          .should('have.text', newWorkoutTypeName);
       });
   });
 
@@ -63,11 +65,12 @@ describe('Workout Widget tests', () => {
       .wait('@createWorkoutSession')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workout-session').should('have.length', 1);
-      })
-      .clock()
-      .then((clock) => {
-        clock.restore();
+        cy.get('.workout-session')
+          .should('have.length', 1)
+          .clock()
+          .then((clock) => {
+            clock.restore();
+          });
       });
   });
 
@@ -94,12 +97,13 @@ describe('Workout Widget tests', () => {
           .then((request: Interception) => {
             expect(request.response.statusCode).to.equal(200);
             expect(request.response.body.numberOfReps).to.equal(1);
-            cy.get('.workoutNumberOfReps').should('have.text', 1);
+            cy.get('.workoutNumberOfReps')
+              .should('have.text', 1)
+              .clock()
+              .then((clock) => {
+                clock.restore();
+              });
           });
-      })
-      .clock()
-      .then((clock) => {
-        clock.restore();
       });
   });
 });
