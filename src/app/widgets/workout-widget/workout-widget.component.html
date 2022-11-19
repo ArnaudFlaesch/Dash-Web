@@ -20,14 +20,12 @@
               {{formatWorkoutDateMonth(workoutMonth) }} </button>
           </div>
 
-          <div *ngFor="let workoutSession of this.workoutSessionsByMonth">
-            <ul>
-              <li class="workout-session">
-                <div (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate | dateFormat:'short' }}
-                </div>
-              </li>
-            </ul>
-          </div>
+          <ul>
+            <li class="workout-session" *ngFor="let workoutSession of this.workoutSessionsByMonth"
+              (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate | dateFormat:'short' }}
+            </li>
+          </ul>
+
           <h4>Créer une session</h4>
           <mat-form-field id="workoutDatePickerField" appearance="fill">
             <mat-label>Sélectionnez la date</mat-label>
