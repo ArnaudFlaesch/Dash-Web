@@ -39,7 +39,8 @@ export class CalendarWidgetComponent {
   prevBtnDisabled = false;
   nextBtnDisabled = false;
 
-  private ERROR_PARSING_EVENTS = 'Erreur lors de la récupération des évènements.';
+  private ERROR_PARSING_EVENTS =
+    'Erreur lors de la récupération des évènements.';
 
   constructor(
     @Inject(LOCALE_ID) locale: string,
@@ -50,13 +51,16 @@ export class CalendarWidgetComponent {
     this.locale = locale;
   }
 
-  public refreshWidget() {
+  public refreshWidget(): void {
     this.events = [];
     this.calendarUrls.forEach((calendarUrl: string) => {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
         next: (calendarData) => this.parseEvents(calendarData),
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_PARSING_EVENTS),
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_PARSING_EVENTS
+          ),
         complete: () => (this.isWidgetLoaded = true)
       });
     });
@@ -86,28 +90,35 @@ export class CalendarWidgetComponent {
   }
 
   public getWidgetConfig = (): { calendarUrls: string[] } | null =>
-    this.calendarUrls && this.calendarUrls.length ? { calendarUrls: this.calendarUrls } : null;
+    this.calendarUrls && this.calendarUrls.length
+      ? { calendarUrls: this.calendarUrls }
+      : null;
 
-  public onCalendarUrlAdded = () => (this.calendarUrls = [...this.calendarUrls, '']);
-  public removeCalendarUrl = (calendarUrl: string) =>
-    (this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl));
+  public onCalendarUrlAdded = (): string[] =>
+    (this.calendarUrls = [...this.calendarUrls, '']);
 
-  public onCalendarUrlUpdated = (event: Event) => {
+  public removeCalendarUrl = (calendarUrl: string): string[] =>
+    (this.calendarUrls = this.calendarUrls.filter(
+      (url) => url !== calendarUrl
+    ));
+
+  public onCalendarUrlUpdated = (event: Event): void => {
     this.calendarUrls = this.calendarUrls.map((url: string, index: number) => {
       const eventTarget = event.target as HTMLInputElement;
       return index.toString() === eventTarget?.id ? eventTarget.value : url;
     });
   };
 
-  public isFormValid = () => this.calendarUrls && this.calendarUrls.length > 0;
+  public isFormValid = (): boolean =>
+    this.calendarUrls && this.calendarUrls.length > 0;
 
-  public closeOpenMonthViewDay = () => (this.activeDayIsOpen = false);
+  public closeOpenMonthViewDay = (): boolean => (this.activeDayIsOpen = false);
 
-  public setView = (view: CalendarView) => (this.view = view);
+  public setView = (view: CalendarView): CalendarView => (this.view = view);
 
-  public isCalendarViewMonth = () => this.view === CalendarView.Month;
-  public isCalendarViewWeek = () => this.view === CalendarView.Week;
-  public isCalendarViewDay = () => this.view === CalendarView.Day;
+  public isCalendarViewMonth = (): boolean => this.view === CalendarView.Month;
+  public isCalendarViewWeek = (): boolean => this.view === CalendarView.Week;
+  public isCalendarViewDay = (): boolean => this.view === CalendarView.Day;
 
   public handleEvent(action: string, event: CalendarEvent): void {
     this.dialog.open(EventDetailModalComponent, {

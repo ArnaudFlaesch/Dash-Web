@@ -1,7 +1,10 @@
 <app-widget [widgetData]="getWidgetData()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
-    <div>Workout</div>
+    <div class="header">
+      <mat-icon>fitness_center</mat-icon>
+      <div>Workout</div>
+    </div>
   </ng-template>
 
   <ng-template #body>

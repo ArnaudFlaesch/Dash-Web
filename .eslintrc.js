@@ -7,5 +7,8 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
     'plugin:cypress/recommended'
-  ]
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "warn"
+  },
 };

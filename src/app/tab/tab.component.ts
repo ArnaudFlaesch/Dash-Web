@@ -16,25 +16,32 @@ export class TabComponent {
   public tab: ITab | undefined;
   @Output() tabDeletedEvent = new EventEmitter<number>();
 
-  private ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
+  private ERROR_MESSAGE_UPDATE_TAB =
+    "Erreur lors de la modification d'un onglet.";
 
-  constructor(private tabService: TabService, private errorHandlerService: ErrorHandlerService) {}
+  constructor(
+    private tabService: TabService,
+    private errorHandlerService: ErrorHandlerService
+  ) {}
 
-  public deleteTabFromDash() {
+  public deleteTabFromDash(): void {
     if (this.tab) {
       this.tabDeletedEvent.emit(this.tab.id);
     }
   }
 
-  public saveTabName(tabId: number, label: string, tabOrder: number) {
+  public saveTabName(tabId: number, label: string, tabOrder: number): void {
     this.tabService.updateTab(tabId, label, tabOrder).subscribe({
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_UPDATE_TAB),
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_MESSAGE_UPDATE_TAB
+        ),
       complete: this.toggleEditMode.bind(this)
     });
   }
 
-  public toggleEditMode() {
+  public toggleEditMode(): void {
     this.editMode = !this.editMode;
   }
 

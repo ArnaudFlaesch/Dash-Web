@@ -1,11 +1,7 @@
-<app-widget
-  [widgetData]="getWidgetData()"
-  [isFormValid]="isFormValid()"
-  [isWidgetLoaded]="isWidgetLoaded"
-  (refreshWidgetAction)="this.refreshWidget()"
->
+<app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
-    <div class="h-10">
+    <div class="header">
       <a *ngIf="this.image" [href]="this.image.link | safe" class="flex flex-row items-center space-x-2">
         <img class="w-9 rounded" src="{{ image.url }}" alt="logo" />
         <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">{{ this.title }}</div>
@@ -31,7 +27,8 @@
   <ng-template #body>
     <div *ngIf="this.urlFeed">
       <div class="font-bold">{{ this.description }}</div>
-      <app-rss-feed [feed]="this.feed" [readArticles]="this.readArticles" (markArticleAsReadEvent)="this.markArticleAsRead($event)"></app-rss-feed>
+      <app-rss-feed [feed]="this.feed" [readArticles]="this.readArticles"
+        (markArticleAsReadEvent)="this.markArticleAsRead($event)"></app-rss-feed>
     </div>
   </ng-template>
 </app-widget>

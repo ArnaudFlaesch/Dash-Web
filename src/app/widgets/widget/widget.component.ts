@@ -71,7 +71,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onValidation() {
+  public onValidation(): void {
     this.widgetService
       .updateWidgetData(this.widgetId, {
         ...this.widgetData
@@ -83,18 +83,22 @@ export class WidgetComponent implements OnInit, OnDestroy {
           this.refreshWidget();
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_WIDGET_DATA)
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_UPDATING_WIDGET_DATA
+          )
       });
   }
 
-  public deleteWidget() {
+  public deleteWidget(): void {
     this.widgetService._widgetDeletedEvent.next(this.widgetId);
   }
 
   public refreshWidget = () => this.refreshWidgetAction.emit();
-  public toEditMode = () => (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
-  public toReadMode = () => (this.mode = ModeEnum.READ);
-  public toDeleteMode = () => (this.mode = ModeEnum.DELETE);
+  public toEditMode = (): ModeEnum =>
+    (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
+  public toReadMode = (): ModeEnum => (this.mode = ModeEnum.READ);
+  public toDeleteMode = (): ModeEnum => (this.mode = ModeEnum.DELETE);
   public isModeRead = (): boolean => this.mode === ModeEnum.READ;
   public isModeEdit = (): boolean => this.mode === ModeEnum.EDIT;
   public isModeDelete = (): boolean => this.mode === ModeEnum.DELETE;

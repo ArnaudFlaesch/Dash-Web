@@ -252,7 +252,7 @@ describe('StravaWidgetComponent', () => {
   });
   const createHttp = createHttpFactory(StravaWidgetService);
 
-  function initComponent() {
+  function initComponent(): void {
     spectator = createComponent();
     stravaWidgetService = createHttp();
   }

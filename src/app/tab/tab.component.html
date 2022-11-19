@@ -1,21 +1,13 @@
 <ng-template [ngIf]="this.editMode" [ngIfElse]="readMode">
   <div class="flex flex-row" *ngIf="this.tab">
-    <input
-      (keypress)="this.enterSaveTabName($event)"
-      (dblclick)="this.saveTabName(this.tab.id, this.tab.label, this.tab.tabOrder)"
-      [(ngModel)]="this.tab.label"
-    />
+    <input (keypress)="this.enterSaveTabName($event)"
+      (dblclick)="this.saveTabName(this.tab.id, this.tab.label, this.tab.tabOrder)" [(ngModel)]="this.tab.label" />
     <mat-icon class="deleteTabButton" (click)="this.deleteTabFromDash()"> delete </mat-icon>
   </div>
 </ng-template>
 
 <ng-template #readMode>
-  <div class="flex flex-row">
-    <div class="tabLabel" (dblclick)="this.toggleEditMode()">
-      {{ this.tab?.label }}
-    </div>
-    <div>
-      <mat-icon>drag_handle</mat-icon>
-    </div>
+  <div class="tabLabel" (dblclick)="this.toggleEditMode()">
+    {{ this.tab?.label }}
   </div>
 </ng-template>

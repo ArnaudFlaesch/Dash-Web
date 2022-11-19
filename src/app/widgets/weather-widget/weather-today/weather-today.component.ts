@@ -17,7 +17,7 @@ export class WeatherTodayComponent {
     public dateUtils: DateUtilsService
   ) {}
 
-  public getIconFromWeatherApi(icon: string) {
+  public getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getIconFromWeatherApi(icon);
   }
 }

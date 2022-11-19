@@ -61,6 +61,8 @@ import { RssFeedComponent } from './widgets/rss-widget/rss-feed/rss-feed.compone
 import { StravaActivitiesComponent } from './widgets/strava-widget/strava-activities/strava-activities.component';
 import { WeatherForecastComponent } from './widgets/weather-widget/weather-forecast/weather-forecast.component';
 import { WeatherTodayComponent } from './widgets/weather-widget/weather-today/weather-today.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -94,6 +96,7 @@ registerLocaleData(localeFr);
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
+    DragDropModule,
     AppRoutingModule,
     HttpClientModule,
     MatProgressSpinnerModule,

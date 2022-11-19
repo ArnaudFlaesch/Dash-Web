@@ -9,11 +9,11 @@ export class DeleteWidgetComponent {
   @Output() validateWidgetDeletion = new EventEmitter();
   @Output() cancelWidgetDeletion = new EventEmitter();
 
-  cancelButtonClicked() {
+  cancelButtonClicked(): void {
     this.cancelWidgetDeletion.emit();
   }
 
-  public deleteWidget() {
+  public deleteWidget(): void {
     this.validateWidgetDeletion.emit();
   }
 }

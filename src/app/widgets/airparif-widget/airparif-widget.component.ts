@@ -65,7 +65,7 @@ export class AirParifWidgetComponent implements AfterViewInit {
     this.initMap();
   }
 
-  public refreshWidget() {
+  public refreshWidget(): void {
     if (this.airParifApiKey && this.communeInseeCode) {
       this.airParifWidgetService
         .getCommunePrevision(this.communeInseeCode)
@@ -144,14 +144,14 @@ export class AirParifWidgetComponent implements AfterViewInit {
     };
   }
 
-  public selectTodayForecast() {
+  public selectTodayForecast(): void {
     this.map?.removeLayer(this.airParifForecastTomorrowLayer);
     this.forecastMode = ForecastMode.TODAY;
     this.forecastToDisplay = this.airParifForecast[0];
     this.map?.addLayer(this.airParifForecastTodayLayer);
   }
 
-  public selectTomorrowForecast() {
+  public selectTomorrowForecast(): void {
     this.map?.removeLayer(this.airParifForecastTodayLayer);
     this.forecastMode = ForecastMode.TOMORROW;
     this.forecastToDisplay = this.airParifForecast[1];
@@ -166,8 +166,9 @@ export class AirParifWidgetComponent implements AfterViewInit {
     );
   }
 
-  public isForecastModeToday = () => this.forecastMode === ForecastMode.TODAY;
-  public isForecastModeTomorrow = () =>
+  public isForecastModeToday = (): boolean =>
+    this.forecastMode === ForecastMode.TODAY;
+  public isForecastModeTomorrow = (): boolean =>
     this.forecastMode === ForecastMode.TOMORROW;
 
   public isFormValid = (): boolean =>

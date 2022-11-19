@@ -1,7 +1,8 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
-    <div class="h-10">
+    <div class="header">
+      <mat-icon>air</mat-icon>
       <a [href]="[airParifWebsiteUrl | safe]">
         <div>AirParif</div>
       </a>
