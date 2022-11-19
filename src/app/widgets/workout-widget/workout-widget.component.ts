@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { format, startOfMonth } from 'date-fns';
 
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
 import { DEFAULT_DATE_FORMAT } from '../../../app/utils/Constants';
@@ -30,6 +31,10 @@ export class WorkoutWidgetComponent {
   public workoutExercises: IWorkoutExercise[] = [];
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl('');
+
+  private selectedMonthTimestamp: number = startOfMonth(new Date()).getTime();
+  public workoutMonths: number[] = [];
+  public workoutSessionsByMonth: IWorkoutSession[] = [];
 
   public isWidgetLoaded = false;
 
@@ -75,7 +80,11 @@ export class WorkoutWidgetComponent {
       });
 
       this.workoutWidgetService.getWorkoutSessions(userId).subscribe({
-        next: (workoutSessions) => (this.workoutSessions = workoutSessions),
+        next: (workoutSessions) => {
+          this.workoutSessions = workoutSessions;
+          this.workoutMonths = this.getWorkoutMonths();
+          this.selectMonth(this.workoutMonths[this.workoutMonths.length - 1]);
+        },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(
             error.message,
@@ -205,5 +214,46 @@ export class WorkoutWidgetComponent {
     if (workoutType) {
       return workoutType.numberOfReps;
     } else return 0;
+  }
+
+  public getWorkoutMonths(): number[] {
+    return [
+      ...new Set(
+        this.workoutSessions
+          .map((session) =>
+            startOfMonth(new Date(session.workoutDate)).getTime()
+          )
+          .sort((dateA: number, dateB: number) => dateA - dateB)
+      )
+    ];
+  }
+
+  public formatWorkoutDateMonth(workoutDate: number): string {
+    return format(workoutDate, 'MMMM');
+  }
+
+  public filterWorkoutSessionsByMonth(monthTimestamp: number): void {
+    const month = new Date(monthTimestamp);
+    this.workoutSessionsByMonth = this.workoutSessions.filter((session) => {
+      const workoutSessionDate = new Date(session.workoutDate);
+      return (
+        workoutSessionDate.getMonth() === month.getMonth() &&
+        workoutSessionDate.getFullYear() === month.getFullYear()
+      );
+    });
+  }
+
+  public isSelectedMonth(workoutmonthTimestamp: number): boolean {
+    const workoutDate = new Date(workoutmonthTimestamp);
+    const selectedMonthDate = new Date(this.selectedMonthTimestamp);
+    return (
+      workoutDate.getMonth() === selectedMonthDate.getMonth() &&
+      workoutDate.getFullYear() === selectedMonthDate.getFullYear()
+    );
+  }
+
+  public selectMonth(monthTimestamp: number): void {
+    this.selectedMonthTimestamp = monthTimestamp;
+    this.filterWorkoutSessionsByMonth(monthTimestamp);
   }
 }

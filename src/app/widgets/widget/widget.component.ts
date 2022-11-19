@@ -94,12 +94,32 @@ export class WidgetComponent implements OnInit, OnDestroy {
     this.widgetService._widgetDeletedEvent.next(this.widgetId);
   }
 
-  public refreshWidget = () => this.refreshWidgetAction.emit();
-  public toEditMode = (): ModeEnum =>
-    (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
-  public toReadMode = (): ModeEnum => (this.mode = ModeEnum.READ);
-  public toDeleteMode = (): ModeEnum => (this.mode = ModeEnum.DELETE);
-  public isModeRead = (): boolean => this.mode === ModeEnum.READ;
-  public isModeEdit = (): boolean => this.mode === ModeEnum.EDIT;
-  public isModeDelete = (): boolean => this.mode === ModeEnum.DELETE;
+  public refreshWidget(): void {
+    console.log('Refresh widget ' + JSON.stringify(this.widgetData));
+    this.refreshWidgetAction.emit();
+  }
+
+  public toEditMode(): ModeEnum {
+    return (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
+  }
+
+  public toReadMode(): ModeEnum {
+    return (this.mode = ModeEnum.READ);
+  }
+
+  public toDeleteMode(): ModeEnum {
+    return (this.mode = ModeEnum.DELETE);
+  }
+
+  public isModeRead(): boolean {
+    return this.mode === ModeEnum.READ;
+  }
+
+  public isModeEdit(): boolean {
+    return this.mode === ModeEnum.EDIT;
+  }
+
+  public isModeDelete(): boolean {
+    return this.mode === ModeEnum.DELETE;
+  }
 }

@@ -11,12 +11,14 @@
 
   <ng-template #body>
     <ng-template [ngIf]="this.isUserLoggedIn()" [ngIfElse]="isUserNotConnected">
-      <div class="max-h-48 overflow-y-scroll">
-        <app-strava-activities [activities]="this.activities"></app-strava-activities>
-      </div>
+      <div *ngIf="this.activities.length">
+        <div class="max-h-48 overflow-y-scroll">
+          <app-strava-activities [activities]="this.activities"></app-strava-activities>
+        </div>
 
-      <div class="min-h-24 max-h-96">
-        <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
+        <div class="min-h-24 max-h-96">
+          <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
+        </div>
       </div>
     </ng-template>
 

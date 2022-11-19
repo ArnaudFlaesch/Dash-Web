@@ -10,6 +10,38 @@
   <ng-template #body>
     <div [ngSwitch]="WIDGET_VIEW">
       <div *ngSwitchCase="widgetViewEnum.WORKOUT_SESSIONS_LIST_VIEW">
+        <div class="space-y-2">
+          <h2>Sessions</h2>
+
+          <div class="flex flex-row flex-wrap space-x-1 space-y-0.5">
+            <button *ngFor="let workoutMonth of this.workoutMonths" class="workout-month"
+              [color]="this.isSelectedMonth(workoutMonth) ? 'primary' : ''" (click)="this.selectMonth(workoutMonth)"
+              mat-raised-button>
+              {{formatWorkoutDateMonth(workoutMonth) }} </button>
+          </div>
+
+          <div *ngFor="let workoutSession of this.workoutSessionsByMonth">
+            <ul>
+              <li class="workout-session">
+                <div (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate | dateFormat:'short' }}
+                </div>
+              </li>
+            </ul>
+          </div>
+          <h4>Créer une session</h4>
+          <mat-form-field id="workoutDatePickerField" appearance="fill">
+            <mat-label>Sélectionnez la date</mat-label>
+            <input [formControl]="workoutDateFormControl" matInput [matDatepicker]="workoutDatePicker" />
+            <mat-hint>{{ dateFormat }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="workoutDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #workoutDatePicker></mat-datepicker>
+          </mat-form-field>
+
+          <button mat-raised-button id="createWorkoutSessionButton" (click)="createWorkoutSession()" color="primary">
+            Créer
+          </button>
+        </div>
+
         <h2>Types d'exercices</h2>
         <div *ngFor="let workoutType of this.workoutTypes">
           <ul>
@@ -24,28 +56,6 @@
             placeholder="Nouveau type d'exercice" />
         </div>
         <button mat-raised-button id="addWorkoutTypeButton" (click)="addWorkoutType()" color="primary">Valider</button>
-
-        <h2>Sessions</h2>
-        <div *ngFor="let workoutSession of this.workoutSessions">
-          <ul>
-            <li class="workout-session">
-              <div (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate | dateFormat:'short' }}
-              </div>
-            </li>
-          </ul>
-        </div>
-        <h4>Créer une session</h4>
-        <mat-form-field id="workoutDatePickerField" appearance="fill">
-          <mat-label>Sélectionnez la date</mat-label>
-          <input [formControl]="workoutDateFormControl" matInput [matDatepicker]="workoutDatePicker" />
-          <mat-hint>{{ dateFormat }}</mat-hint>
-          <mat-datepicker-toggle matSuffix [for]="workoutDatePicker"></mat-datepicker-toggle>
-          <mat-datepicker #workoutDatePicker></mat-datepicker>
-        </mat-form-field>
-
-        <button mat-raised-button id="createWorkoutSessionButton" (click)="createWorkoutSession()" color="primary">
-          Créer
-        </button>
       </div>
 
       <div *ngSwitchCase="widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW">
