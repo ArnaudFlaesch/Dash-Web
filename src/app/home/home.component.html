@@ -1,10 +1,10 @@
 <ng-template [ngIf]="this.isDashboardLoaded" [ngIfElse]="isDashboardLoading">
   <div class="flex flex-row justify-between mx-2 mt-1">
-    <div class="flex flex-row flex-wrap space-x-0.5" cdkDropList (cdkDropListDropped)="drop($event)">
+    <div id="tab-list" class="flex flex-row flex-wrap space-x-0.5" cdkDropList (cdkDropListDropped)="drop($event)">
       <app-tab *ngFor="let tab of this.tabs"
         class="tab p-2 border-2 border-gray-800 bg-white hover:bg-blue-200 border-opacity-100 rounded"
         (click)="selectTab(tab.id)" (tabDeletedEvent)="deleteTabFromDash($event)"
-        [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag></app-tab>
+        [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag cdkDragBoundary="#tab-list"></app-tab>
       <button (click)="this.addNewTab()" id="addNewTabButton"
         class="border-2 border-gray-800 border-opacity-100 bg-green-400" mat-raised-button>
         <mat-icon title="Add a new tab" aria-hidden="false">add_circle_outline</mat-icon>
