@@ -134,11 +134,15 @@ export class WorkoutWidgetComponent {
       this.workoutWidgetService
         .createWorkoutSession(workoutDate, userId)
         .subscribe({
-          next: (addedWorkoutSession) =>
-            (this.workoutSessions = [
+          next: (addedWorkoutSession) => {
+            this.workoutSessions = [
               ...this.workoutSessions,
               addedWorkoutSession
-            ]),
+            ];
+            // Refresh de la liste des entraînements par mois
+            // au cas où l'entraînement ajouté aurait eu lieu ce mois ci
+            this.selectMonth(this.selectedMonthTimestamp);
+          },
           error: (error) =>
             this.errorHandlerService.handleError(
               error.message,
