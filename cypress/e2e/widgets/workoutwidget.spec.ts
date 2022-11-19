@@ -7,9 +7,15 @@ describe('Workout Widget tests', () => {
 
   const tabName = 'Workout';
 
-  beforeEach(() => cy.navigateToTab(tabName));
+  beforeEach(() => cy.clock(mockedDateTime).navigateToTab(tabName));
 
   before(() => cy.createNewTab(tabName));
+
+  afterEach(() =>
+    cy.clock().then((clock) => {
+      clock.restore();
+    })
+  );
 
   after(() => cy.deleteTab(tabName));
 
@@ -42,14 +48,15 @@ describe('Workout Widget tests', () => {
       .wait('@addWorkoutType')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workoutTypeName').should('have.length', 1).should('have.text', newWorkoutTypeName);
+        cy.get('.workoutTypeName')
+          .should('have.length', 1)
+          .should('have.text', newWorkoutTypeName);
       });
   });
 
   it('Should add a new workout session', () => {
     cy.intercept('POST', `/workoutWidget/createWorkoutSession`)
       .as('createWorkoutSession')
-      .clock(mockedDateTime)
       .get('.workoutTypeName')
       .should('have.length', 1)
       .get('.workout-session')
@@ -64,22 +71,17 @@ describe('Workout Widget tests', () => {
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
         cy.get('.workout-session').should('have.length', 1);
-      })
-      .clock()
-      .then((clock) => {
-        clock.restore();
       });
   });
 
   it('Should add a new workout exercise', () => {
-    cy.clock(mockedDateTime)
-      .intercept('GET', '/workoutWidget/workoutExercises?workoutSessionId*')
+    cy.intercept('GET', '/workoutWidget/workoutExercises?workoutSessionId*')
       .as('getWorkoutExercises')
       .intercept('POST', `/workoutWidget/addWorkoutExercise`)
       .as('addWorkoutExercise')
       .get('.workout-session')
       .should('have.length', 1)
-      .get('.workout-session > div:nth(0)')
+      .get('.workout-session:nth(0)')
       .click()
       .wait('@getWorkoutExercises')
       .then((request: Interception) => {
@@ -96,10 +98,6 @@ describe('Workout Widget tests', () => {
             expect(request.response.body.numberOfReps).to.equal(1);
             cy.get('.workoutNumberOfReps').should('have.text', 1);
           });
-      })
-      .clock()
-      .then((clock) => {
-        clock.restore();
       });
   });
 });

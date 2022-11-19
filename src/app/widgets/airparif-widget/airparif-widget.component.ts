@@ -108,7 +108,10 @@ export class AirParifWidgetComponent implements AfterViewInit {
           '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     );
-    if (document.getElementById(mapContainerDocumentId)) {
+    if (
+      document.getElementById(mapContainerDocumentId) &&
+      this.map === undefined
+    ) {
       this.map = L.map(mapContainerDocumentId, {
         center: [48.8502, 2.3488],
         zoom: 11,
