@@ -7,6 +7,7 @@ import {
   OnChanges,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
@@ -19,6 +20,7 @@ import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { StravaWidgetComponent } from '../strava-widget/strava-widget.component';
 import { WorkoutWidgetComponent } from '../workout-widget/workout-widget.component';
 import { AirParifWidgetComponent } from '../airparif-widget/airparif-widget.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-widget-list',
@@ -30,16 +32,19 @@ export class WidgetListComponent implements OnChanges {
   private widgetTargets: QueryList<ViewContainerRef> | undefined;
 
   @Input() widgetList: IWidgetConfig[] = [];
-  @Output() widgetDeletedEvent = new EventEmitter<number>();
+  @Input() toggleEditMode = false;
+  @Output() updateWidgetsOrderEvent = new EventEmitter<IWidgetConfig[]>();
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
-  ngOnChanges() {
-    this.cdRef.detectChanges();
-    this.createWidgets();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['widgetList']) {
+      this.cdRef.detectChanges();
+      this.createWidgets();
+    }
   }
 
-  private createWidgets() {
+  private createWidgets(): void {
     if (this.widgetTargets) {
       this.widgetTargets.forEach((target, index) => {
         target.detach();
@@ -58,14 +63,18 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector
             });
-            component.instance.city = widgetData ? (widgetData['city'] as string) : null;
+            component.instance.city = widgetData
+              ? (widgetData['city'] as string)
+              : null;
             break;
           }
           case WidgetTypes.RSS: {
             component = target.createComponent(RssWidgetComponent, {
               injector: injector
             });
-            component.instance.urlFeed = widgetData ? (widgetData['url'] as string) : null;
+            component.instance.urlFeed = widgetData
+              ? (widgetData['url'] as string)
+              : null;
             component.instance.readArticles =
               widgetData && widgetData['readArticlesGuids']
                 ? (widgetData['readArticlesGuids'] as string[])
@@ -119,5 +128,16 @@ export class WidgetListComponent implements OnChanges {
         }
       });
     }
+  }
+
+  public drop(event: CdkDragDrop<any[]>): void {
+    moveItemInArray(this.widgetList, event.previousIndex, event.currentIndex);
+    const updatedWidgets = this.widgetList.map(
+      (widget: IWidgetConfig, index: number) => {
+        widget.widgetOrder = index;
+        return widget;
+      }
+    );
+    this.updateWidgetsOrderEvent.emit(updatedWidgets);
   }
 }

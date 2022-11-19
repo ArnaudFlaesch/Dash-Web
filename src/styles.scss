@@ -18,6 +18,14 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+.header-container {
+  .header {
+    height: 2.5rem;
+    display: flex;
+    flex-direction: row;
+  }
+}
+
 mat-expansion-panel {
   mat-expansion-panel-header {
     &:hover {

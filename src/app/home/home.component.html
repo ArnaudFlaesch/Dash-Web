@@ -1,15 +1,26 @@
 <ng-template [ngIf]="this.isDashboardLoaded" [ngIfElse]="isDashboardLoading">
   <div class="flex flex-row justify-between mx-2 mt-1">
-    <div class="flex flex-row flex-wrap space-x-0.5">
-      <app-tab class="tab border-2 border-gray-800 bg-white hover:bg-blue-200 border-opacity-100 rounded"
+    <div class="flex flex-row flex-wrap space-x-0.5" cdkDropList (cdkDropListDropped)="drop($event)">
+      <app-tab *ngFor="let tab of this.tabs"
+        class="tab p-2 border-2 border-gray-800 bg-white hover:bg-blue-200 border-opacity-100 rounded"
         (click)="selectTab(tab.id)" (tabDeletedEvent)="deleteTabFromDash($event)"
-        [ngClass]="{ 'selected-item': activeTab === tab.id }" *ngFor="let tab of this.tabs" [tab]="tab"></app-tab>
+        [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag></app-tab>
       <button (click)="this.addNewTab()" id="addNewTabButton"
         class="border-2 border-gray-800 border-opacity-100 bg-green-400" mat-raised-button>
         <mat-icon title="Add a new tab" aria-hidden="false">add_circle_outline</mat-icon>
       </button>
     </div>
     <div class="sm:grid sm:grid-cols-2 md:flex md:flex-row space-x-1 items-start">
+      <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
+        <button class="bg-gray-500" (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-raised-button>
+          <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>
+        </button>
+      </ng-template>
+      <ng-template #editWidgetList>
+        <button class="bg-gray-500" (click)="this.toggleEditMode()" id="toggleEditModeButton" mat-raised-button>
+          <mat-icon title="Edit widget list" aria-hidden="false">edit</mat-icon>
+        </button>
+      </ng-template>
       <button [disabled]="this.tabs.length < 1" (click)="this.openCreateWidgetModal()" id="openAddWidgetModal"
         class="bg-green-500" mat-raised-button>
         <mat-icon title="Add a new widget" aria-hidden="false">add_circle_outline</mat-icon>
@@ -29,7 +40,8 @@
     </div>
   </div>
 
-  <app-widget-list [widgetList]="this.activeWidgets" *ngIf="this.activeWidgets.length"></app-widget-list>
+  <app-widget-list [widgetList]="this.activeWidgets" *ngIf="this.activeWidgets.length"
+    [toggleEditMode]="editModeEnabled" (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"></app-widget-list>
 </ng-template>
 
 <ng-template #isDashboardLoading>

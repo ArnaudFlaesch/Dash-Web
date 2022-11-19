@@ -58,13 +58,13 @@ export class StravaWidgetComponent {
     }
   }
 
-  public refreshWidget() {
+  public refreshWidget(): void {
     if (this.getTokenValue()) {
       this.getUserData();
     }
   }
 
-  public getUserData() {
+  public getUserData(): void {
     if (this.isUserLoggedIn()) {
       if (this.getTokenValue()) {
         this.activities = [];
@@ -75,7 +75,7 @@ export class StravaWidgetComponent {
     }
   }
 
-  public getToken(apiCode: string) {
+  public getToken(apiCode: string): void {
     this.isWidgetLoaded = false;
     this.stravaWidgetService.getToken(apiCode).subscribe({
       next: (response: ITokenData) => {
@@ -101,7 +101,7 @@ export class StravaWidgetComponent {
     });
   }
 
-  private refreshTokenFromApi() {
+  private refreshTokenFromApi(): void {
     const refreshToken = this.getRefreshTokenValue();
     if (refreshToken) {
       this.isWidgetLoaded = false;
@@ -133,7 +133,7 @@ export class StravaWidgetComponent {
     }
   }
 
-  public getAthleteData() {
+  public getAthleteData(): void {
     const token = this.getTokenValue();
     if (token) {
       this.isWidgetLoaded = false;
@@ -152,7 +152,7 @@ export class StravaWidgetComponent {
     }
   }
 
-  public getActivities() {
+  public getActivities(): void {
     const token = this.getTokenValue();
     if (token && this.isUserLoggedIn()) {
       this.isWidgetLoaded = false;
@@ -236,8 +236,10 @@ export class StravaWidgetComponent {
     };
   }
 
-  public loginToStrava = () => window.open(this.loginToStravaUrl, '_self');
-  public getAthleteProfileUrl = (athleteId: number) =>
+  public loginToStrava = (): Window | null =>
+    window.open(this.loginToStravaUrl, '_self');
+
+  public getAthleteProfileUrl = (athleteId: number): string =>
     `${this.STRAVA_ATHLETE_URL}${athleteId}`;
 
   public getTokenValue(): string | null {

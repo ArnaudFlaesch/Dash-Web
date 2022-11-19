@@ -23,7 +23,7 @@ export class RssFeedComponent {
     return div.textContent || div.innerText || '';
   }
 
-  public formatTitleForArticle(article: IArticle) {
+  public formatTitleForArticle(article: IArticle): string {
     const articlePubDate = article.pubDate ? article.pubDate : article.updated;
     const articleDate = new Date(articlePubDate ? articlePubDate : '');
     const date = this.getPublicationDateToDisplay(articleDate);

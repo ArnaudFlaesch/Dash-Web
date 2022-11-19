@@ -50,7 +50,7 @@ export class WeatherWidgetComponent {
     public dateUtils: DateUtilsService
   ) {}
 
-  public refreshWidget() {
+  public refreshWidget(): void {
     if (this.city) {
       this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
         next: (weatherData) => (this.weather = weatherData),
@@ -109,7 +109,7 @@ export class WeatherWidgetComponent {
     }
   }
 
-  public getWeatherChart() {
+  public getWeatherChart(): void {
     this.weatherChart = {
       labels: this.forecastToDisplay.map((forecastDay) => {
         if (this.forecastMode === ForecastMode.DAY) {
@@ -148,15 +148,16 @@ export class WeatherWidgetComponent {
     );
   }
 
-  public isForecastModeWeek = () => this.forecastMode === ForecastMode.WEEK;
+  public isForecastModeWeek = (): boolean =>
+    this.forecastMode === ForecastMode.WEEK;
 
-  public selectDayForecast = (date: Date) => {
+  public selectDayForecast = (date: Date): void => {
     this.forecastMode = ForecastMode.DAY;
     this.selectedDayForecast = date;
     this.updateChartData();
   };
 
-  public selectWeekForecast = () => {
+  public selectWeekForecast = (): void => {
     this.forecastMode = ForecastMode.WEEK;
     this.updateChartData();
   };
