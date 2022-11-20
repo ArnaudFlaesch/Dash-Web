@@ -55,11 +55,13 @@ export class GameDetailsComponent implements OnInit {
       });
   }
 
-  public getCompletionStatus = (): number =>
-    Math.round(
+  public getCompletionStatus(): number {
+    return Math.round(
       (this.completedAchievements.length / this.achievements.length) * 100
     );
+  }
 
-  public getAppIdLink = (): string =>
-    `${this.steamWidgetService.STEAM_COMMUNITY_URL}${this.gameInfo?.appid}`;
+  public getAppIdLink(): string {
+    return `${this.steamWidgetService.STEAM_COMMUNITY_URL}${this.gameInfo?.appid}`;
+  }
 }

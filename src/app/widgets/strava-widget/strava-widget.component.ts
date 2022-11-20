@@ -236,11 +236,13 @@ export class StravaWidgetComponent {
     };
   }
 
-  public loginToStrava = (): Window | null =>
+  public loginToStrava(): void {
     window.open(this.loginToStravaUrl, '_self');
+  }
 
-  public getAthleteProfileUrl = (athleteId: number): string =>
-    `${this.STRAVA_ATHLETE_URL}${athleteId}`;
+  public getAthleteProfileUrl(athleteId: number): string {
+    return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
+  }
 
   public getTokenValue(): string | null {
     return window.localStorage.getItem(this.STORAGE_STRAVA_TOKEN_KEY);

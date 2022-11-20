@@ -189,8 +189,9 @@ export class WorkoutWidgetComponent {
       });
   }
 
-  public getWidgetData = (): Record<string, string> =>
-    <Record<string, string>>{};
+  public getWidgetData(): Record<string, string> {
+    return <Record<string, string>>{};
+  }
 
   public decrementExerciceNumberOfReps(workoutTypeId: number): void {
     this.updateNumberOfReps(workoutTypeId, -1);

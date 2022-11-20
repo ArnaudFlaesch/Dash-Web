@@ -169,25 +169,32 @@ export class AirParifWidgetComponent implements AfterViewInit {
     );
   }
 
-  public isForecastModeToday = (): boolean =>
+  public isForecastModeToday(): boolean {
     this.forecastMode === ForecastMode.TODAY;
-  public isForecastModeTomorrow = (): boolean =>
-    this.forecastMode === ForecastMode.TOMORROW;
+  }
 
-  public isFormValid = (): boolean =>
-    this.airParifApiKey !== null &&
-    this.airParifApiKey.length > 0 &&
-    this.communeInseeCode !== null &&
-    this.communeInseeCode.length > 0;
+  public isForecastModeTomorrow(): boolean {
+    return this.forecastMode === ForecastMode.TOMORROW;
+  }
 
-  public getWidgetData = (): {
+  public isFormValid(): boolean {
+    return (
+      this.airParifApiKey !== null &&
+      this.airParifApiKey.length > 0 &&
+      this.communeInseeCode !== null &&
+      this.communeInseeCode.length > 0
+    );
+  }
+
+  public getWidgetData(): {
     airParifApiKey: string;
     communeInseeCode: string;
-  } | null =>
-    this.airParifApiKey && this.communeInseeCode
+  } | null {
+    return this.airParifApiKey && this.communeInseeCode
       ? {
           airParifApiKey: this.airParifApiKey,
           communeInseeCode: this.communeInseeCode
         }
       : null;
+  }
 }
