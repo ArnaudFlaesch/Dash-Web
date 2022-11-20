@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
 
@@ -16,7 +16,7 @@ import {
   templateUrl: './airparif-widget.component.html',
   styleUrls: ['./airparif-widget.component.scss']
 })
-export class AirParifWidgetComponent implements AfterViewInit {
+export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
   private map: L.Map | undefined;
 
   private airParifUrl = 'https://magellan.airparif.asso.fr/geoserver/';
@@ -65,6 +65,12 @@ export class AirParifWidgetComponent implements AfterViewInit {
     this.initMap();
   }
 
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
+    }
+  }
+
   public refreshWidget(): void {
     if (this.airParifApiKey && this.communeInseeCode) {
       this.airParifWidgetService
@@ -108,10 +114,7 @@ export class AirParifWidgetComponent implements AfterViewInit {
           '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     );
-    if (
-      document.getElementById(mapContainerDocumentId) &&
-      this.map === undefined
-    ) {
+    if (document.getElementById(mapContainerDocumentId)) {
       this.map = L.map(mapContainerDocumentId, {
         center: [48.8502, 2.3488],
         zoom: 11,
@@ -170,7 +173,7 @@ export class AirParifWidgetComponent implements AfterViewInit {
   }
 
   public isForecastModeToday(): boolean {
-    this.forecastMode === ForecastMode.TODAY;
+    return this.forecastMode === ForecastMode.TODAY;
   }
 
   public isForecastModeTomorrow(): boolean {
