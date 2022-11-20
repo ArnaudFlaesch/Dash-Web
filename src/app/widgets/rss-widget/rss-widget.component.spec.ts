@@ -131,4 +131,13 @@ describe('RssWidgetComponent', () => {
     expect(spectator.component.isWidgetLoaded).toEqual(true);
     expect(spectator.component.readArticles.length).toEqual(feedLength);
   });
+
+  it('Should get widget data and check form', () => {
+    expect(spectator.component.getWidgetData()).toEqual(null);
+    expect(spectator.component.isFormValid()).toEqual(false);
+    const url = 'localhost';
+    spectator.component.urlFeed = url;
+    expect(spectator.component.getWidgetData()).toEqual({ url: url });
+    expect(spectator.component.isFormValid()).toEqual(true);
+  });
 });
