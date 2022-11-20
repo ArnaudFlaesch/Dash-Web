@@ -142,6 +142,13 @@ describe('WorkoutWidgetComponent', () => {
     expect(spectator.component.workoutSessions).toEqual([
       mockedAddNewWorkoutSessionResponse
     ]);
+
+    spectator.component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
+    expect(spectator.component.currentWorkoutSessionToEdit).toEqual(
+      mockedAddNewWorkoutSessionResponse
+    );
+    spectator.component.backToWorkoutSessionsList();
+    expect(spectator.component.currentWorkoutSessionToEdit).toEqual(null);
   });
 
   it('Should format timestamp', () => {
