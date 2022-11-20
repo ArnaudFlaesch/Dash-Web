@@ -28,7 +28,6 @@ export class WorkoutWidgetComponent {
   public workouts: IWorkoutExercise[] = [];
   public workoutTypes: IWorkoutType[] = [];
   public workoutSessions: IWorkoutSession[] = [];
-  public workoutExercises: IWorkoutExercise[] = [];
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl('');
 
@@ -37,10 +36,9 @@ export class WorkoutWidgetComponent {
   public workoutSessionsByMonth: IWorkoutSession[] = [];
 
   public isWidgetLoaded = false;
+  public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
   public dateFormat = DEFAULT_DATE_FORMAT;
-
-  public currentWorkoutSessionToEdit: IWorkoutSession | null = null;
 
   public widgetViewEnum = WORKOUT_WIDGET_VIEW;
 
@@ -51,13 +49,8 @@ export class WorkoutWidgetComponent {
     "Erreur lors de la récupération de la liste des types d'exercices.";
   private ERROR_GETTING_WORKOUT_SESSIONS =
     "Erreur lors de la récupération de la liste des sessions d'exercices.";
-  private ERROR_GETTING_WORKOUT_EXERCISES =
-    'Erreur lors de la récupération des exercices.';
-
   private ERROR_CREATING_WORKOUT_TYPE =
     "Erreur lors de la création d'un type d'exercice.";
-  private ERROR_CREATING_WORKOUT_EXERCISE =
-    "Erreur lors de l'ajout d'un exercice.";
 
   constructor(
     private errorHandlerService: ErrorHandlerService,
@@ -99,13 +92,11 @@ export class WorkoutWidgetComponent {
   public editWorkoutSession(workoutSession: IWorkoutSession): void {
     this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.EDIT_WORKOUT_SESSION_VIEW;
     this.currentWorkoutSessionToEdit = workoutSession;
-    this.fetchWorkoutExercisesBySessionId(this.currentWorkoutSessionToEdit.id);
   }
 
   public backToWorkoutSessionsList(): void {
     this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
-    this.currentWorkoutSessionToEdit = null;
-    this.workoutExercises = [];
+    this.currentWorkoutSessionToEdit = undefined;
   }
 
   public addWorkoutType(): void {
@@ -155,73 +146,8 @@ export class WorkoutWidgetComponent {
     }
   }
 
-  public fetchWorkoutExercisesBySessionId(workoutSessionId: number): void {
-    this.workoutWidgetService.getWorkoutExercises(workoutSessionId).subscribe({
-      next: (workoutExercises) => (this.workoutExercises = workoutExercises),
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_GETTING_WORKOUT_EXERCISES
-        )
-    });
-  }
-
-  public updateWorkoutExercise(
-    workoutSessionId: number,
-    workoutTypeId: number,
-    numberOfReps: number
-  ): void {
-    this.workoutWidgetService
-      .updateWorkoutExercise(workoutSessionId, workoutTypeId, numberOfReps)
-      .subscribe({
-        next: (addedWorkoutExercise) =>
-          (this.workoutExercises = [
-            ...this.workoutExercises.filter(
-              (ex) => ex.workoutTypeId !== workoutTypeId
-            ),
-            addedWorkoutExercise
-          ]),
-        error: (error) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_CREATING_WORKOUT_EXERCISE
-          )
-      });
-  }
-
   public getWidgetData(): Record<string, string> {
     return <Record<string, string>>{};
-  }
-
-  public decrementExerciceNumberOfReps(workoutTypeId: number): void {
-    this.updateNumberOfReps(workoutTypeId, -1);
-  }
-
-  public incrementExerciceNumberOfReps(workoutTypeId: number): void {
-    this.updateNumberOfReps(workoutTypeId, 1);
-  }
-
-  private updateNumberOfReps(
-    workoutTypeId: number,
-    numberOfRepsToAdd: number
-  ): void {
-    const oldNumberOfReps = this.getExerciceNumberOfReps(workoutTypeId);
-    if (this.currentWorkoutSessionToEdit) {
-      this.updateWorkoutExercise(
-        this.currentWorkoutSessionToEdit.id,
-        workoutTypeId,
-        oldNumberOfReps + numberOfRepsToAdd
-      );
-    }
-  }
-
-  public getExerciceNumberOfReps(workoutTypeId: number): number {
-    const workoutType = this.workoutExercises.find(
-      (workoutExercise) => workoutExercise.workoutTypeId === workoutTypeId
-    );
-    if (workoutType) {
-      return workoutType.numberOfReps;
-    } else return 0;
   }
 
   public getWorkoutMonths(): number[] {
