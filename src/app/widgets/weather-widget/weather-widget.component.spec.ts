@@ -163,118 +163,130 @@ describe('WeatherWidgetComponent', () => {
     }
   };
 
-  it('should create', () => {
-    spectator = createComponent();
-    weatherWidgetService = createHttp();
-
-    expect(spectator.component.getWidgetData()).toEqual(null);
-    expect(spectator.component.isFormValid()).toEqual(false);
-    const cityName = 'Paris';
-    expect(spectator.component.cityData).toEqual(undefined);
-    expect(spectator.component.forecastResponse).toEqual([]);
-    expect(spectator.component.isWidgetLoaded()).toEqual(false);
-    spectator.component.city = cityName;
-    expect(spectator.component.isFormValid()).toEqual(true);
-    expect(spectator.component.getWidgetData()).toEqual({ city: cityName });
-    spectator.component.refreshWidget();
-
-    const dataRequests = weatherWidgetService.expectConcurrent([
-      {
-        url:
-          environment.backend_url + '/weatherWidget/weather?city=' + cityName,
-        method: HttpMethod.GET
-      },
-      {
-        url:
-          environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
-        method: HttpMethod.GET
-      }
-    ]);
-
-    weatherWidgetService.flushAll(dataRequests, [weatherData, forecastData]);
-
-    expect(spectator.component.cityData?.name).toEqual(cityName);
-    expect(spectator.component.forecastResponse.length).toEqual(
-      forecastData.list.length
-    );
-    expect(spectator.component.isWidgetLoaded()).toEqual(true);
-
-    if (spectator.component.cityData && spectator.component.weatherChart) {
-      expect(spectator.component.weatherChart.datasets).toEqual([
-        { borderColor: 'orange', data: [7.57, 6.76], label: 'Température' },
-        { borderColor: 'red', data: [5.19, 3.67], label: 'Ressenti' }
-      ]);
-      spectator.component.selectDayForecast(
-        new Date(spectator.component.forecastDays[0])
-      );
-      expect(
-        spectator.component
-          .filterForecastByMode(
-            spectator.component.cityData,
-            spectator.component.forecastResponse
-          )
-          .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
-      ).toEqual(['06-03-2022', '06-03-2022']);
-      const dateToSelect = new Date(spectator.component.forecastDays[1]);
-      spectator.component.selectDayForecast(dateToSelect);
-      expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(true);
-      expect(
-        spectator.component
-          .filterForecastByMode(
-            spectator.component.cityData,
-            spectator.component.forecastResponse
-          )
-          .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
-      ).toEqual(['07-03-2022']);
-      spectator.component.selectWeekForecast();
-      expect(
-        spectator.component
-          .filterForecastByMode(
-            spectator.component.cityData,
-            spectator.component.forecastResponse
-          )
-          .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
-      ).toEqual(['09-03-2022']);
-    }
-  });
-
-  it('Should format date', () => {
-    spectator = createComponent();
-    weatherWidgetService = createHttp();
-
-    const date = new Date(2022, 5, 1);
-    expect(spectator.component.formatDate(date)).toEqual('01/06');
-  });
-
-  it('should display error messages', () => {
-    const errorHandlerService = createSpyObject(ErrorHandlerService);
-
-    spectator = createComponent({
-      providers: [
-        { provide: ErrorHandlerService, useValue: errorHandlerService }
-      ]
+  describe('Normal cases', () => {
+    beforeEach(() => {
+      spectator = createComponent();
+      weatherWidgetService = createHttp();
     });
-    weatherWidgetService = createHttp();
 
-    const cityName = 'Paris';
-    spectator.component.city = cityName;
-    spectator.component.refreshWidget();
+    it('should create', () => {
+      expect(spectator.component.getWidgetData()).toEqual(null);
+      expect(spectator.component.isFormValid()).toEqual(false);
+      const cityName = 'Paris';
+      expect(spectator.component.cityData).toEqual(undefined);
+      expect(spectator.component.forecastResponse).toEqual([]);
+      expect(spectator.component.isWidgetLoaded()).toEqual(false);
+      spectator.component.city = cityName;
+      expect(spectator.component.isFormValid()).toEqual(true);
+      expect(spectator.component.getWidgetData()).toEqual({ city: cityName });
+      spectator.component.refreshWidget();
 
-    weatherWidgetService.controller
-      .expectOne(
-        environment.backend_url + '/weatherWidget/weather?city=' + cityName,
-        HttpMethod.GET
-      )
-      .error(new ProgressEvent('Server error'));
-    weatherWidgetService.controller
-      .expectOne(
-        environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
-        HttpMethod.GET
-      )
-      .error(new ProgressEvent('Server error'));
+      const dataRequests = weatherWidgetService.expectConcurrent([
+        {
+          url:
+            environment.backend_url + '/weatherWidget/weather?city=' + cityName,
+          method: HttpMethod.GET
+        },
+        {
+          url:
+            environment.backend_url +
+            '/weatherWidget/forecast?city=' +
+            cityName,
+          method: HttpMethod.GET
+        }
+      ]);
 
-    expect(spectator.component.weather).toEqual(undefined);
-    expect(spectator.component.forecastResponse).toEqual([]);
-    expect(errorHandlerService.handleError).toHaveBeenCalledTimes(2);
+      weatherWidgetService.flushAll(dataRequests, [weatherData, forecastData]);
+
+      expect(spectator.component.cityData?.name).toEqual(cityName);
+      expect(spectator.component.forecastResponse.length).toEqual(
+        forecastData.list.length
+      );
+      expect(spectator.component.isWidgetLoaded()).toEqual(true);
+
+      if (spectator.component.cityData && spectator.component.weatherChart) {
+        expect(spectator.component.weatherChart.datasets).toEqual([
+          { borderColor: 'orange', data: [7.57, 6.76], label: 'Température' },
+          { borderColor: 'red', data: [5.19, 3.67], label: 'Ressenti' }
+        ]);
+        expect(spectator.component.isForecastModeWeek()).toEqual(false);
+        spectator.component.selectDayForecast(
+          new Date(spectator.component.forecastDays[0])
+        );
+        expect(
+          spectator.component
+            .filterForecastByMode(
+              spectator.component.cityData,
+              spectator.component.forecastResponse
+            )
+            .map((forecast) =>
+              format(new Date(forecast.dt * 1000), 'dd-MM-yyyy')
+            )
+        ).toEqual(['06-03-2022', '06-03-2022']);
+        const dateToSelect = new Date(spectator.component.forecastDays[1]);
+        spectator.component.selectDayForecast(dateToSelect);
+        expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(true);
+        expect(
+          spectator.component
+            .filterForecastByMode(
+              spectator.component.cityData,
+              spectator.component.forecastResponse
+            )
+            .map((forecast) =>
+              format(new Date(forecast.dt * 1000), 'dd-MM-yyyy')
+            )
+        ).toEqual(['07-03-2022']);
+        spectator.component.selectWeekForecast();
+        expect(
+          spectator.component
+            .filterForecastByMode(
+              spectator.component.cityData,
+              spectator.component.forecastResponse
+            )
+            .map((forecast) =>
+              format(new Date(forecast.dt * 1000), 'dd-MM-yyyy')
+            )
+        ).toEqual(['09-03-2022']);
+      }
+    });
+
+    it('Should format date', () => {
+      const date = new Date(2022, 5, 1);
+      expect(spectator.component.formatDate(date)).toEqual('01/06');
+    });
+  });
+
+  describe('Error cases', () => {
+    it('should display error messages', () => {
+      const errorHandlerService = createSpyObject(ErrorHandlerService);
+
+      spectator = createComponent({
+        providers: [
+          { provide: ErrorHandlerService, useValue: errorHandlerService }
+        ]
+      });
+      weatherWidgetService = createHttp();
+
+      const cityName = 'Paris';
+      spectator.component.city = cityName;
+      spectator.component.refreshWidget();
+
+      weatherWidgetService.controller
+        .expectOne(
+          environment.backend_url + '/weatherWidget/weather?city=' + cityName,
+          HttpMethod.GET
+        )
+        .error(new ProgressEvent('Server error'));
+      weatherWidgetService.controller
+        .expectOne(
+          environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
+          HttpMethod.GET
+        )
+        .error(new ProgressEvent('Server error'));
+
+      expect(spectator.component.weather).toEqual(undefined);
+      expect(spectator.component.forecastResponse).toEqual([]);
+      expect(errorHandlerService.handleError).toHaveBeenCalledTimes(2);
+    });
   });
 });

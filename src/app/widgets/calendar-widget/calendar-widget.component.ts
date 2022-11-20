@@ -114,20 +114,22 @@ export class CalendarWidgetComponent {
     return this.calendarUrls && this.calendarUrls.length > 0;
   }
 
-  public closeOpenMonthViewDay(): boolean {
-    return (this.activeDayIsOpen = false);
+  public closeOpenMonthViewDay(): void {
+    this.activeDayIsOpen = false;
   }
 
-  public setView(view: CalendarView): CalendarView {
-    return (this.view = view);
+  public setView(view: CalendarView): void {
+    this.view = view;
   }
 
   public isCalendarViewMonth(): boolean {
     return this.view === CalendarView.Month;
   }
+
   public isCalendarViewWeek(): boolean {
     return this.view === CalendarView.Week;
   }
+
   public isCalendarViewDay(): boolean {
     return this.view === CalendarView.Day;
   }
