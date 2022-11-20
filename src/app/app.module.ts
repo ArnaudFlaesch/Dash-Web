@@ -62,6 +62,7 @@ import { StravaActivitiesComponent } from './widgets/strava-widget/strava-activi
 import { WeatherForecastComponent } from './widgets/weather-widget/weather-forecast/weather-forecast.component';
 import { WeatherTodayComponent } from './widgets/weather-widget/weather-today/weather-today.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-session-edit/workout-session-edit.component';
 
 registerLocaleData(localeFr);
 
@@ -91,7 +92,8 @@ registerLocaleData(localeFr);
     RssFeedComponent,
     StravaActivitiesComponent,
     WeatherForecastComponent,
-    WeatherTodayComponent
+    WeatherTodayComponent,
+    WorkoutSessionEditComponent
   ],
   imports: [
     BrowserAnimationsModule,

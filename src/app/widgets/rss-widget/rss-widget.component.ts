@@ -95,8 +95,11 @@ export class RssWidgetComponent {
       });
   }
 
-  public isFormValid = (): boolean =>
-    this.urlFeed !== null && this.urlFeed.length > 0;
-  public getWidgetData = (): { url: string } | null =>
-    this.urlFeed ? { url: this.urlFeed } : null;
+  public isFormValid(): boolean {
+    return this.urlFeed !== null && this.urlFeed.length > 0;
+  }
+
+  public getWidgetData(): { url: string } | null {
+    return this.urlFeed ? { url: this.urlFeed } : null;
+  }
 }

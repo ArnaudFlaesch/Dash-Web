@@ -55,7 +55,8 @@ export class RssFeedComponent {
   }
 
   public onOpenDetail(guid: string): void {
-    if (!this.readArticles.includes(guid)) {
+    if (!this.isArticleRead(guid)) {
+      console.log(guid);
       this.markArticleAsReadEvent.emit(guid);
     }
   }

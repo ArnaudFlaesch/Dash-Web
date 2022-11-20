@@ -88,11 +88,15 @@ describe('SteamWidgetComponent', () => {
 
     const dataRequests = steamWidgetService.expectConcurrent([
       {
-        url: environment.backend_url + `/steamWidget/playerData?steamUserId=${steamUserId}`,
+        url:
+          environment.backend_url +
+          `/steamWidget/playerData?steamUserId=${steamUserId}`,
         method: HttpMethod.GET
       },
       {
-        url: environment.backend_url + `/steamWidget/ownedGames?steamUserId=${steamUserId}`,
+        url:
+          environment.backend_url +
+          `/steamWidget/ownedGames?steamUserId=${steamUserId}`,
         method: HttpMethod.GET
       }
     ]);
@@ -100,7 +104,9 @@ describe('SteamWidgetComponent', () => {
     steamWidgetService.flushAll(dataRequests, [playerData, ownedGamesData]);
 
     expect(spectator.component.isWidgetLoaded()).toEqual(true);
-    expect(spectator.component.playerData?.personaname).toEqual(playerData[0].personaname);
+    expect(spectator.component.playerData?.personaname).toEqual(
+      playerData[0].personaname
+    );
     expect(spectator.component.ownedGames.length).toEqual(3);
   });
 
@@ -117,7 +123,8 @@ describe('SteamWidgetComponent', () => {
     expect(spectator.component.pageNumber).toEqual(0);
     const steamUserId = '1337';
     spectator.component.steamUserId = steamUserId;
-    spectator.component.ownedGames = ownedGamesData.games as unknown as IGameInfo[];
+    spectator.component.ownedGames =
+      ownedGamesData.games as unknown as IGameInfo[];
     spectator.component.onPageChanged(pageEvent);
     expect(spectator.component.pageNumber).toEqual(pageIndex);
 
@@ -132,5 +139,16 @@ describe('SteamWidgetComponent', () => {
     expect(spectator.component.getGameImgSrc('13', 'URL')).toEqual(
       'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/13/URL.jpg'
     );
+  });
+
+  it('Should get widget data and check form', () => {
+    expect(spectator.component.getWidgetData()).toEqual(null);
+    expect(spectator.component.isFormValid()).toEqual(false);
+    const steamUserId = '1337';
+    spectator.component.steamUserId = steamUserId;
+    expect(spectator.component.getWidgetData()).toEqual({
+      steamUserId: steamUserId
+    });
+    expect(spectator.component.isFormValid()).toEqual(true);
   });
 });

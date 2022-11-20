@@ -87,12 +87,15 @@ export class SteamWidgetComponent {
       });
   }
 
-  public getGameImgSrc = (gameAppId: string, imgIconUrl: string): string =>
-    `${this.steamWidgetService.STEAM_IMAGE_URL}${gameAppId}/${imgIconUrl}.jpg`;
+  public getGameImgSrc(gameAppId: string, imgIconUrl: string): string {
+    return `${this.steamWidgetService.STEAM_IMAGE_URL}${gameAppId}/${imgIconUrl}.jpg`;
+  }
 
-  public getWidgetData = (): {
+  public getWidgetData(): {
     steamUserId: string;
-  } | null => (this.steamUserId ? { steamUserId: this.steamUserId } : null);
+  } | null {
+    return this.steamUserId ? { steamUserId: this.steamUserId } : null;
+  }
 
   public onPageChanged(event: PageEvent): void {
     if (this.steamUserId) {

@@ -148,19 +148,20 @@ export class WeatherWidgetComponent {
     );
   }
 
-  public isForecastModeWeek = (): boolean =>
-    this.forecastMode === ForecastMode.WEEK;
+  public isForecastModeWeek(): boolean {
+    return this.forecastMode === ForecastMode.WEEK;
+  }
 
-  public selectDayForecast = (date: Date): void => {
+  public selectDayForecast(date: Date): void {
     this.forecastMode = ForecastMode.DAY;
     this.selectedDayForecast = date;
     this.updateChartData();
-  };
+  }
 
-  public selectWeekForecast = (): void => {
+  public selectWeekForecast(): void {
     this.forecastMode = ForecastMode.WEEK;
     this.updateChartData();
-  };
+  }
 
   private updateChartData(): void {
     if (this.cityData) {
@@ -172,8 +173,9 @@ export class WeatherWidgetComponent {
     }
   }
 
-  public getWidgetData = (): { city: string } | null =>
-    this.city ? { city: this.city } : null;
+  public getWidgetData(): { city: string } | null {
+    return this.city ? { city: this.city } : null;
+  }
 
   public isFormValid(): boolean {
     return this.city !== null && this.city.length > 0;

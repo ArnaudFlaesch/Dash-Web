@@ -1,4 +1,10 @@
-import { AfterViewInit, Component } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild
+} from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
 
@@ -16,7 +22,9 @@ import {
   templateUrl: './airparif-widget.component.html',
   styleUrls: ['./airparif-widget.component.scss']
 })
-export class AirParifWidgetComponent implements AfterViewInit {
+export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('map') mapContainer: ElementRef | undefined;
+
   private map: L.Map | undefined;
 
   private airParifUrl = 'https://magellan.airparif.asso.fr/geoserver/';
@@ -41,6 +49,13 @@ export class AirParifWidgetComponent implements AfterViewInit {
   private airParifForecastTodayLayer: L.Layer;
   private airParifForecastTomorrowLayer: L.Layer;
 
+  private sidebarControl = L.control.sidebar({
+    autopan: false,
+    closeButton: true,
+    container: 'sidebar',
+    position: 'left'
+  });
+
   constructor(
     private airParifWidgetService: AirParifWidgetService,
     private errorHandlerService: ErrorHandlerService
@@ -63,6 +78,12 @@ export class AirParifWidgetComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initMap();
+  }
+
+  ngOnDestroy(): void {
+    this.map?.removeControl(this.sidebarControl);
+    this.map?.off();
+    this.map?.remove();
   }
 
   public refreshWidget(): void {
@@ -94,8 +115,6 @@ export class AirParifWidgetComponent implements AfterViewInit {
   }
 
   private initMap(): void {
-    const mapContainerDocumentId = 'map';
-
     const southWest = L.latLng(48.12, 1.44),
       northEast = L.latLng(49.24, 3.56),
       bounds = L.latLngBounds(southWest, northEast);
@@ -108,11 +127,10 @@ export class AirParifWidgetComponent implements AfterViewInit {
           '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     );
-    if (
-      document.getElementById(mapContainerDocumentId) &&
-      this.map === undefined
-    ) {
-      this.map = L.map(mapContainerDocumentId, {
+    console.log(this.mapContainer);
+
+    if (this.mapContainer) {
+      this.map = L.map(this.mapContainer.nativeElement, {
         center: [48.8502, 2.3488],
         zoom: 11,
         maxBounds: bounds,
@@ -121,14 +139,7 @@ export class AirParifWidgetComponent implements AfterViewInit {
 
       L.control.layers({ OpenStreetMap: openStreetMapLayer }).addTo(this.map);
 
-      L.control
-        .sidebar({
-          autopan: false,
-          closeButton: true,
-          container: 'sidebar',
-          position: 'left'
-        })
-        .addTo(this.map);
+      this.sidebarControl.addTo(this.map);
     }
   }
 
@@ -169,25 +180,32 @@ export class AirParifWidgetComponent implements AfterViewInit {
     );
   }
 
-  public isForecastModeToday = (): boolean =>
-    this.forecastMode === ForecastMode.TODAY;
-  public isForecastModeTomorrow = (): boolean =>
-    this.forecastMode === ForecastMode.TOMORROW;
+  public isForecastModeToday(): boolean {
+    return this.forecastMode === ForecastMode.TODAY;
+  }
 
-  public isFormValid = (): boolean =>
-    this.airParifApiKey !== null &&
-    this.airParifApiKey.length > 0 &&
-    this.communeInseeCode !== null &&
-    this.communeInseeCode.length > 0;
+  public isForecastModeTomorrow(): boolean {
+    return this.forecastMode === ForecastMode.TOMORROW;
+  }
 
-  public getWidgetData = (): {
+  public isFormValid(): boolean {
+    return (
+      this.airParifApiKey !== null &&
+      this.airParifApiKey.length > 0 &&
+      this.communeInseeCode !== null &&
+      this.communeInseeCode.length > 0
+    );
+  }
+
+  public getWidgetData(): {
     airParifApiKey: string;
     communeInseeCode: string;
-  } | null =>
-    this.airParifApiKey && this.communeInseeCode
+  } | null {
+    return this.airParifApiKey && this.communeInseeCode
       ? {
           airParifApiKey: this.airParifApiKey,
           communeInseeCode: this.communeInseeCode
         }
       : null;
+  }
 }

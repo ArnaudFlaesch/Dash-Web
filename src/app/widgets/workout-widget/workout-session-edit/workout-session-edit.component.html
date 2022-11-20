@@ -1,0 +1,19 @@
+Edit
+<div *ngIf="currentWorkoutSessionToEdit">
+    <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat:'short' }}</h3>
+
+    <ul *ngFor="let workoutType of this.workoutTypes">
+        <li>
+            <span>{{ workoutType.name }}</span>
+            <button class="substractRepToWorkoutButton" mat-icon-button
+                (click)="decrementExerciceNumberOfReps(workoutType.id)">
+                <mat-icon>remove</mat-icon>
+            </button>
+            <span class="workoutNumberOfReps">{{ getExerciceNumberOfReps(workoutType.id) }}</span>
+            <button class="addRepToWorkoutButton" mat-icon-button
+                (click)="incrementExerciceNumberOfReps(workoutType.id)">
+                <mat-icon>add</mat-icon>
+            </button>
+        </li>
+    </ul>
+</div>

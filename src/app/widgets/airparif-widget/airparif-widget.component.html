@@ -24,7 +24,7 @@
 
   <ng-template #body>
 
-    <div id="sidebar" class="leaflet-sidebar collapsed">
+    <div id="sidebar" class="leaflet-sidebar collapsed" *ngIf="isWidgetLoaded">
       <div class="leaflet-sidebar-tabs">
         <ul role="tablist">
           <li>
@@ -91,7 +91,7 @@
 
     <div class="map-container">
       <div class="map-frame">
-        <div id="map"></div>
+        <div id="map" #map></div>
       </div>
     </div>
   </ng-template>

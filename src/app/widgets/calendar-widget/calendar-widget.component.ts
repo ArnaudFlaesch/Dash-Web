@@ -89,36 +89,50 @@ export class CalendarWidgetComponent {
     this.events = [...this.events, ...parsedEvents];
   }
 
-  public getWidgetConfig = (): { calendarUrls: string[] } | null =>
-    this.calendarUrls && this.calendarUrls.length
+  public getWidgetConfig(): { calendarUrls: string[] } | null {
+    return this.calendarUrls && this.calendarUrls.length
       ? { calendarUrls: this.calendarUrls }
       : null;
+  }
 
-  public onCalendarUrlAdded = (): string[] =>
-    (this.calendarUrls = [...this.calendarUrls, '']);
+  public onCalendarUrlAdded(): void {
+    this.calendarUrls = [...this.calendarUrls, ''];
+  }
 
-  public removeCalendarUrl = (calendarUrl: string): string[] =>
-    (this.calendarUrls = this.calendarUrls.filter(
-      (url) => url !== calendarUrl
-    ));
+  public removeCalendarUrl(calendarUrl: string): void {
+    this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl);
+  }
 
-  public onCalendarUrlUpdated = (event: Event): void => {
+  public onCalendarUrlUpdated(event: Event): void {
     this.calendarUrls = this.calendarUrls.map((url: string, index: number) => {
       const eventTarget = event.target as HTMLInputElement;
       return index.toString() === eventTarget?.id ? eventTarget.value : url;
     });
-  };
+  }
 
-  public isFormValid = (): boolean =>
-    this.calendarUrls && this.calendarUrls.length > 0;
+  public isFormValid(): boolean {
+    return this.calendarUrls && this.calendarUrls.length > 0;
+  }
 
-  public closeOpenMonthViewDay = (): boolean => (this.activeDayIsOpen = false);
+  public closeOpenMonthViewDay(): void {
+    this.activeDayIsOpen = false;
+  }
 
-  public setView = (view: CalendarView): CalendarView => (this.view = view);
+  public setView(view: CalendarView): void {
+    this.view = view;
+  }
 
-  public isCalendarViewMonth = (): boolean => this.view === CalendarView.Month;
-  public isCalendarViewWeek = (): boolean => this.view === CalendarView.Week;
-  public isCalendarViewDay = (): boolean => this.view === CalendarView.Day;
+  public isCalendarViewMonth(): boolean {
+    return this.view === CalendarView.Month;
+  }
+
+  public isCalendarViewWeek(): boolean {
+    return this.view === CalendarView.Week;
+  }
+
+  public isCalendarViewDay(): boolean {
+    return this.view === CalendarView.Day;
+  }
 
   public handleEvent(action: string, event: CalendarEvent): void {
     this.dialog.open(EventDetailModalComponent, {

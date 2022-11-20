@@ -17,11 +17,13 @@ export class StravaActivitiesComponent {
     }  ${Math.round(activity.distance * 1000) / 1000000} kms`;
   }
 
-  public formatDate = (date: string): string =>
-    format(new Date(date), 'dd MMM');
+  public formatDate(date: string): string {
+    return format(new Date(date), 'dd MMM');
+  }
 
-  public roundDistance = (distance: number): number =>
-    Math.round(distance * 100) / 100;
+  public roundDistance(distance: number): number {
+    return Math.round(distance * 100) / 100;
+  }
 
   public convertDecimalTimeToTime(decimalTime: number): number {
     const decimalPart = decimalTime % 1;

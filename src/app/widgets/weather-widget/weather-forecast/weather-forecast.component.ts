@@ -37,8 +37,8 @@ export class WeatherForecastComponent {
     private dateUtils: DateUtilsService
   ) {}
 
-  public getDateToDisplay = (dateTime: number, timezone: number): string =>
-    this.dateUtils
+  public getDateToDisplay(dateTime: number, timezone: number): string {
+    return this.dateUtils
       .formatDateFromTimestamp(
         dateTime,
         this.dateUtils.adjustTimeWithOffset(timezone)
@@ -48,6 +48,7 @@ export class WeatherForecastComponent {
         day: 'numeric',
         hour: '2-digit'
       });
+  }
 
   public getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getIconFromWeatherApi(icon);

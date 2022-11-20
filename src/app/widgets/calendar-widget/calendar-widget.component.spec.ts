@@ -13,6 +13,7 @@ import { CalendarWidgetService } from './calendar-widget.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { CalendarView } from 'angular-calendar';
 
 describe('CalendarWidgetComponent', () => {
   let spectator: Spectator<CalendarWidgetComponent>;
@@ -21,9 +22,16 @@ describe('CalendarWidgetComponent', () => {
   const createComponent = createComponentFactory({
     component: CalendarWidgetComponent,
     imports: [MatDialogModule, MatSnackBarModule],
-    providers: [CalendarWidgetService, DateAdapter, DateUtilsService, ErrorHandlerService]
+    providers: [
+      CalendarWidgetService,
+      DateAdapter,
+      DateUtilsService,
+      ErrorHandlerService
+    ]
   });
-  const createHttpCalendarWidgetService = createHttpFactory(CalendarWidgetService);
+  const createHttpCalendarWidgetService = createHttpFactory(
+    CalendarWidgetService
+  );
 
   beforeEach(() => {
     spectator = createComponent();
@@ -79,5 +87,12 @@ describe('CalendarWidgetComponent', () => {
     expect(spectator.component.isWidgetLoaded).toEqual(true);
     const calendarEvent = spectator.component.events[0];
     expect(calendarEvent.title).toEqual('La Toussaint');
+  });
+
+  it('Should check actual view', () => {
+    spectator.component.setView(CalendarView.Day);
+    expect(spectator.component.isCalendarViewMonth()).toEqual(false);
+    expect(spectator.component.isCalendarViewWeek()).toEqual(false);
+    expect(spectator.component.isCalendarViewDay()).toEqual(true);
   });
 });
