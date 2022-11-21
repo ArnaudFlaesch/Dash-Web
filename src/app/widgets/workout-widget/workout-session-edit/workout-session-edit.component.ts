@@ -14,10 +14,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./workout-session-edit.component.scss']
 })
 export class WorkoutSessionEditComponent {
-  public workoutExercises: IWorkoutExercise[] = [];
-
   @Input() public workoutTypes: IWorkoutType[] = [];
   @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
+
+  public workoutExercises: IWorkoutExercise[] = [];
 
   private ERROR_CREATING_WORKOUT_EXERCISE =
     "Erreur lors de l'ajout d'un exercice.";
@@ -37,7 +37,24 @@ export class WorkoutSessionEditComponent {
       );
   }
 
-  public fetchWorkoutExercisesBySessionId(workoutSessionId: number): void {
+  public decrementExerciceNumberOfReps(workoutTypeId: number): void {
+    this.updateNumberOfReps(workoutTypeId, -1);
+  }
+
+  public incrementExerciceNumberOfReps(workoutTypeId: number): void {
+    this.updateNumberOfReps(workoutTypeId, 1);
+  }
+
+  public getExerciceNumberOfReps(workoutTypeId: number): number {
+    const workoutType = this.workoutExercises.find(
+      (workoutExercise) => workoutExercise.workoutTypeId === workoutTypeId
+    );
+    if (workoutType) {
+      return workoutType.numberOfReps;
+    } else return 0;
+  }
+
+  private fetchWorkoutExercisesBySessionId(workoutSessionId: number): void {
     this.workoutWidgetService.getWorkoutExercises(workoutSessionId).subscribe({
       next: (workoutExercises) => (this.workoutExercises = workoutExercises),
       error: (error: HttpErrorResponse) =>
@@ -48,7 +65,7 @@ export class WorkoutSessionEditComponent {
     });
   }
 
-  public updateWorkoutExercise(
+  private updateWorkoutExercise(
     workoutSessionId: number,
     workoutTypeId: number,
     numberOfReps: number
@@ -71,14 +88,6 @@ export class WorkoutSessionEditComponent {
       });
   }
 
-  public decrementExerciceNumberOfReps(workoutTypeId: number): void {
-    this.updateNumberOfReps(workoutTypeId, -1);
-  }
-
-  public incrementExerciceNumberOfReps(workoutTypeId: number): void {
-    this.updateNumberOfReps(workoutTypeId, 1);
-  }
-
   private updateNumberOfReps(
     workoutTypeId: number,
     numberOfRepsToAdd: number
@@ -91,14 +100,5 @@ export class WorkoutSessionEditComponent {
         oldNumberOfReps + numberOfRepsToAdd
       );
     }
-  }
-
-  public getExerciceNumberOfReps(workoutTypeId: number): number {
-    const workoutType = this.workoutExercises.find(
-      (workoutExercise) => workoutExercise.workoutTypeId === workoutTypeId
-    );
-    if (workoutType) {
-      return workoutType.numberOfReps;
-    } else return 0;
   }
 }

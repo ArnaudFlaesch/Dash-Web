@@ -20,14 +20,14 @@ export class RssWidgetComponent {
   public image: ImageContent | undefined = undefined;
   public isWidgetLoaded = false;
 
+  public isFeedClosed = true;
+  public readArticles: string[] = [];
+  public urlFeed: string | null = null;
+
   private ERROR_GETTING_RSS_FEED =
     'Erreur pendant la récupération du flux RSS.';
   private ERROR_MARKING_FEED_AS_READ =
     'Erreur pendant la mise à jour du widget RSS.';
-
-  public isFeedClosed = true;
-  public readArticles: string[] = [];
-  public urlFeed: string | null = null;
 
   constructor(
     @Inject('widgetId') private widgetId: number,
@@ -76,6 +76,14 @@ export class RssWidgetComponent {
     this.updateRssFeed(this.feed.map((article) => article.guid));
   }
 
+  public isFormValid(): boolean {
+    return this.urlFeed !== null && this.urlFeed.length > 0;
+  }
+
+  public getWidgetData(): { url: string } | null {
+    return this.urlFeed ? { url: this.urlFeed } : null;
+  }
+
   private updateRssFeed(readArticlesGuids: string[]): void {
     this.widgetService
       .updateWidgetData(this.widgetId, {
@@ -93,13 +101,5 @@ export class RssWidgetComponent {
             this.ERROR_MARKING_FEED_AS_READ
           )
       });
-  }
-
-  public isFormValid(): boolean {
-    return this.urlFeed !== null && this.urlFeed.length > 0;
-  }
-
-  public getWidgetData(): { url: string } | null {
-    return this.urlFeed ? { url: this.urlFeed } : null;
   }
 }

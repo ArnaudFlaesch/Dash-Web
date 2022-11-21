@@ -163,16 +163,6 @@ export class WeatherWidgetComponent {
     this.updateChartData();
   }
 
-  private updateChartData(): void {
-    if (this.cityData) {
-      this.forecastToDisplay = this.filterForecastByMode(
-        this.cityData,
-        this.forecastResponse
-      );
-      this.getWeatherChart();
-    }
-  }
-
   public getWidgetData(): { city: string } | null {
     return this.city ? { city: this.city } : null;
   }
@@ -183,5 +173,15 @@ export class WeatherWidgetComponent {
 
   public isWidgetLoaded(): boolean {
     return this.city != null && this.weather != null;
+  }
+
+  private updateChartData(): void {
+    if (this.cityData) {
+      this.forecastToDisplay = this.filterForecastByMode(
+        this.cityData,
+        this.forecastResponse
+      );
+      this.getWeatherChart();
+    }
   }
 }

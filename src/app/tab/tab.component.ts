@@ -10,11 +10,11 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./tab.component.scss']
 })
 export class TabComponent {
-  public editMode = false;
-
   @Input()
   public tab: ITab | undefined;
   @Output() tabDeletedEvent = new EventEmitter<number>();
+
+  public editMode = false;
 
   private ERROR_MESSAGE_UPDATE_TAB =
     "Erreur lors de la modification d'un onglet.";

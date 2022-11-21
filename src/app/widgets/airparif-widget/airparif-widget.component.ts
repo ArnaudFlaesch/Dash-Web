@@ -25,9 +25,6 @@ import {
 export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
   @ViewChild('map') mapContainer: ElementRef | undefined;
 
-  private map: L.Map | undefined;
-
-  private airParifUrl = 'https://magellan.airparif.asso.fr/geoserver/';
   public airParifWebsiteUrl = 'https://www.airparif.asso.fr';
 
   public airParifApiKey: string | null = null;
@@ -40,6 +37,10 @@ export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
   public forecastMode: ForecastMode = ForecastMode.TODAY;
 
   public isWidgetLoaded = true;
+
+  private map: L.Map | undefined;
+
+  private airParifUrl = 'https://magellan.airparif.asso.fr/geoserver/';
 
   private ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
@@ -114,50 +115,6 @@ export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private initMap(): void {
-    const southWest = L.latLng(48.12, 1.44),
-      northEast = L.latLng(49.24, 3.56),
-      bounds = L.latLngBounds(southWest, northEast);
-
-    const openStreetMapLayer = L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        maxZoom: 18,
-        attribution:
-          '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      }
-    );
-    console.log(this.mapContainer);
-
-    if (this.mapContainer) {
-      this.map = L.map(this.mapContainer.nativeElement, {
-        center: [48.8502, 2.3488],
-        zoom: 11,
-        maxBounds: bounds,
-        layers: [openStreetMapLayer, this.airParifForecastTodayLayer]
-      });
-
-      L.control.layers({ OpenStreetMap: openStreetMapLayer }).addTo(this.map);
-
-      this.sidebarControl.addTo(this.map);
-    }
-  }
-
-  private getWmsOptions(layer: string, attribution: string) {
-    return {
-      service: 'WMS',
-      version: '1.3',
-      layers: layer,
-      tiled: true,
-      transparent: true,
-      format: 'image/png8',
-      styles: 'nouvel_indice_polygones',
-      opacity: 0.5,
-      attribution: attribution,
-      authkey: this.airParifApiKey
-    };
-  }
-
   public selectTodayForecast(): void {
     this.map?.removeLayer(this.airParifForecastTomorrowLayer);
     this.forecastMode = ForecastMode.TODAY;
@@ -207,5 +164,49 @@ export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
           communeInseeCode: this.communeInseeCode
         }
       : null;
+  }
+
+  private initMap(): void {
+    const southWest = L.latLng(48.12, 1.44),
+      northEast = L.latLng(49.24, 3.56),
+      bounds = L.latLngBounds(southWest, northEast);
+
+    const openStreetMapLayer = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 18,
+        attribution:
+          '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }
+    );
+    console.log(this.mapContainer);
+
+    if (this.mapContainer) {
+      this.map = L.map(this.mapContainer.nativeElement, {
+        center: [48.8502, 2.3488],
+        zoom: 11,
+        maxBounds: bounds,
+        layers: [openStreetMapLayer, this.airParifForecastTodayLayer]
+      });
+
+      L.control.layers({ OpenStreetMap: openStreetMapLayer }).addTo(this.map);
+
+      this.sidebarControl.addTo(this.map);
+    }
+  }
+
+  private getWmsOptions(layer: string, attribution: string) {
+    return {
+      service: 'WMS',
+      version: '1.3',
+      layers: layer,
+      tiled: true,
+      transparent: true,
+      format: 'image/png8',
+      styles: 'nouvel_indice_polygones',
+      opacity: 0.5,
+      attribution: attribution,
+      authkey: this.airParifApiKey
+    };
   }
 }

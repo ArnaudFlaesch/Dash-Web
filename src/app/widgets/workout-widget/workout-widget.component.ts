@@ -31,7 +31,6 @@ export class WorkoutWidgetComponent {
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl('');
 
-  private selectedMonthTimestamp: number = startOfMonth(new Date()).getTime();
   public workoutMonths: number[] = [];
   public workoutSessionsByMonth: IWorkoutSession[] = [];
 
@@ -44,6 +43,8 @@ export class WorkoutWidgetComponent {
 
   public WIDGET_VIEW: WORKOUT_WIDGET_VIEW =
     WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
+
+  private selectedMonthTimestamp: number = startOfMonth(new Date()).getTime();
 
   private ERROR_GETTING_WORKOUT_TYPES =
     "Erreur lors de la récupération de la liste des types d'exercices.";
@@ -150,18 +151,6 @@ export class WorkoutWidgetComponent {
     return <Record<string, string>>{};
   }
 
-  public getWorkoutMonths(): number[] {
-    return [
-      ...new Set(
-        this.workoutSessions
-          .map((session) =>
-            startOfMonth(new Date(session.workoutDate)).getTime()
-          )
-          .sort((dateA: number, dateB: number) => dateA - dateB)
-      )
-    ];
-  }
-
   public formatWorkoutDateMonth(workoutDate: number): string {
     return format(workoutDate, 'MMMM');
   }
@@ -189,5 +178,17 @@ export class WorkoutWidgetComponent {
   public selectMonth(monthTimestamp: number): void {
     this.selectedMonthTimestamp = monthTimestamp;
     this.filterWorkoutSessionsByMonth(monthTimestamp);
+  }
+
+  private getWorkoutMonths(): number[] {
+    return [
+      ...new Set(
+        this.workoutSessions
+          .map((session) =>
+            startOfMonth(new Date(session.workoutDate)).getTime()
+          )
+          .sort((dateA: number, dateB: number) => dateA - dateB)
+      )
+    ];
   }
 }

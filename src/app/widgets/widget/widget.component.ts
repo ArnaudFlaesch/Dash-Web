@@ -31,12 +31,12 @@ export class WidgetComponent implements OnInit, OnDestroy {
   @ContentChild('editComponent', { static: false })
   editComponent: TemplateRef<unknown> | null;
 
-  public widgetId: number;
-
   @Input() isFormValid = false;
   @Input() isWidgetLoaded = false;
   @Input() widgetData: Record<string, unknown> | null = null;
   @Output() refreshWidgetAction = new EventEmitter();
+
+  public widgetId: number;
 
   public mode: ModeEnum;
 
@@ -99,16 +99,16 @@ export class WidgetComponent implements OnInit, OnDestroy {
     this.refreshWidgetAction.emit();
   }
 
-  public toEditMode(): ModeEnum {
-    return (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
+  public toEditMode(): void {
+    this.mode = this.editComponent ? ModeEnum.EDIT : this.mode;
   }
 
-  public toReadMode(): ModeEnum {
-    return (this.mode = ModeEnum.READ);
+  public toReadMode(): void {
+    this.mode = ModeEnum.READ;
   }
 
-  public toDeleteMode(): ModeEnum {
-    return (this.mode = ModeEnum.DELETE);
+  public toDeleteMode(): void {
+    this.mode = ModeEnum.DELETE;
   }
 
   public isModeRead(): boolean {

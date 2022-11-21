@@ -66,29 +66,6 @@ export class CalendarWidgetComponent {
     });
   }
 
-  private parseEvents(calendarData: ICalendarData[]) {
-    const parsedEvents: CalendarEvent[] = calendarData
-      .filter((event) => event.startDate && event.endDate && event.description)
-      .map((event) => {
-        const startDate = new Date(event.startDate);
-        const endDate = new Date(event.endDate);
-        const isAllDay =
-          endDate.getDay() === startDate.getDay() + 1 &&
-          endDate.getHours() === startDate.getHours();
-        if (isAllDay) {
-          endDate.setDate(endDate.getDate() - 1);
-          endDate.setHours(23);
-        }
-        return {
-          title: event.description,
-          start: startDate,
-          end: endDate,
-          allDay: isAllDay
-        };
-      });
-    this.events = [...this.events, ...parsedEvents];
-  }
-
   public getWidgetConfig(): { calendarUrls: string[] } | null {
     return this.calendarUrls && this.calendarUrls.length
       ? { calendarUrls: this.calendarUrls }
@@ -140,5 +117,28 @@ export class CalendarWidgetComponent {
       width: '500px',
       data: event
     });
+  }
+
+  private parseEvents(calendarData: ICalendarData[]) {
+    const parsedEvents: CalendarEvent[] = calendarData
+      .filter((event) => event.startDate && event.endDate && event.description)
+      .map((event) => {
+        const startDate = new Date(event.startDate);
+        const endDate = new Date(event.endDate);
+        const isAllDay =
+          endDate.getDay() === startDate.getDay() + 1 &&
+          endDate.getHours() === startDate.getHours();
+        if (isAllDay) {
+          endDate.setDate(endDate.getDate() - 1);
+          endDate.setHours(23);
+        }
+        return {
+          title: event.description,
+          start: startDate,
+          end: endDate,
+          allDay: isAllDay
+        };
+      });
+    this.events = [...this.events, ...parsedEvents];
   }
 }
