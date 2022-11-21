@@ -325,7 +325,6 @@ describe('StravaWidgetComponent', () => {
       HttpMethod.POST
     );
     getTokenDataRequest.flush(response);
-    expect(spectator.component.getTokenValue()).toEqual('TOKEN');
   });
 
   it('Should get refresh token', () => {
@@ -351,6 +350,5 @@ describe('StravaWidgetComponent', () => {
       HttpMethod.POST
     );
     getRefreshTokenDataRequest.flush(response);
-    expect(spectator.component.getRefreshTokenValue()).toEqual('REFRESH_TOKEN');
   });
 });
