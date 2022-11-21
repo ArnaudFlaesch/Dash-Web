@@ -31,12 +31,12 @@ export class WidgetComponent implements OnInit, OnDestroy {
   @ContentChild('editComponent', { static: false })
   editComponent: TemplateRef<unknown> | null;
 
-  public widgetId: number;
-
   @Input() isFormValid = false;
   @Input() isWidgetLoaded = false;
   @Input() widgetData: Record<string, unknown> | null = null;
   @Output() refreshWidgetAction = new EventEmitter();
+
+  public widgetId: number;
 
   public mode: ModeEnum;
 
@@ -62,7 +62,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     console.log('ng on init widget ' + JSON.stringify(this.widgetData));
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
-    this.timeoutRefresh = setInterval(this.refreshWidget, 300000);
+    this.timeoutRefresh = setInterval(this.refreshWidget.bind(this), 300000);
   }
 
   public ngOnDestroy(): void {
@@ -99,16 +99,16 @@ export class WidgetComponent implements OnInit, OnDestroy {
     this.refreshWidgetAction.emit();
   }
 
-  public toEditMode(): ModeEnum {
-    return (this.mode = this.editComponent ? ModeEnum.EDIT : this.mode);
+  public toEditMode(): void {
+    this.mode = this.editComponent ? ModeEnum.EDIT : this.mode;
   }
 
-  public toReadMode(): ModeEnum {
-    return (this.mode = ModeEnum.READ);
+  public toReadMode(): void {
+    this.mode = ModeEnum.READ;
   }
 
-  public toDeleteMode(): ModeEnum {
-    return (this.mode = ModeEnum.DELETE);
+  public toDeleteMode(): void {
+    this.mode = ModeEnum.DELETE;
   }
 
   public isModeRead(): boolean {

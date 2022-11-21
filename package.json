@@ -24,7 +24,10 @@
     "report:merge": "mochawesome-merge ./cypress/results/mochawesome-report/*.json > tests-report.json",
     "report:generate": "marge tests-report.json -o cypress/reports/html",
     "report:copyScreenshots": "cp -r cypress/screenshots cypress/reports/html/screenshots",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "compodoc:build": "compodoc -p tsconfig.doc.json",
+    "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s",
+    "compodoc:serve": "compodoc -s"
   },
   "dependencies": {
     "@angular/animations": "14.2.11",
@@ -37,6 +40,7 @@
     "@angular/platform-browser": "14.2.11",
     "@angular/platform-browser-dynamic": "14.2.11",
     "@angular/router": "14.2.11",
+    "@compodoc/compodoc": "1.1.19",
     "chart.js": "3.9.1",
     "date-fns": "2.29.3",
     "jwt-decode": "3.1.2",

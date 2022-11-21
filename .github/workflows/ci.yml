@@ -46,12 +46,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Pull database image
+      - name: Start database image
         run: |
-          docker pull postgres:13.2-alpine
           docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash postgres:13.2-alpine
 
-      - name: Pull mock server
+      - name: Start mock server
         run: |
           if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' ]]; then
             docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:${GITHUB_REF#refs/*/}
@@ -59,7 +58,7 @@ jobs:
             docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:latest
           fi
 
-      - name: Pull backend image
+      - name: Start backend image
         run: |
           if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' ]]; then
             docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:${GITHUB_REF#refs/*/}
@@ -97,6 +96,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Generate documentation
+        run: |
+          npm run compodoc:build
+          mv documentation public/documentation
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1

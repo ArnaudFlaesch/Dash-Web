@@ -30,6 +30,16 @@ export class RssFeedComponent {
     return `${date} ${article.title}`;
   }
 
+  public isArticleRead(guid: string): boolean {
+    return this.readArticles.includes(guid);
+  }
+
+  public onOpenDetail(guid: string): void {
+    if (!this.isArticleRead(guid)) {
+      this.markArticleAsReadEvent.emit(guid);
+    }
+  }
+
   private getPublicationDateToDisplay(articleDate: Date) {
     if (isToday(articleDate)) {
       return articleDate.toLocaleTimeString('fr', {
@@ -47,17 +57,6 @@ export class RssFeedComponent {
         month: '2-digit',
         year: 'numeric'
       });
-    }
-  }
-
-  public isArticleRead(guid: string): boolean {
-    return this.readArticles.includes(guid);
-  }
-
-  public onOpenDetail(guid: string): void {
-    if (!this.isArticleRead(guid)) {
-      console.log(guid);
-      this.markArticleAsReadEvent.emit(guid);
     }
   }
 }

@@ -9,6 +9,7 @@ module.exports = {
     'plugin:cypress/recommended'
   ],
   "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": "warn"
+    "@typescript-eslint/explicit-module-boundary-types": "warn",
+    "@typescript-eslint/member-ordering": "warn"
   },
 };

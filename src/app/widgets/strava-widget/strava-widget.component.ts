@@ -25,9 +25,10 @@ export class StravaWidgetComponent {
     | ChartData<keyof ChartTypeRegistry, number[], string>
     | undefined = undefined;
 
-  private STRAVA_CLIENT_ID = 30391;
+  public isWidgetLoaded = true;
 
-  public loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
+  private STRAVA_CLIENT_ID = 30391;
+  private loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
   private STRAVA_ATHLETE_URL = 'https://www.strava.com/athletes/';
 
   private STORAGE_STRAVA_TOKEN_KEY = 'strava_token';
@@ -42,8 +43,6 @@ export class StravaWidgetComponent {
     'Erreur lors de la récupération des activités Strava.';
 
   private paginationActivities = 20;
-
-  public isWidgetLoaded = true;
 
   constructor(
     private stravaWidgetService: StravaWidgetService,
@@ -99,38 +98,6 @@ export class StravaWidgetComponent {
           this.ERROR_GETTING_TOKEN
         )
     });
-  }
-
-  private refreshTokenFromApi(): void {
-    const refreshToken = this.getRefreshTokenValue();
-    if (refreshToken) {
-      this.isWidgetLoaded = false;
-      this.stravaWidgetService.getRefreshToken(refreshToken).subscribe({
-        next: (response: ITokenData) => {
-          window.localStorage.setItem(
-            this.STORAGE_STRAVA_TOKEN_KEY,
-            response.accessToken
-          );
-          window.localStorage.setItem(
-            this.STORAGE_STRAVA_REFRESH_TOKEN_KEY,
-            response.refreshToken
-          );
-          window.localStorage.setItem(
-            this.STORAGE_TOKEN_EXPIRATION_DATE_KEY,
-            response.expiresAt
-          );
-          this.athlete = response.athlete;
-          this.isWidgetLoaded = true;
-        },
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_NO_REFRESH_TOKEN
-          )
-      });
-    } else {
-      console.error('No refresh token');
-    }
   }
 
   public getAthleteData(): void {
@@ -244,15 +211,47 @@ export class StravaWidgetComponent {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
   }
 
-  public getTokenValue(): string | null {
+  private getTokenValue(): string | null {
     return window.localStorage.getItem(this.STORAGE_STRAVA_TOKEN_KEY);
   }
 
-  public getRefreshTokenValue(): string | null {
+  private getRefreshTokenValue(): string | null {
     return window.localStorage.getItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY);
   }
 
-  public getTokenExpiresAtValue(): string | null {
+  private getTokenExpiresAtValue(): string | null {
     return window.localStorage.getItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY);
+  }
+
+  private refreshTokenFromApi(): void {
+    const refreshToken = this.getRefreshTokenValue();
+    if (refreshToken) {
+      this.isWidgetLoaded = false;
+      this.stravaWidgetService.getRefreshToken(refreshToken).subscribe({
+        next: (response: ITokenData) => {
+          window.localStorage.setItem(
+            this.STORAGE_STRAVA_TOKEN_KEY,
+            response.accessToken
+          );
+          window.localStorage.setItem(
+            this.STORAGE_STRAVA_REFRESH_TOKEN_KEY,
+            response.refreshToken
+          );
+          window.localStorage.setItem(
+            this.STORAGE_TOKEN_EXPIRATION_DATE_KEY,
+            response.expiresAt
+          );
+          this.athlete = response.athlete;
+          this.isWidgetLoaded = true;
+        },
+        error: (error: HttpErrorResponse) =>
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_NO_REFRESH_TOKEN
+          )
+      });
+    } else {
+      console.error('No refresh token');
+    }
   }
 }

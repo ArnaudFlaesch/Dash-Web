@@ -25,10 +25,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   public activeWidgets: IWidgetConfig[] = [];
   public activeTab = -1;
 
-  private refreshTimeout = 900000; // 15 minutes
-
   public isDashboardLoaded: boolean;
   public editModeEnabled = false;
+
+  private refreshTimeout = 900000; // 15 minutes
 
   private ERROR_MESSAGE_INIT_DASHBOARD =
     "Erreur lors de l'initialisation du dashboard.";
@@ -74,36 +74,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log('ondestroy home');
   }
 
-  private initDashboard(): void {
-    this.tabService.getTabs().subscribe({
-      next: (tabs) => {
-        this.tabs = tabs;
-        if (tabs.length) {
-          this.activatedRoute.queryParams.subscribe((params) => {
-            const tabIdParam = params['tabId'];
-            if (
-              tabIdParam &&
-              tabs.find((tab) => tab.id === Number.parseInt(tabIdParam))
-            ) {
-              this.activeTab = Number.parseInt(tabIdParam);
-            } else {
-              this.activeTab = tabs[0].id;
-            }
-          });
-          this.loadWidgets(this.activeTab);
-        } else {
-          this.addNewTab();
-        }
-      },
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_MESSAGE_INIT_DASHBOARD
-        ),
-      complete: () => (this.isDashboardLoaded = true)
-    });
-  }
-
   public addNewTab(): void {
     const newTabLabel = 'Nouvel onglet';
     this.tabService.addTab(newTabLabel).subscribe({
@@ -132,17 +102,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadWidgets(this.activeTab);
   }
 
-  private loadWidgets(activeTabId: number): void {
-    this.widgetService.getWidgets(activeTabId).subscribe({
-      next: (widgets) => (this.activeWidgets = widgets),
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_MESSAGE_GET_WIDGETS
-        )
-    });
-  }
-
   public deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
       error: (error: HttpErrorResponse) =>
@@ -166,23 +125,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         ),
       complete: () => this.deleteTabFromDashboard(tabId)
     });
-  }
-
-  private deleteTabFromDashboard(tabId: number): void {
-    this.activeWidgets = this.activeWidgets.filter(
-      (widget: IWidgetConfig) => widget.tabId !== tabId
-    );
-    if (this.tabs.length > 1) {
-      if (this.tabs[0].id === tabId) {
-        this.selectTab(this.tabs[1].id);
-      } else if (this.activeTab === tabId) {
-        this.selectTab(this.tabs[0].id);
-      }
-    }
-    this.tabs = this.tabs.filter((tab) => tab.id !== tabId);
-    if (this.tabs.length < 1) {
-      this.addNewTab();
-    }
   }
 
   public openCreateWidgetModal(): void {
@@ -249,7 +191,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public drop(event: CdkDragDrop<any[]>): void {
+  public drop(event: CdkDragDrop<ITab[]>): void {
     moveItemInArray(this.tabs, event.previousIndex, event.currentIndex);
     const updatedTabs = this.tabs.map((tab: ITab, index: number) => {
       tab.tabOrder = index;
@@ -267,5 +209,63 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public toggleEditMode(): void {
     this.editModeEnabled = !this.editModeEnabled;
+  }
+
+  private initDashboard(): void {
+    this.tabService.getTabs().subscribe({
+      next: (tabs) => {
+        this.tabs = tabs;
+        if (tabs.length) {
+          this.activatedRoute.queryParams.subscribe((params) => {
+            const tabIdParam = params['tabId'];
+            if (
+              tabIdParam &&
+              tabs.find((tab) => tab.id === Number.parseInt(tabIdParam))
+            ) {
+              this.activeTab = Number.parseInt(tabIdParam);
+            } else {
+              this.activeTab = tabs[0].id;
+            }
+          });
+          this.loadWidgets(this.activeTab);
+        } else {
+          this.addNewTab();
+        }
+      },
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_MESSAGE_INIT_DASHBOARD
+        ),
+      complete: () => (this.isDashboardLoaded = true)
+    });
+  }
+
+  private loadWidgets(activeTabId: number): void {
+    this.widgetService.getWidgets(activeTabId).subscribe({
+      next: (widgets) => (this.activeWidgets = widgets),
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(
+          error.message,
+          this.ERROR_MESSAGE_GET_WIDGETS
+        )
+    });
+  }
+
+  private deleteTabFromDashboard(tabId: number): void {
+    this.activeWidgets = this.activeWidgets.filter(
+      (widget: IWidgetConfig) => widget.tabId !== tabId
+    );
+    if (this.tabs.length > 1) {
+      if (this.tabs[0].id === tabId) {
+        this.selectTab(this.tabs[1].id);
+      } else if (this.activeTab === tabId) {
+        this.selectTab(this.tabs[0].id);
+      }
+    }
+    this.tabs = this.tabs.filter((tab) => tab.id !== tabId);
+    if (this.tabs.length < 1) {
+      this.addNewTab();
+    }
   }
 }

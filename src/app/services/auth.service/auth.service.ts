@@ -13,11 +13,11 @@ interface IJwt {
 
 @Injectable()
 export class AuthService {
-  constructor(private http: HttpClient) {}
-
   private headers = {
     'Content-type': 'application/json'
   };
+
+  constructor(private http: HttpClient) {}
 
   public login(username: string, password: string): Observable<IUser> {
     return this.http
@@ -59,7 +59,9 @@ export class AuthService {
     let result = false;
     if (authenticatedUser && authenticatedUser.accessToken) {
       try {
-        result = Date.now() < jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000;
+        result =
+          Date.now() <
+          jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000;
       } catch (error) {
         result = false;
       }

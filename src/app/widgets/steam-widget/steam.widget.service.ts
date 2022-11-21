@@ -17,6 +17,14 @@ export class SteamWidgetService {
 
   constructor(private http: HttpClient) {}
 
+  get STEAM_IMAGE_URL(): string {
+    return this._STEAM_IMAGE_URL;
+  }
+
+  get STEAM_COMMUNITY_URL(): string {
+    return this._STEAM_COMMUNITY_URL;
+  }
+
   public getPlayerData(steamUserId: string): Observable<IPlayerDataResponse[]> {
     return this.http.get<IPlayerDataResponse[]>(
       `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`,
@@ -70,13 +78,5 @@ export class SteamWidgetService {
         }
       }
     );
-  }
-
-  get STEAM_IMAGE_URL(): string {
-    return this._STEAM_IMAGE_URL;
-  }
-
-  get STEAM_COMMUNITY_URL(): string {
-    return this._STEAM_COMMUNITY_URL;
   }
 }

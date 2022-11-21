@@ -7,6 +7,7 @@ import {
   SpectatorRouting
 } from '@ngneat/spectator/jest';
 import { addDays, getTime } from 'date-fns';
+import { advanceTo } from 'jest-date-mock';
 
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
@@ -25,6 +26,8 @@ describe('StravaWidgetComponent', () => {
   const STRAVA_TOKEN_KEY = 'strava_token';
   const STRAVA_REFRESH_TOKEN_KEY = 'strava_refresh_token';
   const STRAVA_TOKEN_EXPIRATION_DATE_KEY = 'strava_token_expires_at';
+
+  advanceTo(new Date(1644882400)); // 15/02/2022
 
   const athleteData = {
     id: 25345795,
@@ -245,6 +248,12 @@ describe('StravaWidgetComponent', () => {
     }
   ];
 
+  beforeEach(() => {
+    window.localStorage.removeItem(STRAVA_TOKEN_KEY);
+    window.localStorage.removeItem(STRAVA_REFRESH_TOKEN_KEY);
+    window.localStorage.removeItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY);
+  });
+
   const createComponent = createRoutingFactory({
     component: StravaWidgetComponent,
     imports: [MatSnackBarModule],
@@ -325,10 +334,11 @@ describe('StravaWidgetComponent', () => {
       HttpMethod.POST
     );
     getTokenDataRequest.flush(response);
-    expect(spectator.component.getTokenValue()).toEqual('TOKEN');
+    expect(spectator.component.isUserLoggedIn()).toEqual(true);
   });
 
   it('Should get refresh token', () => {
+    window.localStorage.removeItem(STRAVA_TOKEN_KEY);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
     spectator.component.getUserData();
     const response = {
@@ -351,6 +361,6 @@ describe('StravaWidgetComponent', () => {
       HttpMethod.POST
     );
     getRefreshTokenDataRequest.flush(response);
-    expect(spectator.component.getRefreshTokenValue()).toEqual('REFRESH_TOKEN');
+    expect(spectator.component.isUserLoggedIn()).toEqual(true);
   });
 });

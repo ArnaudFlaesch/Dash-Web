@@ -28,12 +28,12 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   styleUrls: ['./widget-list.component.scss']
 })
 export class WidgetListComponent implements OnChanges {
-  @ViewChildren('dynamic', { read: ViewContainerRef })
-  private widgetTargets: QueryList<ViewContainerRef> | undefined;
-
   @Input() widgetList: IWidgetConfig[] = [];
   @Input() toggleEditMode = false;
   @Output() updateWidgetsOrderEvent = new EventEmitter<IWidgetConfig[]>();
+
+  @ViewChildren('dynamic', { read: ViewContainerRef })
+  private widgetTargets: QueryList<ViewContainerRef> | undefined;
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
@@ -42,6 +42,17 @@ export class WidgetListComponent implements OnChanges {
       this.cdRef.detectChanges();
       this.createWidgets();
     }
+  }
+
+  public drop(event: CdkDragDrop<IWidgetConfig[]>): void {
+    moveItemInArray(this.widgetList, event.previousIndex, event.currentIndex);
+    const updatedWidgets = this.widgetList.map(
+      (widget: IWidgetConfig, index: number) => {
+        widget.widgetOrder = index;
+        return widget;
+      }
+    );
+    this.updateWidgetsOrderEvent.emit(updatedWidgets);
   }
 
   private createWidgets(): void {
@@ -128,16 +139,5 @@ export class WidgetListComponent implements OnChanges {
         }
       });
     }
-  }
-
-  public drop(event: CdkDragDrop<any[]>): void {
-    moveItemInArray(this.widgetList, event.previousIndex, event.currentIndex);
-    const updatedWidgets = this.widgetList.map(
-      (widget: IWidgetConfig, index: number) => {
-        widget.widgetOrder = index;
-        return widget;
-      }
-    );
-    this.updateWidgetsOrderEvent.emit(updatedWidgets);
   }
 }
