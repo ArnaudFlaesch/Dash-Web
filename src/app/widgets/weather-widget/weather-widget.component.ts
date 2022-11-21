@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, startOfDay } from 'date-fns';
 
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -34,10 +33,6 @@ export class WeatherWidgetComponent {
 
   public forecastMode = ForecastMode.DAY;
   public selectedDayForecast: Date = new Date();
-
-  public weatherChart:
-    | ChartData<keyof ChartTypeRegistry, number[], string>
-    | undefined = undefined;
 
   private ERROR_GETTING_WEATHER_DATA =
     'Erreur lors de la récupération des données météorologiques.';
@@ -109,34 +104,6 @@ export class WeatherWidgetComponent {
     }
   }
 
-  public getWeatherChart(): void {
-    this.weatherChart = {
-      labels: this.forecastToDisplay.map((forecastDay) => {
-        if (this.forecastMode === ForecastMode.DAY) {
-          return format(new Date(forecastDay.dt * 1000), 'HH');
-        } else {
-          return format(new Date(forecastDay.dt * 1000), 'EEE dd MMM');
-        }
-      }),
-      datasets: [
-        {
-          label: 'Température',
-          borderColor: 'orange',
-          data: this.forecastToDisplay.map(
-            (forecastDay) => forecastDay.main.tempMax
-          )
-        },
-        {
-          label: 'Ressenti',
-          borderColor: 'red',
-          data: this.forecastToDisplay.map(
-            (forecastDay) => forecastDay.main.feelsLike
-          )
-        }
-      ]
-    };
-  }
-
   public formatDate(date: Date): string {
     return format(date, 'dd/MM');
   }
@@ -181,7 +148,6 @@ export class WeatherWidgetComponent {
         this.cityData,
         this.forecastResponse
       );
-      this.getWeatherChart();
     }
   }
 }

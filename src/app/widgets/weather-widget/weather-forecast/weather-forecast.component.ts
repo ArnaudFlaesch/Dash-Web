@@ -1,10 +1,4 @@
 import { Component, Input } from '@angular/core';
-import {
-  ChartConfiguration,
-  ChartData,
-  ChartType,
-  ChartTypeRegistry
-} from 'chart.js';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { IForecast } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
@@ -21,17 +15,6 @@ export class WeatherForecastComponent {
   @Input()
   public timezone = 0;
 
-  @Input()
-  public weatherChart:
-    | ChartData<keyof ChartTypeRegistry, number[], string>
-    | undefined = undefined;
-
-  public lineChartOptions: ChartConfiguration['options'] = {
-    maintainAspectRatio: false
-  };
-
-  public lineChartType: ChartType = 'line';
-
   constructor(
     private weatherWidgetService: WeatherWidgetService,
     private dateUtils: DateUtilsService
@@ -44,8 +27,6 @@ export class WeatherForecastComponent {
         this.dateUtils.adjustTimeWithOffset(timezone)
       )
       .toLocaleString('fr', {
-        weekday: 'short',
-        day: 'numeric',
         hour: '2-digit'
       });
   }

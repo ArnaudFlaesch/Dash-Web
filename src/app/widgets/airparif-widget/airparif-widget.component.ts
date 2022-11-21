@@ -179,7 +179,6 @@ export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
           '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     );
-    console.log(this.mapContainer);
 
     if (this.mapContainer) {
       this.map = L.map(this.mapContainer.nativeElement, {

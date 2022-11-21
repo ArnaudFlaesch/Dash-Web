@@ -204,11 +204,7 @@ describe('WeatherWidgetComponent', () => {
       );
       expect(spectator.component.isWidgetLoaded()).toEqual(true);
 
-      if (spectator.component.cityData && spectator.component.weatherChart) {
-        expect(spectator.component.weatherChart.datasets).toEqual([
-          { borderColor: 'orange', data: [7.57, 6.76], label: 'Température' },
-          { borderColor: 'red', data: [5.19, 3.67], label: 'Ressenti' }
-        ]);
+      if (spectator.component.cityData) {
         expect(spectator.component.isForecastModeWeek()).toEqual(false);
         spectator.component.selectDayForecast(
           new Date(spectator.component.forecastDays[0])
