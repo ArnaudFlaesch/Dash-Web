@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
-import { IForecast } from '../IWeather';
+import { ForecastMode, IForecast } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
 
 @Component({
@@ -15,20 +15,25 @@ export class WeatherForecastComponent {
   @Input()
   public timezone = 0;
 
+  @Input()
+  public forecastMode: ForecastMode = ForecastMode.DAY
+
   constructor(
     private weatherWidgetService: WeatherWidgetService,
     private dateUtils: DateUtilsService
   ) {}
 
   public getDateToDisplay(dateTime: number, timezone: number): string {
+    const options: Intl.DateTimeFormatOptions = (this.forecastMode === ForecastMode.DAY) ? {
+      hour: '2-digit'
+    } : {weekday: 'short',
+    day: 'numeric'} 
     return this.dateUtils
       .formatDateFromTimestamp(
         dateTime,
         this.dateUtils.adjustTimeWithOffset(timezone)
       )
-      .toLocaleString('fr', {
-        hour: '2-digit'
-      });
+      .toLocaleString('fr', options);
   }
 
   public getIconFromWeatherApi(icon: string): string {

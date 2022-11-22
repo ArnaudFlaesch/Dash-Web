@@ -16,6 +16,9 @@ export class GameDetailsComponent implements OnInit {
   @Input()
   public steamUserId: string | undefined;
 
+  @Input()
+  public profileUrl: string | undefined;
+
   public achievements: IAchievement[] = [];
   public completedAchievements: IAchievement[] = [];
 
@@ -63,5 +66,9 @@ export class GameDetailsComponent implements OnInit {
 
   public getAppIdLink(): string {
     return `${this.steamWidgetService.STEAM_COMMUNITY_URL}${this.gameInfo?.appid}`;
+  }
+
+  public getPlayerAchievementUrl(): string {
+    return (this.profileUrl && this.gameInfo) ? `${this.profileUrl}stats/${this.gameInfo?.appid}/achievements/` : '#'
   }
 }

@@ -14,7 +14,7 @@ import { SteamWidgetService } from './steam.widget.service';
   styleUrls: ['./steam-widget.component.scss']
 })
 export class SteamWidgetComponent {
-  public playerData: IPlayerDataResponse | null = null;
+  public playerData: IPlayerDataResponse | undefined;
   public gameCount = 0;
   public pageSize = 25;
   public pageSizeOptions = [25];

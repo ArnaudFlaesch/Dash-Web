@@ -16,27 +16,20 @@
   <ng-template #body>
     <div *ngIf="city && weather && weather.weather" class="flex flex-col">
       <app-weather-today [weather]="this.weather"></app-weather-today>
-      <div *ngIf="cityData && forecastResponse">
-        <div class="flex flex-row flex-wrap space-x-10">
-          <span class="mx-auto">
-            <h3>Prévisions</h3>
-          </span>
-          <span class="flex flex-row space-x-1">
-            <div class="grid grid-cols-4 gap-2">
-              <button *ngFor="let date of forecastDays" [color]="this.isSelectedDay(date) ? 'primary' : ''"
-                mat-raised-button (click)="selectDayForecast(date)" class="toggleForecast">
-                {{ formatDate(date) }}
-              </button>
+      <div class="mx-2 mt-2" *ngIf="cityData && forecastResponse">
+          <div class="grid grid-cols-4 gap-2 mx-auto">
+            <button *ngFor="let date of forecastDays" [color]="this.isSelectedDay(date) ? 'primary' : ''"
+              mat-raised-button (click)="selectDayForecast(date)" class="toggleForecast">
+              {{ formatDate(date) }}
+            </button>
 
-              <button [color]="this.isForecastModeWeek() ? 'primary' : ''" mat-raised-button id="toggleWeekForecast"
-                (click)="selectWeekForecast()">
-                Semaine
-              </button>
-            </div>
-          </span>
-        </div>
+            <button [color]="this.isForecastModeWeek() ? 'primary' : ''" mat-raised-button id="toggleWeekForecast"
+              (click)="selectWeekForecast()">
+              Semaine
+            </button>
+          </div>
         <br />
-        <app-weather-forecast *ngIf="this.cityData" [forecast]="this.forecastToDisplay"
+        <app-weather-forecast *ngIf="this.cityData" [forecast]="this.forecastToDisplay" [forecastMode]="this.forecastMode"
           [timezone]="this.cityData.timezone"></app-weather-forecast>
       </div>
     </div>

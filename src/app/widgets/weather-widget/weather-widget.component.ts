@@ -4,6 +4,7 @@ import { format, startOfDay } from 'date-fns';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import {
+  ForecastMode,
   ICity,
   IForecast,
   IForecastAPIResponse,
@@ -11,10 +12,7 @@ import {
 } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
 
-enum ForecastMode {
-  DAY,
-  WEEK
-}
+
 
 @Component({
   selector: 'app-weather-widget',
