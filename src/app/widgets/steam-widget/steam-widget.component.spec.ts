@@ -77,7 +77,7 @@ describe('SteamWidgetComponent', () => {
   });
 
   it('should create', () => {
-    expect(spectator.component.playerData).toEqual(null);
+    expect(spectator.component.playerData).toEqual(undefined);
     expect(spectator.component.ownedGames).toEqual([]);
     expect(spectator.component.isWidgetLoaded()).toEqual(false);
     const steamUserId = '1337';

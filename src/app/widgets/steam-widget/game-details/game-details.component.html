@@ -9,9 +9,9 @@
     <a [href]="this.getAppIdLink()"> Community hub </a>
   </div>
 
-  <div *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="spinner-container">
+  <a [href]="getPlayerAchievementUrl()" *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="spinner-container">
     <div class="progress-value">{{ spinner.value }}%</div>
     <mat-progress-spinner #spinner [color]="'primary'" [mode]="'determinate'" [value]="getCompletionStatus()">
     </mat-progress-spinner>
-  </div>
+  </a>
 </div>
