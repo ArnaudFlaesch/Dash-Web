@@ -100,7 +100,7 @@ jobs:
       - name: Generate documentation
         run: |
           npm run compodoc:build
-          mv documentation public/documentation
+        #  mv documentation public/documentation
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1
