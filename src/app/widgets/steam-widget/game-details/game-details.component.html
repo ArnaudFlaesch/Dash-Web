@@ -1,15 +1,17 @@
 <div class="flex flex-row justify-between">
   <div class="flex flex-col">
-    <a [href]="getPlayerAchievementUrl()" *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="flex flex-row">
+    <a [href]="getPlayerAchievementUrl()"
+      *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="flex flex-row">
       <div class="flex flex-col">
         <div class="totalachievements">Succès : {{ achievements.length }}</div>
         <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
       </div>
     </a>
-    <a [href]="this.getAppIdLink()"> Community hub </a>
+    <a [href]="this.getAppIdLink()" class="hover:font-bold"> Community hub </a>
   </div>
 
-  <a [href]="getPlayerAchievementUrl()" *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="spinner-container">
+  <a [href]="getPlayerAchievementUrl()"
+    *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="spinner-container">
     <div class="progress-value">{{ spinner.value }}%</div>
     <mat-progress-spinner #spinner [color]="'primary'" [mode]="'determinate'" [value]="getCompletionStatus()">
     </mat-progress-spinner>

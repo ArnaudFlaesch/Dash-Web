@@ -38,6 +38,9 @@ export class CreateWidgetModalComponent {
       case WidgetTypes.AIRPARIF.toString(): {
         return 'air';
       }
+      case WidgetTypes.TWITTER.toString(): {
+        return 'newspaper';
+      }
       default: {
         return '';
       }

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -13,16 +13,16 @@ import { SteamWidgetService } from './steam.widget.service';
   templateUrl: './steam-widget.component.html',
   styleUrls: ['./steam-widget.component.scss']
 })
-export class SteamWidgetComponent {
+export class SteamWidgetComponent implements OnInit {
   public playerData: IPlayerDataResponse | undefined;
   public gameCount = 0;
+  public ownedGames: IGameInfo[] = [];
+
   public pageSize = 25;
   public pageSizeOptions = [25];
   public pageNumber = 0;
 
   public steamUserId: string | undefined;
-
-  public ownedGames: IGameInfo[] = [];
 
   public searchFormControl = new FormControl('');
 
@@ -36,6 +36,17 @@ export class SteamWidgetComponent {
     private steamWidgetService: SteamWidgetService
   ) {}
 
+  public ngOnInit(): void {
+    this.searchFormControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((searchValue) => {
+        if (this.steamUserId) {
+          this.pageNumber = 0;
+          this.getOwnedGames(this.steamUserId, searchValue || undefined);
+        }
+      });
+  }
+
   public refreshWidget(): void {
     if (this.steamUserId) {
       const steamUserId = this.steamUserId;
@@ -45,13 +56,6 @@ export class SteamWidgetComponent {
         this.searchFormControl.value || undefined,
         this.pageNumber
       );
-
-      this.searchFormControl.valueChanges
-        .pipe(debounceTime(500), distinctUntilChanged())
-        .subscribe((searchValue) => {
-          this.pageNumber = 0;
-          this.getOwnedGames(steamUserId, searchValue || undefined);
-        });
     }
   }
 
@@ -91,12 +95,6 @@ export class SteamWidgetComponent {
     return `${this.steamWidgetService.STEAM_IMAGE_URL}${gameAppId}/${imgIconUrl}.jpg`;
   }
 
-  public getWidgetData(): {
-    steamUserId: string;
-  } | null {
-    return this.steamUserId ? { steamUserId: this.steamUserId } : null;
-  }
-
   public onPageChanged(event: PageEvent): void {
     if (this.steamUserId) {
       this.pageNumber = event.pageIndex;
@@ -108,11 +106,17 @@ export class SteamWidgetComponent {
     }
   }
 
+  public getWidgetData(): {
+    steamUserId: string;
+  } | null {
+    return this.steamUserId ? { steamUserId: this.steamUserId } : null;
+  }
+
   public isFormValid(): boolean {
     return !!this.steamUserId && this.steamUserId?.length > 0;
   }
 
   public isWidgetLoaded(): boolean {
-    return this.steamUserId != null && this.playerData != null;
+    return this.steamUserId != undefined && this.playerData != null;
   }
 }

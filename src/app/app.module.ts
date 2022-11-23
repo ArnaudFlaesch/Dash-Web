@@ -63,6 +63,8 @@ import { WeatherForecastComponent } from './widgets/weather-widget/weather-forec
 import { WeatherTodayComponent } from './widgets/weather-widget/weather-today/weather-today.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-session-edit/workout-session-edit.component';
+import { TwitterWidgetComponent } from './widgets/twitter-widget/twitter-widget.component';
+import { TwitterWidgetService } from './widgets/twitter-widget/twitter.widget.service';
 
 registerLocaleData(localeFr);
 
@@ -93,7 +95,8 @@ registerLocaleData(localeFr);
     StravaActivitiesComponent,
     WeatherForecastComponent,
     WeatherTodayComponent,
-    WorkoutSessionEditComponent
+    WorkoutSessionEditComponent,
+    TwitterWidgetComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -137,6 +140,7 @@ registerLocaleData(localeFr);
     WorkoutWidgetService,
     CalendarWidgetService,
     StravaWidgetService,
+    TwitterWidgetService,
     MatDatepickerModule,
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     AuthGuard,
