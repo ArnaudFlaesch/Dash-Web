@@ -40,7 +40,9 @@ export class WidgetComponent implements OnInit, OnDestroy {
 
   public mode: ModeEnum;
 
-  private timeoutRefresh: NodeJS.Timer | null = null;
+  private refreshInterval: NodeJS.Timer | null = null;
+
+  private refreshTimeout = 900000; // 15 minutes
 
   private ERROR_UPDATING_WIDGET_DATA =
     'Erreur lors de la mise à jour de la configuration du widget.';
@@ -62,12 +64,16 @@ export class WidgetComponent implements OnInit, OnDestroy {
     console.log('ng on init widget ' + JSON.stringify(this.widgetData));
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
-    this.timeoutRefresh = setInterval(this.refreshWidget.bind(this), 300000);
+    this.refreshInterval = setInterval(
+      this.refreshWidget.bind(this),
+      this.refreshTimeout
+    );
   }
 
   public ngOnDestroy(): void {
-    if (this.timeoutRefresh) {
-      clearInterval(this.timeoutRefresh);
+    if (this.refreshInterval) {
+      console.log('clearInterval ' + JSON.stringify(this.widgetData));
+      clearInterval(this.refreshInterval);
     }
   }
 

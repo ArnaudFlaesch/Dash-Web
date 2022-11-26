@@ -14,6 +14,7 @@ import { AuthService } from './../services/auth.service/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public isDashboardLoaded: boolean;
   public editModeEnabled = false;
 
-  private refreshTimeout = 900000; // 15 minutes
+  private destroy$: Subject<unknown> = new Subject();
 
   private ERROR_MESSAGE_INIT_DASHBOARD =
     "Erreur lors de l'initialisation du dashboard.";
@@ -65,13 +66,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.widgetService.widgetDeleted.subscribe({
+    this.widgetService.widgetDeleted.pipe(takeUntil(this.destroy$)).subscribe({
       next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
     });
   }
 
   public ngOnDestroy(): void {
     console.log('ondestroy home');
+    this.destroy$.next(null);
+    this.destroy$.complete();
   }
 
   public addNewTab(): void {

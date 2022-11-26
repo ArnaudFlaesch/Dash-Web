@@ -100,11 +100,11 @@ jobs:
       - name: Generate documentation
         run: |
           npm run compodoc:build
-        #  mv documentation public/documentation
+          mv documentation public/documentation
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1
-        # if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref == 'refs/heads/master'
         with:
           path: ./public
 
@@ -120,7 +120,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: test
-    #  if: success() && github.ref == 'refs/heads/master'
+    if: success() && github.ref == 'refs/heads/master'
 
     steps:
       - name: Deploy to GitHub Pages
