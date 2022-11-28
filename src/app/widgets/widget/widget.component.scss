@@ -1,6 +1,6 @@
 @import 'colors';
 
-$headerHeight: 2.5rem;
+$header-height: 2.5rem;
 
 .widget {
   background-color: white;
@@ -8,7 +8,7 @@ $headerHeight: 2.5rem;
 
   .header-container {
     background-color: $widget-background-color;
-    height: $headerHeight;
+    height: $header-height;
     color: white;
     align-items: center;
 
@@ -18,6 +18,6 @@ $headerHeight: 2.5rem;
   }
 
   .widget-body {
-    height: calc(100% - $headerHeight);
+    height: calc(100% - $header-height);
   }
 }

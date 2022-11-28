@@ -133,7 +133,7 @@ describe('RssWidgetComponent', () => {
   });
 
   it('Should get widget data and check form', () => {
-    expect(spectator.component.getWidgetData()).toEqual(null);
+    expect(spectator.component.getWidgetData()).toEqual(undefined);
     expect(spectator.component.isFormValid()).toEqual(false);
     const url = 'localhost';
     spectator.component.urlFeed = url;
