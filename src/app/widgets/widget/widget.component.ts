@@ -33,15 +33,13 @@ export class WidgetComponent implements OnInit, OnDestroy {
 
   @Input() isFormValid = false;
   @Input() isWidgetLoaded = false;
-  @Input() widgetData: Record<string, unknown> | null = null;
+  @Input() widgetData: Record<string, unknown> | undefined;
   @Output() refreshWidgetAction = new EventEmitter();
 
   public widgetId: number;
-
   public mode: ModeEnum;
 
   private refreshInterval: NodeJS.Timer | null = null;
-
   private refreshTimeout = 900000; // 15 minutes
 
   private ERROR_UPDATING_WIDGET_DATA =
@@ -85,7 +83,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data: unknown) => {
           // Emit onDataChanged()
-          this.mode = ModeEnum.READ;
+          this.toReadMode();
           this.refreshWidget();
         },
         error: (error) =>
@@ -111,6 +109,10 @@ export class WidgetComponent implements OnInit, OnDestroy {
 
   public toReadMode(): void {
     this.mode = ModeEnum.READ;
+  }
+
+  public cancelEdition(): void {
+    this.toReadMode();
   }
 
   public toDeleteMode(): void {

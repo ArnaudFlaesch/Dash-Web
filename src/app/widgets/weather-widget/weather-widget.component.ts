@@ -12,8 +12,6 @@ import {
 } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
 
-
-
 @Component({
   selector: 'app-weather-widget',
   templateUrl: './weather-widget.component.html',
@@ -128,8 +126,8 @@ export class WeatherWidgetComponent {
     this.updateChartData();
   }
 
-  public getWidgetData(): { city: string } | null {
-    return this.city ? { city: this.city } : null;
+  public getWidgetData(): { city: string } | undefined {
+    return this.city ? { city: this.city } : undefined;
   }
 
   public isFormValid(): boolean {

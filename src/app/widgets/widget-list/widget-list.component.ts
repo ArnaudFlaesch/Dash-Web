@@ -131,10 +131,10 @@ export class WidgetListComponent implements OnChanges {
             });
             component.instance.airParifApiKey = widgetData
               ? (widgetData['airParifApiKey'] as string)
-              : null;
+              : undefined;
             component.instance.communeInseeCode = widgetData
               ? (widgetData['communeInseeCode'] as string)
-              : null;
+              : undefined;
             break;
           }
           case WidgetTypes.TWITTER: {

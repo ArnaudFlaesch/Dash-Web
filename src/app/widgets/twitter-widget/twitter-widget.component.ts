@@ -32,6 +32,9 @@ export class TwitterWidgetComponent implements OnInit {
   private ERROR_GETTING_FOLLOWED_USERS =
     'Erreur lors de la récupération de la liste des utilisateurs suivis sur Twitter.';
 
+  private ERROR_ADDING_FOLLOWED_USER =
+    "Erreur lors de l'ajout de l'utilisateur.";
+
   private ERROR_REMOVING_FOLLOWED_USER =
     "Erreur lors de la suppression de l'utilisateur.";
 
@@ -48,7 +51,8 @@ export class TwitterWidgetComponent implements OnInit {
         this.twitterWidgetService
           .getFollowedUsers(searchValue || undefined)
           .subscribe({
-            next: (followedUsers) => (this.followedUsers = followedUsers),
+            next: (followedUsers) =>
+              (this.followedUsers = followedUsers.slice(0, 10)),
             error: (error) =>
               this.errorHandlerService.handleError(
                 error.message,
@@ -78,6 +82,7 @@ export class TwitterWidgetComponent implements OnInit {
     this.selectedTwitterHandle = userHandle;
   }
 
+  /* eslint-disable */
   initTwitterWidget(): void {
     (<any>window).twttr = (function (d, s, id) {
       const fjs: any = d.getElementsByTagName(s)[0],
@@ -100,6 +105,7 @@ export class TwitterWidgetComponent implements OnInit {
       (<any>window).twttr.widgets.load();
     }
   }
+  /* eslint-enable */
 
   public getTwitterTimelineUrl(): string {
     return `https://twitter.com/${this.selectedTwitterHandle}?ref_src=twsrc%5Etfw`;
@@ -115,7 +121,7 @@ export class TwitterWidgetComponent implements OnInit {
           error: (error) =>
             this.errorHandlerService.handleError(
               error.message,
-              this.ERROR_REMOVING_FOLLOWED_USER
+              this.ERROR_ADDING_FOLLOWED_USER
             )
         });
     }
@@ -135,12 +141,14 @@ export class TwitterWidgetComponent implements OnInit {
     });
   }
 
-  public getWidgetData(): {
-    twitterHandle: string;
-  } | null {
+  public getWidgetData():
+    | {
+        twitterHandle: string;
+      }
+    | undefined {
     return this.selectedTwitterHandle
       ? { twitterHandle: this.selectedTwitterHandle }
-      : null;
+      : undefined;
   }
 
   public isFormValid(): boolean {

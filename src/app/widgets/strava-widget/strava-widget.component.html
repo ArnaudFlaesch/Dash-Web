@@ -6,7 +6,10 @@
         <p>{{ athlete.firstname }} {{ athlete.lastname }}</p>
       </a>
     </div>
-    <div *ngIf="!athlete">Strava</div>
+    <div *ngIf="!athlete" class="header">
+      <mat-icon>directions_run</mat-icon>
+      <div>Strava</div>
+    </div>
   </ng-template>
 
   <ng-template #body>

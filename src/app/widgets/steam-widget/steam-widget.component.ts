@@ -106,10 +106,12 @@ export class SteamWidgetComponent implements OnInit {
     }
   }
 
-  public getWidgetData(): {
-    steamUserId: string;
-  } | null {
-    return this.steamUserId ? { steamUserId: this.steamUserId } : null;
+  public getWidgetData():
+    | {
+        steamUserId: string;
+      }
+    | undefined {
+    return this.steamUserId ? { steamUserId: this.steamUserId } : undefined;
   }
 
   public isFormValid(): boolean {
