@@ -1,3 +1,8 @@
+export enum ForecastMode {
+  DAY,
+  WEEK
+}
+
 export interface IForecastAPIResponse {
   cod: string;
   message: number;

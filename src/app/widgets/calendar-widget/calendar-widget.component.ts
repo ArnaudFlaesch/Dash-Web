@@ -66,10 +66,10 @@ export class CalendarWidgetComponent {
     });
   }
 
-  public getWidgetConfig(): { calendarUrls: string[] } | null {
+  public getWidgetConfig(): { calendarUrls: string[] } | undefined {
     return this.calendarUrls && this.calendarUrls.length
       ? { calendarUrls: this.calendarUrls }
-      : null;
+      : undefined;
   }
 
   public onCalendarUrlAdded(): void {

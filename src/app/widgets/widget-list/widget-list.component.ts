@@ -1,3 +1,4 @@
+import { TwitterWidgetComponent } from './../twitter-widget/twitter-widget.component';
 import {
   ChangeDetectorRef,
   Component,
@@ -130,10 +131,19 @@ export class WidgetListComponent implements OnChanges {
             });
             component.instance.airParifApiKey = widgetData
               ? (widgetData['airParifApiKey'] as string)
-              : null;
+              : undefined;
             component.instance.communeInseeCode = widgetData
               ? (widgetData['communeInseeCode'] as string)
-              : null;
+              : undefined;
+            break;
+          }
+          case WidgetTypes.TWITTER: {
+            component = target.createComponent(TwitterWidgetComponent, {
+              injector: injector
+            });
+            component.instance.selectedTwitterHandle = widgetData
+              ? (widgetData['twitterHandle'] as string)
+              : undefined;
             break;
           }
         }

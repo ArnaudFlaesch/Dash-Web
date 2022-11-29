@@ -80,8 +80,8 @@ export class RssWidgetComponent {
     return this.urlFeed !== null && this.urlFeed.length > 0;
   }
 
-  public getWidgetData(): { url: string } | null {
-    return this.urlFeed ? { url: this.urlFeed } : null;
+  public getWidgetData(): { url: string } | undefined {
+    return this.urlFeed ? { url: this.urlFeed } : undefined;
   }
 
   private updateRssFeed(readArticlesGuids: string[]): void {

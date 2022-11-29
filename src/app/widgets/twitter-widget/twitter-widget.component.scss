@@ -1,0 +1,7 @@
+.followed-user {
+  cursor: pointer;
+
+  &.selected-user {
+    background-color: #46879d;
+  }
+}

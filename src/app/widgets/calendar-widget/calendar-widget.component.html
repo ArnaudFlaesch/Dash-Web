@@ -8,12 +8,15 @@
   </ng-template>
 
   <ng-template #editComponent>
-    <div *ngFor="let calendarUrl of this.calendarUrls; let index = index">
-      <div class="flex flex-row space-x-4">
-        <input id="{{ index.toString() }}" (change)="onCalendarUrlUpdated($event)" [value]="calendarUrl"
-          placeholder="Saisissez une URL" />
+    <div class="space-y-3 mb-2">
+      <div *ngFor="let calendarUrl of this.calendarUrls; let index = index">
+        <div class="flex flex-row space-x-4">
+          <input id="{{ index.toString() }}" (change)="onCalendarUrlUpdated($event)" [value]="calendarUrl"
+            placeholder="Saisissez une URL" />
 
-        <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
+          <button mat-raised-button class="removeCalendarUrl"
+            (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
+        </div>
       </div>
     </div>
     <button mat-raised-button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>

@@ -1,4 +1,4 @@
-<div class="flex flex-row forecast-row overflow-x-scroll">
+<div class="flex flex-row forecast-row overflow-x-auto">
     <div class="forecast-container border-2 border-r-0 last:border-r-2 border-solid border-black rounded"
         *ngFor="let forecastDay of this.forecast">
         <div class="forecast flex flex-row">
@@ -10,17 +10,17 @@
                     [title]="forecastDay.weather[0].description" [alt]="forecastDay.weather[0].description" />
             </div>
         </div>
-        <div class="flex flex-col space-x-1">
+        <div class="flex flex-col">
             <div>
-                <mat-icon [ngStyle]="{ color: 'crimson' }" class="m-r-1">device_thermostat</mat-icon>
+                <mat-icon [ngStyle]="{ color: 'crimson' }" class="m-r-1 align-middle">device_thermostat</mat-icon>
                 {{ forecastDay.main.tempMax }}°
             </div>
             <div>
-                <mat-icon [ngStyle]="{ color: 'blue' }" class="m-r-1">device_thermostat</mat-icon>
+                <mat-icon [ngStyle]="{ color: 'blue' }" class="m-r-1 align-middle">device_thermostat</mat-icon>
                 {{ forecastDay.main.tempMin }}°
             </div>
             <div>
-                <mat-icon [ngStyle]="{ color: 'lightblue' }" class="m-r-1">opacity</mat-icon>
+                <mat-icon [ngStyle]="{ color: 'lightblue' }" class="m-r-1 align-middle">opacity</mat-icon>
                 {{ forecastDay.main.humidity }}%
             </div>
         </div>

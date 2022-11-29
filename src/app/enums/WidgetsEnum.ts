@@ -5,5 +5,6 @@ export enum WidgetTypes {
   STRAVA = 4,
   STEAM = 5,
   WORKOUT = 6,
-  AIRPARIF = 7
+  AIRPARIF = 7,
+  TWITTER = 8
 }

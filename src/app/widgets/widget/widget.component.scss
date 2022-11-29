@@ -1,17 +1,23 @@
 @import 'colors';
 
+$header-height: 2.5rem;
+
 .widget {
   background-color: white;
   border: 2px solid $widget-background-color;
 
   .header-container {
     background-color: $widget-background-color;
-    height: 2.5rem;
+    height: $header-height;
     color: white;
     align-items: center;
 
     button {
       color: white;
     }
+  }
+
+  .widget-body {
+    height: calc(100% - $header-height);
   }
 }

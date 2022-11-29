@@ -27,8 +27,8 @@ export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
 
   public airParifWebsiteUrl = 'https://www.airparif.asso.fr';
 
-  public airParifApiKey: string | null = null;
-  public communeInseeCode: string | null = null;
+  public airParifApiKey: string | undefined;
+  public communeInseeCode: string | undefined;
 
   public airParifCouleursIndices: IAirParifCouleur[] = [];
   public airParifForecast: IForecast[] = [];
@@ -147,23 +147,25 @@ export class AirParifWidgetComponent implements AfterViewInit, OnDestroy {
 
   public isFormValid(): boolean {
     return (
-      this.airParifApiKey !== null &&
+      this.airParifApiKey !== undefined &&
       this.airParifApiKey.length > 0 &&
-      this.communeInseeCode !== null &&
+      this.communeInseeCode !== undefined &&
       this.communeInseeCode.length > 0
     );
   }
 
-  public getWidgetData(): {
-    airParifApiKey: string;
-    communeInseeCode: string;
-  } | null {
+  public getWidgetData():
+    | {
+        airParifApiKey: string;
+        communeInseeCode: string;
+      }
+    | undefined {
     return this.airParifApiKey && this.communeInseeCode
       ? {
           airParifApiKey: this.airParifApiKey,
           communeInseeCode: this.communeInseeCode
         }
-      : null;
+      : undefined;
   }
 
   private initMap(): void {

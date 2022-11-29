@@ -82,10 +82,10 @@ describe('AirParifWidgetComponent', () => {
     spectator = createComponent();
     airParifWidgetService = createHttpAirParifWidgetService();
 
-    expect(spectator.component.airParifApiKey).toEqual(null);
-    expect(spectator.component.communeInseeCode).toEqual(null);
+    expect(spectator.component.airParifApiKey).toEqual(undefined);
+    expect(spectator.component.communeInseeCode).toEqual(undefined);
     expect(spectator.component.isFormValid()).toEqual(false);
-    expect(spectator.component.getWidgetData()).toEqual(null);
+    expect(spectator.component.getWidgetData()).toEqual(undefined);
     spectator.component.airParifApiKey = airParifToken;
     spectator.component.communeInseeCode = communeInseeCode;
     expect(spectator.component.isFormValid()).toEqual(true);

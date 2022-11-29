@@ -12,5 +12,9 @@
 }
 
 .leaflet-sidebar {
-  z-index: 1500;
+  z-index: 1000;
+}
+
+.leaflet-top {
+  z-index: 900;
 }
