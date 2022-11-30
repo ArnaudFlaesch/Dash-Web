@@ -72,8 +72,9 @@ describe('Tab error tests', () => {
       .wait('@updateTabError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.get('.mat-simple-snack-bar-content')
-          .should('have.text', "Erreur lors de la modification d'un onglet.")
+        cy.shouldDisplayErrorMessage(
+          "Erreur lors de la modification d'un onglet."
+        )
           .reload()
           .get('.tab')
           .should('have.length', 1)
@@ -98,8 +99,9 @@ describe('Tab error tests', () => {
       .wait('@deleteTabError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.get('.mat-simple-snack-bar-content')
-          .should('have.text', "Erreur lors de la suppression d'un onglet.")
+        cy.shouldDisplayErrorMessage(
+          "Erreur lors de la suppression d'un onglet."
+        )
           .get('.tab')
           .should('have.length', 1);
       });

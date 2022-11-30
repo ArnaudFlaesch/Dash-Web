@@ -7,5 +7,6 @@ declare namespace Cypress {
     navigateToTab(tabName: string): Chainable;
     createNewTab(tabName: string): Chainable;
     deleteTab(tabName: string): Chainable;
+    shouldDisplayErrorMessage(errorMessage: string): Chainable;
   }
 }

@@ -23,8 +23,7 @@ describe('RSS Widget errors tests', () => {
       .wait('@addWidgetError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.get('.mat-simple-snack-bar-content')
-          .should('have.text', "Erreur lors de l'ajout d'un widget.")
+        cy.shouldDisplayErrorMessage("Erreur lors de l'ajout d'un widget.")
           .get('.widget')
           .should('have.length', 0);
       });

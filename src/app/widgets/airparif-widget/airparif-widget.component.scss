@@ -7,14 +7,10 @@
 
     #map {
       height: 100%;
+
+      .leaflet-sidebar {
+        z-index: 1000;
+      }
     }
   }
-}
-
-.leaflet-sidebar {
-  z-index: 1000;
-}
-
-.leaflet-top {
-  z-index: 900;
 }
