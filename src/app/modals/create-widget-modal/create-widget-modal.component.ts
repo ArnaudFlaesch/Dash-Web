@@ -41,6 +41,9 @@ export class CreateWidgetModalComponent {
       case WidgetTypes.TWITTER.toString(): {
         return 'newspaper';
       }
+      case WidgetTypes.ECOWATT.toString(): {
+        return 'electric_bolt';
+      }
       default: {
         return '';
       }

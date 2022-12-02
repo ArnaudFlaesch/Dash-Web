@@ -1,0 +1,18 @@
+<app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()"
+    [isWidgetLoaded]="isWidgetLoaded">
+
+    <ng-template #header>
+        <div class="header">
+            <a href="ecowatt" class="flex flex-row items-center space-x-2">
+                <p>Ecowatt</p>
+            </a>
+        </div>
+    </ng-template>
+
+    <ng-template #body>
+        <div class="h-full w-full" #iframeContainer>
+            <iframe [src]="ecowattIframeUrl | safe" title="ecowatt" [width]="iframeContainerWidth"
+                [height]="iframeContainerHeight"></iframe>
+        </div>
+    </ng-template>
+</app-widget>

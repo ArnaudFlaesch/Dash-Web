@@ -65,6 +65,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-session-edit/workout-session-edit.component';
 import { TwitterWidgetComponent } from './widgets/twitter-widget/twitter-widget.component';
 import { TwitterWidgetService } from './widgets/twitter-widget/twitter.widget.service';
+import { EcowattWidgetComponent } from './widgets/ecowatt-widget/ecowatt-widget.component';
 
 registerLocaleData(localeFr);
 
@@ -96,7 +97,8 @@ registerLocaleData(localeFr);
     WeatherForecastComponent,
     WeatherTodayComponent,
     WorkoutSessionEditComponent,
-    TwitterWidgetComponent
+    TwitterWidgetComponent,
+    EcowattWidgetComponent
   ],
   imports: [
     BrowserAnimationsModule,
