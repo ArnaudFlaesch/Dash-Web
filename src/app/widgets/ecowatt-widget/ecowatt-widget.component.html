@@ -11,8 +11,8 @@
 
     <ng-template #body>
         <div class="h-full w-full" #iframeContainer>
-            <iframe src="https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0" title="ecowatt"
-                [width]="iframeContainerWidth" [height]="iframeContainerHeight"></iframe>
+            <iframe [src]="ecowattIframeUrl | safe" title="ecowatt" [width]="iframeContainerWidth"
+                [height]="iframeContainerHeight"></iframe>
         </div>
     </ng-template>
 </app-widget>

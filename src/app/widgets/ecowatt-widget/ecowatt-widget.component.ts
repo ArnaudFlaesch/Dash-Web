@@ -15,6 +15,9 @@ export class EcowattWidgetComponent {
   @ViewChild('iframeContainer')
   private iframeContainer: ElementRef | undefined;
 
+  public ecowattIframeUrl =
+    'https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0';
+
   public isWidgetLoaded = true;
   public iframeContainerHeight = 0;
   public iframeContainerWidth = 0;
@@ -23,6 +26,10 @@ export class EcowattWidgetComponent {
 
   @HostListener('window:resize', ['$event'])
   private onResize(event: Event): void {
+    this.resizeWidget();
+  }
+
+  public resizeWidget(): void {
     this.iframeContainerHeight =
       this.iframeContainer?.nativeElement.offsetHeight;
     this.iframeContainerWidth = this.iframeContainer?.nativeElement.offsetWidth;
@@ -30,6 +37,7 @@ export class EcowattWidgetComponent {
 
   public refreshWidget(): void {
     this.cdRef.detectChanges();
+    this.resizeWidget();
     if (this.iframeContainer) {
       const iframe =
         this.iframeContainer.nativeElement.getElementsByTagName('iframe')[0];
