@@ -55,7 +55,7 @@
     "@angular/cli": "15.0.2",
     "@angular/compiler-cli": "15.0.2",
     "@compodoc/compodoc": "1.1.19",
-    "@cypress/schematic": "2.3.0",
+    "@cypress/schematic": "2.4.0",
     "@ngneat/spectator": "12.2.0",
     "@tailwindcss/line-clamp": "0.4.2",
     "@types/jest": "28.1.8",
