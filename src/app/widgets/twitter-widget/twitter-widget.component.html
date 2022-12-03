@@ -35,7 +35,8 @@
 
     <ng-template #body>
         <div #twitterTimeline>
-            <a class="twitter-timeline" [href]="getTwitterTimelineUrl()"></a>
+            <a class="twitter-timeline"
+                href="https://twitter.com/${{this.selectedTwitterHandle}}?ref_src=twsrc%5Etfw"></a>
         </div>
     </ng-template>
 </app-widget>
