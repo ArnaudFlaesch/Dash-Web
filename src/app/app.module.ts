@@ -23,7 +23,6 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ErrorComponent } from './error/error.component';
 import { AuthGuard } from './guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
@@ -74,7 +73,6 @@ registerLocaleData(localeFr);
     AppComponent,
     LoginComponent,
     HomeComponent,
-    ErrorComponent,
     TabComponent,
     WidgetComponent,
     RssWidgetComponent,
