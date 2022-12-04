@@ -65,7 +65,7 @@ import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-se
 import { TwitterWidgetComponent } from './widgets/twitter-widget/twitter-widget.component';
 import { TwitterWidgetService } from './widgets/twitter-widget/twitter.widget.service';
 import { EcowattWidgetComponent } from './widgets/ecowatt-widget/ecowatt-widget.component';
-import { AirparifMapComponent } from './widgets/airparif-widget/airparif-map/airparif-map.component';
+import { AirParifMapComponent } from './widgets/airparif-widget/airparif-map/airparif-map.component';
 
 registerLocaleData(localeFr);
 
@@ -98,7 +98,7 @@ registerLocaleData(localeFr);
     WorkoutSessionEditComponent,
     TwitterWidgetComponent,
     EcowattWidgetComponent,
-    AirparifMapComponent
+    AirParifMapComponent
   ],
   imports: [
     BrowserAnimationsModule,
