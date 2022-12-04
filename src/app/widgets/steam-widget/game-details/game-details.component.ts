@@ -2,7 +2,11 @@ import { ErrorHandlerService } from './../../../services/error.handler.service';
 import { SteamWidgetService } from './../steam.widget.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { IGameInfo, IAchievement, IAchievementResponse } from '../ISteam';
+import {
+  IAchievement,
+  IAchievementResponse,
+  IGameInfoDisplay
+} from '../ISteam';
 
 @Component({
   selector: 'app-game-details',
@@ -11,7 +15,7 @@ import { IGameInfo, IAchievement, IAchievementResponse } from '../ISteam';
 })
 export class GameDetailsComponent implements OnInit {
   @Input()
-  public gameInfo: IGameInfo | undefined;
+  public gameInfo: IGameInfoDisplay | undefined;
 
   @Input()
   public steamUserId: string | undefined;
@@ -21,6 +25,7 @@ export class GameDetailsComponent implements OnInit {
 
   public achievements: IAchievement[] = [];
   public completedAchievements: IAchievement[] = [];
+  public completionStatus: number | undefined;
 
   private ERROR_GETTING_ACHIEVEMENTS_DATA =
     'Erreur lors de la récupération des succès.';
@@ -36,7 +41,10 @@ export class GameDetailsComponent implements OnInit {
     }
   }
 
-  public loadAchievementsData(steamUserId: string, gameInfo: IGameInfo): void {
+  public loadAchievementsData(
+    steamUserId: string,
+    gameInfo: IGameInfoDisplay
+  ): void {
     this.steamWidgetService
       .getAchievementList(steamUserId, gameInfo.appid)
       .subscribe({
@@ -48,6 +56,10 @@ export class GameDetailsComponent implements OnInit {
               achievementResponse.playerstats.achievements.filter(
                 (achievement: IAchievement) => achievement.achieved === 1
               );
+            this.completionStatus = Math.round(
+              (this.completedAchievements.length / this.achievements.length) *
+                100
+            );
           }
         },
         error: (error: HttpErrorResponse) =>
@@ -56,19 +68,5 @@ export class GameDetailsComponent implements OnInit {
             this.ERROR_GETTING_ACHIEVEMENTS_DATA
           )
       });
-  }
-
-  public getCompletionStatus(): number {
-    return Math.round(
-      (this.completedAchievements.length / this.achievements.length) * 100
-    );
-  }
-
-  public getAppIdLink(): string {
-    return `${this.steamWidgetService.STEAM_COMMUNITY_URL}${this.gameInfo?.appid}`;
-  }
-
-  public getPlayerAchievementUrl(): string {
-    return (this.profileUrl && this.gameInfo) ? `${this.profileUrl}stats/${this.gameInfo?.appid}/achievements/` : '#'
   }
 }

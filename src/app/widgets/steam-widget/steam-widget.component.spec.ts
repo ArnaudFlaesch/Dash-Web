@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { SteamWidgetComponent } from './steam-widget.component';
 import { SteamWidgetService } from './steam.widget.service';
-import { IGameInfo, IPlayerDataResponse } from './ISteam';
+import { IPlayerDataResponse } from './ISteam';
 
 describe('SteamWidgetComponent', () => {
   let spectator: Spectator<SteamWidgetComponent>;
@@ -78,7 +78,7 @@ describe('SteamWidgetComponent', () => {
 
   it('should create', () => {
     expect(spectator.component.playerData).toEqual(undefined);
-    expect(spectator.component.ownedGames).toEqual([]);
+    expect(spectator.component.ownedGamesDisplay).toEqual([]);
     expect(spectator.component.isWidgetLoaded()).toEqual(false);
     const steamUserId = '1337';
     expect(spectator.component.isFormValid()).toEqual(false);
@@ -107,11 +107,11 @@ describe('SteamWidgetComponent', () => {
     expect(spectator.component.playerData?.personaname).toEqual(
       playerData[0].personaname
     );
-    expect(spectator.component.ownedGames.length).toEqual(3);
+    expect(spectator.component.ownedGamesDisplay.length).toEqual(3);
   });
 
   it('Should load new data on page navigation', () => {
-    expect(spectator.component.ownedGames).toEqual([]);
+    expect(spectator.component.ownedGamesDisplay).toEqual([]);
     expect(spectator.component.pageNumber).toEqual(0);
     const pageIndex = 2;
     const pageEvent = {
@@ -123,8 +123,6 @@ describe('SteamWidgetComponent', () => {
     expect(spectator.component.pageNumber).toEqual(0);
     const steamUserId = '1337';
     spectator.component.steamUserId = steamUserId;
-    spectator.component.ownedGames =
-      ownedGamesData.games as unknown as IGameInfo[];
     spectator.component.onPageChanged(pageEvent);
     expect(spectator.component.pageNumber).toEqual(pageIndex);
 
@@ -132,12 +130,6 @@ describe('SteamWidgetComponent', () => {
       environment.backend_url +
         `/steamWidget/ownedGames?steamUserId=${steamUserId}&pageNumber=${pageIndex}`,
       HttpMethod.GET
-    );
-  });
-
-  it('Should get game icon link', () => {
-    expect(spectator.component.getGameImgSrc('13', 'URL')).toEqual(
-      'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/13/URL.jpg'
     );
   });
 

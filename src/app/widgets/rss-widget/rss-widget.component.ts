@@ -77,10 +77,12 @@ export class RssWidgetComponent {
   }
 
   public isFormValid(): boolean {
+    console.log('isFormValid');
     return this.urlFeed !== null && this.urlFeed.length > 0;
   }
 
   public getWidgetData(): { url: string } | undefined {
+    console.log('getWidgetData');
     return this.urlFeed ? { url: this.urlFeed } : undefined;
   }
 

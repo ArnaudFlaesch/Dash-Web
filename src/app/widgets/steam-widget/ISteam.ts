@@ -6,14 +6,24 @@ export interface IPlayerDataResponse {
 
 export interface IOwnedGamesResponse {
   gameCount: number;
-  games: IGameInfo[];
+  games: IGameInfoResponse[];
 }
 
-export interface IGameInfo {
+export interface IGameInfoResponse {
   appid: string;
   name: string;
   imgIconUrl: string;
   imgLogoUrl: string;
+}
+
+export interface IGameInfoDisplay {
+  appid: string;
+  name: string;
+  imgIconUrl: string;
+  imgLogoUrl: string;
+  gameImgSrc: string;
+  appIdLink: string;
+  playerAchievementUrl: string;
 }
 
 export interface IAchievementResponse {
