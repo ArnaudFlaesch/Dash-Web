@@ -22,6 +22,7 @@ import { StravaWidgetComponent } from '../strava-widget/strava-widget.component'
 import { WorkoutWidgetComponent } from '../workout-widget/workout-widget.component';
 import { AirParifWidgetComponent } from '../airparif-widget/airparif-widget.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { EcowattWidgetComponent } from '../ecowatt-widget/ecowatt-widget.component';
 
 @Component({
   selector: 'app-widget-list',
@@ -144,6 +145,12 @@ export class WidgetListComponent implements OnChanges {
             component.instance.selectedTwitterHandle = widgetData
               ? (widgetData['twitterHandle'] as string)
               : undefined;
+            break;
+          }
+          case WidgetTypes.ECOWATT: {
+            target.createComponent(EcowattWidgetComponent, {
+              injector: injector
+            });
             break;
           }
         }
