@@ -1,6 +1,5 @@
 import { TwitterWidgetComponent } from './../twitter-widget/twitter-widget.component';
 import {
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
