@@ -16,7 +16,10 @@ describe('Steam Widget tests', () => {
       .as('getPlayerData')
       .intercept('GET', `/steamWidget/ownedGames*`)
       .as('getGameData')
-      .intercept('GET', `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`)
+      .intercept(
+        'GET',
+        `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`
+      )
       .as('getAchievementData');
   });
 
@@ -56,9 +59,9 @@ describe('Steam Widget tests', () => {
             cy.get('.widget .totalachievements')
               .should('have.text', 'Succès : 23')
               .get('.completedAchievements')
-              .should('have.text', 'Succès complétés : 19')
+              .should('have.text', 'Succès complétés : 21')
               .get('.progress-value')
-              .should('have.text', '83%');
+              .should('have.text', '91%');
           });
       });
   });

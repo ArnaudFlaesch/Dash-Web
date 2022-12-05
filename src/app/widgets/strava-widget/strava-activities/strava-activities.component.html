@@ -1,4 +1,4 @@
-<div *ngFor="let activity of this.activities.slice().reverse()" class="stravaActivity">
+<div *ngFor="let activity of this.activities" class="stravaActivity">
     <mat-expansion-panel hideToggle>
         <mat-expansion-panel-header>
             <mat-panel-title> {{ getTitleToDisplay(activity) }} </mat-panel-title>

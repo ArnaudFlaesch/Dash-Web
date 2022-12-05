@@ -5,7 +5,12 @@ import { PageEvent } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
-import { IGameInfo, IOwnedGamesResponse, IPlayerDataResponse } from './ISteam';
+import {
+  IGameInfoDisplay,
+  IGameInfoResponse,
+  IOwnedGamesResponse,
+  IPlayerDataResponse
+} from './ISteam';
 import { SteamWidgetService } from './steam.widget.service';
 
 @Component({
@@ -16,7 +21,7 @@ import { SteamWidgetService } from './steam.widget.service';
 export class SteamWidgetComponent implements OnInit {
   public playerData: IPlayerDataResponse | undefined;
   public gameCount = 0;
-  public ownedGames: IGameInfo[] = [];
+  public ownedGamesDisplay: IGameInfoDisplay[] = [];
 
   public pageSize = 25;
   public pageSizeOptions = [25];
@@ -25,6 +30,8 @@ export class SteamWidgetComponent implements OnInit {
   public steamUserId: string | undefined;
 
   public searchFormControl = new FormControl('');
+
+  private ownedGames: IGameInfoResponse[] = [];
 
   private ERROR_GETTING_PLAYER_DATA =
     'Erreur lors de la récupération de vos informations Steam.';
@@ -82,6 +89,9 @@ export class SteamWidgetComponent implements OnInit {
         next: (response: IOwnedGamesResponse) => {
           this.gameCount = response.gameCount;
           this.ownedGames = response.games;
+          this.ownedGamesDisplay = this.ownedGames.map((game) =>
+            this.gameInfoResponseToGameInfoDisplay(game)
+          );
         },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(
@@ -89,10 +99,6 @@ export class SteamWidgetComponent implements OnInit {
             this.ERROR_GETTING_OWNED_GAMES
           )
       });
-  }
-
-  public getGameImgSrc(gameAppId: string, imgIconUrl: string): string {
-    return `${this.steamWidgetService.STEAM_IMAGE_URL}${gameAppId}/${imgIconUrl}.jpg`;
   }
 
   public onPageChanged(event: PageEvent): void {
@@ -120,5 +126,20 @@ export class SteamWidgetComponent implements OnInit {
 
   public isWidgetLoaded(): boolean {
     return this.steamUserId != undefined && this.playerData != null;
+  }
+
+  private gameInfoResponseToGameInfoDisplay(
+    gameInfoResponse: IGameInfoResponse
+  ): IGameInfoDisplay {
+    const appIdLink =
+      this.steamWidgetService.STEAM_COMMUNITY_URL + gameInfoResponse.appid;
+    const playerAchievementUrl = `${this.playerData?.profileurl}stats/${gameInfoResponse?.appid}/achievements/`;
+    const gameImgSrc = `${this.steamWidgetService.STEAM_IMAGE_URL}${gameInfoResponse.appid}/${gameInfoResponse.imgIconUrl}.jpg`;
+    return {
+      ...gameInfoResponse,
+      appIdLink: appIdLink,
+      playerAchievementUrl: playerAchievementUrl,
+      gameImgSrc: gameImgSrc
+    };
   }
 }

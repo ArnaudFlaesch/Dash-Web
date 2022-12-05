@@ -8,11 +8,15 @@ import { WidgetTypes } from './../../enums/WidgetsEnum';
   styleUrls: ['./create-widget-modal.component.scss']
 })
 export class CreateWidgetModalComponent {
-  constructor(public dialogRef: MatDialogRef<CreateWidgetModalComponent>) {}
+  public widgetTypesKeys: { type: string; icon: string }[] = Object.keys(
+    WidgetTypes
+  )
+    .filter((key) => isNaN(parseInt(key, 0)))
+    .map((type: string) => {
+      return { type: type, icon: this.getWidgetTypeIconToDisplay(type) };
+    });
 
-  public getWidgetTypesKeys(): string[] {
-    return Object.keys(WidgetTypes).filter((key) => isNaN(parseInt(key, 0)));
-  }
+  constructor(public dialogRef: MatDialogRef<CreateWidgetModalComponent>) {}
 
   public getWidgetTypeIconToDisplay(widgetType: unknown): string {
     const widgetTypeKey = WidgetTypes[widgetType as WidgetTypes].toString();

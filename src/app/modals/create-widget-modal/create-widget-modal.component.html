@@ -2,15 +2,16 @@
 
 <mat-dialog-content>
   <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
-    <mat-card *ngFor="let type of getWidgetTypesKeys()">
+    <mat-card *ngFor="let widgetType of widgetTypesKeys">
       <mat-card-content>
         <div class="flex flex-col space-y-5 items-center">
-          <mat-icon>{{ getWidgetTypeIconToDisplay(type) }}</mat-icon>
-          <span> {{ type }}</span>
+          <mat-icon>{{widgetType.icon }}</mat-icon>
+          <span> {{ widgetType.type }}</span>
         </div>
       </mat-card-content>
       <mat-card-actions>
-        <button id="{{ type }}" mat-raised-button color="primary" [mat-dialog-close]="type">Ajouter</button>
+        <button id="{{ widgetType.type }}" mat-raised-button color="primary"
+          [mat-dialog-close]="widgetType.type">Ajouter</button>
       </mat-card-actions>
     </mat-card>
   </div>

@@ -23,7 +23,6 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ErrorComponent } from './error/error.component';
 import { AuthGuard } from './guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
@@ -66,6 +65,7 @@ import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-se
 import { TwitterWidgetComponent } from './widgets/twitter-widget/twitter-widget.component';
 import { TwitterWidgetService } from './widgets/twitter-widget/twitter.widget.service';
 import { EcowattWidgetComponent } from './widgets/ecowatt-widget/ecowatt-widget.component';
+import { AirParifMapComponent } from './widgets/airparif-widget/airparif-map/airparif-map.component';
 
 registerLocaleData(localeFr);
 
@@ -74,7 +74,6 @@ registerLocaleData(localeFr);
     AppComponent,
     LoginComponent,
     HomeComponent,
-    ErrorComponent,
     TabComponent,
     WidgetComponent,
     RssWidgetComponent,
@@ -98,7 +97,8 @@ registerLocaleData(localeFr);
     WeatherTodayComponent,
     WorkoutSessionEditComponent,
     TwitterWidgetComponent,
-    EcowattWidgetComponent
+    EcowattWidgetComponent,
+    AirParifMapComponent
   ],
   imports: [
     BrowserAnimationsModule,
