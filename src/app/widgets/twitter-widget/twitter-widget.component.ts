@@ -107,10 +107,6 @@ export class TwitterWidgetComponent implements OnInit {
   }
   /* eslint-enable */
 
-  public getTwitterTimelineUrl(): string {
-    return `https://twitter.com/${this.selectedTwitterHandle}?ref_src=twsrc%5Etfw`;
-  }
-
   public addFollowedUser(): void {
     if (this.searchFormControl.value && this.searchFormControl.value.length) {
       this.twitterWidgetService

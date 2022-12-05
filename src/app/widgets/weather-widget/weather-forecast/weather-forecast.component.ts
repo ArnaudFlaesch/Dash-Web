@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { ForecastMode, IForecast } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-weather-forecast',
   templateUrl: './weather-forecast.component.html',
   styleUrls: ['./weather-forecast.component.scss']
@@ -16,7 +17,7 @@ export class WeatherForecastComponent {
   public timezone = 0;
 
   @Input()
-  public forecastMode: ForecastMode = ForecastMode.DAY
+  public forecastMode: ForecastMode = ForecastMode.DAY;
 
   constructor(
     private weatherWidgetService: WeatherWidgetService,
@@ -24,10 +25,12 @@ export class WeatherForecastComponent {
   ) {}
 
   public getDateToDisplay(dateTime: number, timezone: number): string {
-    const options: Intl.DateTimeFormatOptions = (this.forecastMode === ForecastMode.DAY) ? {
-      hour: '2-digit'
-    } : {weekday: 'short',
-    day: 'numeric'} 
+    const options: Intl.DateTimeFormatOptions =
+      this.forecastMode === ForecastMode.DAY
+        ? {
+            hour: '2-digit'
+          }
+        : { weekday: 'short', day: 'numeric' };
     return this.dateUtils
       .formatDateFromTimestamp(
         dateTime,
