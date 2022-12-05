@@ -302,8 +302,8 @@ describe('StravaWidgetComponent', () => {
       '2022-10': [10.7047, 12.3976, 10.5298]
     });
     const statsFromActivities = spectator.component.getStatsFromActivities();
-    expect(statsFromActivities[0].y).toEqual(34);
-    expect(statsFromActivities[1].y).toEqual(12);
+    expect(statsFromActivities[0].y).toEqual(12);
+    expect(statsFromActivities[1].y).toEqual(34);
   });
 
   it('Should display athlete url', () => {
