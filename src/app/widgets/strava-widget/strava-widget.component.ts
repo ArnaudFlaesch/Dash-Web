@@ -127,7 +127,7 @@ export class StravaWidgetComponent {
         .getActivities(token, this.paginationActivities)
         .subscribe({
           next: (response) => {
-            this.activities = response.reverse();
+            this.activities = response;
             this.getChartData();
             this.isWidgetLoaded = true;
           },

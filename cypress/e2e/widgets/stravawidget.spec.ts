@@ -32,20 +32,26 @@ describe('Strava Widget tests', () => {
   it('Should fail to load date because of wrong token', () => {
     window.localStorage.setItem('strava_token', null);
     window.localStorage.setItem('strava_refresh_token', null);
-    window.localStorage.setItem('strava_token_expires_at', TOKEN_EXPIRATION_DATE.toString());
+    window.localStorage.setItem(
+      'strava_token_expires_at',
+      TOKEN_EXPIRATION_DATE.toString()
+    );
   });
 
   it('Should load the widget with a fake token', () => {
     window.localStorage.setItem('strava_refresh_token', STRAVA_REFRESH_TOKEN);
-    cy.intercept('/stravaWidget/getRefreshToken').as('refreshToken').navigateToTab(tabName);
     window.localStorage.setItem('strava_token', STRAVA_TOKEN);
-    window.localStorage.setItem('strava_token_expires_at', TOKEN_EXPIRATION_DATE.toString());
-    cy.intercept('/stravaWidget/getAthleteData*')
+    window.localStorage.setItem(
+      'strava_token_expires_at',
+      TOKEN_EXPIRATION_DATE.toString()
+    );
+    cy.intercept('/stravaWidget/getRefreshToken')
+      .as('refreshToken')
+      .intercept('/stravaWidget/getAthleteData*')
       .as('getAthleteData')
       .intercept('/stravaWidget/getAthleteActivities*')
       .as('getActivities')
       .reload()
-      .navigateToTab(tabName)
       .wait('@getAthleteData')
       .then((getAthleteDataRequest: Interception) => {
         const getAthleteResponse = getAthleteDataRequest.response;
@@ -62,22 +68,6 @@ describe('Strava Widget tests', () => {
             .first()
             .contains('Evening Run 10.7047 kms');
         });
-      });
-  });
-
-  it('Should delete previously added widget', () => {
-    cy.intercept('DELETE', '/widget/deleteWidget/*')
-      .as('deleteWidget')
-      .get('.deleteButton')
-      .click()
-      .get('h4')
-      .should('have.text', 'Êtes-vous sûr de vouloir supprimer ce widget ?')
-      .get('.validateDeletionButton')
-      .click()
-      .wait('@deleteWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 0);
       });
   });
 });
