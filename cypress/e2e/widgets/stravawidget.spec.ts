@@ -47,13 +47,11 @@ describe('Strava Widget tests', () => {
     );
     cy.intercept('/stravaWidget/getRefreshToken')
       .as('refreshToken')
-      .navigateToTab(tabName)
       .intercept('/stravaWidget/getAthleteData*')
       .as('getAthleteData')
       .intercept('/stravaWidget/getAthleteActivities*')
       .as('getActivities')
       .reload()
-      .navigateToTab(tabName)
       .wait('@getAthleteData')
       .then((getAthleteDataRequest: Interception) => {
         const getAthleteResponse = getAthleteDataRequest.response;
