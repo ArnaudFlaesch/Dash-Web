@@ -51,3 +51,5 @@ src/environments/env.vars.secret.ts
 
 cypress/downloads/
 cypress/screenshots/
+
+.iac-data/
