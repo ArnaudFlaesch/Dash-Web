@@ -29,11 +29,18 @@ describe('AirParif Widget tests', () => {
 
   it('Should insert valid configuration', () => {
     const communeInseeCode = '75112';
-    cy.get('#airParifApiKey')
+    cy.get('#airParifApiKeyLabel')
+      .click()
+      .get('#airParifApiKey')
       .type(AIR_PARIF_VALID_TOKEN)
+      .get('#communeInseeCodeLabel')
+      .click()
       .get('#communeInseeCode')
       .type(communeInseeCode)
-      .intercept('GET', `/airParifWidget/previsionCommune?commune=${communeInseeCode}`)
+      .intercept(
+        'GET',
+        `/airParifWidget/previsionCommune?commune=${communeInseeCode}`
+      )
       .as('getForecastData')
       .intercept('GET', `/airParifWidget/couleurs*`)
       .as('getColorsData')

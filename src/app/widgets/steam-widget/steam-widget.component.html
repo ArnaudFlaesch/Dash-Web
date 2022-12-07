@@ -12,8 +12,8 @@
 
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
-      <mat-label>Utilisateur Steam</mat-label>
-      <input matInput id="steamUserId" name="userId" [(ngModel)]="this.steamUserId"
+      <mat-label id="steamUserIdLabel">Utilisateur Steam</mat-label>
+      <input matInput id="steamUserIdInput" name="userId" [(ngModel)]="this.steamUserId"
         placeholder="Saisissez l'user ID du joueur Steam'" />
     </mat-form-field>
   </ng-template>

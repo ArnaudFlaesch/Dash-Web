@@ -40,7 +40,9 @@ describe('Steam Widget tests', () => {
   it('Should refresh Steam widget and validate data', () => {
     cy.get('.validateButton')
       .should('be.disabled')
-      .get('input')
+      .get('#steamUserIdLabel')
+      .click()
+      .get('#steamUserIdInput')
       .type(steamUserId)
       .get('.validateButton')
       .click()
