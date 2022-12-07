@@ -2,7 +2,7 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Twitter Widget tests', () => {
-  const tabName = 'Twitter2';
+  const tabName = 'Twitter';
 
   beforeEach(() => cy.navigateToTab(tabName));
 
