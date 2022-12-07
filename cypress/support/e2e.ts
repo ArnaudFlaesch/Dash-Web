@@ -43,16 +43,21 @@ Cypress.Commands.add('deleteTab', (tabName: string): Cypress.Chainable => {
   return deleteTab(tabName);
 });
 
-function loginAs(username: string, password: string): Cypress.Chainable<Response> {
-  return cy
-    .request('POST', `${Cypress.env('backend_url')}/auth/login`, {
-      username: username,
-      password: password
+function loginAs(
+  username: string,
+  password: string
+): Cypress.Chainable<Response> {
+  return cy.session([username, password], () => {
+    cy.request({
+      method: 'POST',
+      url: `${Cypress.env('backend_url')}/auth/login`,
+      body: { username, password }
     })
-    .its('body')
-    .then((response) => {
-      window.localStorage.setItem('user', JSON.stringify(response));
-    });
+      .its('body')
+      .then((response) => {
+        window.localStorage.setItem('user', JSON.stringify(response));
+      });
+  });
 }
 
 function navigateToTab(tabName: string): Cypress.Chainable {
