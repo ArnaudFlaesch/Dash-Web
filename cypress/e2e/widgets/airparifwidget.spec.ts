@@ -29,9 +29,7 @@ describe('AirParif Widget tests', () => {
 
   it('Should insert valid configuration', () => {
     const communeInseeCode = '75112';
-    cy.get('#airParifApiKeyLabel')
-      .click()
-      .get('#airParifApiKey')
+    cy.get('#airParifApiKey')
       .type(AIR_PARIF_VALID_TOKEN)
       .get('#communeInseeCodeLabel')
       .click()
