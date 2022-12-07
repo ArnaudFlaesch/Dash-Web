@@ -51,8 +51,8 @@ export class TwitterWidgetComponent implements OnInit {
         this.twitterWidgetService
           .getFollowedUsers(searchValue || undefined)
           .subscribe({
-            next: (followedUsers) =>
-              (this.followedUsers = followedUsers.slice(0, 10)),
+            next: (followedUsersResponse) =>
+              (this.followedUsers = followedUsersResponse.slice(0, 10)),
             error: (error) =>
               this.errorHandlerService.handleError(
                 error.message,

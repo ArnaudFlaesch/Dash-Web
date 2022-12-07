@@ -16,7 +16,7 @@
                         (click)="selectUserHandle(followedUser.userHandle)">
                         {{followedUser.userHandle}}</div>
                     <button class="bg-gray-500" (click)="this.deleteFollowedUser(followedUser.id)"
-                        id="deleteFollowedUserButton" mat-raised-button>
+                        class="deleteFollowedUserButton" mat-raised-button>
                         <mat-icon title="Remove followed user" aria-hidden="false">delete</mat-icon>
                     </button>
                 </div>
@@ -24,11 +24,11 @@
 
             <form class="flex flex-row">
                 <mat-form-field appearance="fill">
-                    <mat-label>Recherchez un utilisateur</mat-label>
-                    <input matInput [formControl]="searchFormControl" />
+                    <mat-label id="searchTwitterUserLabel">Recherchez un utilisateur</mat-label>
+                    <input id="searchTwitterUserInput" matInput [formControl]="searchFormControl" />
                 </mat-form-field>
-                <button (click)="this.addFollowedUser()" [disabled]="!this.searchFormControl.value"
-                    mat-raised-button>Ajouter</button>
+                <button id="addFollowedUserButton" (click)="this.addFollowedUser()"
+                    [disabled]="!this.searchFormControl.value" mat-raised-button>Ajouter</button>
             </form>
         </div>
     </ng-template>

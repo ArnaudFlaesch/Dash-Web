@@ -9,15 +9,15 @@ import { IFollowedUser } from './ITwitter';
 export class TwitterWidgetService {
   constructor(private http: HttpClient) {}
 
-  public getFollowedUsers(searchParam?: string): Observable<IFollowedUser[]> {
+  public getFollowedUsers(search?: string): Observable<IFollowedUser[]> {
     return this.http.get<IFollowedUser[]>(
-      `${environment.backend_url}/twitterWidget/followed?search=${searchParam}`,
+      `${environment.backend_url}/twitterWidget/followed`,
       {
         headers: {
           Authorization: authorizationBearer(),
           'Content-type': 'application/json'
         },
-        params: searchParam ? { searchParam: searchParam } : {}
+        params: search ? { search: search } : {}
       }
     );
   }
