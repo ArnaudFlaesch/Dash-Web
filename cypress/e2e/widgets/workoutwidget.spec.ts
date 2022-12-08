@@ -4,34 +4,21 @@ import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Workout Widget tests', () => {
   const mockedDateTime = new Date(2022, 6, 22, 0, 0, 0).getTime();
-
   const tabName = 'Workout';
 
-  beforeEach(() => cy.clock(mockedDateTime).navigateToTab(tabName));
+  before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('WORKOUT'));
 
-  before(() => cy.createNewTab(tabName));
+  after(() => cy.loginAsAdmin().deleteTab(tabName));
+
+  beforeEach(() =>
+    cy.clock(mockedDateTime).loginAsAdmin().navigateToTab(tabName)
+  );
 
   afterEach(() =>
     cy.clock().then((clock) => {
       clock.restore();
     })
   );
-
-  after(() => cy.deleteTab(tabName));
-
-  it('Should create a Workout Widget and add it to the dashboard', () => {
-    cy.intercept('POST', '/widget/addWidget')
-      .as('addWidget')
-      .get('#openAddWidgetModal')
-      .click()
-      .get('#WORKOUT')
-      .click()
-      .wait('@addWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 1);
-      });
-  });
 
   it('Should add a new workout type', () => {
     const newWorkoutTypeName = 'Abdos';

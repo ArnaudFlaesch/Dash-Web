@@ -4,27 +4,13 @@ import { Interception } from 'cypress/types/net-stubbing';
 describe('Twitter Widget tests', () => {
   const tabName = 'Twitter';
 
-  beforeEach(() => cy.navigateToTab(tabName));
+  beforeEach(() => cy.loginAsAdmin().navigateToTab(tabName));
 
-  before(() => cy.createNewTab(tabName));
+  before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('TWITTER'));
 
-  after(() => cy.deleteTab(tabName));
+  after(() => cy.loginAsAdmin().deleteTab(tabName));
 
   const usersToFollow = ['StackOverflow', 'Microsoft', 'Apple'];
-
-  it('Should create a Twitter Widget and add it to the dashboard', () => {
-    cy.intercept('POST', '/widget/addWidget')
-      .as('addWidget')
-      .get('#openAddWidgetModal')
-      .click()
-      .get('#TWITTER')
-      .click()
-      .wait('@addWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 1);
-      });
-  });
 
   it('Should insert users to follow', () => {
     usersToFollow.forEach((user) => {

@@ -8,30 +8,17 @@ describe('RSS Widget tests', () => {
   const tabName = 'Flux RSS';
   const rssFeedUrl = 'https://www.lefigaro.fr/rss/figaro_actualites.xml';
 
-  before(() => cy.createNewTab(tabName));
+  before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('RSS'));
 
-  after(() => cy.deleteTab(tabName));
+  after(() => cy.loginAsAdmin().deleteTab(tabName));
 
   beforeEach(() => {
     cy.intercept('GET', `/rssWidget/?url=${rssFeedUrl}`, {
       fixture: 'rss/figaro_rss.json'
     })
       .as('refreshWidget')
+      .loginAsAdmin()
       .navigateToTab(tabName);
-  });
-
-  it('Should create a RSS Widget and add it to the dashboard', () => {
-    cy.intercept('POST', '/widget/addWidget')
-      .as('addWidget')
-      .get('#openAddWidgetModal')
-      .click()
-      .get('#RSS')
-      .click()
-      .wait('@addWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 1);
-      });
   });
 
   it('Should edit RSS widget and add a feed URL', () => {
@@ -47,7 +34,9 @@ describe('RSS Widget tests', () => {
         cy.get('.rssTitle')
           .invoke('text')
           .then((text) => {
-            expect(text.trim()).equal('Le Figaro - Actualité en direct et informations en continu');
+            expect(text.trim()).equal(
+              'Le Figaro - Actualité en direct et informations en continu'
+            );
           })
           .get('.widget .rss-article')
           .should('have.length', NUMBER_OF_ARTICLES);
@@ -68,7 +57,9 @@ describe('RSS Widget tests', () => {
         cy.get('.widget .rss-article')
           .should('have.length', NUMBER_OF_ARTICLES)
           .waitUntil(() =>
-            cy.get('.widget .rss-article:nth(0)  .articleTitle').should('be.visible')
+            cy
+              .get('.widget .rss-article:nth(0)  .articleTitle')
+              .should('be.visible')
           )
           .get('.widget .rss-article:nth(0)')
           .click()
@@ -111,7 +102,10 @@ describe('RSS Widget tests', () => {
       .wait('@refreshWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget .rss-article').should('have.length', NUMBER_OF_ARTICLES);
+        cy.get('.widget .rss-article').should(
+          'have.length',
+          NUMBER_OF_ARTICLES
+        );
       });
   });
 

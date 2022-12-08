@@ -13,7 +13,7 @@ L'application a pour but de proposer à un utilisateur de créer un dashboard su
 comme par exemple un lecteur de flux RSS, un calendrier listant des évènements à partir d'un lien ICal et un affichage
 de prévisions météorologiques. Il est possible de répartir ces widgets sur plusieurs onglets.
 
-Le projet est déployé via Github Pages et accessible à cette addresse : https://arnaudflaesch.github.io/Dash-Web/.
+Le projet est déployé via Github Pages et accessible à cette addresse : <https://arnaudflaesch.github.io/Dash-Web/>.
 
 ## Démarrage
 
@@ -25,11 +25,11 @@ Le projet est déployé via Github Pages et accessible à cette addresse : https
 
   > npm start
 
-L'application est ensuite accessible à l'addresse http://localhost:4200.
+L'application est ensuite accessible à l'addresse <http://localhost:4200>.
 
 - Démarrage du backend
 
-Il est nécessaire d'exécuter le backend et sa base de données pour que l'application fonctionne. Les sources et le README sont accessibles ici :https://github.com/ArnaudFlaesch/Dash-WebServices.
+Il est nécessaire d'exécuter le backend et sa base de données pour que l'application fonctionne. Les sources et le README sont accessibles ici : <https://github.com/ArnaudFlaesch/Dash-WebServices>.
 
 Pour lancer le frontend sans avoir à utiliser le backend en local, il est possible d'exécuter la commande :
 
@@ -51,7 +51,7 @@ puis de l'exécuter via la commande :
 > docker run -p 8080:8080 -d -e OPENWEATHERMAP_KEY=${OPENWEATHERMAP_KEY} -e STRAVA_CLIENT_ID=${STRAVA_CLIENT_ID} -e STRAVA_CLIENT_SECRET=${STRAVA_CLIENT_SECRET} -e STEAM_API_KEY=${STEAM_API_KEY} -e AIRPARIF_API_TOKEN=${AIRPARIF_API_TOKEN} arnaudf93/dashwebservices:latest
 
 en renseignant les variables d'environnement nécessaires en suivant le README du backend ici :
-https://github.com/ArnaudFlaesch/Dash-Webservices#d%C3%A9marrage
+<https://github.com/ArnaudFlaesch/Dash-Webservices#d%C3%A9marrage>
 
 ## Commandes utiles
 
