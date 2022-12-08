@@ -43,6 +43,13 @@ Cypress.Commands.add('deleteTab', (tabName: string): Cypress.Chainable => {
   return deleteTab(tabName);
 });
 
+Cypress.Commands.add(
+  'createWidget',
+  (widgetType: string): Cypress.Chainable => {
+    return createWidget(widgetType);
+  }
+);
+
 function loginAs(
   username: string,
   password: string
@@ -89,7 +96,6 @@ function createNewTab(tabName: string): Cypress.Chainable {
     .as('createTab')
     .intercept('POST', '/tab/updateTab')
     .as('updateTab')
-    .loginAsAdmin()
     .visit('/')
     .wait('@getTabs')
     .then((getTabsResponse) => {
@@ -125,7 +131,6 @@ function deleteTab(tabName: string): Cypress.Chainable {
     .as('getTabs')
     .intercept('DELETE', '/tab/deleteTab/*')
     .as('deleteTab')
-    .loginAsAdmin()
     .visit('/')
     .wait('@getTabs')
     .then((getTabsResponse: Interception) => {
@@ -139,5 +144,20 @@ function deleteTab(tabName: string): Cypress.Chainable {
         .then((deleteTabResponse: Interception) => {
           expect(deleteTabResponse.response.statusCode).to.equal(200);
         });
+    });
+}
+
+function createWidget(widgetType: string): Cypress.Chainable {
+  return cy
+    .intercept('POST', '/widget/addWidget')
+    .as('addWidget')
+    .get('#openAddWidgetModal')
+    .click()
+    .get(`#${widgetType}`)
+    .click()
+    .wait('@addWidget')
+    .then((request: Interception) => {
+      expect(request.response.statusCode).to.equal(200);
+      cy.get('.widget').should('have.length', 1);
     });
 }
