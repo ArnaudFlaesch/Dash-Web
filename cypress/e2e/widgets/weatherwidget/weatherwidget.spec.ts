@@ -5,9 +5,9 @@ import { Interception } from 'cypress/types/net-stubbing';
 describe('Weather Widget tests', () => {
   const tabName = 'Weather';
 
-  before(() => cy.createNewTab(tabName));
+  before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('WEATHER'));
 
-  after(() => cy.deleteTab(tabName));
+  after(() => cy.loginAsAdmin().deleteTab(tabName));
 
   beforeEach(() => {
     cy.intercept('GET', `/weatherWidget/weather?city=*`)
@@ -15,6 +15,7 @@ describe('Weather Widget tests', () => {
       .intercept('GET', `/weatherWidget/forecast?city=*`)
       .as('getForecast')
       .clock(new Date(2022, 9, 29, 0, 0, 0).getTime())
+      .loginAsAdmin()
       .navigateToTab(tabName);
   });
 
@@ -23,20 +24,6 @@ describe('Weather Widget tests', () => {
       clock.restore();
     })
   );
-
-  it('Should create a Weather Widget and add it to the dashboard', () => {
-    cy.intercept('POST', '/widget/addWidget')
-      .as('addWidget')
-      .get('#openAddWidgetModal')
-      .click()
-      .get('#WEATHER')
-      .click()
-      .wait('@addWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 1);
-      });
-  });
 
   it('Should refresh Weather widget', () => {
     cy.get('#cityNameInput')

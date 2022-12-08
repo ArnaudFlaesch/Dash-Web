@@ -9,25 +9,11 @@ describe('Strava Widget tests', () => {
 
   const tabName = 'Strava';
 
-  before(() => cy.createNewTab(tabName));
+  beforeEach(() => cy.loginAsAdmin().navigateToTab(tabName));
 
-  after(() => cy.deleteTab(tabName));
+  before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('STRAVA'));
 
-  beforeEach(() => cy.navigateToTab(tabName));
-
-  it('Should create a Strava Widget and add it to the dashboard', () => {
-    cy.intercept('POST', '/widget/addWidget')
-      .as('addWidget')
-      .get('#openAddWidgetModal')
-      .click()
-      .get('#STRAVA')
-      .click()
-      .wait('@addWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 1);
-      });
-  });
+  after(() => cy.loginAsAdmin().deleteTab(tabName));
 
   it('Should fail to load date because of wrong token', () => {
     window.localStorage.setItem('strava_token', null);
