@@ -16,6 +16,8 @@ describe('Twitter Widget tests', () => {
     usersToFollow.forEach((user) => {
       cy.intercept('POST', `/twitterWidget/addFollowedUser*`)
         .as('addFollowedUser')
+        .get('#searchTwitterUserLabel')
+        .click()
         .get('#searchTwitterUserInput')
         .clear()
         .type(user)
@@ -34,8 +36,9 @@ describe('Twitter Widget tests', () => {
       .as('searchFollowedUser')
       .intercept('PATCH', `/widget/updateWidgetData/*`)
       .as('updateWidget')
+      .get('#searchTwitterUserLabel')
+      .click()
       .get('#searchTwitterUserInput')
-      .clear()
       .type(usersToFollow[0])
       .wait('@searchFollowedUser')
       .then((searchUsersResponse: Interception) => {
@@ -62,6 +65,8 @@ describe('Twitter Widget tests', () => {
         .as('removeFollowedUser')
         .intercept('GET', `/twitterWidget/followed?search=${user}`)
         .as('searchFollowedUser')
+        .get('#searchTwitterUserLabel')
+        .click()
         .get('#searchTwitterUserInput')
         .clear()
         .type(user)
