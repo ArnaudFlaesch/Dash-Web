@@ -17,8 +17,7 @@ describe('Config error tests', () => {
       .wait('@downloadConfigError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.get('.mat-simple-snack-bar-content').should(
-          'have.text',
+        cy.shouldDisplayErrorMessage(
           "Erreur lors de l'export de la configuration."
         );
       });
@@ -36,8 +35,7 @@ describe('Config error tests', () => {
       .wait('@importConfigError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.get('.mat-simple-snack-bar-content').should(
-          'have.text',
+        cy.shouldDisplayErrorMessage(
           "Erreur lors de l'import de la configuration."
         );
       });

@@ -11,13 +11,13 @@
 
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
-      <mat-label>Clé d'API</mat-label>
-      <input matInput id="airParifApiKey" name="apiKey" [(ngModel)]="this.airParifApiKey"
+      <mat-label id="airParifApiKeyLabel">Clé d'API</mat-label>
+      <input matInput id="airParifApiKey" [(ngModel)]="this.airParifApiKey"
         placeholder="Saisissez la clé d'API AirParif" />
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <mat-label>Code commune</mat-label>
-      <input matInput id="communeInseeCode" name="communeInseeCode" [(ngModel)]="this.communeInseeCode"
+      <mat-label id="communeInseeCodeLabel">Code commune</mat-label>
+      <input matInput id="communeInseeCode" [(ngModel)]="this.communeInseeCode"
         placeholder="Saisissez le code commune" />
     </mat-form-field>
   </ng-template>

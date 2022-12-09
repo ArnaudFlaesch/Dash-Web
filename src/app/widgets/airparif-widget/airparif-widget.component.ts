@@ -61,9 +61,9 @@ export class AirParifWidgetComponent {
 
   public isFormValid(): boolean {
     return (
-      !!this.airParifApiKey &&
+      this.airParifApiKey !== undefined &&
       this.airParifApiKey.length > 0 &&
-      !!this.communeInseeCode &&
+      this.communeInseeCode !== undefined &&
       this.communeInseeCode.length > 0
     );
   }

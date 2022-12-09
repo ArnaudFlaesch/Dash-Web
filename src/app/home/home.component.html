@@ -5,36 +5,37 @@
         class="tab p-2 border-2 border-gray-800 bg-gray-400 hover:bg-blue-200 border-opacity-100 rounded"
         (click)="selectTab(tab.id)" (tabDeletedEvent)="deleteTabFromDash($event)" [cdkDragDisabled]="!editModeEnabled"
         [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag cdkDragBoundary="#tab-list"></app-tab>
-      <button (click)="this.addNewTab()" id="addNewTabButton"
-        class="border-2 border-gray-800 border-opacity-100 bg-green-400" mat-raised-button>
-        <mat-icon title="Add a new tab" aria-hidden="false">add_circle_outline</mat-icon>
+      <button (click)="this.addNewTab()" id="addNewTabButton" mat-mini-fab color="primary">
+        <mat-icon title="Add a new tab" aria-hidden="false">
+          add_circle_outline</mat-icon>
       </button>
     </div>
     <div class="sm:grid sm:grid-cols-2 md:flex md:flex-row space-x-1 items-start">
       <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
-        <button class="bg-gray-500" (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-raised-button>
+        <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
           <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>
         </button>
       </ng-template>
       <ng-template #editWidgetList>
-        <button class="bg-gray-500" (click)="this.toggleEditMode()" id="toggleEditModeButton" mat-raised-button>
+        <button (click)="this.toggleEditMode()" id="toggleEditModeButton" mat-mini-fab color="primary">
           <mat-icon title="Edit widget list" aria-hidden="false">edit</mat-icon>
         </button>
       </ng-template>
       <button [disabled]="this.tabs.length < 1" (click)="this.openCreateWidgetModal()" id="openAddWidgetModal"
-        class="bg-green-500" mat-raised-button>
+        color="primary" mat-mini-fab>
         <mat-icon title="Add a new widget" aria-hidden="false">add_circle_outline</mat-icon>
       </button>
-      <button mat-raised-button id="reloadAllWidgetsButton" class="bg-blue-500">
+      <button mat-mini-fab id="reloadAllWidgetsButton" color="primary">
         <mat-icon title="Refresh all widgets" aria-hidden="false">refresh</mat-icon>
       </button>
-      <button (click)="this.downloadConfig()" mat-raised-button id="downloadConfigButton" class="bg-gray-500">
-        <mat-icon title="Download current user data and config" aria-hidden="false">download</mat-icon>
+      <button (click)="this.downloadConfig()" mat-mini-fab id="downloadConfigButton" color="primary">
+        <mat-icon title="Download current user data and config" aria-hidden="false">download
+        </mat-icon>
       </button>
-      <button (click)="this.openImportConfigModal()" mat-raised-button id="openImportConfigModal" class="bg-lime-600">
+      <button (click)="this.openImportConfigModal()" mat-mini-fab id="openImportConfigModal" color="primary">
         <mat-icon title="Upload user data and config" aria-hidden="false">upload</mat-icon>
       </button>
-      <button (click)="logout()" mat-raised-button id="logoutButton" class="bg-red-600">
+      <button (click)="logout()" mat-mini-fab id="logoutButton" color="warn">
         <mat-icon title="Logout">logout</mat-icon>
       </button>
     </div>

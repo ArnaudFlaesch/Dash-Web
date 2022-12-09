@@ -50,6 +50,13 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add(
+  'shouldDisplayErrorMessage',
+  (errorMessage: string): Cypress.Chainable => {
+    return shouldDisplayErrorMessage(errorMessage);
+  }
+);
+
 function loginAs(
   username: string,
   password: string
@@ -159,5 +166,14 @@ function createWidget(widgetType: string): Cypress.Chainable {
     .then((request: Interception) => {
       expect(request.response.statusCode).to.equal(200);
       cy.get('.widget').should('have.length', 1);
+    });
+}
+
+function shouldDisplayErrorMessage(errorMessage: string): Cypress.Chainable {
+  return cy
+    .get('.mat-mdc-simple-snack-bar')
+    .invoke('text')
+    .then((text) => {
+      expect(text.trim()).equal(errorMessage);
     });
 }

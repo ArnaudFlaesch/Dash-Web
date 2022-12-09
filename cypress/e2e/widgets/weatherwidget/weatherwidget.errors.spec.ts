@@ -25,8 +25,7 @@ describe('Weather Widget error tests', () => {
         expect(request.response.statusCode).to.equal(500);
         cy.get('.widget')
           .should('have.length', 0)
-          .get('.mat-simple-snack-bar-content')
-          .should('have.text', "Erreur lors de l'ajout d'un widget.");
+          .shouldDisplayErrorMessage("Erreur lors de l'ajout d'un widget.");
       });
   });
 });

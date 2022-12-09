@@ -8,5 +8,6 @@ declare namespace Cypress {
     createNewTab(tabName: string): Chainable;
     deleteTab(tabName: string): Chainable;
     createWidget(widgetType: string): Chainable;
+    shouldDisplayErrorMessage(errorMessage: string): Chainable;
   }
 }
