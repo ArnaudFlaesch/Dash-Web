@@ -5,12 +5,12 @@ import { Interception } from 'cypress/types/net-stubbing';
 describe('RSS Widget errors tests', () => {
   const tabName = 'Flux RSS';
 
-  before(() => cy.createNewTab(tabName));
+  before(() => cy.loginAsAdmin().createNewTab(tabName));
 
-  after(() => cy.deleteTab(tabName));
+  after(() => cy.loginAsAdmin().deleteTab(tabName));
 
   beforeEach(() => {
-    cy.navigateToTab(tabName);
+    cy.loginAsAdmin().navigateToTab(tabName);
   });
 
   it('Should fail to create a RSS widget', () => {

@@ -6,12 +6,13 @@ describe('Steam Widget tests', () => {
   const tabName = 'Steam';
   const steamUserId = '1246578';
 
-  before(() => cy.createNewTab(tabName));
+  before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('STEAM'));
 
-  after(() => cy.deleteTab(tabName));
+  after(() => cy.loginAsAdmin().deleteTab(tabName));
 
   beforeEach(() => {
-    cy.navigateToTab(tabName)
+    cy.loginAsAdmin()
+      .navigateToTab(tabName)
       .intercept('GET', `/steamWidget/playerData*`)
       .as('getPlayerData')
       .intercept('GET', `/steamWidget/ownedGames*`)
@@ -21,20 +22,6 @@ describe('Steam Widget tests', () => {
         `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`
       )
       .as('getAchievementData');
-  });
-
-  it('Should create a Steam Widget and add it to the dashboard', () => {
-    cy.intercept('POST', '/widget/addWidget')
-      .as('addWidget')
-      .get('#openAddWidgetModal')
-      .click()
-      .get('#STEAM')
-      .click()
-      .wait('@addWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 1);
-      });
   });
 
   it('Should refresh Steam widget and validate data', () => {
