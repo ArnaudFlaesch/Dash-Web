@@ -81,20 +81,4 @@ describe('Calendar Widget tests', () => {
           });
       });
   });
-
-  it('Should delete previously added widget', () => {
-    cy.intercept('DELETE', '/widget/deleteWidget*')
-      .as('deleteWidget')
-      .get('.deleteButton')
-      .click()
-      .get('h4')
-      .should('have.text', 'Êtes-vous sûr de vouloir supprimer ce widget ?')
-      .get('.validateDeletionButton')
-      .click()
-      .wait('@deleteWidget')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('.widget').should('have.length', 0);
-      });
-  });
 });
