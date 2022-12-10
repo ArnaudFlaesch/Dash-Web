@@ -53,7 +53,7 @@ describe('Tab tests', () => {
   });
 
   it('Should delete the created tab', () => {
-    cy.intercept('DELETE', '/tab/deleteTab/*')
+    cy.intercept('DELETE', '/tab/deleteTab*')
       .as('deleteTab')
       .get('.tab')
       .contains('News feed Updated')
