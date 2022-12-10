@@ -83,7 +83,7 @@ describe('Calendar Widget tests', () => {
   });
 
   it('Should delete previously added widget', () => {
-    cy.intercept('DELETE', '/widget/deleteWidget/*')
+    cy.intercept('DELETE', '/widget/deleteWidget*')
       .as('deleteWidget')
       .get('.deleteButton')
       .click()
