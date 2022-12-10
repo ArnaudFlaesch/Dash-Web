@@ -136,7 +136,7 @@ function deleteTab(tabName: string): Cypress.Chainable {
   return cy
     .intercept('GET', '/tab/')
     .as('getTabs')
-    .intercept('DELETE', '/tab/deleteTab/*')
+    .intercept('DELETE', '/tab/deleteTab*')
     .as('deleteTab')
     .visit('/')
     .wait('@getTabs')

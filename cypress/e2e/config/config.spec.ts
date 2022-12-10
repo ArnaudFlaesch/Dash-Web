@@ -33,7 +33,7 @@ describe('Config tests', () => {
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
         cy.reload()
-          .intercept('DELETE', '/tab/deleteTab/*')
+          .intercept('DELETE', '/tab/deleteTab*')
           .as('deleteTab')
           .get('.tab')
           .should('have.length', 2)

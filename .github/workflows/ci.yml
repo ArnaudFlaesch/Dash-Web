@@ -71,7 +71,7 @@ jobs:
           npm run test:e2e:ci
 
       - name: Generate test report
-        if: always()
+        if: failure()
         run: |
           mkdir cypress/screenshots || true
           npm run report:merge
@@ -80,16 +80,15 @@ jobs:
 
       - name: Upload Cypress report
         uses: actions/upload-artifact@v3
-        if: always()
+        if: failure()
         with:
           name: Cypress report
           path: cypress/reports/html
 
       - name: Send coverage report
-        run: |
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -F coverage-jest
+        uses: codecov/codecov-action@v3
+        with:
+          directory: coverage-jest
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

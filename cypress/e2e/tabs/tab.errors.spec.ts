@@ -85,7 +85,7 @@ describe('Tab error tests', () => {
   });
 
   it('Should fail to delete the tab', () => {
-    cy.intercept('DELETE', '/tab/deleteTab/*', { statusCode: 500 })
+    cy.intercept('DELETE', '/tab/deleteTab*', { statusCode: 500 })
       .as('deleteTabError')
       .get('.tab')
       .should('have.length', 1)
