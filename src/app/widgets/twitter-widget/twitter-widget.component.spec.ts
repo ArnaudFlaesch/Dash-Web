@@ -47,20 +47,26 @@ describe('TwitterWidgetComponent', () => {
     expect(spectator.component.followedUsers).toEqual([followedUserData]);
   });
 
-  xit('Should search followed users', () => {
+  it('Should search followed users', (done) => {
     expect(spectator.component.followedUsers).toEqual([]);
     spectator.component.searchFormControl.setValue('test', {
       onlySelf: false,
       emitEvent: true
     });
-    const searchFollowedUsersRequest = twitterWidgetService.expectOne(
-      `${environment.backend_url}/twitterWidget/followed`,
-      HttpMethod.GET
-    );
+    spectator.detectChanges()
+    setTimeout(() => {
+      const searchFollowedUsersRequest = twitterWidgetService.expectOne(
+        `${environment.backend_url}/twitterWidget/followed?search=test`,
+        HttpMethod.GET
+      );
 
-    searchFollowedUsersRequest.flush([]);
+      const searchedUser = {id: 2, userHandle :"testHandle"}
+      searchFollowedUsersRequest.flush([searchedUser]);
 
-    expect(spectator.component.followedUsers).toEqual([]);
+      expect(spectator.component.followedUsers).toEqual([searchedUser]);
+      done()
+    }, 500)
+
   });
 
   it('Should select a followed user and delete it', () => {
