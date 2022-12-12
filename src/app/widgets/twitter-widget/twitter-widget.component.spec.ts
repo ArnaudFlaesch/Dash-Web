@@ -2,7 +2,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   createComponentFactory,
   createHttpFactory,
-  createSpyObject,
   HttpMethod,
   Spectator,
   SpectatorHttp
