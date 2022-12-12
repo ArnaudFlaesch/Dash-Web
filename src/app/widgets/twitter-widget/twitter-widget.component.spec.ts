@@ -47,7 +47,7 @@ describe('TwitterWidgetComponent', () => {
     expect(spectator.component.followedUsers).toEqual([followedUserData]);
   });
 
-  it('Should search followed users', () => {
+  xit('Should search followed users', () => {
     expect(spectator.component.followedUsers).toEqual([]);
     spectator.component.searchFormControl.setValue('test', {
       onlySelf: false,
