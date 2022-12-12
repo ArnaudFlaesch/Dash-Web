@@ -6,6 +6,7 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
+import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 
 import { IFollowedUser } from './ITwitter';

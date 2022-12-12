@@ -46,6 +46,7 @@ Thumbs.db
 
 coverage-jest/
 cypress/results
+cypress/reports
 
 src/environments/env.vars.secret.ts
 
