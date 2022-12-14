@@ -71,10 +71,14 @@ describe('TwitterWidgetComponent', () => {
 
     it('Should select a followed user and delete it', () => {
       spectator.component.followedUsers = [followedUserData];
-
+      expect(spectator.component.isFormValid()).toEqual(false);
+      expect(spectator.component.getWidgetData()).toEqual(undefined);
       spectator.component.selectUserHandle(followedUserData.userHandle);
       expect(spectator.component.selectedTwitterHandle).toEqual(followedUserData.userHandle);
-
+      expect(spectator.component.isFormValid()).toEqual(true);
+      expect(spectator.component.getWidgetData()).toEqual({
+        twitterHandle: followedUserData.userHandle
+      });
       spectator.component.deleteFollowedUser(followedUserData.id);
 
       const removeFollowedUserRequest = twitterWidgetService.expectOne(
