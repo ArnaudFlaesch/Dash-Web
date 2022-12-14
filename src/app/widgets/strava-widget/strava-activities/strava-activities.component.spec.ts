@@ -221,10 +221,18 @@ describe('StravaActivitiesComponent', () => {
 
   it('Should convert a time', () => {
     spectator.component.activities = activitiesData;
-    expect(spectator.component.convertDecimalTimeToTime(1000)).toEqual(1000);
-    expect(spectator.component.convertDecimalTimeToTime(10.34)).toEqual(10.2);
-    expect(spectator.component.convertDecimalTimeToTime(1.8)).toEqual(1.5);
-    expect(spectator.component.convertDecimalTimeToTime(1.85)).toEqual(1.5);
+    expect(spectator.component.convertDecimalTimeToTime(60000)).toEqual(1000);
+    expect(spectator.component.convertDecimalTimeToTime(620.4)).toEqual(10.2);
+    expect(spectator.component.convertDecimalTimeToTime(108)).toEqual(1.5);
+    expect(spectator.component.convertDecimalTimeToTime(111)).toEqual(1.5);
+  });
+
+  it('Should format date', () => {
+    expect(spectator.component.formatDate('2022-10-20T18:34:39Z')).toEqual('20 Oct');
+  });
+
+  it('Should round distance', () => {
+    expect(spectator.component.roundDistance(10529.8)).toEqual(10.5298);
   });
 
   it('Should display activity title', () => {
