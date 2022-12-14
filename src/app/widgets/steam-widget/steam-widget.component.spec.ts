@@ -88,15 +88,11 @@ describe('SteamWidgetComponent', () => {
 
     const dataRequests = steamWidgetService.expectConcurrent([
       {
-        url:
-          environment.backend_url +
-          `/steamWidget/playerData?steamUserId=${steamUserId}`,
+        url: `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`,
         method: HttpMethod.GET
       },
       {
-        url:
-          environment.backend_url +
-          `/steamWidget/ownedGames?steamUserId=${steamUserId}`,
+        url: `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`,
         method: HttpMethod.GET
       }
     ]);

@@ -82,31 +82,6 @@ export class TwitterWidgetComponent implements OnInit {
     this.selectedTwitterHandle = userHandle;
   }
 
-  /* eslint-disable */
-  initTwitterWidget(): void {
-    (<any>window).twttr = (function (d, s, id) {
-      const fjs: any = d.getElementsByTagName(s)[0],
-        t = (<any>window).twttr || {};
-      if (d.getElementById(id)) return t;
-      const js: any = d.createElement(s);
-      js.id = id;
-      js.src = 'https://platform.twitter.com/widgets.js';
-      fjs?.parentNode?.insertBefore(js, fjs);
-
-      t._e = [];
-      t.ready = function (f: any) {
-        t._e.push(f);
-      };
-
-      return t;
-    })(document, 'script', 'twitter-wjs');
-
-    if ((<any>window).twttr.ready()) {
-      (<any>window).twttr.widgets.load();
-    }
-  }
-  /* eslint-enable */
-
   public addFollowedUser(): void {
     if (this.searchFormControl.value && this.searchFormControl.value.length) {
       this.twitterWidgetService
@@ -152,4 +127,29 @@ export class TwitterWidgetComponent implements OnInit {
       !!this.selectedTwitterHandle && this.selectedTwitterHandle?.length > 0
     );
   }
+
+  /* eslint-disable */
+  private initTwitterWidget(): void {
+    (<any>window).twttr = (function (d, s, id) {
+      const fjs: any = d.getElementsByTagName(s)[0],
+        t = (<any>window).twttr || {};
+      if (d.getElementById(id)) return t;
+      const js: any = d.createElement(s);
+      js.id = id;
+      js.src = 'https://platform.twitter.com/widgets.js';
+      fjs?.parentNode?.insertBefore(js, fjs);
+
+      t._e = [];
+      t.ready = function (f: any) {
+        t._e.push(f);
+      };
+
+      return t;
+    })(document, 'script', 'twitter-wjs');
+
+    if ((<any>window).twttr.ready()) {
+      (<any>window).twttr.widgets.load();
+    }
+  }
+  /* eslint-enable */
 }
