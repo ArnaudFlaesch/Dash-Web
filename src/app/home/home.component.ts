@@ -193,7 +193,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.tabService.getTabs().subscribe({
       next: (tabs) => {
         this.tabs = tabs;
-        this.isDashboardLoaded = true;
         if (tabs.length) {
           this.activatedRoute.queryParams.subscribe((params) => {
             const tabIdParam = params['tabId'];
@@ -207,7 +206,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD)
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD),
+      complete: () => (this.isDashboardLoaded = true)
     });
   }
 
