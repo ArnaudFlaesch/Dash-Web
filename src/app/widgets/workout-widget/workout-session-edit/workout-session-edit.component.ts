@@ -1,8 +1,4 @@
-import {
-  IWorkoutExercise,
-  IWorkoutSession,
-  IWorkoutType
-} from './../model/Workout';
+import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './../model/Workout';
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { WorkoutWidgetService } from '../workout.widget.service';
@@ -17,13 +13,13 @@ export class WorkoutSessionEditComponent {
   @Input() public workoutTypes: IWorkoutType[] = [];
   @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
+  public isWidgetUpdating = false;
+
   public workoutExercises: IWorkoutExercise[] = [];
 
-  private ERROR_CREATING_WORKOUT_EXERCISE =
-    "Erreur lors de l'ajout d'un exercice.";
+  private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
 
-  private ERROR_GETTING_WORKOUT_EXERCISES =
-    'Erreur lors de la récupération des exercices.';
+  private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
 
   constructor(
     private errorHandlerService: ErrorHandlerService,
@@ -32,9 +28,7 @@ export class WorkoutSessionEditComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentWorkoutSessionToEdit'].currentValue)
-      this.fetchWorkoutExercisesBySessionId(
-        changes['currentWorkoutSessionToEdit'].currentValue.id
-      );
+      this.fetchWorkoutExercisesBySessionId(changes['currentWorkoutSessionToEdit'].currentValue.id);
   }
 
   public decrementExerciceNumberOfReps(workoutTypeId: number): void {
@@ -58,10 +52,7 @@ export class WorkoutSessionEditComponent {
     this.workoutWidgetService.getWorkoutExercises(workoutSessionId).subscribe({
       next: (workoutExercises) => (this.workoutExercises = workoutExercises),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_GETTING_WORKOUT_EXERCISES
-        )
+        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_EXERCISES)
     });
   }
 
@@ -70,28 +61,23 @@ export class WorkoutSessionEditComponent {
     workoutTypeId: number,
     numberOfReps: number
   ): void {
+    this.isWidgetUpdating = true;
     this.workoutWidgetService
       .updateWorkoutExercise(workoutSessionId, workoutTypeId, numberOfReps)
       .subscribe({
-        next: (addedWorkoutExercise) =>
-          (this.workoutExercises = [
-            ...this.workoutExercises.filter(
-              (ex) => ex.workoutTypeId !== workoutTypeId
-            ),
+        next: (addedWorkoutExercise) => {
+          this.workoutExercises = [
+            ...this.workoutExercises.filter((ex) => ex.workoutTypeId !== workoutTypeId),
             addedWorkoutExercise
-          ]),
+          ];
+          this.isWidgetUpdating = false;
+        },
         error: (error) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_CREATING_WORKOUT_EXERCISE
-          )
+          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_EXERCISE)
       });
   }
 
-  private updateNumberOfReps(
-    workoutTypeId: number,
-    numberOfRepsToAdd: number
-  ): void {
+  private updateNumberOfReps(workoutTypeId: number, numberOfRepsToAdd: number): void {
     const oldNumberOfReps = this.getExerciceNumberOfReps(workoutTypeId);
     if (this.currentWorkoutSessionToEdit) {
       this.updateWorkoutExercise(
