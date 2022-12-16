@@ -85,17 +85,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public selectTab(tabId: number): void {
-    if (this.activeTab !== tabId) {
-      this.activeTab = tabId;
-      const url = this.router
-        .createUrlTree([], {
-          relativeTo: this.activatedRoute,
-          queryParams: { tabId: tabId }
-        })
-        .toString();
-      this.location.go(url);
-      this.loadWidgets(this.activeTab);
-    }
+    //  if (this.activeTab !== tabId) {
+    this.activeTab = tabId;
+    const url = this.router
+      .createUrlTree([], {
+        relativeTo: this.activatedRoute,
+        queryParams: { tabId: tabId }
+      })
+      .toString();
+    this.location.go(url);
+    this.loadWidgets(this.activeTab);
+    // }
   }
 
   public deleteWidgetFromDashboard(id: number): void {
