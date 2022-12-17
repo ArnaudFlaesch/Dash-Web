@@ -10,7 +10,7 @@
           add_circle_outline</mat-icon>
       </button>
     </div>
-    <div class="sm:grid sm:grid-cols-2 md:flex md:flex-row space-x-1 items-start">
+    <div class="sm:grid sm:grid-cols-2 md:flex md:flex-row space-x-1">
       <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
         <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
           <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>
