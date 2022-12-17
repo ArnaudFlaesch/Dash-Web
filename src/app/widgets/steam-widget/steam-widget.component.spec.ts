@@ -100,9 +100,7 @@ describe('SteamWidgetComponent', () => {
     steamWidgetService.flushAll(dataRequests, [playerData, ownedGamesData]);
 
     expect(spectator.component.isWidgetLoaded()).toEqual(true);
-    expect(spectator.component.playerData?.personaname).toEqual(
-      playerData[0].personaname
-    );
+    expect(spectator.component.playerData?.personaname).toEqual(playerData[0].personaname);
     expect(spectator.component.ownedGamesDisplay.length).toEqual(3);
   });
 

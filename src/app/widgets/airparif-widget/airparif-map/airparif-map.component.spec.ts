@@ -6,11 +6,7 @@ import {
 } from '@ngneat/spectator/jest';
 
 import { AirParifWidgetService } from '../airparif-widget.service';
-import {
-  AirParifIndiceEnum,
-  IForecast,
-  IAirParifCouleur
-} from '../model/IAirParif';
+import { AirParifIndiceEnum, IForecast, IAirParifCouleur } from '../model/IAirParif';
 import { AirParifMapComponent } from './airparif-map.component';
 
 describe('AirParifMapComponent', () => {
@@ -22,9 +18,7 @@ describe('AirParifMapComponent', () => {
     imports: [],
     providers: [AirParifWidgetService]
   });
-  const createHttpAirParifWidgetService = createHttpFactory(
-    AirParifWidgetService
-  );
+  const createHttpAirParifWidgetService = createHttpFactory(AirParifWidgetService);
 
   it('Should create an AirParif map', () => {
     spectator = createComponent();
@@ -81,12 +75,8 @@ describe('AirParifMapComponent', () => {
     spectator.component.airParifForecast = forecastData;
     spectator.component.airParifCouleursIndices = couleursIndicesData;
 
-    expect(
-      spectator.component.getColorFromIndice('BON' as AirParifIndiceEnum)
-    ).toEqual('#50f0e6');
-    expect(
-      spectator.component.getColorFromIndice('null' as AirParifIndiceEnum)
-    ).toEqual('');
+    expect(spectator.component.getColorFromIndice('BON' as AirParifIndiceEnum)).toEqual('#50f0e6');
+    expect(spectator.component.getColorFromIndice('null' as AirParifIndiceEnum)).toEqual('');
 
     expect(spectator.component.isForecastModeToday()).toEqual(true);
     spectator.component.selectTomorrowForecast();

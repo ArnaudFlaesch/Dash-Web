@@ -13,12 +13,7 @@ import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
 
 import { AirParifWidgetService } from '../airparif-widget.service';
-import {
-  AirParifIndiceEnum,
-  ForecastMode,
-  IAirParifCouleur,
-  IForecast
-} from '../model/IAirParif';
+import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from '../model/IAirParif';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,9 +21,7 @@ import {
   templateUrl: './airparif-map.component.html',
   styleUrls: ['./airparif-map.component.scss']
 })
-export class AirParifMapComponent
-  implements AfterViewInit, OnChanges, OnDestroy
-{
+export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input()
   public airParifCouleursIndices: IAirParifCouleur[] = [];
 
@@ -113,9 +106,8 @@ export class AirParifMapComponent
 
   public getColorFromIndice(indice: AirParifIndiceEnum): string {
     return (
-      this.airParifCouleursIndices.find(
-        (couleurIndice) => couleurIndice.name === indice
-      )?.color || ''
+      this.airParifCouleursIndices.find((couleurIndice) => couleurIndice.name === indice)?.color ||
+      ''
     );
   }
 
@@ -124,14 +116,10 @@ export class AirParifMapComponent
       northEast = L.latLng(49.24, 3.56),
       bounds = L.latLngBounds(southWest, northEast);
 
-    const openStreetMapLayer = L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        maxZoom: 18,
-        attribution:
-          '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      }
-    );
+    const openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
 
     if (this.mapContainer) {
       this.map = L.map(this.mapContainer.nativeElement, {

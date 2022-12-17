@@ -11,11 +11,7 @@ import { environment } from '../../../../environments/environment';
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
 
 import { ErrorHandlerService } from '../../../services/error.handler.service';
-import {
-  IWorkoutExercise,
-  IWorkoutSession,
-  IWorkoutType
-} from '../model/Workout';
+import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from '../model/Workout';
 import { WorkoutWidgetService } from '../workout.widget.service';
 import { WorkoutSessionEditComponent } from './workout-session-edit.component';
 
@@ -49,13 +45,10 @@ describe('WorkoutSessionEditComponent', () => {
     expect(spectator.component.workoutExercises).toEqual([]);
 
     spectator.component.workoutTypes = workoutTypes;
-    spectator.component.currentWorkoutSessionToEdit =
-      currentWorkoutSessionToEdit;
+    spectator.component.currentWorkoutSessionToEdit = currentWorkoutSessionToEdit;
     spectator.fixture.detectChanges();
 
-    expect(
-      spectator.component.getExerciceNumberOfReps(workoutTypeIdToEdit)
-    ).toEqual(0);
+    expect(spectator.component.getExerciceNumberOfReps(workoutTypeIdToEdit)).toEqual(0);
     spectator.component.incrementExerciceNumberOfReps(workoutTypeIdToEdit);
     const incrementWorkoutExerciseRequest = workoutWidgetService.expectOne(
       environment.backend_url + `/workoutWidget/updateWorkoutExercise`,
@@ -67,9 +60,7 @@ describe('WorkoutSessionEditComponent', () => {
       numberOfReps: 1
     } as IWorkoutExercise);
 
-    expect(
-      spectator.component.getExerciceNumberOfReps(workoutTypeIdToEdit)
-    ).toEqual(1);
+    expect(spectator.component.getExerciceNumberOfReps(workoutTypeIdToEdit)).toEqual(1);
 
     spectator.component.decrementExerciceNumberOfReps(workoutTypeIdToEdit);
     const decrementWorkoutExerciseRequest = workoutWidgetService.expectOne(
@@ -82,8 +73,6 @@ describe('WorkoutSessionEditComponent', () => {
       numberOfReps: 0
     } as IWorkoutExercise);
 
-    expect(
-      spectator.component.getExerciceNumberOfReps(workoutTypeIdToEdit)
-    ).toEqual(0);
+    expect(spectator.component.getExerciceNumberOfReps(workoutTypeIdToEdit)).toEqual(0);
   });
 });

@@ -11,8 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ImportConfigModalComponent {
   public fileToUpload: File | null = null;
-  private ERROR_IMPORT_CONFIGURATION =
-    "Erreur lors de l'import de la configuration.";
+  private ERROR_IMPORT_CONFIGURATION = "Erreur lors de l'import de la configuration.";
 
   constructor(
     private configService: ConfigService,
@@ -30,10 +29,7 @@ export class ImportConfigModalComponent {
     if (this.fileToUpload) {
       this.configService.importConfig(this.fileToUpload).subscribe({
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_IMPORT_CONFIGURATION
-          ),
+          this.errorHandlerService.handleError(error.message, this.ERROR_IMPORT_CONFIGURATION),
         complete: () => {
           this.dialogRef.close();
           window.location.reload();

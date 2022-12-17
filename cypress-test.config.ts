@@ -17,7 +17,7 @@ export default defineConfig({
   },
   e2e: {
     retries: {
-      runMode: 1
+      runMode: 2
     },
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.ts')(on, config);

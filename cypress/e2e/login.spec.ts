@@ -18,9 +18,7 @@ describe('Login tests', () => {
       .wait('@login')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(401);
-        cy.shouldDisplayErrorMessage(
-          "Erreur lors de la connexion de l'utilisateur."
-        );
+        cy.shouldDisplayErrorMessage("Erreur lors de la connexion de l'utilisateur.");
       });
   });
 

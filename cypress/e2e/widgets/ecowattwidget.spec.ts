@@ -7,7 +7,7 @@ describe('Ecowatt Widget tests', () => {
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('ECOWATT'));
 
-  after(() => cy.loginAsAdmin().deleteTab(tabName));
+  after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   it('Should verify that the widget was added to the dashboard', () => {
     cy.get('.header').should('have.text', 'Ecowatt');

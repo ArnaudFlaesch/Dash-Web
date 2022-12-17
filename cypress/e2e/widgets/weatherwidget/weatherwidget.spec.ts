@@ -7,7 +7,7 @@ describe('Weather Widget tests', () => {
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('WEATHER'));
 
-  after(() => cy.loginAsAdmin().deleteTab(tabName));
+  after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   beforeEach(() => {
     cy.intercept('GET', `/weatherWidget/weather?city=*`)

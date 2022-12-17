@@ -62,10 +62,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     console.log('ng on init widget ' + JSON.stringify(this.widgetData));
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
-    this.refreshInterval = setInterval(
-      this.refreshWidget.bind(this),
-      this.refreshTimeout
-    );
+    this.refreshInterval = setInterval(this.refreshWidget.bind(this), this.refreshTimeout);
   }
 
   public ngOnDestroy(): void {
@@ -87,10 +84,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
           this.refreshWidget();
         },
         error: (error) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_UPDATING_WIDGET_DATA
-          )
+          this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_WIDGET_DATA)
       });
   }
 

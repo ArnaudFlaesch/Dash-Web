@@ -39,8 +39,7 @@ export class CalendarWidgetComponent {
   prevBtnDisabled = false;
   nextBtnDisabled = false;
 
-  private ERROR_PARSING_EVENTS =
-    'Erreur lors de la récupération des évènements.';
+  private ERROR_PARSING_EVENTS = 'Erreur lors de la récupération des évènements.';
 
   constructor(
     @Inject(LOCALE_ID) locale: string,
@@ -57,10 +56,7 @@ export class CalendarWidgetComponent {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
         next: (calendarData) => this.parseEvents(calendarData),
         error: (error) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_PARSING_EVENTS
-          ),
+          this.errorHandlerService.handleError(error.message, this.ERROR_PARSING_EVENTS),
         complete: () => (this.isWidgetLoaded = true)
       });
     });

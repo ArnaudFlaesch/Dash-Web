@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-ecowatt-widget',
@@ -30,8 +24,7 @@ export class EcowattWidgetComponent {
   }
 
   public resizeWidget(): void {
-    this.iframeContainerHeight =
-      this.iframeContainer?.nativeElement.offsetHeight;
+    this.iframeContainerHeight = this.iframeContainer?.nativeElement.offsetHeight;
     this.iframeContainerWidth = this.iframeContainer?.nativeElement.offsetWidth;
   }
 
@@ -39,8 +32,7 @@ export class EcowattWidgetComponent {
     this.cdRef.detectChanges();
     this.resizeWidget();
     if (this.iframeContainer) {
-      const iframe =
-        this.iframeContainer.nativeElement.getElementsByTagName('iframe')[0];
+      const iframe = this.iframeContainer.nativeElement.getElementsByTagName('iframe')[0];
       if (iframe) {
         const src = iframe.src;
         iframe.src = src;

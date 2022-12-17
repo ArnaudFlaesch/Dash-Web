@@ -10,21 +10,16 @@ export class TwitterWidgetService {
   constructor(private http: HttpClient) {}
 
   public getFollowedUsers(search?: string): Observable<IFollowedUser[]> {
-    return this.http.get<IFollowedUser[]>(
-      `${environment.backend_url}/twitterWidget/followed`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
-        },
-        params: search ? { search: search } : {}
-      }
-    );
+    return this.http.get<IFollowedUser[]>(`${environment.backend_url}/twitterWidget/followed`, {
+      headers: {
+        Authorization: authorizationBearer(),
+        'Content-type': 'application/json'
+      },
+      params: search ? { search: search } : {}
+    });
   }
 
-  public addFollowedUser(
-    followedUserHandle: string
-  ): Observable<IFollowedUser> {
+  public addFollowedUser(followedUserHandle: string): Observable<IFollowedUser> {
     return this.http.post<IFollowedUser>(
       `${environment.backend_url}/twitterWidget/addFollowedUser`,
       { userHandle: followedUserHandle },

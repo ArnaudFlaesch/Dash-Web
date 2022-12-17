@@ -19,8 +19,7 @@ export class AirParifWidgetComponent {
 
   public isWidgetLoaded = true;
 
-  public airParifWebsiteUrl =
-    this.airParifWidgetService.getAirParifWebsiteUrl();
+  public airParifWebsiteUrl = this.airParifWidgetService.getAirParifWebsiteUrl();
 
   private ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
@@ -34,22 +33,16 @@ export class AirParifWidgetComponent {
 
   public refreshWidget(): void {
     if (this.airParifApiKey && this.communeInseeCode) {
-      this.airParifWidgetService
-        .getCommunePrevision(this.communeInseeCode)
-        .subscribe({
-          next: (forecast) => {
-            this.airParifForecast = forecast;
-          },
-          error: (error) =>
-            this.errorHandlerService.handleError(
-              error.message,
-              this.ERROR_GETTING_AIRPARIF_FORECAST
-            )
-        });
+      this.airParifWidgetService.getCommunePrevision(this.communeInseeCode).subscribe({
+        next: (forecast) => {
+          this.airParifForecast = forecast;
+        },
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_AIRPARIF_FORECAST)
+      });
 
       this.airParifWidgetService.getColors().subscribe({
-        next: (airParifColors) =>
-          (this.airParifCouleursIndices = airParifColors),
+        next: (airParifColors) => (this.airParifCouleursIndices = airParifColors),
         error: (error) =>
           this.errorHandlerService.handleError(
             error.message,
