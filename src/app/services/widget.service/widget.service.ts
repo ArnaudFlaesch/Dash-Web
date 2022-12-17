@@ -49,7 +49,7 @@ export class WidgetService {
 
   public updateWidgetsOrder(widgetsData: IWidgetConfig[]): Observable<IWidgetConfig[]> {
     return this.http.post<IWidgetConfig[]>(
-      `${environment.backend_url}/widget/updateWidgetsOrder/`,
+      `${environment.backend_url}/widget/updateWidgetsOrder`,
       widgetsData,
       {
         headers: {
