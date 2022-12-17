@@ -19,6 +19,7 @@ import { WeatherWidgetService } from './weather.widget.service';
 })
 export class WeatherWidgetComponent {
   public city: string | null = null;
+  public displayAllForecast = false;
 
   public weather: IWeatherAPIResponse | undefined;
   public forecastResponse: IForecast[] = [];
@@ -63,27 +64,6 @@ export class WeatherWidgetComponent {
     }
   }
 
-  public filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {
-    switch (this.forecastMode) {
-      case ForecastMode.WEEK: {
-        return forecastData.filter((forecastDay) => {
-          const forecastElement = this.dateUtils.formatDateFromTimestamp(
-            forecastDay.dt,
-            this.dateUtils.adjustTimeWithOffset(cityData.timezone)
-          );
-          return forecastElement.getHours() >= 15 && forecastElement.getHours() <= 18;
-        });
-      }
-      case ForecastMode.DAY: {
-        return forecastData.filter(
-          (forecastDay) =>
-            new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast.getDay() &&
-            new Date(forecastDay.dt * 1000).getHours() >= 7
-        );
-      }
-    }
-  }
-
   public formatDate(date: Date): string {
     return format(date, 'dd/MM');
   }
@@ -99,16 +79,22 @@ export class WeatherWidgetComponent {
   }
 
   public selectDayForecast(date: Date): void {
-    if (this.selectedDayForecast === date) return;
+    if (this.forecastMode !== ForecastMode.WEEK && this.selectedDayForecast === date) return;
     this.forecastMode = ForecastMode.DAY;
     this.selectedDayForecast = date;
-    this.updateChartData();
+    this.updateForecastData();
   }
 
   public selectWeekForecast(): void {
     if (this.forecastMode === ForecastMode.WEEK) return;
     this.forecastMode = ForecastMode.WEEK;
-    this.updateChartData();
+    this.updateForecastData();
+  }
+
+  public updateForecastData(): void {
+    if (this.cityData) {
+      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse);
+    }
   }
 
   public getWidgetData(): { city: string } | undefined {
@@ -123,9 +109,27 @@ export class WeatherWidgetComponent {
     return this.city != null && this.weather != null;
   }
 
-  private updateChartData(): void {
-    if (this.cityData) {
-      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse);
+  private filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {
+    switch (this.forecastMode) {
+      case ForecastMode.WEEK: {
+        return forecastData.filter((forecastDay) => {
+          const forecastElement = this.dateUtils.formatDateFromTimestamp(
+            forecastDay.dt,
+            this.dateUtils.adjustTimeWithOffset(cityData.timezone)
+          );
+          return forecastElement.getHours() >= 15 && forecastElement.getHours() <= 18;
+        });
+      }
+      case ForecastMode.DAY: {
+        return forecastData
+          .filter(
+            (forecastDay) =>
+              new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast.getDay()
+          )
+          .filter((forecastDay) =>
+            this.displayAllForecast ? forecastDay : new Date(forecastDay.dt * 1000).getHours() >= 7
+          );
+      }
     }
   }
 }

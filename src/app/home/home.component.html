@@ -42,7 +42,6 @@
   </div>
 
   <ng-template [ngIf]="this.areWidgetsLoaded" [ngIfElse]="widgetsLoading">
-
     <app-widget-list [widgetList]="this.activeWidgets" *ngIf="this.activeWidgets.length"
       [toggleEditMode]="editModeEnabled" (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"></app-widget-list>
   </ng-template>

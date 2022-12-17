@@ -203,11 +203,13 @@ export class HomeComponent implements OnInit, OnDestroy {
             }
           });
           this.loadWidgets(this.activeTab);
+        } else {
+          this.areWidgetsLoaded = true;
         }
+        this.isDashboardLoaded = true;
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD),
-      complete: () => (this.isDashboardLoaded = true)
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD)
     });
   }
 
@@ -236,8 +238,5 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     }
     this.tabs = this.tabs.filter((tab) => tab.id !== tabId);
-    if (this.tabs.length < 1) {
-      this.addNewTab();
-    }
   }
 }

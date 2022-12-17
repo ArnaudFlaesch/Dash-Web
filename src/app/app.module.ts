@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -117,6 +118,7 @@ registerLocaleData(localeFr);
     MatFormFieldModule,
     MatSnackBarModule,
     MatTabsModule,
+    MatSlideToggleModule,
     MatExpansionModule,
     MatDialogModule,
     MatCardModule,

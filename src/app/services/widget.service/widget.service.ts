@@ -61,7 +61,7 @@ export class WidgetService {
   }
 
   public deleteWidget(id: number): Observable<void> {
-    return this.http.delete<void>(`${environment.backend_url}/widget/deleteWidget/?id=${id}`, {
+    return this.http.delete<void>(`${environment.backend_url}/widget/deleteWidget?id=${id}`, {
       headers: {
         Authorization: authorizationBearer(),
         'Content-type': 'application/json'
