@@ -8,11 +8,9 @@ describe('Workout Widget tests', () => {
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('WORKOUT'));
 
-  after(() => cy.loginAsAdmin().deleteTab(tabName));
+  after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
-  beforeEach(() =>
-    cy.clock(mockedDateTime).loginAsAdmin().navigateToTab(tabName)
-  );
+  beforeEach(() => cy.clock(mockedDateTime).loginAsAdmin().navigateToTab(tabName));
 
   afterEach(() =>
     cy.clock().then((clock) => {
@@ -35,9 +33,7 @@ describe('Workout Widget tests', () => {
       .wait('@addWorkoutType')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workoutTypeName')
-          .should('have.length', 1)
-          .should('have.text', newWorkoutTypeName);
+        cy.get('.workoutTypeName').should('have.length', 1).should('have.text', newWorkoutTypeName);
       });
   });
 

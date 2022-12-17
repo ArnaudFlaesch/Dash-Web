@@ -43,24 +43,15 @@ Cypress.Commands.add('deleteTab', (tabName: string): Cypress.Chainable => {
   return deleteTab(tabName);
 });
 
-Cypress.Commands.add(
-  'createWidget',
-  (widgetType: string): Cypress.Chainable => {
-    return createWidget(widgetType);
-  }
-);
+Cypress.Commands.add('createWidget', (widgetType: string): Cypress.Chainable => {
+  return createWidget(widgetType);
+});
 
-Cypress.Commands.add(
-  'shouldDisplayErrorMessage',
-  (errorMessage: string): Cypress.Chainable => {
-    return shouldDisplayErrorMessage(errorMessage);
-  }
-);
+Cypress.Commands.add('shouldDisplayErrorMessage', (errorMessage: string): Cypress.Chainable => {
+  return shouldDisplayErrorMessage(errorMessage);
+});
 
-function loginAs(
-  username: string,
-  password: string
-): Cypress.Chainable<Response> {
+function loginAs(username: string, password: string): Cypress.Chainable<Response> {
   return cy.session([username, password], () => {
     cy.request({
       method: 'POST',
@@ -134,23 +125,16 @@ function createNewTab(tabName: string): Cypress.Chainable {
 
 function deleteTab(tabName: string): Cypress.Chainable {
   return cy
-    .intercept('GET', '/tab/')
-    .as('getTabs')
     .intercept('DELETE', '/tab/deleteTab*')
     .as('deleteTab')
-    .visit('/')
-    .wait('@getTabs')
-    .then((getTabsResponse: Interception) => {
-      expect(getTabsResponse.response.statusCode).to.equal(200);
-      cy.get('.tab')
-        .contains(tabName)
-        .dblclick()
-        .get('.deleteTabButton')
-        .click()
-        .wait('@deleteTab')
-        .then((deleteTabResponse: Interception) => {
-          expect(deleteTabResponse.response.statusCode).to.equal(200);
-        });
+    .get('.tab')
+    .contains(tabName)
+    .dblclick()
+    .get('.deleteTabButton')
+    .click()
+    .wait('@deleteTab')
+    .then((deleteTabResponse: Interception) => {
+      expect(deleteTabResponse.response.statusCode).to.equal(200);
     });
 }
 

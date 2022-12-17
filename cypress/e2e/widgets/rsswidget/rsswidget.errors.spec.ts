@@ -7,7 +7,7 @@ describe('RSS Widget errors tests', () => {
 
   before(() => cy.loginAsAdmin().createNewTab(tabName));
 
-  after(() => cy.loginAsAdmin().deleteTab(tabName));
+  after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   beforeEach(() => {
     cy.loginAsAdmin().navigateToTab(tabName);

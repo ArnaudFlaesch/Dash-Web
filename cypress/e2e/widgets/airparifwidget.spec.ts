@@ -7,11 +7,9 @@ describe('AirParif Widget tests', () => {
 
   beforeEach(() => cy.loginAsAdmin().navigateToTab(tabName));
 
-  before(() =>
-    cy.loginAsAdmin().createNewTab(tabName).createWidget('AIRPARIF')
-  );
+  before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('AIRPARIF'));
 
-  after(() => cy.loginAsAdmin().deleteTab(tabName));
+  after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   const AIR_PARIF_VALID_TOKEN = 'AIRPARIFTOKEN';
 
@@ -23,10 +21,7 @@ describe('AirParif Widget tests', () => {
       .click()
       .get('#communeInseeCode')
       .type(communeInseeCode)
-      .intercept(
-        'GET',
-        `/airParifWidget/previsionCommune?commune=${communeInseeCode}`
-      )
+      .intercept('GET', `/airParifWidget/previsionCommune?commune=${communeInseeCode}`)
       .as('getForecastData')
       .intercept('GET', `/airParifWidget/couleurs*`)
       .as('getColorsData')

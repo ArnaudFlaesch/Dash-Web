@@ -8,7 +8,7 @@ describe('Twitter Widget tests', () => {
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('TWITTER'));
 
-  after(() => cy.loginAsAdmin().deleteTab(tabName));
+  after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   const usersToFollow = ['StackOverflow', 'Microsoft', 'Apple'];
 
@@ -58,10 +58,7 @@ describe('Twitter Widget tests', () => {
   it('Should remove followed users', () => {
     cy.get('.editButton').click();
     usersToFollow.forEach((user) => {
-      cy.intercept(
-        'DELETE',
-        `/twitterWidget/deleteFollowedUser?followedUserId=*`
-      )
+      cy.intercept('DELETE', `/twitterWidget/deleteFollowedUser?followedUserId=*`)
         .as('removeFollowedUser')
         .intercept('GET', `/twitterWidget/followed?search=${user}`)
         .as('searchFollowedUser')

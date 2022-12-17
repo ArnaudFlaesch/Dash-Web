@@ -8,7 +8,7 @@ describe('Steam Widget tests', () => {
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('STEAM'));
 
-  after(() => cy.loginAsAdmin().deleteTab(tabName));
+  after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   beforeEach(() => {
     cy.loginAsAdmin()
@@ -17,10 +17,7 @@ describe('Steam Widget tests', () => {
       .as('getPlayerData')
       .intercept('GET', `/steamWidget/ownedGames*`)
       .as('getGameData')
-      .intercept(
-        'GET',
-        `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`
-      )
+      .intercept('GET', `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`)
       .as('getAchievementData');
   });
 
