@@ -30,7 +30,7 @@
         </div>
         <div class="mt-4 mb-2">
           <mat-slide-toggle color="'primary'" (change)="this.updateForecastData()" [(ngModel)]="displayAllForecast">
-            Afficher les prévisions entières
+            Afficher les prévisions complètes
           </mat-slide-toggle>
         </div>
         <app-weather-forecast *ngIf="this.cityData" [forecast]="this.forecastToDisplay"

@@ -105,7 +105,7 @@ describe('RSS Widget tests', () => {
   it('Should fail to delete a created widget', () => {
     cy.get('.widget')
       .should('have.length', 1)
-      .intercept('DELETE', '/widget/deleteWidget/*', { statusCode: 500 })
+      .intercept('DELETE', '/widget/deleteWidget*', { statusCode: 500 })
       .as('deleteWidgetError')
       .get('.deleteButton')
       .click()
