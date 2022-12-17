@@ -59,9 +59,7 @@ export class AuthService {
     let result = false;
     if (authenticatedUser && authenticatedUser.accessToken) {
       try {
-        result =
-          Date.now() <
-          jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000;
+        result = Date.now() < jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000;
       } catch (error) {
         result = false;
       }

@@ -48,12 +48,10 @@ export class WidgetListComponent implements OnChanges {
 
   public drop(event: CdkDragDrop<IWidgetConfig[]>): void {
     moveItemInArray(this.widgetList, event.previousIndex, event.currentIndex);
-    const updatedWidgets = this.widgetList.map(
-      (widget: IWidgetConfig, index: number) => {
-        widget.widgetOrder = index;
-        return widget;
-      }
-    );
+    const updatedWidgets = this.widgetList.map((widget: IWidgetConfig, index: number) => {
+      widget.widgetOrder = index;
+      return widget;
+    });
     this.updateWidgetsOrderEvent.emit(updatedWidgets);
   }
 
@@ -76,18 +74,14 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector
             });
-            component.instance.city = widgetData
-              ? (widgetData['city'] as string)
-              : null;
+            component.instance.city = widgetData ? (widgetData['city'] as string) : null;
             break;
           }
           case WidgetTypes.RSS: {
             component = target.createComponent(RssWidgetComponent, {
               injector: injector
             });
-            component.instance.urlFeed = widgetData
-              ? (widgetData['url'] as string)
-              : null;
+            component.instance.urlFeed = widgetData ? (widgetData['url'] as string) : null;
             component.instance.readArticles =
               widgetData && widgetData['readArticlesGuids']
                 ? (widgetData['readArticlesGuids'] as string[])

@@ -8,8 +8,8 @@ module.exports = {
     'prettier',
     'plugin:cypress/recommended'
   ],
-  "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": "warn",
-    "@typescript-eslint/member-ordering": "warn"
-  },
+  rules: {
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
+    '@typescript-eslint/member-ordering': 'warn'
+  }
 };

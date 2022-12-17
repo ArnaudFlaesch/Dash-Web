@@ -32,10 +32,7 @@ export class WeatherForecastComponent {
           }
         : { weekday: 'short', day: 'numeric' };
     return this.dateUtils
-      .formatDateFromTimestamp(
-        dateTime,
-        this.dateUtils.adjustTimeWithOffset(timezone)
-      )
+      .formatDateFromTimestamp(dateTime, this.dateUtils.adjustTimeWithOffset(timezone))
       .toLocaleString('fr', options);
   }
 

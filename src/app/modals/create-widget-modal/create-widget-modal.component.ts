@@ -8,9 +8,7 @@ import { WidgetTypes } from './../../enums/WidgetsEnum';
   styleUrls: ['./create-widget-modal.component.scss']
 })
 export class CreateWidgetModalComponent {
-  public widgetTypesKeys: { type: string; icon: string }[] = Object.keys(
-    WidgetTypes
-  )
+  public widgetTypesKeys: { type: string; icon: string }[] = Object.keys(WidgetTypes)
     .filter((key) => isNaN(parseInt(key, 0)))
     .map((type: string) => {
       return { type: type, icon: this.getWidgetTypeIconToDisplay(type) };

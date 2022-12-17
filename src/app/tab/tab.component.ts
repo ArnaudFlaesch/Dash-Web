@@ -16,13 +16,9 @@ export class TabComponent {
 
   public editMode = false;
 
-  private ERROR_MESSAGE_UPDATE_TAB =
-    "Erreur lors de la modification d'un onglet.";
+  private ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
 
-  constructor(
-    private tabService: TabService,
-    private errorHandlerService: ErrorHandlerService
-  ) {}
+  constructor(private tabService: TabService, private errorHandlerService: ErrorHandlerService) {}
 
   public deleteTabFromDash(): void {
     if (this.tab) {
@@ -33,10 +29,7 @@ export class TabComponent {
   public saveTabName(tabId: number, label: string, tabOrder: number): void {
     this.tabService.updateTab(tabId, label, tabOrder).subscribe({
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_MESSAGE_UPDATE_TAB
-        ),
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_UPDATE_TAB),
       complete: this.toggleEditMode.bind(this)
     });
   }

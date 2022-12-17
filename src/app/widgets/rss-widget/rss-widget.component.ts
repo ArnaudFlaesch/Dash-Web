@@ -24,10 +24,8 @@ export class RssWidgetComponent {
   public readArticles: string[] = [];
   public urlFeed: string | null = null;
 
-  private ERROR_GETTING_RSS_FEED =
-    'Erreur pendant la récupération du flux RSS.';
-  private ERROR_MARKING_FEED_AS_READ =
-    'Erreur pendant la mise à jour du widget RSS.';
+  private ERROR_GETTING_RSS_FEED = 'Erreur pendant la récupération du flux RSS.';
+  private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
 
   constructor(
     @Inject('widgetId') private widgetId: number,
@@ -43,9 +41,7 @@ export class RssWidgetComponent {
         next: (apiResult: unknown) => {
           if (apiResult) {
             if ((apiResult as Record<string, unknown>)['channel'] != null) {
-              const res = (apiResult as Record<string, unknown>)[
-                'channel'
-              ] as IRSSHeader;
+              const res = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
               this.description = res.description;
               this.feed = res.item;
               this.link = res.link;
@@ -59,10 +55,7 @@ export class RssWidgetComponent {
           }
         },
         error: (error) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_GETTING_RSS_FEED
-          ),
+          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_RSS_FEED),
         complete: () => (this.isWidgetLoaded = true)
       });
     }
@@ -96,10 +89,7 @@ export class RssWidgetComponent {
             ? (response.data['readArticlesGuids'] as string[])
             : []),
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_MARKING_FEED_AS_READ
-          )
+          this.errorHandlerService.handleError(error.message, this.ERROR_MARKING_FEED_AS_READ)
       });
   }
 }

@@ -25,12 +25,7 @@ describe('WorkoutWidgetComponent', () => {
   const createComponent = createComponentFactory({
     component: WorkoutWidgetComponent,
     imports: [MatSnackBarModule],
-    providers: [
-      DateUtilsService,
-      WorkoutWidgetService,
-      AuthService,
-      ErrorHandlerService
-    ],
+    providers: [DateUtilsService, WorkoutWidgetService, AuthService, ErrorHandlerService],
     schemas: [NO_ERRORS_SCHEMA]
   });
   const createHttp = createHttpFactory(WorkoutWidgetService);
@@ -60,15 +55,11 @@ describe('WorkoutWidgetComponent', () => {
 
     const dataRequest = workoutWidgetService.expectConcurrent([
       {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutTypes?userId=${userId}`,
+        url: environment.backend_url + `/workoutWidget/workoutTypes?userId=${userId}`,
         method: HttpMethod.GET
       },
       {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutSessions?userId=${userId}`,
+        url: environment.backend_url + `/workoutWidget/workoutSessions?userId=${userId}`,
         method: HttpMethod.GET
       }
     ]);
@@ -88,15 +79,11 @@ describe('WorkoutWidgetComponent', () => {
 
     const dataRequest = workoutWidgetService.expectConcurrent([
       {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutTypes?userId=${userId}`,
+        url: environment.backend_url + `/workoutWidget/workoutTypes?userId=${userId}`,
         method: HttpMethod.GET
       },
       {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutSessions?userId=${userId}`,
+        url: environment.backend_url + `/workoutWidget/workoutSessions?userId=${userId}`,
         method: HttpMethod.GET
       }
     ]);
@@ -139,9 +126,7 @@ describe('WorkoutWidgetComponent', () => {
 
     addNewWorkoutSessionRequest.flush(mockedAddNewWorkoutSessionResponse);
 
-    expect(spectator.component.workoutSessions).toEqual([
-      mockedAddNewWorkoutSessionResponse
-    ]);
+    expect(spectator.component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
 
     spectator.component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
     expect(spectator.component.currentWorkoutSessionToEdit).toEqual(
@@ -153,19 +138,13 @@ describe('WorkoutWidgetComponent', () => {
 
   it('Should format timestamp', () => {
     const timestamp = new Date(2022, 10, 20).getTime();
-    expect(spectator.component.formatWorkoutDateMonth(timestamp)).toEqual(
-      'November'
-    );
+    expect(spectator.component.formatWorkoutDateMonth(timestamp)).toEqual('November');
   });
 
   it('Should check month selected', () => {
     const selectedMonthTimestamp = new Date(2022, 10, 20).getTime();
     spectator.component.selectMonth(selectedMonthTimestamp);
-    expect(spectator.component.isSelectedMonth(selectedMonthTimestamp)).toEqual(
-      true
-    );
-    expect(
-      spectator.component.isSelectedMonth(new Date(2022, 6, 20).getTime())
-    ).toEqual(false);
+    expect(spectator.component.isSelectedMonth(selectedMonthTimestamp)).toEqual(true);
+    expect(spectator.component.isSelectedMonth(new Date(2022, 6, 20).getTime())).toEqual(false);
   });
 });

@@ -15,9 +15,7 @@ describe('Tab error tests', () => {
       .wait('@getTabsError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.shouldDisplayErrorMessage(
-          "Erreur lors de l'initialisation du dashboard."
-        );
+        cy.shouldDisplayErrorMessage("Erreur lors de l'initialisation du dashboard.");
       });
   });
 
@@ -28,9 +26,7 @@ describe('Tab error tests', () => {
       .wait('@getWidgetsError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.shouldDisplayErrorMessage(
-          'Erreur lors de la récupération des widgets.'
-        );
+        cy.shouldDisplayErrorMessage('Erreur lors de la récupération des widgets.');
       });
   });
 
@@ -69,9 +65,7 @@ describe('Tab error tests', () => {
       .wait('@updateTabError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.shouldDisplayErrorMessage(
-          "Erreur lors de la modification d'un onglet."
-        )
+        cy.shouldDisplayErrorMessage("Erreur lors de la modification d'un onglet.")
           .reload()
           .get('.tab')
           .should('have.length', 1)
@@ -96,9 +90,7 @@ describe('Tab error tests', () => {
       .wait('@deleteTabError')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(500);
-        cy.shouldDisplayErrorMessage(
-          "Erreur lors de la suppression d'un onglet."
-        )
+        cy.shouldDisplayErrorMessage("Erreur lors de la suppression d'un onglet.")
           .get('.tab')
           .should('have.length', 1);
       });

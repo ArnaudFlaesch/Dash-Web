@@ -8,9 +8,8 @@ describe('EcowattWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EcowattWidgetComponent ]
-    })
-    .compileComponents();
+      declarations: [EcowattWidgetComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(EcowattWidgetComponent);
     component = fixture.componentInstance;

@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -18,9 +12,7 @@ import { TwitterWidgetService } from './twitter.widget.service';
   styleUrls: ['./twitter-widget.component.scss']
 })
 export class TwitterWidgetComponent implements OnInit {
-  @ViewChild('twitterTimeline', { static: false }) timeline:
-    | ElementRef
-    | undefined;
+  @ViewChild('twitterTimeline', { static: false }) timeline: ElementRef | undefined;
 
   public selectedTwitterHandle: string | undefined;
   public followedUsers: IFollowedUser[] = [];
@@ -32,11 +24,9 @@ export class TwitterWidgetComponent implements OnInit {
   private ERROR_GETTING_FOLLOWED_USERS =
     'Erreur lors de la récupération de la liste des utilisateurs suivis sur Twitter.';
 
-  private ERROR_ADDING_FOLLOWED_USER =
-    "Erreur lors de l'ajout de l'utilisateur.";
+  private ERROR_ADDING_FOLLOWED_USER = "Erreur lors de l'ajout de l'utilisateur.";
 
-  private ERROR_REMOVING_FOLLOWED_USER =
-    "Erreur lors de la suppression de l'utilisateur.";
+  private ERROR_REMOVING_FOLLOWED_USER = "Erreur lors de la suppression de l'utilisateur.";
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -48,17 +38,12 @@ export class TwitterWidgetComponent implements OnInit {
     this.searchFormControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
-        this.twitterWidgetService
-          .getFollowedUsers(searchValue || undefined)
-          .subscribe({
-            next: (followedUsersResponse) =>
-              (this.followedUsers = followedUsersResponse.slice(0, 10)),
-            error: (error) =>
-              this.errorHandlerService.handleError(
-                error.message,
-                this.ERROR_GETTING_FOLLOWED_USERS
-              )
-          });
+        this.twitterWidgetService.getFollowedUsers(searchValue || undefined).subscribe({
+          next: (followedUsersResponse) =>
+            (this.followedUsers = followedUsersResponse.slice(0, 10)),
+          error: (error) =>
+            this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_FOLLOWED_USERS)
+        });
       });
   }
 
@@ -69,8 +54,7 @@ export class TwitterWidgetComponent implements OnInit {
   public refreshWidget(): void {
     this.cdRef.detectChanges();
     if (this.timeline) {
-      const iframe =
-        this.timeline.nativeElement.getElementsByTagName('iframe')[0];
+      const iframe = this.timeline.nativeElement.getElementsByTagName('iframe')[0];
       if (iframe) {
         const src = iframe.src;
         iframe.src = src;
@@ -84,17 +68,12 @@ export class TwitterWidgetComponent implements OnInit {
 
   public addFollowedUser(): void {
     if (this.searchFormControl.value && this.searchFormControl.value.length) {
-      this.twitterWidgetService
-        .addFollowedUser(this.searchFormControl.value)
-        .subscribe({
-          next: (addedFollowedUser: IFollowedUser) =>
-            (this.followedUsers = [...this.followedUsers, addedFollowedUser]),
-          error: (error) =>
-            this.errorHandlerService.handleError(
-              error.message,
-              this.ERROR_ADDING_FOLLOWED_USER
-            )
-        });
+      this.twitterWidgetService.addFollowedUser(this.searchFormControl.value).subscribe({
+        next: (addedFollowedUser: IFollowedUser) =>
+          (this.followedUsers = [...this.followedUsers, addedFollowedUser]),
+        error: (error) =>
+          this.errorHandlerService.handleError(error.message, this.ERROR_ADDING_FOLLOWED_USER)
+      });
     }
   }
 
@@ -105,10 +84,7 @@ export class TwitterWidgetComponent implements OnInit {
           (followedUser) => followedUser.id !== followedUserId
         )),
       error: (error) =>
-        this.errorHandlerService.handleError(
-          error.message,
-          this.ERROR_REMOVING_FOLLOWED_USER
-        )
+        this.errorHandlerService.handleError(error.message, this.ERROR_REMOVING_FOLLOWED_USER)
     });
   }
 
@@ -117,15 +93,11 @@ export class TwitterWidgetComponent implements OnInit {
         twitterHandle: string;
       }
     | undefined {
-    return this.selectedTwitterHandle
-      ? { twitterHandle: this.selectedTwitterHandle }
-      : undefined;
+    return this.selectedTwitterHandle ? { twitterHandle: this.selectedTwitterHandle } : undefined;
   }
 
   public isFormValid(): boolean {
-    return (
-      !!this.selectedTwitterHandle && this.selectedTwitterHandle?.length > 0
-    );
+    return !!this.selectedTwitterHandle && this.selectedTwitterHandle?.length > 0;
   }
 
   /* eslint-disable */

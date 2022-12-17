@@ -74,10 +74,7 @@ describe('GameDetailsComponent', () => {
       appid: appId,
       name: 'Super Game'
     } as IGameInfoDisplay;
-    spectator.component.loadAchievementsData(
-      steamUserId,
-      spectator.component.gameInfo
-    );
+    spectator.component.loadAchievementsData(steamUserId, spectator.component.gameInfo);
     const getAchievementsRequest = steamWidgetService.expectOne(
       environment.backend_url +
         '/steamWidget/achievementList?steamUserId=' +

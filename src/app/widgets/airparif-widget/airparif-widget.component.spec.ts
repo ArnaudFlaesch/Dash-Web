@@ -73,9 +73,7 @@ describe('AirParifWidgetComponent', () => {
     imports: [MatSnackBarModule],
     providers: [AirParifWidgetService, ErrorHandlerService]
   });
-  const createHttpAirParifWidgetService = createHttpFactory(
-    AirParifWidgetService
-  );
+  const createHttpAirParifWidgetService = createHttpFactory(AirParifWidgetService);
 
   it('Should create an AirParif Widget', () => {
     spectator = createComponent();
@@ -100,9 +98,7 @@ describe('AirParifWidgetComponent', () => {
     const dataRequests = airParifWidgetService.expectConcurrent([
       {
         url:
-          environment.backend_url +
-          '/airParifWidget/previsionCommune?commune=' +
-          communeInseeCode,
+          environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode,
         method: HttpMethod.GET
       },
       {
@@ -111,24 +107,17 @@ describe('AirParifWidgetComponent', () => {
       }
     ]);
 
-    airParifWidgetService.flushAll(dataRequests, [
-      forecastData,
-      couleursIndicesData
-    ]);
+    airParifWidgetService.flushAll(dataRequests, [forecastData, couleursIndicesData]);
 
     expect(spectator.component.airParifForecast).toEqual(forecastData);
-    expect(spectator.component.airParifCouleursIndices).toEqual(
-      couleursIndicesData
-    );
+    expect(spectator.component.airParifCouleursIndices).toEqual(couleursIndicesData);
   });
 
   it('should display error messages', () => {
     const errorHandlerService = createSpyObject(ErrorHandlerService);
 
     spectator = createComponent({
-      providers: [
-        { provide: ErrorHandlerService, useValue: errorHandlerService }
-      ]
+      providers: [{ provide: ErrorHandlerService, useValue: errorHandlerService }]
     });
     airParifWidgetService = createHttpAirParifWidgetService();
 
@@ -138,17 +127,12 @@ describe('AirParifWidgetComponent', () => {
 
     airParifWidgetService.controller
       .expectOne(
-        environment.backend_url +
-          '/airParifWidget/previsionCommune?commune=' +
-          communeInseeCode,
+        environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode,
         HttpMethod.GET
       )
       .error(new ProgressEvent('Server error'));
     airParifWidgetService.controller
-      .expectOne(
-        environment.backend_url + '/airParifWidget/couleurs',
-        HttpMethod.GET
-      )
+      .expectOne(environment.backend_url + '/airParifWidget/couleurs', HttpMethod.GET)
       .error(new ProgressEvent('Server error'));
 
     expect(errorHandlerService.handleError).toHaveBeenCalledTimes(2);
