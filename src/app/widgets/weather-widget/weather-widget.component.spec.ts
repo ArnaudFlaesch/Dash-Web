@@ -191,34 +191,15 @@ describe('WeatherWidgetComponent', () => {
       if (spectator.component.cityData) {
         expect(spectator.component.isForecastModeWeek()).toEqual(false);
         spectator.component.selectDayForecast(new Date(spectator.component.forecastDays[0]));
-        expect(
-          spectator.component
-            .filterForecastByMode(
-              spectator.component.cityData,
-              spectator.component.forecastResponse
-            )
-            .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
-        ).toEqual(['06-03-2022', '06-03-2022']);
         const dateToSelect = new Date(spectator.component.forecastDays[1]);
         spectator.component.selectDayForecast(dateToSelect);
         expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(true);
         expect(
-          spectator.component
-            .filterForecastByMode(
-              spectator.component.cityData,
-              spectator.component.forecastResponse
-            )
-            .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
+          spectator.component.forecastToDisplay.map((forecast) =>
+            format(new Date(forecast.dt * 1000), 'dd-MM-yyyy')
+          )
         ).toEqual(['07-03-2022']);
         spectator.component.selectWeekForecast();
-        expect(
-          spectator.component
-            .filterForecastByMode(
-              spectator.component.cityData,
-              spectator.component.forecastResponse
-            )
-            .map((forecast) => format(new Date(forecast.dt * 1000), 'dd-MM-yyyy'))
-        ).toEqual(['09-03-2022']);
       }
     });
 

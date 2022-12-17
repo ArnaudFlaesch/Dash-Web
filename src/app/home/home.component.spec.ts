@@ -105,7 +105,7 @@ describe('HomeComponent', () => {
     const widgetIdToDelete = spectator.component.activeWidgets[1].id;
     spectator.component.deleteWidgetFromDashboard(widgetIdToDelete);
     const deleteWidgetRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/deleteWidget/?id=' + widgetIdToDelete,
+      environment.backend_url + '/widget/deleteWidget?id=' + widgetIdToDelete,
       HttpMethod.DELETE
     );
     deleteWidgetRequest.flush(null, { status: 200, statusText: 'OK' });
@@ -214,7 +214,7 @@ describe('HomeComponent', () => {
     expect(spectator.component.activeTab).toEqual(tabsFromDatabase[0].id);
   });
 
-  it('Should create a new tab when the last one is deleted', () => {
+  it('Should delete a tab', () => {
     const tabsFromDatabase = [{ id: 1, label: 'Home', tabOrder: 1 }];
 
     const getTabsRequest = tabService.expectOne(environment.backend_url + '/tab/', HttpMethod.GET);
@@ -233,18 +233,5 @@ describe('HomeComponent', () => {
       HttpMethod.DELETE
     );
     deleteLastTabRequest.flush(null);
-
-    const addNewTabRequest = tabService.expectOne(
-      environment.backend_url + '/tab/addTab',
-      HttpMethod.POST
-    );
-    const newTabId = 5;
-    addNewTabRequest.flush({
-      id: newTabId,
-      label: 'Nouvel onglet',
-      tabOrder: 4
-    } as ITab);
-
-    expect(spectator.component.tabs.map((tab) => tab.id)).toEqual([newTabId]);
   });
 });
