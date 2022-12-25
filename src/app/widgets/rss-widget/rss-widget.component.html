@@ -2,7 +2,7 @@
   (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
     <div class="header">
-      <a *ngIf="this.image" [href]="this.image.link | safe" class="flex flex-row items-center space-x-2">
+      <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="flex flex-row items-center space-x-2">
         <img class="w-9 rounded" src="{{ image.url }}" alt="logo" />
         <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">{{ this.title }}</div>
       </a>

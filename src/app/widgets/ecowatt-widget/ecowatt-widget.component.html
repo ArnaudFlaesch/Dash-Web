@@ -11,7 +11,7 @@
 
   <ng-template #body>
     <div class="h-full w-full" #iframeContainer>
-      <iframe [src]="ecowattIframeUrl | safe" title="ecowatt" [width]="iframeContainerWidth"
+      <iframe [src]="ecowattIframeUrl | safe : 'resource_url'" title="ecowatt" [width]="iframeContainerWidth"
         [height]="iframeContainerHeight"></iframe>
     </div>
   </ng-template>

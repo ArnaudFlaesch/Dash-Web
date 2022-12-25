@@ -7,8 +7,13 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 export class SafePipe implements PipeTransform {
   constructor(protected sanitizer: DomSanitizer) {}
 
-  public transform(value: string): SafeResourceUrl {
-    const sanitizedUrl = this.sanitizer.sanitize(SecurityContext.URL, value) || '';
-    return this.sanitizer.bypassSecurityTrustResourceUrl(sanitizedUrl);
+  public transform(value: string, arg: string): SafeResourceUrl {
+    if (arg === 'url') {
+      return this.sanitizer.sanitize(SecurityContext.URL, value) || '';
+    } else if (arg === 'resource_url') {
+      return this.sanitizer.bypassSecurityTrustResourceUrl(value);
+    } else {
+      return '';
+    }
   }
 }

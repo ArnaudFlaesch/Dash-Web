@@ -4,8 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'dateFormat'
 })
 export class DateFormatPipe implements PipeTransform {
-  constructor() {}
-
   public transform(value: string | Date, arg = 'full'): string {
     if (typeof value === 'string') {
       value = new Date(value);

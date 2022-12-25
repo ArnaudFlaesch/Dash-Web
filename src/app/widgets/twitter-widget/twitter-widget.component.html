@@ -35,7 +35,7 @@
 
   <ng-template #body>
     <div #twitterTimeline>
-      <a class="twitter-timeline" [href]="twitterTimelineUrl"></a>
+      <a class="twitter-timeline" [href]="twitterTimelineUrl | safe: 'url' "></a>
     </div>
   </ng-template>
 </app-widget>
