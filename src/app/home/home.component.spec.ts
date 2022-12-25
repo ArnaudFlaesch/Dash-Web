@@ -1,6 +1,5 @@
 import { IWidgetConfig } from './../model/IWidgetConfig';
 import { WidgetTypeEnum } from './../enums/WidgetTypeEnum';
-import { ITab } from './../model/Tab';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ErrorHandlerService } from './../services/error.handler.service';
 import { ConfigService } from './../services/config.service/config.service';

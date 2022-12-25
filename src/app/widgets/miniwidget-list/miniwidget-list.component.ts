@@ -10,11 +10,11 @@ import {
 import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { IMiniWidgetConfig } from '../../model/IMiniWidgetConfig';
 import { WeatherMiniWidgetComponent } from '../weather-widget/weather-mini-widget/weather-miniwidget.component';
-import { ErrorHandlerService } from 'src/app/services/error.handler.service';
+import { ErrorHandlerService } from '../../services/error.handler.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { MiniWidgetService } from 'src/app/services/widget.service/miniwidget.service';
-import { CreateMiniWidgetModalComponent } from 'src/app/modals/create-mini-widget-modal/create-mini-widget-modal.component';
+import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
+import { CreateMiniWidgetModalComponent } from '../../modals/create-mini-widget-modal/create-mini-widget-modal.component';
 
 @Component({
   selector: 'app-miniwidget-list',
