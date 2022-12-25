@@ -1,7 +1,20 @@
-.tab {
-  cursor: pointer;
+#tab-list {
+  display: flex;
+  flex-direction: row;
+  overflow-y: hidden;
 
-  &.selected-item {
-    background-color: blue;
+  .tab {
+    cursor: pointer;
+
+    &.selected-item {
+      background-color: blue;
+    }
   }
+}
+
+
+
+#mini-widgets-container {
+  display: flex;
+  justify-content: right;
 }

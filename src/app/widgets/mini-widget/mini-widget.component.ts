@@ -9,24 +9,16 @@ import {
   Output,
   TemplateRef
 } from '@angular/core';
-import { ErrorHandlerService } from '../../../app/services/error.handler.service';
-import { WidgetService } from '../../../app/services/widget.service/widget.service';
-import { ModeEnum } from './../../enums/ModeEnum';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { ErrorHandlerService } from '../../services/error.handler.service';
+import { ModeEnum } from '../../enums/ModeEnum';
+import { MiniWidgetService } from 'src/app/services/widget.service/miniwidget.service';
 
 @Component({
-  selector: 'app-widget',
-  templateUrl: './widget.component.html',
-  styleUrls: ['./widget.component.scss']
+  selector: 'app-mini-widget',
+  templateUrl: './mini-widget.component.html',
+  styleUrls: ['./mini-widget.component.scss']
 })
-export class WidgetComponent implements OnInit, OnDestroy {
-  @ContentChild('header', { static: false })
-  header: TemplateRef<unknown> | null;
-
-  @ContentChild('additionalActions', { static: false })
-  additionalActions: TemplateRef<unknown> | null;
-
+export class MiniWidgetComponent implements OnInit, OnDestroy {
   @ContentChild('body', { static: false })
   body: TemplateRef<unknown> | null;
 
@@ -41,40 +33,39 @@ export class WidgetComponent implements OnInit, OnDestroy {
   public widgetId: number;
   public mode: ModeEnum;
 
-  private destroy$: Subject<unknown> = new Subject();
+  private refreshInterval: NodeJS.Timer | null = null;
+  private refreshTimeout = 900000; // 15 minutes
 
   private ERROR_UPDATING_WIDGET_DATA =
     'Erreur lors de la mise à jour de la configuration du widget.';
 
   constructor(
     private errorHandlerService: ErrorHandlerService,
-    private widgetService: WidgetService,
+    private miniWidgetService: MiniWidgetService,
     @Inject('widgetId') widgetId: number
   ) {
-    this.header = null;
-    this.additionalActions = null;
     this.body = null;
     this.editComponent = null;
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.widgetId = widgetId;
   }
 
-  ngOnInit(): void {
-    console.log('ng on init widget ' + JSON.stringify(this.widgetData));
+  public ngOnInit(): void {
+    console.log('ng on init mini widget ' + JSON.stringify(this.widgetData));
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
-    this.widgetService.refreshWidgetsAction.pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => this.refreshWidget()
-    });
+    this.refreshInterval = setInterval(this.refreshWidget.bind(this), this.refreshTimeout);
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next(null);
-    this.destroy$.complete();
+  public ngOnDestroy(): void {
+    if (this.refreshInterval) {
+      console.log('clearInterval ' + JSON.stringify(this.widgetData));
+      clearInterval(this.refreshInterval);
+    }
   }
 
   public onValidation(): void {
-    this.widgetService
+    this.miniWidgetService
       .updateWidgetData(this.widgetId, {
         ...this.widgetData
       })
@@ -87,10 +78,6 @@ export class WidgetComponent implements OnInit, OnDestroy {
         error: (error) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_WIDGET_DATA)
       });
-  }
-
-  public deleteWidget(): void {
-    this.widgetService._widgetDeletedEvent.next(this.widgetId);
   }
 
   public refreshWidget(): void {

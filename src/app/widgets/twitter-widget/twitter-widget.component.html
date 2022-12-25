@@ -1,42 +1,41 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="refreshWidget()"
-    [isWidgetLoaded]="isWidgetLoaded">
+  [isWidgetLoaded]="isWidgetLoaded">
 
-    <ng-template #header>
-        <div class="header">
-            <a href="{{'https://twitter.com/' + this.selectedTwitterHandle}}">@{{this.selectedTwitterHandle}}</a>
+  <ng-template #header>
+    <div class="header">
+      <a href="{{'https://twitter.com/' + this.selectedTwitterHandle}}">@{{this.selectedTwitterHandle}}</a>
+    </div>
+  </ng-template>
+
+  <ng-template #editComponent>
+    <div class="flex flex-col">
+      <div class="space-y-1" *ngIf="this.followedUsers.length">
+        <div class="flex flex-row space-x-1 justify-between" *ngFor="let followedUser of this.followedUsers">
+          <div class="rounded w-full py-2 followed-user hover:bg-cyan-400 my-auto"
+            [ngClass]="{ 'selected-user': followedUser.userHandle === selectedTwitterHandle }"
+            (click)="selectUserHandle(followedUser.userHandle)">
+            {{followedUser.userHandle}}</div>
+          <button class="bg-gray-500" (click)="this.deleteFollowedUser(followedUser.id)"
+            class="deleteFollowedUserButton" mat-raised-button>
+            <mat-icon title="Remove followed user" aria-hidden="false">delete</mat-icon>
+          </button>
         </div>
-    </ng-template>
+      </div>
 
-    <ng-template #editComponent>
-        <div class="flex flex-col">
-            <div class="space-y-1" *ngIf="this.followedUsers.length">
-                <div class="flex flex-row space-x-1 justify-between" *ngFor="let followedUser of this.followedUsers">
-                    <div class="rounded w-full py-2 followed-user hover:bg-cyan-400 my-auto"
-                        [ngClass]="{ 'selected-user': followedUser.userHandle === selectedTwitterHandle }"
-                        (click)="selectUserHandle(followedUser.userHandle)">
-                        {{followedUser.userHandle}}</div>
-                    <button class="bg-gray-500" (click)="this.deleteFollowedUser(followedUser.id)"
-                        class="deleteFollowedUserButton" mat-raised-button>
-                        <mat-icon title="Remove followed user" aria-hidden="false">delete</mat-icon>
-                    </button>
-                </div>
-            </div>
+      <form class="flex flex-row">
+        <mat-form-field appearance="fill">
+          <mat-label id="searchTwitterUserLabel">Recherchez un utilisateur</mat-label>
+          <input id="searchTwitterUserInput" matInput [formControl]="searchFormControl" />
+        </mat-form-field>
+        <button id="addFollowedUserButton" (click)="this.addFollowedUser()" [disabled]="!this.searchFormControl.value"
+          mat-raised-button>Ajouter</button>
+      </form>
+    </div>
+  </ng-template>
 
-            <form class="flex flex-row">
-                <mat-form-field appearance="fill">
-                    <mat-label id="searchTwitterUserLabel">Recherchez un utilisateur</mat-label>
-                    <input id="searchTwitterUserInput" matInput [formControl]="searchFormControl" />
-                </mat-form-field>
-                <button id="addFollowedUserButton" (click)="this.addFollowedUser()"
-                    [disabled]="!this.searchFormControl.value" mat-raised-button>Ajouter</button>
-            </form>
-        </div>
-    </ng-template>
-
-    <ng-template #body>
-        <div #twitterTimeline>
-            <a class="twitter-timeline"
-                href="https://twitter.com/${{this.selectedTwitterHandle}}?ref_src=twsrc%5Etfw"></a>
-        </div>
-    </ng-template>
+  <ng-template #body>
+    <div #twitterTimeline>
+      <a class="twitter-timeline" [href]="twitterTimelineUrl"></a>
+    </div>
+  </ng-template>
 </app-widget>

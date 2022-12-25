@@ -1,9 +1,9 @@
 import { ErrorHandlerService } from '../services/error.handler.service';
 import { ImportConfigModalComponent } from './../modals/import-config-modal/import-config-modal.component';
 import { ConfigService } from './../services/config.service/config.service';
-import { WidgetTypes } from './../enums/WidgetsEnum';
+import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
 import { CreateWidgetModalComponent } from './../modals/create-widget-modal/create-widget-modal.component';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TabService } from '../services/tab.service/tab.service';
@@ -30,20 +30,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   public areWidgetsLoaded = false;
   public editModeEnabled = false;
 
+  private refreshInterval: NodeJS.Timer | null = null;
+  private refreshTimeout = 900000; // 15 minutes
+
   private destroy$: Subject<unknown> = new Subject();
 
   private ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
-  private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
-  private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
-  private ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
   private ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
-  private ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
 
   private ERROR_MESSAGE_GET_WIDGETS = 'Erreur lors de la récupération des widgets.';
-
+  private ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
   private ERROR_MESSAGE_UPDATE_WIDGETS_ORDER = 'Erreur lors de la mise à jour des widgets.';
+  private ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
 
+  private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
   private ERROR_UPDATING_TABS = 'Erreurs lors de la mise à jour des onglets';
+  private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
 
   constructor(
     public dialog: MatDialog,
@@ -59,16 +61,41 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.initDashboard();
   }
 
-  public ngOnInit(): void {
+  @HostListener('window:focus', ['$event'])
+  private onFocus(): void {
+    console.log('Focus called from HostListener');
+    this.setupWidgetAutoRefresh();
+  }
+
+  @HostListener('window:blur', ['$event'])
+  private onFocusout(): void {
+    console.log('Focus out called from HostListener');
+    this.clearWidgetAutoRefresh();
+  }
+
+  ngOnInit(): void {
     this.widgetService.widgetDeleted.pipe(takeUntil(this.destroy$)).subscribe({
       next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
     });
+    this.setupWidgetAutoRefresh();
   }
 
-  public ngOnDestroy(): void {
+  ngOnDestroy(): void {
     console.log('ondestroy home');
+    this.clearWidgetAutoRefresh();
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  public setupWidgetAutoRefresh(): void {
+    this.refreshInterval = setInterval(this.refreshAllWidgets.bind(this), this.refreshTimeout);
+  }
+
+  public clearWidgetAutoRefresh(): void {
+    if (this.refreshInterval) {
+      console.log('clearInterval');
+      clearInterval(this.refreshInterval);
+    }
   }
 
   public addNewTab(): void {
@@ -123,9 +150,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       width: '600px'
     });
 
-    dialogRef.afterClosed().subscribe((result: WidgetTypes) => {
+    dialogRef.afterClosed().subscribe((result: WidgetTypeEnum) => {
       if (result) {
-        const type = WidgetTypes[result];
+        const type = WidgetTypeEnum[result];
         this.widgetService.addWidget(type, this.activeTab).subscribe({
           next: (response: IWidgetConfig) => {
             this.activeWidgets = [...this.activeWidgets, response];
@@ -135,6 +162,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  public refreshAllWidgets(): void {
+    this.widgetService._refreshWidgetsAction.next(null);
   }
 
   public openImportConfigModal(): void {
@@ -208,8 +239,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
         this.isDashboardLoaded = true;
       },
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD)
+      error: (error: HttpErrorResponse) => {
+        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD);
+        this.isDashboardLoaded = true;
+      }
     });
   }
 

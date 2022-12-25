@@ -12,7 +12,7 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import { WidgetTypes } from '../../../app/enums/WidgetsEnum';
+import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { CalendarWidgetComponent } from '../calendar-widget/calendar-widget.component';
 import { RssWidgetComponent } from '../rss-widget/rss-widget.component';
 import { SteamWidgetComponent } from '../steam-widget/steam-widget.component';
@@ -70,14 +70,14 @@ export class WidgetListComponent implements OnChanges {
         });
         const widgetData = this.widgetList[index].data;
         switch (this.widgetList[index].type) {
-          case WidgetTypes.WEATHER: {
+          case WidgetTypeEnum.WEATHER: {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector
             });
             component.instance.city = widgetData ? (widgetData['city'] as string) : null;
             break;
           }
-          case WidgetTypes.RSS: {
+          case WidgetTypeEnum.RSS: {
             component = target.createComponent(RssWidgetComponent, {
               injector: injector
             });
@@ -88,7 +88,7 @@ export class WidgetListComponent implements OnChanges {
                 : [];
             break;
           }
-          case WidgetTypes.CALENDAR: {
+          case WidgetTypeEnum.CALENDAR: {
             component = target.createComponent(CalendarWidgetComponent, {
               injector: injector
             });
@@ -98,13 +98,13 @@ export class WidgetListComponent implements OnChanges {
                 : [];
             break;
           }
-          case WidgetTypes.STRAVA: {
+          case WidgetTypeEnum.STRAVA: {
             target.createComponent(StravaWidgetComponent, {
               injector: injector
             });
             break;
           }
-          case WidgetTypes.STEAM: {
+          case WidgetTypeEnum.STEAM: {
             component = target.createComponent(SteamWidgetComponent, {
               injector: injector
             });
@@ -114,13 +114,13 @@ export class WidgetListComponent implements OnChanges {
                 : undefined;
             break;
           }
-          case WidgetTypes.WORKOUT: {
+          case WidgetTypeEnum.WORKOUT: {
             target.createComponent(WorkoutWidgetComponent, {
               injector: injector
             });
             break;
           }
-          case WidgetTypes.AIRPARIF: {
+          case WidgetTypeEnum.AIRPARIF: {
             component = target.createComponent(AirParifWidgetComponent, {
               injector: injector
             });
@@ -132,7 +132,7 @@ export class WidgetListComponent implements OnChanges {
               : undefined;
             break;
           }
-          case WidgetTypes.TWITTER: {
+          case WidgetTypeEnum.TWITTER: {
             component = target.createComponent(TwitterWidgetComponent, {
               injector: injector
             });
@@ -141,7 +141,7 @@ export class WidgetListComponent implements OnChanges {
               : undefined;
             break;
           }
-          case WidgetTypes.ECOWATT: {
+          case WidgetTypeEnum.ECOWATT: {
             target.createComponent(EcowattWidgetComponent, {
               injector: injector
             });

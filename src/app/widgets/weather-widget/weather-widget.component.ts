@@ -30,6 +30,8 @@ export class WeatherWidgetComponent {
 
   public forecastMode = ForecastMode.DAY;
   public selectedDayForecast: Date = new Date();
+  public isWeatherLoaded = false;
+  public isForecastLoaded = false;
 
   private ERROR_GETTING_WEATHER_DATA =
     'Erreur lors de la récupération des données météorologiques.';
@@ -44,8 +46,13 @@ export class WeatherWidgetComponent {
 
   public refreshWidget(): void {
     if (this.city) {
+      this.isWeatherLoaded = false;
+      this.isForecastLoaded = false;
       this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
-        next: (weatherData) => (this.weather = weatherData),
+        next: (weatherData) => {
+          this.weather = weatherData;
+          this.isWeatherLoaded = true;
+        },
         error: (error) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WEATHER_DATA)
       });
@@ -57,6 +64,7 @@ export class WeatherWidgetComponent {
             ...new Set(this.forecastResponse.map((data) => startOfDay(data.dt * 1000).getTime()))
           ].map((data) => new Date(data));
           this.selectDayForecast(this.forecastDays[0]);
+          this.isForecastLoaded = true;
         },
         error: (error) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_FORECAST_DATA)
@@ -65,7 +73,7 @@ export class WeatherWidgetComponent {
   }
 
   public formatDate(date: Date): string {
-    return format(date, 'dd/MM');
+    return format(date, 'eee dd');
   }
 
   public isSelectedDay(date: Date): boolean {
@@ -97,16 +105,17 @@ export class WeatherWidgetComponent {
     }
   }
 
+  public isWidgetLoaded(): boolean {
+    console.log('iswidgetloaded');
+    return this.isWeatherLoaded && this.isForecastLoaded;
+  }
+
   public getWidgetData(): { city: string } | undefined {
     return this.city ? { city: this.city } : undefined;
   }
 
   public isFormValid(): boolean {
     return this.city !== null && this.city.length > 0;
-  }
-
-  public isWidgetLoaded(): boolean {
-    return this.city != null && this.weather != null;
   }
 
   private filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {

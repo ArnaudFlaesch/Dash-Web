@@ -1,4 +1,4 @@
-export enum WidgetTypes {
+export enum WidgetTypeEnum {
   WEATHER = 1,
   RSS = 2,
   CALENDAR = 3,

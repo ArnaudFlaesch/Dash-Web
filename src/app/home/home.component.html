@@ -1,43 +1,50 @@
 <ng-template [ngIf]="this.isDashboardLoaded" [ngIfElse]="isDashboardLoading">
-  <div class="flex flex-row justify-between mx-2 mt-1">
-    <div id="tab-list" class="flex flex-row flex-wrap space-x-0.5" cdkDropList (cdkDropListDropped)="drop($event)">
-      <app-tab *ngFor="let tab of this.tabs"
-        class="tab p-2 border-2 border-gray-800 bg-gray-400 hover:bg-blue-200 border-opacity-100 rounded"
-        (click)="selectTab(tab.id)" (tabDeletedEvent)="deleteTabFromDash($event)" [cdkDragDisabled]="!editModeEnabled"
-        [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag cdkDragBoundary="#tab-list"></app-tab>
-      <button (click)="this.addNewTab()" id="addNewTabButton" mat-mini-fab color="primary">
-        <mat-icon title="Add a new tab" aria-hidden="false">
-          add_circle_outline</mat-icon>
-      </button>
+  <div class="flex flex-col">
+    <div class="flex flex-row justify-between mx-2 mt-1">
+      <div id="tab-list" class="max-w-xs sm:max-w-xl overflow-x-auto xl:overflow-x-hidden md:max-w-full space-x-0.5"
+        cdkDropList (cdkDropListDropped)="drop($event)">
+        <app-tab *ngFor="let tab of this.tabs"
+          class="tab p-2 border-2 border-gray-800 bg-gray-400 hover:bg-blue-200 border-opacity-100 rounded"
+          (click)="selectTab(tab.id)" (tabDeletedEvent)="deleteTabFromDash($event)" [cdkDragDisabled]="!editModeEnabled"
+          [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag
+          cdkDragBoundary="#tab-list"></app-tab>
+        <button (click)="this.addNewTab()" id="addNewTabButton" mat-mini-fab color="primary">
+          <mat-icon title="Add a new tab" aria-hidden="false">
+            add_circle_outline</mat-icon>
+        </button>
+      </div>
+      <div class="grid grid-cols-4 sm:grid-cols-2 md:grid-cols-none md:flex md:flex-row space-x-1">
+        <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
+          <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
+            <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>
+          </button>
+        </ng-template>
+        <ng-template #editWidgetList>
+          <button (click)="this.toggleEditMode()" id="toggleEditModeButton" mat-mini-fab color="primary">
+            <mat-icon title="Edit widget list" aria-hidden="false">edit</mat-icon>
+          </button>
+        </ng-template>
+        <button [disabled]="this.tabs.length < 1" (click)="this.openCreateWidgetModal()" id="openAddWidgetModal"
+          color="primary" mat-mini-fab>
+          <mat-icon title="Add a new widget" aria-hidden="false">add_circle_outline</mat-icon>
+        </button>
+        <button (click)="this.refreshAllWidgets()" mat-mini-fab id="reloadAllWidgetsButton" color="primary">
+          <mat-icon title="Refresh all widgets" aria-hidden="false">refresh</mat-icon>
+        </button>
+        <button (click)="this.downloadConfig()" mat-mini-fab id="downloadConfigButton" color="primary">
+          <mat-icon title="Download current user data and config" aria-hidden="false">download
+          </mat-icon>
+        </button>
+        <button (click)="this.openImportConfigModal()" mat-mini-fab id="openImportConfigModal" color="primary">
+          <mat-icon title="Upload user data and config" aria-hidden="false">upload</mat-icon>
+        </button>
+        <button (click)="logout()" mat-mini-fab id="logoutButton" color="warn">
+          <mat-icon title="Logout">logout</mat-icon>
+        </button>
+      </div>
     </div>
-    <div class="sm:grid sm:grid-cols-2 md:flex md:flex-row space-x-1">
-      <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
-        <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
-          <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>
-        </button>
-      </ng-template>
-      <ng-template #editWidgetList>
-        <button (click)="this.toggleEditMode()" id="toggleEditModeButton" mat-mini-fab color="primary">
-          <mat-icon title="Edit widget list" aria-hidden="false">edit</mat-icon>
-        </button>
-      </ng-template>
-      <button [disabled]="this.tabs.length < 1" (click)="this.openCreateWidgetModal()" id="openAddWidgetModal"
-        color="primary" mat-mini-fab>
-        <mat-icon title="Add a new widget" aria-hidden="false">add_circle_outline</mat-icon>
-      </button>
-      <button mat-mini-fab id="reloadAllWidgetsButton" color="primary">
-        <mat-icon title="Refresh all widgets" aria-hidden="false">refresh</mat-icon>
-      </button>
-      <button (click)="this.downloadConfig()" mat-mini-fab id="downloadConfigButton" color="primary">
-        <mat-icon title="Download current user data and config" aria-hidden="false">download
-        </mat-icon>
-      </button>
-      <button (click)="this.openImportConfigModal()" mat-mini-fab id="openImportConfigModal" color="primary">
-        <mat-icon title="Upload user data and config" aria-hidden="false">upload</mat-icon>
-      </button>
-      <button (click)="logout()" mat-mini-fab id="logoutButton" color="warn">
-        <mat-icon title="Logout">logout</mat-icon>
-      </button>
+    <div id="mini-widgets-container">
+      <app-miniwidget-list></app-miniwidget-list>
     </div>
   </div>
 
