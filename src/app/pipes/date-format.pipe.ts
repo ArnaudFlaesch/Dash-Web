@@ -1,11 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Pipe({
   name: 'dateFormat'
 })
 export class DateFormatPipe implements PipeTransform {
-  constructor(protected sanitizer: DomSanitizer) {}
+  constructor() {}
 
   public transform(value: string | Date, arg = 'full'): string {
     if (typeof value === 'string') {
