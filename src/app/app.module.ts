@@ -72,6 +72,7 @@ import { MiniWidgetComponent } from './widgets/mini-widget/mini-widget.component
 import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-session-edit/workout-session-edit.component';
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
+import { AbstractWidgetComponent } from './widgets/abstract-widget/abstract-widget.component';
 
 registerLocaleData(localeFr);
 
@@ -108,7 +109,8 @@ registerLocaleData(localeFr);
     WorkoutSessionEditComponent,
     TwitterWidgetComponent,
     EcowattWidgetComponent,
-    AirParifMapComponent
+    AirParifMapComponent,
+    AbstractWidgetComponent
   ],
   imports: [
     BrowserAnimationsModule,
