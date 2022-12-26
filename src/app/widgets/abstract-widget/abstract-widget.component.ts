@@ -8,8 +8,8 @@ import {
   TemplateRef
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { ModeEnum } from 'src/app/enums/ModeEnum';
-import { WidgetService } from 'src/app/services/widget.service/widget.service';
+import { ModeEnum } from '../../enums/ModeEnum';
+import { WidgetService } from '../../services/widget.service/widget.service';
 
 @Component({
   selector: 'app-abstract-widget',
