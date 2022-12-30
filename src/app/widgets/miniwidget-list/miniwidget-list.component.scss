@@ -1,0 +1,12 @@
+#miniwidget-list {
+  border: 2px black;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: row;
+
+  .miniwidget-container {
+    background-color: white;
+    border: 1px solid black;
+    margin: 0 5px;
+  }
+}

@@ -1,5 +1,5 @@
-<app-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()" [isWidgetLoaded]="isWidgetLoaded()"
-  (refreshWidgetAction)="this.refreshWidget()">
+<app-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()"
+  [isWidgetLoaded]="isWeatherLoaded && isForecastLoaded" (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
     <div class="header">
       <mat-icon>sunny</mat-icon>

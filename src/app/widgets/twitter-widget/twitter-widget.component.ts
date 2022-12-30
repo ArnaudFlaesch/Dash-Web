@@ -16,16 +16,13 @@ export class TwitterWidgetComponent implements OnInit {
 
   public selectedTwitterHandle: string | undefined;
   public followedUsers: IFollowedUser[] = [];
-
   public isWidgetLoaded = true;
-
   public searchFormControl = new FormControl('');
+  public twitterTimelineUrl = '';
 
   private ERROR_GETTING_FOLLOWED_USERS =
     'Erreur lors de la récupération de la liste des utilisateurs suivis sur Twitter.';
-
   private ERROR_ADDING_FOLLOWED_USER = "Erreur lors de l'ajout de l'utilisateur.";
-
   private ERROR_REMOVING_FOLLOWED_USER = "Erreur lors de la suppression de l'utilisateur.";
 
   constructor(
@@ -35,6 +32,9 @@ export class TwitterWidgetComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
+    if (this.selectedTwitterHandle) {
+      this.twitterTimelineUrl = this.createTimelineUrl();
+    }
     this.searchFormControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
@@ -64,6 +64,7 @@ export class TwitterWidgetComponent implements OnInit {
 
   public selectUserHandle(userHandle: string): void {
     this.selectedTwitterHandle = userHandle;
+    this.twitterTimelineUrl = this.createTimelineUrl();
   }
 
   public addFollowedUser(): void {
@@ -98,6 +99,10 @@ export class TwitterWidgetComponent implements OnInit {
 
   public isFormValid(): boolean {
     return !!this.selectedTwitterHandle && this.selectedTwitterHandle?.length > 0;
+  }
+
+  private createTimelineUrl(): string {
+    return `https://twitter.com/${this.selectedTwitterHandle}?ref_src=twsrc%5Etfw`;
   }
 
   /* eslint-disable */

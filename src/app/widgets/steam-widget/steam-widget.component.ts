@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import {
@@ -12,27 +12,29 @@ import {
   IPlayerDataResponse
 } from './ISteam';
 import { SteamWidgetService } from './steam.widget.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-steam-widget',
   templateUrl: './steam-widget.component.html',
   styleUrls: ['./steam-widget.component.scss']
 })
-export class SteamWidgetComponent implements OnInit {
+export class SteamWidgetComponent implements OnInit, OnDestroy {
   public playerData: IPlayerDataResponse | undefined;
-  public gameCount = 0;
   public ownedGamesDisplay: IGameInfoDisplay[] = [];
 
+  public gameCount = 0;
   public pageSize = 25;
   public pageSizeOptions = [25];
   public pageNumber = 0;
 
   public steamUserId: string | undefined;
-
   public searchFormControl = new FormControl('');
+  public isPlayerDataLoaded = false;
+  public areGamesLoaded = false;
 
   private ownedGames: IGameInfoResponse[] = [];
-
+  private destroy$: Subject<unknown> = new Subject();
   private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations Steam.';
   private ERROR_GETTING_OWNED_GAMES = 'Erreur lors de la récupération de la liste des jeux.';
 
@@ -41,8 +43,9 @@ export class SteamWidgetComponent implements OnInit {
     private steamWidgetService: SteamWidgetService
   ) {}
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.searchFormControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
         if (this.steamUserId) {
@@ -50,6 +53,11 @@ export class SteamWidgetComponent implements OnInit {
           this.getOwnedGames(this.steamUserId, searchValue || undefined);
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+    this.destroy$.complete();
   }
 
   public refreshWidget(): void {
@@ -65,14 +73,19 @@ export class SteamWidgetComponent implements OnInit {
   }
 
   public getPlayerData(steamUserId: string): void {
+    this.isPlayerDataLoaded = false;
     this.steamWidgetService.getPlayerData(steamUserId).subscribe({
-      next: (response: IPlayerDataResponse[]) => (this.playerData = response[0]),
+      next: (response: IPlayerDataResponse[]) => {
+        this.playerData = response[0];
+        this.isPlayerDataLoaded = true;
+      },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_PLAYER_DATA)
     });
   }
 
   public getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {
+    this.areGamesLoaded = false;
     this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).subscribe({
       next: (response: IOwnedGamesResponse) => {
         this.gameCount = response.gameCount;
@@ -80,6 +93,7 @@ export class SteamWidgetComponent implements OnInit {
         this.ownedGamesDisplay = this.ownedGames.map((game) =>
           this.gameInfoResponseToGameInfoDisplay(game)
         );
+        this.areGamesLoaded = true;
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_OWNED_GAMES)
@@ -107,10 +121,6 @@ export class SteamWidgetComponent implements OnInit {
 
   public isFormValid(): boolean {
     return !!this.steamUserId && this.steamUserId?.length > 0;
-  }
-
-  public isWidgetLoaded(): boolean {
-    return this.steamUserId != undefined && this.playerData != null;
   }
 
   private gameInfoResponseToGameInfoDisplay(gameInfoResponse: IGameInfoResponse): IGameInfoDisplay {

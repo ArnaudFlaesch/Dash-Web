@@ -1,5 +1,5 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()"
-  [isWidgetLoaded]="isWidgetLoaded()">
+  [isWidgetLoaded]="this.isPlayerDataLoaded && this.areGamesLoaded">
 
   <ng-template #header>
     <div class="header">

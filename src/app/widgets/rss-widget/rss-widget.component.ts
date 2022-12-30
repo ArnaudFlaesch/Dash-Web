@@ -37,6 +37,7 @@ export class RssWidgetComponent {
 
   public refreshWidget(): void {
     if (this.urlFeed) {
+      this.isWidgetLoaded = false;
       this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
         next: (apiResult: unknown) => {
           if (apiResult) {
@@ -53,6 +54,7 @@ export class RssWidgetComponent {
               this.title = res['title'] as string;
             }
           }
+          this.isWidgetLoaded = true;
         },
         error: (error) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_RSS_FEED),

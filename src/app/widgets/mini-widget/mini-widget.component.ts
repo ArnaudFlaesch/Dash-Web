@@ -1,34 +1,30 @@
-import { Component, ContentChild, Inject, TemplateRef } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 
-import { ErrorHandlerService } from '../../../app/services/error.handler.service';
-import { WidgetService } from '../../../app/services/widget.service/widget.service';
 import { AbstractWidgetComponent } from '../abstract-widget/abstract-widget.component';
+import { ErrorHandlerService } from '../../services/error.handler.service';
+import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
+import { WidgetService } from '../../services/widget.service/widget.service';
 
 @Component({
-  selector: 'app-widget',
-  templateUrl: './widget.component.html',
-  styleUrls: ['./widget.component.scss']
+  selector: 'app-mini-widget',
+  templateUrl: './mini-widget.component.html',
+  styleUrls: ['./mini-widget.component.scss']
 })
-export class WidgetComponent extends AbstractWidgetComponent {
-  @ContentChild('header', { static: false })
-  header: TemplateRef<unknown> | null = null;
-
-  @ContentChild('additionalActions', { static: false })
-  additionalActions: TemplateRef<unknown> | null = null;
-
+export class MiniWidgetComponent extends AbstractWidgetComponent {
   private ERROR_UPDATING_WIDGET_DATA =
     'Erreur lors de la mise à jour de la configuration du widget.';
 
   constructor(
     private errorHandlerService: ErrorHandlerService,
     protected override widgetService: WidgetService,
+    private miniWidgetService: MiniWidgetService,
     @Inject('widgetId') widgetId: number
   ) {
     super(widgetService, widgetId);
   }
 
   public onValidation(): void {
-    this.widgetService
+    this.miniWidgetService
       .updateWidgetData(this.widgetId, {
         ...this.widgetData
       })
@@ -41,9 +37,5 @@ export class WidgetComponent extends AbstractWidgetComponent {
         error: (error) =>
           this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_WIDGET_DATA)
       });
-  }
-
-  public deleteWidget(): void {
-    this.widgetService._widgetDeletedEvent.next(this.widgetId);
   }
 }

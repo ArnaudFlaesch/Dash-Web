@@ -1,5 +1,4 @@
-<div id="widget-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" cdkDropList
-  (cdkDropListDropped)="drop($event)">
+<div id="widget-list" cdkDropList (cdkDropListDropped)="drop($event)">
   <div class="widget-container" *ngFor="let widget of this.widgetList" cdkDrag cdkDragBoundary="#widget-list"
     [cdkDragDisabled]="!toggleEditMode">
     <ng-template #dynamic></ng-template>

@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
@@ -38,7 +37,6 @@ export class StravaWidgetComponent {
 
   constructor(
     private stravaWidgetService: StravaWidgetService,
-    public sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private errorHandlerService: ErrorHandlerService,
     private router: Router

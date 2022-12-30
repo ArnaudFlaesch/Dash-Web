@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { WidgetTypes } from './../../enums/WidgetsEnum';
+import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 
 @Component({
   selector: 'app-create-widget-modal',
@@ -8,42 +8,42 @@ import { WidgetTypes } from './../../enums/WidgetsEnum';
   styleUrls: ['./create-widget-modal.component.scss']
 })
 export class CreateWidgetModalComponent {
-  public widgetTypesKeys: { type: string; icon: string }[] = Object.keys(WidgetTypes)
+  public widgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(WidgetTypeEnum)
     .filter((key) => isNaN(parseInt(key, 0)))
     .map((type: string) => {
-      return { type: type, icon: this.getWidgetTypeIconToDisplay(type) };
+      return { type: type, icon: this.getWidgetTypeEnumIconToDisplay(type) };
     });
 
   constructor(public dialogRef: MatDialogRef<CreateWidgetModalComponent>) {}
 
-  public getWidgetTypeIconToDisplay(widgetType: unknown): string {
-    const widgetTypeKey = WidgetTypes[widgetType as WidgetTypes].toString();
-    switch (widgetTypeKey) {
-      case WidgetTypes.RSS.toString(): {
+  public getWidgetTypeEnumIconToDisplay(widgetType: unknown): string {
+    const WidgetTypeEnumKey = WidgetTypeEnum[widgetType as WidgetTypeEnum].toString();
+    switch (WidgetTypeEnumKey) {
+      case WidgetTypeEnum.RSS.toString(): {
         return 'feed';
       }
-      case WidgetTypes.WEATHER.toString(): {
+      case WidgetTypeEnum.WEATHER.toString(): {
         return 'sunny';
       }
-      case WidgetTypes.STRAVA.toString(): {
+      case WidgetTypeEnum.STRAVA.toString(): {
         return 'directions_run';
       }
-      case WidgetTypes.CALENDAR.toString(): {
+      case WidgetTypeEnum.CALENDAR.toString(): {
         return 'calendar_month';
       }
-      case WidgetTypes.STEAM.toString(): {
+      case WidgetTypeEnum.STEAM.toString(): {
         return 'sports_esports';
       }
-      case WidgetTypes.WORKOUT.toString(): {
+      case WidgetTypeEnum.WORKOUT.toString(): {
         return 'fitness_center';
       }
-      case WidgetTypes.AIRPARIF.toString(): {
+      case WidgetTypeEnum.AIRPARIF.toString(): {
         return 'air';
       }
-      case WidgetTypes.TWITTER.toString(): {
+      case WidgetTypeEnum.TWITTER.toString(): {
         return 'newspaper';
       }
-      case WidgetTypes.ECOWATT.toString(): {
+      case WidgetTypeEnum.ECOWATT.toString(): {
         return 'electric_bolt';
       }
       default: {

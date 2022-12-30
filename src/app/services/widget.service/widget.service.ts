@@ -8,7 +8,10 @@ import { IWidgetConfig } from './../../model/IWidgetConfig';
 @Injectable()
 export class WidgetService {
   public _widgetDeletedEvent: ReplaySubject<number> = new ReplaySubject(0);
+  public _refreshWidgetsAction: ReplaySubject<unknown> = new ReplaySubject(0);
   public readonly widgetDeleted: Observable<number> = this._widgetDeletedEvent.asObservable();
+  public readonly refreshWidgetsAction: Observable<unknown> =
+    this._refreshWidgetsAction.asObservable();
 
   constructor(private http: HttpClient) {}
 

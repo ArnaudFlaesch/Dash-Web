@@ -1,6 +1,5 @@
 import { IWidgetConfig } from './../model/IWidgetConfig';
-import { WidgetTypes } from './../enums/WidgetsEnum';
-import { ITab } from './../model/Tab';
+import { WidgetTypeEnum } from './../enums/WidgetTypeEnum';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ErrorHandlerService } from './../services/error.handler.service';
 import { ConfigService } from './../services/config.service/config.service';
@@ -45,14 +44,14 @@ describe('HomeComponent', () => {
   const firstTabWidgetData = [
     {
       id: 1,
-      type: WidgetTypes.RSS,
+      type: WidgetTypeEnum.RSS,
       data: { url: 'url.rss.xml' },
       tabId: 1,
       widgetOrder: 1
     },
     {
       id: 2,
-      type: WidgetTypes.RSS,
+      type: WidgetTypeEnum.RSS,
       data: { url: 'url.rss.xml' },
       tabId: 1,
       widgetOrder: 2
