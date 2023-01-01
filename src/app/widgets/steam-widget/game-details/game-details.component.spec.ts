@@ -9,7 +9,7 @@ import {
 } from '@ngneat/spectator/jest';
 
 import { ErrorHandlerService } from '../../../services/error.handler.service';
-import { IGameInfoDisplay, IGameInfoResponse } from '../ISteam';
+import { IGameInfoDisplay } from '../ISteam';
 import { SteamWidgetService } from '../steam.widget.service';
 import { environment } from './../../../../environments/environment';
 import { GameDetailsComponent } from './game-details.component';
