@@ -15,8 +15,8 @@ describe('Calendar Widget tests', () => {
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   beforeEach(() => {
-    // July 1st 2021
-    cy.clock(new Date(2021, 6, 1, 0, 0, 0).getTime()).loginAsAdmin().navigateToTab(tabName);
+    // July 1st 2022
+    cy.clock(new Date(2022, 6, 1, 0, 0, 0).getTime()).loginAsAdmin().navigateToTab(tabName);
   });
 
   it('Should edit Calendar widget and add an Ical feed', () => {
@@ -29,14 +29,15 @@ describe('Calendar Widget tests', () => {
       .get('.validateButton')
       .click()
       .wait('@getCalendarDataRequest')
-      .then(() => {
+      .then((request: Interception) => {
+        expect(request.response.statusCode).to.equal(200);
         cy.get('h3')
-          .should('have.text', 'juillet 2021')
+          .should('have.text', 'juillet 2022')
           .get('.refreshButton')
           .click()
           .wait('@getCalendarDataRequest')
           .then(() => {
-            cy.get('.cal-future:nth(15)')
+            cy.get('.cal-future:nth(14)')
               .find('.cal-day-badge')
               .should('have.text', 1)
               .get('.editButton')
