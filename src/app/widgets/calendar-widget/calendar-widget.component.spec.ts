@@ -86,4 +86,14 @@ describe('CalendarWidgetComponent', () => {
     expect(spectator.component.isCalendarViewWeek()).toEqual(false);
     expect(spectator.component.isCalendarViewDay()).toEqual(true);
   });
+
+  it('Should update the calendar urls', () => {
+    expect(spectator.component.calendarUrls).toEqual([]);
+    expect(spectator.component.getWidgetConfig()).toEqual(undefined);
+    spectator.component.onCalendarUrlAdded();
+    expect(spectator.component.calendarUrls).toEqual(['']);
+    expect(spectator.component.getWidgetConfig()).toEqual({ calendarUrls: [''] });
+    spectator.component.removeCalendarUrl('');
+    expect(spectator.component.getWidgetConfig()).toEqual(undefined);
+  });
 });
