@@ -11,10 +11,8 @@
 
   <ng-template #body>
     <div *ngIf="weather && weather.weather" class="flex flex-row">
-      <div>
-        <img class="w-16" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
-          [title]="weather.weather[0].description" [alt]="weather.weather[0].description" />
-      </div>
+      <img class="w-14 h-14" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
+        [title]="weather.weather[0].description" [alt]="weather.weather[0].description" />
       <div class="flex flex-col">
         <div>{{city}}</div>
         <div class="flex flex-row">

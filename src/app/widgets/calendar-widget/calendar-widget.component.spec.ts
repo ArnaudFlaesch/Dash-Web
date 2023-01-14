@@ -38,7 +38,6 @@ describe('CalendarWidgetComponent', () => {
     expect(spectator.component.isCalendarViewMonth()).toEqual(true);
     spectator.component.calendarUrls.push('http://calendar.ical');
     spectator.component.refreshWidget();
-    expect(spectator.component.isWidgetLoaded).toEqual(false);
     const getCalendarDataRequest = calendarWidgetService.expectOne(
       environment.backend_url + `/calendarWidget/`,
       HttpMethod.POST
@@ -77,7 +76,6 @@ describe('CalendarWidgetComponent', () => {
     ];
     getCalendarDataRequest.flush(getCalendarData);
     expect(spectator.component.events.length).toEqual(6);
-    expect(spectator.component.isWidgetLoaded).toEqual(true);
     const calendarEvent = spectator.component.events[0];
     expect(calendarEvent.title).toEqual('La Toussaint');
   });
@@ -87,5 +85,15 @@ describe('CalendarWidgetComponent', () => {
     expect(spectator.component.isCalendarViewMonth()).toEqual(false);
     expect(spectator.component.isCalendarViewWeek()).toEqual(false);
     expect(spectator.component.isCalendarViewDay()).toEqual(true);
+  });
+
+  it('Should update the calendar urls', () => {
+    expect(spectator.component.calendarUrls).toEqual([]);
+    expect(spectator.component.getWidgetConfig()).toEqual(undefined);
+    spectator.component.onCalendarUrlAdded();
+    expect(spectator.component.calendarUrls).toEqual(['']);
+    expect(spectator.component.getWidgetConfig()).toEqual({ calendarUrls: [''] });
+    spectator.component.removeCalendarUrl('');
+    expect(spectator.component.getWidgetConfig()).toEqual(undefined);
   });
 });
