@@ -1,19 +1,21 @@
 <ng-template [ngIf]="this.isDashboardLoaded" [ngIfElse]="isDashboardLoading">
   <div class="flex flex-col">
     <div class="flex flex-row justify-between mx-2 mt-1">
-      <div id="tab-list" class="max-w-xs sm:max-w-xl overflow-x-auto xl:overflow-x-hidden md:max-w-full space-x-0.5"
-        cdkDropList (cdkDropListDropped)="drop($event)">
-        <app-tab *ngFor="let tab of this.tabs"
-          class="tab p-2 border-2 border-gray-800 bg-gray-400 hover:bg-blue-200 border-opacity-100 rounded"
-          (click)="selectTab(tab.id)" (tabDeletedEvent)="deleteTabFromDash($event)" [cdkDragDisabled]="!editModeEnabled"
-          [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag
-          cdkDragBoundary="#tab-list"></app-tab>
+      <div id="tab-list-container" class="flex flex-row">
+        <div id="tab-list" class="max-w-xs sm:max-w-xl overflow-x-auto md:max-w-full space-x-0.5" cdkDropList
+          (cdkDropListDropped)="drop($event)">
+          <app-tab *ngFor="let tab of this.tabs"
+            class="tab p-2 border-2 border-gray-800 bg-gray-400 hover:bg-blue-200 border-opacity-100 rounded"
+            (click)="selectTab(tab.id)" (tabDeletedEvent)="deleteTabFromDash($event)"
+            [cdkDragDisabled]="!editModeEnabled" [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab"
+            cdkDrag cdkDragBoundary="#tab-list"></app-tab>
+        </div>
         <button (click)="this.addNewTab()" id="addNewTabButton" mat-mini-fab color="primary">
           <mat-icon title="Add a new tab" aria-hidden="false">
             add_circle_outline</mat-icon>
         </button>
       </div>
-      <div class="grid grid-cols-4 sm:grid-cols-2 md:grid-cols-none md:flex md:flex-row space-x-1">
+      <div id="action-bar-buttons" class="space-x-1.5">
         <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
           <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
             <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>

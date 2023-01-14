@@ -1,6 +1,8 @@
-<div id="miniwidget-list">
-  <div class="miniwidget-container" *ngFor="let miniWidget of this.miniWidgetList">
-    <ng-template #dynamic></ng-template>
+<div class="flex flex-row">
+  <div id="miniwidget-list" class="overflow-x-auto">
+    <div class="miniwidget-container" *ngFor="let miniWidget of this.miniWidgetList">
+      <ng-template #dynamic></ng-template>
+    </div>
   </div>
   <button (click)="this.openCreateMiniWidgetModal()" id="openAddMiniWidgetModal" color="primary" mat-mini-fab>
     <mat-icon title="Add a new widget" aria-hidden="false">add_circle_outline</mat-icon>

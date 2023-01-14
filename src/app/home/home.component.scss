@@ -1,20 +1,53 @@
-#tab-list {
-  display: flex;
-  flex-direction: row;
-  overflow-y: hidden;
+#tab-list-container {
 
-  .tab {
-    cursor: pointer;
 
-    &.selected-item {
-      background-color: blue;
+  @media (min-width: 1px) {
+    width: 70%;
+  }
+
+  @media (min-width: 640px) {
+    width: 80%;
+  }
+
+  #tab-list {
+    display: flex;
+    flex-direction: row;
+    overflow-y: hidden;
+
+    .tab {
+      cursor: pointer;
+
+      &.selected-item {
+        background-color: blue;
+      }
     }
   }
 }
 
+#action-bar-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
+  @media (min-width: 1px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1280px) {
+    display: flex;
+  }
+}
 
 #mini-widgets-container {
   display: flex;
   justify-content: right;
+  margin-top: 5px;
+  margin-right: 5px;
 }
