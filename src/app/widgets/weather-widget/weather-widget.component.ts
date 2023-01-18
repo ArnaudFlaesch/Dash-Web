@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { format, startOfDay } from 'date-fns';
+import { format, isToday, startOfDay } from 'date-fns';
 
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
@@ -130,14 +130,14 @@ export class WeatherWidgetComponent {
         });
       }
       case ForecastMode.DAY: {
-        return forecastData
-          .filter(
-            (forecastDay) =>
-              new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast.getDay()
-          )
-          .filter((forecastDay) =>
-            this.displayAllForecast ? forecastDay : new Date(forecastDay.dt * 1000).getHours() >= 7
-          );
+        if (isToday(this.selectedDayForecast)) {
+          return forecastData.slice(0, 6);
+        }
+        return forecastData.filter(
+          (forecastDay) =>
+            new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast.getDay() &&
+            (this.displayAllForecast || new Date(forecastDay.dt * 1000).getHours() >= 7)
+        );
       }
     }
   }

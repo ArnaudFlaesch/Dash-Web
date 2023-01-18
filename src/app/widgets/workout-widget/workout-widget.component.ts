@@ -46,6 +46,7 @@ export class WorkoutWidgetComponent {
   private ERROR_GETTING_WORKOUT_SESSIONS =
     "Erreur lors de la récupération de la liste des sessions d'exercices.";
   private ERROR_CREATING_WORKOUT_TYPE = "Erreur lors de la création d'un type d'exercice.";
+  private ERROR_CREATING_WORKOUT_SESSION = "Erreur lors de la création d'une session d'exercices.";
 
   constructor(
     private errorHandlerService: ErrorHandlerService,
@@ -117,7 +118,7 @@ export class WorkoutWidgetComponent {
           this.selectMonth(this.selectedMonthTimestamp);
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_TYPE)
+          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_SESSION)
       });
     }
   }
