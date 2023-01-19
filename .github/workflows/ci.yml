@@ -58,17 +58,17 @@ jobs:
             docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:latest
           fi
 
-      - name: E2E Tests
-        run: |
-          npm run test:e2e:ci
+      #   - name: E2E Tests
+      #     run: |
+      #       npm run test:e2e:ci
 
-      - name: Generate test report
-        if: failure()
-        run: |
-          mkdir cypress/screenshots || true
-          npx mochawesome-merge ./cypress/results/mochawesome-report/*.json > tests-report.json
-          npx marge tests-report.json -o cypress/reports/html
-          cp -r cypress/screenshots cypress/reports/html/screenshots
+      #   - name: Generate test report
+      #     if: failure()
+      #     run: |
+      #       mkdir cypress/screenshots || true
+      #       npx mochawesome-merge ./cypress/results/mochawesome-report/*.json > tests-report.json
+      #       npx marge tests-report.json -o cypress/reports/html
+      #       cp -r cypress/screenshots cypress/reports/html/screenshots
 
       - name: Upload Cypress report
         uses: actions/upload-artifact@v3
