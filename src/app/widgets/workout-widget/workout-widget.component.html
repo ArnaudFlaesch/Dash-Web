@@ -20,11 +20,11 @@
               {{formatWorkoutDateMonth(workoutMonth) }} </button>
           </div>
 
-          <ul>
-            <li class="workout-session" *ngFor="let workoutSession of this.workoutSessionsByMonth"
+          <div id="workout-sessions-grid">
+            <span class="workout-session" *ngFor="let workoutSession of this.workoutSessionsByMonth"
               (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate | dateFormat:'short' }}
-            </li>
-          </ul>
+            </span>
+          </div>
 
           <h4>Créer une session</h4>
           <mat-form-field id="workoutDatePickerField" appearance="fill">
@@ -41,10 +41,9 @@
         </div>
 
         <h2>Types d'exercices</h2>
-        <div *ngFor="let workoutType of this.workoutTypes">
-          <ul>
-            <li class="workoutTypeName">{{ workoutType.name }}</li>
-          </ul>
+        <div id="workout-types-grid">
+          <span class="workoutTypeName" *ngFor="let workoutType of this.workoutTypes">
+            {{ workoutType.name }}</span>
         </div>
 
         <div>
