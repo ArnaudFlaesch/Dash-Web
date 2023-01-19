@@ -10,6 +10,6 @@ describe('Ecowatt Widget tests', () => {
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   it('Should verify that the widget was added to the dashboard', () => {
-    cy.get('.header').should('have.text', 'Ecowatt');
+    cy.get('.header > div').should('have.text', 'Ecowatt');
   });
 });
