@@ -58,6 +58,7 @@ export class WorkoutWidgetComponent {
   ) {}
 
   public refreshWidget(): void {
+    this.getMonthStats();
     this.workoutWidgetService.getWorkoutTypes().subscribe({
       next: (workoutTypes) => (this.workoutTypes = workoutTypes),
       error: (error: HttpErrorResponse) =>

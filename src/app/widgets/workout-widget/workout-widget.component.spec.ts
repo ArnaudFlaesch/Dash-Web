@@ -144,6 +144,15 @@ describe('WorkoutWidgetComponent', () => {
     } as IWorkoutSession;
 
     addNewWorkoutSessionRequest.flush(mockedAddNewWorkoutSessionResponse);
+    const dataRequest = workoutWidgetService.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByMonth?dateMonth=${format(
+          startOfMonth(new Date()),
+          'yyyy-MM-dd'
+        )}`,
+      HttpMethod.GET
+    );
+    dataRequest.flush([]);
 
     expect(spectator.component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
 
@@ -163,6 +172,16 @@ describe('WorkoutWidgetComponent', () => {
   it('Should check month selected', () => {
     const selectedMonthTimestamp = new Date(2022, 10, 20).getTime();
     spectator.component.selectMonth(selectedMonthTimestamp);
+    const dataRequest = workoutWidgetService.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByMonth?dateMonth=${format(
+          selectedMonthTimestamp,
+          'yyyy-MM-dd'
+        )}`,
+      HttpMethod.GET
+    );
+
+    dataRequest.flush([]);
     expect(spectator.component.isSelectedMonth(selectedMonthTimestamp)).toEqual(true);
     expect(spectator.component.isSelectedMonth(new Date(2022, 6, 20).getTime())).toEqual(false);
   });
