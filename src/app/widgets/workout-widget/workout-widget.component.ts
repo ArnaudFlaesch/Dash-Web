@@ -58,17 +58,6 @@ export class WorkoutWidgetComponent {
   ) {}
 
   public refreshWidget(): void {
-    this.workoutWidgetService
-      .getWorkoutStatsByMonth(new Date(this.selectedMonthTimestamp))
-      .subscribe({
-        next: (workoutStatsByMonth) => (this.workoutStatsByMonth = workoutStatsByMonth),
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_GETTING_WORKOUT_STATS_BY_MONTH
-          )
-      });
-
     this.workoutWidgetService.getWorkoutTypes().subscribe({
       next: (workoutTypes) => (this.workoutTypes = workoutTypes),
       error: (error: HttpErrorResponse) =>
@@ -162,6 +151,20 @@ export class WorkoutWidgetComponent {
   public selectMonth(monthTimestamp: number): void {
     this.selectedMonthTimestamp = monthTimestamp;
     this.filterWorkoutSessionsByMonth(monthTimestamp);
+    this.getMonthStats();
+  }
+
+  private getMonthStats(): void {
+    this.workoutWidgetService
+      .getWorkoutStatsByMonth(new Date(this.selectedMonthTimestamp))
+      .subscribe({
+        next: (workoutStatsByMonth) => (this.workoutStatsByMonth = workoutStatsByMonth),
+        error: (error: HttpErrorResponse) =>
+          this.errorHandlerService.handleError(
+            error.message,
+            this.ERROR_GETTING_WORKOUT_STATS_BY_MONTH
+          )
+      });
   }
 
   private getWorkoutMonths(): number[] {
