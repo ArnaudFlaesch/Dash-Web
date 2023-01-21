@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public editModeEnabled = false;
 
   private refreshInterval: NodeJS.Timer | null = null;
-  private refreshTimeout = 300000; // 5 minutes
+  private refreshTimeout = 900000; // 15 minutes
 
   private destroy$: Subject<unknown> = new Subject();
 
