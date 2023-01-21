@@ -1,4 +1,4 @@
-<ng-template [ngIf]="this.currentWorkoutSessionToEdit && this.workoutExercises.length"
+<ng-template [ngIf]="this.currentWorkoutSessionToEdit && this.workoutExercisesLoaded"
   [ngIfElse]="workoutExercisesLoading">
   <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat:'short' }}</h3>
   <div id="workout-sessions-grid">
