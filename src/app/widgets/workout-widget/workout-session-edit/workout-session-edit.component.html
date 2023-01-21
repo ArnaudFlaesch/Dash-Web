@@ -1,5 +1,5 @@
-Edit
-<div *ngIf="currentWorkoutSessionToEdit">
+<ng-template [ngIf]="this.currentWorkoutSessionToEdit && this.workoutExercises.length"
+  [ngIfElse]="workoutExercisesLoading">
   <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat:'short' }}</h3>
   <div id="workout-sessions-grid">
     <div class="workout-exercise-container" *ngFor="let workoutType of this.workoutTypes">
@@ -17,3 +17,10 @@ Edit
       </div>
     </div>
   </div>
+</ng-template>
+
+<ng-template #workoutExercisesLoading>
+  <div class="h-full flex items-center justify-center">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
