@@ -11,7 +11,11 @@ export interface IWorkoutSession {
 }
 
 export interface IWorkoutExercise {
-  workoutSessionId: number;
   workoutTypeId: number;
   numberOfReps: number;
+}
+
+export interface IWorkoutStatsByMonth {
+  workoutTypeName: string;
+  totalNumberOfReps: number;
 }

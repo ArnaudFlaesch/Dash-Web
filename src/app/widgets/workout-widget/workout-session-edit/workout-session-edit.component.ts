@@ -14,11 +14,11 @@ export class WorkoutSessionEditComponent {
   @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
   public isWidgetUpdating = false;
+  public workoutExercisesLoaded = false;
 
   public workoutExercises: IWorkoutExercise[] = [];
 
   private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
-
   private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
 
   constructor(
@@ -49,8 +49,12 @@ export class WorkoutSessionEditComponent {
   }
 
   private fetchWorkoutExercisesBySessionId(workoutSessionId: number): void {
+    this.workoutExercisesLoaded = false;
     this.workoutWidgetService.getWorkoutExercises(workoutSessionId).subscribe({
-      next: (workoutExercises) => (this.workoutExercises = workoutExercises),
+      next: (workoutExercises) => {
+        this.workoutExercises = workoutExercises;
+        this.workoutExercisesLoaded = true;
+      },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_EXERCISES)
     });
