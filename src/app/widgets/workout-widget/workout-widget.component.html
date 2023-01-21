@@ -40,6 +40,12 @@
           </button>
         </div>
 
+        <div>
+          <div *ngFor="let workoutStat of this.workoutStatsByMonth">
+            <span>{{workoutStat.workoutTypeName}} : {{workoutStat.totalNumberOfReps}}</span>
+          </div>
+        </div>
+
         <h2>Types d'exercices</h2>
         <div id="workout-types-grid">
           <span class="workoutTypeName" *ngFor="let workoutType of this.workoutTypes">

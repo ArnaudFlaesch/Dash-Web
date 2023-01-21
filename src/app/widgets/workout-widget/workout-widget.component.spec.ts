@@ -9,6 +9,7 @@ import {
 } from '@ngneat/spectator';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IWorkoutSession, IWorkoutType } from './model/Workout';
+import { format, startOfMonth } from 'date-fns';
 
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -55,16 +56,25 @@ describe('WorkoutWidgetComponent', () => {
 
     const dataRequest = workoutWidgetService.expectConcurrent([
       {
-        url: environment.backend_url + `/workoutWidget/workoutTypes?userId=${userId}`,
+        url: environment.backend_url + `/workoutWidget/workoutTypes`,
         method: HttpMethod.GET
       },
       {
-        url: environment.backend_url + `/workoutWidget/workoutSessions?userId=${userId}`,
+        url: environment.backend_url + `/workoutWidget/workoutSessions`,
+        method: HttpMethod.GET
+      },
+      {
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutStatsByMonth?dateMonth=${format(
+            startOfMonth(new Date()),
+            'yyyy-MM-dd'
+          )}`,
         method: HttpMethod.GET
       }
     ]);
 
-    workoutWidgetService.flushAll(dataRequest, [workoutTypesFromDB, []]);
+    workoutWidgetService.flushAll(dataRequest, [workoutTypesFromDB, [], []]);
 
     expect(spectator.component.isWidgetLoaded).toEqual(true);
     expect(spectator.component.workoutTypes).toEqual(workoutTypesFromDB);
@@ -79,17 +89,26 @@ describe('WorkoutWidgetComponent', () => {
 
     const dataRequest = workoutWidgetService.expectConcurrent([
       {
-        url: environment.backend_url + `/workoutWidget/workoutTypes?userId=${userId}`,
+        url: environment.backend_url + `/workoutWidget/workoutTypes`,
         method: HttpMethod.GET
       },
       {
-        url: environment.backend_url + `/workoutWidget/workoutSessions?userId=${userId}`,
+        url: environment.backend_url + `/workoutWidget/workoutSessions`,
+        method: HttpMethod.GET
+      },
+      {
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutStatsByMonth?dateMonth=${format(
+            startOfMonth(new Date()),
+            'yyyy-MM-dd'
+          )}`,
         method: HttpMethod.GET
       }
     ]);
 
     const newWorkoutTypeName = 'Haltères';
-    workoutWidgetService.flushAll(dataRequest, [[], []]);
+    workoutWidgetService.flushAll(dataRequest, [[], [], []]);
 
     spectator.component.workoutNameInput = newWorkoutTypeName;
     spectator.component.addWorkoutType();

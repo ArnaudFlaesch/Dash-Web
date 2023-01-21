@@ -4,32 +4,35 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
-import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './model/Workout';
+import {
+  IWorkoutExercise,
+  IWorkoutSession,
+  IWorkoutStatsByMonth,
+  IWorkoutType
+} from './model/Workout';
 import {
   IAddWorkoutTypePayload,
   ICreateWorkoutSessionPayload,
   IUpdateWorkoutExercisePayload
 } from './payload/WorkoutPayload';
+import { format } from 'date-fns';
 
 @Injectable()
 export class WorkoutWidgetService {
   constructor(private http: HttpClient) {}
 
-  public getWorkoutTypes(userId: number): Observable<IWorkoutType[]> {
-    return this.http.get<IWorkoutType[]>(
-      `${environment.backend_url}/workoutWidget/workoutTypes?userId=${userId}`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
-        }
+  public getWorkoutTypes(): Observable<IWorkoutType[]> {
+    return this.http.get<IWorkoutType[]>(`${environment.backend_url}/workoutWidget/workoutTypes`, {
+      headers: {
+        Authorization: authorizationBearer(),
+        'Content-type': 'application/json'
       }
-    );
+    });
   }
 
-  public getWorkoutSessions(userId: number): Observable<IWorkoutSession[]> {
+  public getWorkoutSessions(): Observable<IWorkoutSession[]> {
     return this.http.get<IWorkoutSession[]>(
-      `${environment.backend_url}/workoutWidget/workoutSessions?userId=${userId}`,
+      `${environment.backend_url}/workoutWidget/workoutSessions`,
       {
         headers: {
           Authorization: authorizationBearer(),
@@ -51,10 +54,24 @@ export class WorkoutWidgetService {
     );
   }
 
-  public addWorkoutType(newWorkoutType: string, userId: number): Observable<IWorkoutType> {
+  public getWorkoutStatsByMonth(monthDate: Date): Observable<IWorkoutStatsByMonth[]> {
+    return this.http.get<IWorkoutStatsByMonth[]>(
+      `${environment.backend_url}/workoutWidget/workoutStatsByMonth?dateMonth=${format(
+        monthDate,
+        'yyyy-MM-dd'
+      )}`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        }
+      }
+    );
+  }
+
+  public addWorkoutType(newWorkoutType: string): Observable<IWorkoutType> {
     const addWorkoutTypePayload: IAddWorkoutTypePayload = {
-      workoutType: newWorkoutType,
-      userId: userId
+      workoutType: newWorkoutType
     };
     return this.http.post<IWorkoutType>(
       `${environment.backend_url}/workoutWidget/addWorkoutType`,
@@ -68,13 +85,9 @@ export class WorkoutWidgetService {
     );
   }
 
-  public createWorkoutSession(
-    workoutSessionDate: Date,
-    userId: number
-  ): Observable<IWorkoutSession> {
+  public createWorkoutSession(workoutSessionDate: Date): Observable<IWorkoutSession> {
     const createWorkoutSessionPayload: ICreateWorkoutSessionPayload = {
-      workoutDate: workoutSessionDate,
-      userId: userId
+      workoutDate: workoutSessionDate
     };
     return this.http.post<IWorkoutSession>(
       `${environment.backend_url}/workoutWidget/createWorkoutSession`,
