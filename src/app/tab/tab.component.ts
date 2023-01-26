@@ -29,7 +29,7 @@ export class TabComponent {
   public saveTabName(tabId: number, label: string, tabOrder: number): void {
     this.tabService.updateTab(tabId, label, tabOrder).subscribe({
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_UPDATE_TAB),
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_UPDATE_TAB),
       complete: this.toggleEditMode.bind(this)
     });
   }

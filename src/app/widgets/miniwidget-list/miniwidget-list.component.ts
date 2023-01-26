@@ -44,7 +44,7 @@ export class MiniWidgetListComponent implements OnInit {
         this.createMiniWidgets();
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_GET_MINI_WIDGETS)
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_MINI_WIDGETS)
     });
   }
 
@@ -63,7 +63,7 @@ export class MiniWidgetListComponent implements OnInit {
             this.createMiniWidgets();
           },
           error: (error: HttpErrorResponse) =>
-            this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_MINI_WIDGET)
+            this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_MINI_WIDGET)
         });
       }
     });

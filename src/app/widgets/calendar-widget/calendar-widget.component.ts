@@ -58,8 +58,7 @@ export class CalendarWidgetComponent {
           this.parseEvents(calendarData);
           this.isWidgetLoaded = true;
         },
-        error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_PARSING_EVENTS)
+        error: (error) => this.errorHandlerService.handleError(error, this.ERROR_PARSING_EVENTS)
       });
     });
   }

@@ -32,7 +32,7 @@ export class LoginComponent {
         },
         error: (error: HttpErrorResponse) => {
           this.isLoading = false;
-          this.errorHandlerService.handleError(error.message, this.ERROR_AUTHENTICATING_USER);
+          this.errorHandlerService.handleError(error, this.ERROR_AUTHENTICATING_USER);
         },
         complete: () => (this.isLoading = false)
       });

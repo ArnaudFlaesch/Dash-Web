@@ -62,7 +62,7 @@ export class WorkoutWidgetComponent {
     this.workoutWidgetService.getWorkoutTypes().subscribe({
       next: (workoutTypes) => (this.workoutTypes = workoutTypes),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_TYPES),
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES),
       complete: () => (this.isWidgetLoaded = true)
     });
 
@@ -75,7 +75,7 @@ export class WorkoutWidgetComponent {
         }
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_SESSIONS)
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_SESSIONS)
     });
   }
 
@@ -97,7 +97,7 @@ export class WorkoutWidgetComponent {
           this.workoutNameInput = '';
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_TYPE)
+          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_TYPE)
       });
     }
   }
@@ -116,7 +116,7 @@ export class WorkoutWidgetComponent {
           this.selectMonth(this.selectedMonthTimestamp);
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_SESSION)
+          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_SESSION)
       });
     }
   }
@@ -161,10 +161,7 @@ export class WorkoutWidgetComponent {
       .subscribe({
         next: (workoutStatsByMonth) => (this.workoutStatsByMonth = workoutStatsByMonth),
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_GETTING_WORKOUT_STATS_BY_MONTH
-          )
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS_BY_MONTH)
       });
   }
 

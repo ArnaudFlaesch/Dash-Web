@@ -56,7 +56,7 @@ export class WorkoutSessionEditComponent {
         this.workoutExercisesLoaded = true;
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_EXERCISES)
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_EXERCISES)
     });
   }
 
@@ -77,7 +77,7 @@ export class WorkoutSessionEditComponent {
           this.isWidgetUpdating = false;
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_EXERCISE)
+          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_EXERCISE)
       });
   }
 

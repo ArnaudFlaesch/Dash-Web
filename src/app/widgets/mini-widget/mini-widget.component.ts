@@ -35,7 +35,7 @@ export class MiniWidgetComponent extends AbstractWidgetComponent {
           this.refreshWidget();
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_WIDGET_DATA)
+          this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_DATA)
       });
   }
 }

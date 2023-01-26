@@ -28,24 +28,8 @@
 
     <div class="flex flex-col">
       <div *ngFor="let game of this.ownedGamesDisplay">
-        <mat-expansion-panel hideToggle>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <div class="gameInfo flex flex-row">
-                <div class="h-10">
-                  <div class="flex flex-row items-center space-x-2">
-                    <img [src]="game.gameImgSrc" alt="game icon" />
-                    <p>{{ game.name }}</p>
-                  </div>
-                </div>
-              </div>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <ng-template matExpansionPanelContent>
-            <app-game-details [steamUserId]="this.steamUserId" [profileUrl]="this.playerData?.profileurl"
-              [gameInfo]="game"></app-game-details>
-          </ng-template>
-        </mat-expansion-panel>
+        <app-game-details [steamUserId]="this.steamUserId" [profileUrl]="this.playerData?.profileurl"
+          [gameInfo]="game"></app-game-details>
       </div>
     </div>
     <mat-paginator (page)="onPageChanged($event)" [length]="gameCount" [pageSize]="pageSize" [pageIndex]="pageNumber"

@@ -54,7 +54,7 @@ export class WeatherWidgetComponent {
           this.isWeatherLoaded = true;
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WEATHER_DATA)
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WEATHER_DATA)
       });
       this.weatherWidgetService.fetchForecastData(this.city).subscribe({
         next: (forecastApiResponse: IForecastAPIResponse) => {
@@ -67,7 +67,7 @@ export class WeatherWidgetComponent {
           this.isForecastLoaded = true;
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_FORECAST_DATA)
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_FORECAST_DATA)
       });
     }
   }
