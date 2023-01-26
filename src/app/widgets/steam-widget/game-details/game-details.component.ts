@@ -39,7 +39,9 @@ export class GameDetailsComponent {
           this.completedAchievements = achievementResponse.playerstats.achievements.filter(
             (achievement: IAchievement) => achievement.achieved === 1
           );
-          this.completionStatus = Math.floor((698 / 700) * 100);
+          this.completionStatus = Math.floor(
+            (this.completedAchievements.length / this.achievements.length) * 100
+          );
         }
       },
       error: (error: HttpErrorResponse) =>
