@@ -15,7 +15,7 @@ export interface IWorkoutExercise {
   numberOfReps: number;
 }
 
-export interface IWorkoutStatsByMonth {
+export interface IWorkoutStatsByPeriod {
   workoutTypeName: string;
   totalNumberOfReps: number;
 }

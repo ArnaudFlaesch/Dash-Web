@@ -21,7 +21,7 @@
           </div>
 
           <div id="workout-sessions-grid">
-            <span class="workout-session" *ngFor="let workoutSession of this.workoutSessionsByMonth"
+            <span class="workout-session" *ngFor="let workoutSession of this.workoutSessions"
               (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate | dateFormat:'short' }}
             </span>
           </div>
@@ -40,7 +40,15 @@
           </button>
         </div>
 
-        <div>
+        <div *ngIf="this.workoutStatsByWeek.length">
+          <div>Cette semaine :</div>
+          <div *ngFor="let workoutStat of this.workoutStatsByWeek">
+            <span>{{workoutStat.workoutTypeName}} : {{workoutStat.totalNumberOfReps}}</span>
+          </div>
+        </div>
+
+        <div *ngIf="this.workoutStatsByMonth.length">
+          <div>Ce mois-ci</div>
           <div *ngFor="let workoutStat of this.workoutStatsByMonth">
             <span>{{workoutStat.workoutTypeName}} : {{workoutStat.totalNumberOfReps}}</span>
           </div>

@@ -7,7 +7,7 @@ import authorizationBearer from '../../services/authorizationBearer/authorizatio
 import {
   IWorkoutExercise,
   IWorkoutSession,
-  IWorkoutStatsByMonth,
+  IWorkoutStatsByPeriod,
   IWorkoutType
 } from './model/Workout';
 import {
@@ -19,6 +19,8 @@ import { format } from 'date-fns';
 
 @Injectable()
 export class WorkoutWidgetService {
+  private dateFormat = 'yyyy-MM-dd';
+
   constructor(private http: HttpClient) {}
 
   public getWorkoutTypes(): Observable<IWorkoutType[]> {
@@ -30,13 +32,20 @@ export class WorkoutWidgetService {
     });
   }
 
-  public getWorkoutSessions(): Observable<IWorkoutSession[]> {
+  public getWorkoutSessions(
+    dateIntervalStart: Date,
+    dateIntervalEnd: Date
+  ): Observable<IWorkoutSession[]> {
     return this.http.get<IWorkoutSession[]>(
       `${environment.backend_url}/workoutWidget/workoutSessions`,
       {
         headers: {
           Authorization: authorizationBearer(),
           'Content-type': 'application/json'
+        },
+        params: {
+          dateIntervalStart: format(dateIntervalStart, this.dateFormat),
+          dateIntervalEnd: format(dateIntervalEnd, this.dateFormat)
         }
       }
     );
@@ -54,16 +63,20 @@ export class WorkoutWidgetService {
     );
   }
 
-  public getWorkoutStatsByMonth(monthDate: Date): Observable<IWorkoutStatsByMonth[]> {
-    return this.http.get<IWorkoutStatsByMonth[]>(
-      `${environment.backend_url}/workoutWidget/workoutStatsByMonth?dateMonth=${format(
-        monthDate,
-        'yyyy-MM-dd'
-      )}`,
+  public getWorkoutStatsByPeriod(
+    dateIntervalStart: Date,
+    dateIntervalEnd: Date
+  ): Observable<IWorkoutStatsByPeriod[]> {
+    return this.http.get<IWorkoutStatsByPeriod[]>(
+      `${environment.backend_url}/workoutWidget/workoutStatsByPeriod`,
       {
         headers: {
           Authorization: authorizationBearer(),
           'Content-type': 'application/json'
+        },
+        params: {
+          dateIntervalStart: format(dateIntervalStart, this.dateFormat),
+          dateIntervalEnd: format(dateIntervalEnd, this.dateFormat)
         }
       }
     );
