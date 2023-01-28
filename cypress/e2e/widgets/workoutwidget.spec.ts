@@ -3,14 +3,14 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Workout Widget tests', () => {
-  const mockedDateTime = new Date(2022, 6, 22, 0, 0, 0).getTime();
+  const mockedDate = new Date(2022, 6, 22, 0, 0, 0);
   const tabName = 'Workout';
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('WORKOUT'));
 
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
-  beforeEach(() => cy.clock(mockedDateTime).loginAsAdmin().navigateToTab(tabName));
+  beforeEach(() => cy.clock(mockedDate.getTime()).loginAsAdmin().navigateToTab(tabName));
 
   afterEach(() =>
     cy.clock().then((clock) => {
@@ -58,7 +58,9 @@ describe('Workout Widget tests', () => {
       .wait('@createWorkoutSession')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workout-session').should('have.length', 1);
+        const formattedMonth = '0' + mockedDate.getMonth() + 1; // Nécessaire car getMonth renvoie 6 au lieu de 07
+        const dateText = `${mockedDate.getDate()}/${formattedMonth}/${mockedDate.getFullYear()}`;
+        cy.get('#workoutSessionDate').should('have.text', `Session du ${dateText}`);
       });
   });
 
