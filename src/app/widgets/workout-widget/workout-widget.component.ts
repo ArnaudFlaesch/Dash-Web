@@ -138,6 +138,7 @@ export class WorkoutWidgetComponent {
   public selectMonth(monthDate: Date): void {
     this.selectedMonth = monthDate;
     this.getWorkoutSessionsOfMonth(this.selectedMonth);
+    this.getWorkoutStatsOfMonth();
   }
 
   private getWorkoutSessionsOfMonth(selectedMonth: Date): void {
