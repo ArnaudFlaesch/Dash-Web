@@ -7,7 +7,7 @@ import {
   endOfWeek,
   format,
   startOfMonth,
-  startOfWeek
+  startOfISOWeek
 } from 'date-fns';
 
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
@@ -156,7 +156,7 @@ export class WorkoutWidgetComponent {
   private getWorkoutStatsOfCurrentWeek(): void {
     const today = new Date();
     this.workoutWidgetService
-      .getWorkoutStatsByPeriod(startOfWeek(today), endOfWeek(today))
+      .getWorkoutStatsByPeriod(startOfISOWeek(today), endOfWeek(today))
       .subscribe({
         next: (workoutStatsByWeek) => {
           this.workoutStatsByWeek = workoutStatsByWeek;

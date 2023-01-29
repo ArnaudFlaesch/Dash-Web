@@ -9,7 +9,7 @@ import {
 } from '@ngneat/spectator';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IWorkoutSession, IWorkoutType } from './model/Workout';
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
+import { format, startOfMonth, endOfMonth, startOfISOWeek, endOfWeek } from 'date-fns';
 
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -74,7 +74,7 @@ describe('WorkoutWidgetComponent', () => {
         url:
           environment.backend_url +
           `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-            startOfWeek(new Date()),
+            startOfISOWeek(new Date()),
             dateFormat
           )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`,
         method: HttpMethod.GET
@@ -130,7 +130,7 @@ describe('WorkoutWidgetComponent', () => {
         url:
           environment.backend_url +
           `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-            startOfWeek(new Date()),
+            startOfISOWeek(new Date()),
             dateFormat
           )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`,
         method: HttpMethod.GET
