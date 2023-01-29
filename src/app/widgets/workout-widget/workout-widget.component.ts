@@ -159,7 +159,9 @@ export class WorkoutWidgetComponent {
       .getWorkoutStatsByPeriod(startOfISOWeek(today), endOfWeek(today))
       .subscribe({
         next: (workoutStatsByWeek) => {
-          this.workoutStatsByWeek = workoutStatsByWeek;
+          this.workoutStatsByWeek = workoutStatsByWeek.sort((statA, statB) =>
+            statA.workoutTypeName.localeCompare(statB.workoutTypeName)
+          );
         },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)
@@ -171,7 +173,12 @@ export class WorkoutWidgetComponent {
       .getWorkoutStatsByPeriod(startOfMonth(this.selectedMonth), endOfMonth(this.selectedMonth))
       .subscribe({
         next: (workoutStatsByMonth) => {
-          this.workoutStatsByMonth = workoutStatsByMonth;
+          this.workoutStatsByMonth = workoutStatsByMonth.sort(
+            (
+              statA,
+              statB // FIXME Sort in DB
+            ) => statA.workoutTypeName.localeCompare(statB.workoutTypeName)
+          );
         },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)
