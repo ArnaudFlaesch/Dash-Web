@@ -64,7 +64,7 @@ export class WorkoutWidgetComponent {
     })
       .map((monthDate) => startOfMonth(new Date(monthDate)))
       .sort((dateA: Date, dateB: Date) => dateA.getTime() - dateB.getTime());
-    this.selectMonth(this.workoutMonths[this.workoutMonths.length - 1]);
+    this.selectedMonth = this.workoutMonths[this.workoutMonths.length - 1];
   }
 
   public refreshWidget(): void {

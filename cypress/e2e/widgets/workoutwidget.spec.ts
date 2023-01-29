@@ -58,8 +58,8 @@ describe('Workout Widget tests', () => {
       .wait('@createWorkoutSession')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        const formattedMonth = '0' + mockedDate.getMonth() + 1; // Nécessaire car getMonth renvoie 6 au lieu de 07
-        const dateText = `${mockedDate.getDate()}/${formattedMonth}/${mockedDate.getFullYear()}`;
+        const month = mockedDate.getMonth() + 1; // Nécessaire car getMonth renvoie 6 au lieu de 07
+        const dateText = `${mockedDate.getDate()}/0${month}/${mockedDate.getFullYear()}`;
         cy.get('#workoutSessionDate').should('have.text', `Session du ${dateText}`);
       });
   });
