@@ -113,6 +113,10 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
+  public resetForm(): void {
+    this.searchFormControl.reset();
+  }
+
   public getWidgetData():
     | {
         steamUserId: string;

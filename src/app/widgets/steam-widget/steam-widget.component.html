@@ -19,11 +19,16 @@
   </ng-template>
 
   <ng-template #body>
-    <form>
+    <form id="search-game-form">
       <mat-form-field appearance="fill">
         <mat-label>Recherchez un jeu</mat-label>
         <input matInput [formControl]="searchFormControl" />
+
       </mat-form-field>
+      <button *ngIf="this.searchFormControl.dirty && this.searchFormControl.value" mat-icon-button
+        id="reset-form-button" (click)="this.resetForm()">
+        <mat-icon title="Reset form" aria-hidden="false">close</mat-icon>
+      </button>
     </form>
 
     <div class="flex flex-col">

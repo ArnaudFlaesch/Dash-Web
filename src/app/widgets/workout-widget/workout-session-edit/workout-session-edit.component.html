@@ -9,7 +9,7 @@
           (click)="decrementExerciceNumberOfReps(workoutType.id)">
           <mat-icon>remove</mat-icon>
         </button>
-        <span class="workoutNumberOfReps">{{ getExerciceNumberOfReps(workoutType.id) }}</span>
+        <span class="workout-number-of-reps">{{ getExerciceNumberOfReps(workoutType.id) }}</span>
         <button [disabled]="isWidgetUpdating" class="addRepToWorkoutButton" mat-icon-button
           (click)="incrementExerciceNumberOfReps(workoutType.id)">
           <mat-icon>add</mat-icon>
