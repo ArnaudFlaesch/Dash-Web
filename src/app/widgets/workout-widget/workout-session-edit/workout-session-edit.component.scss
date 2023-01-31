@@ -9,5 +9,17 @@
   .workout-exercise-container {
     display: flex;
     justify-content: space-between;
+
+    .workout-type-name {
+      margin: auto 0;
+    }
+
+    .edit-reps-container {
+      white-space: nowrap;
+
+      .workoutNumberOfReps {
+        vertical-align: super;
+      }
+    }
   }
 }

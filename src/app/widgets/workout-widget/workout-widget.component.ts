@@ -176,7 +176,7 @@ export class WorkoutWidgetComponent {
           this.workoutStatsByMonth = workoutStatsByMonth.sort(
             (
               statA,
-              statB // FIXME Sort in DB
+              statB // FIXME @TODO Sort in DB
             ) => statA.workoutTypeName.localeCompare(statB.workoutTypeName)
           );
         },

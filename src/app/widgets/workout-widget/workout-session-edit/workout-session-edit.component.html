@@ -3,8 +3,8 @@
   <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat:'short' }}</h3>
   <div id="workout-sessions-grid">
     <div class="workout-exercise-container" *ngFor="let workoutType of this.workoutTypes">
-      <span>{{ workoutType.name }}</span>
-      <div>
+      <span class="workout-type-name">{{ workoutType.name }}</span>
+      <div class="edit-reps-container">
         <button [disabled]="isWidgetUpdating" class="substractRepToWorkoutButton" mat-icon-button
           (click)="decrementExerciceNumberOfReps(workoutType.id)">
           <mat-icon>remove</mat-icon>
