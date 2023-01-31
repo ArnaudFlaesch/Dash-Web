@@ -13,10 +13,11 @@ export class WorkoutSessionEditComponent {
   @Input() public workoutTypes: IWorkoutType[] = [];
   @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
+  public workoutExercises: IWorkoutExercise[] = [];
+
+  public sessionEditMode = false;
   public isWidgetUpdating = false;
   public workoutExercisesLoaded = false;
-
-  public workoutExercises: IWorkoutExercise[] = [];
 
   private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
   private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
@@ -46,6 +47,10 @@ export class WorkoutSessionEditComponent {
     if (workoutType) {
       return workoutType.numberOfReps;
     } else return 0;
+  }
+
+  public toggleSessionEditMode(): void {
+    this.sessionEditMode = !this.sessionEditMode;
   }
 
   private fetchWorkoutExercisesBySessionId(workoutSessionId: number): void {
