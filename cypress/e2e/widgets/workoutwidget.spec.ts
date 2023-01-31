@@ -86,7 +86,7 @@ describe('Workout Widget tests', () => {
           .then((request: Interception) => {
             expect(request.response.statusCode).to.equal(200);
             expect(request.response.body.numberOfReps).to.equal(1);
-            cy.get('.workoutNumberOfReps').should('have.text', 1);
+            cy.get('.workout-number-of-reps').should('have.text', 1);
           });
       });
   });
