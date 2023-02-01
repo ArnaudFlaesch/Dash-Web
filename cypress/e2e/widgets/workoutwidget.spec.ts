@@ -80,6 +80,8 @@ describe('Workout Widget tests', () => {
           .should('have.text', `Session du 22/07/2022`)
           .intercept('POST', '/workoutWidget/updateWorkoutExercise')
           .as('updateWorkoutExercise')
+          .get('#edit-session-button')
+          .click()
           .get('.addRepToWorkoutButton')
           .click()
           .wait('@updateWorkoutExercise')

@@ -4,11 +4,13 @@
     <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat:'short' }}</h3>
 
     <ng-template [ngIf]="this.sessionEditMode" [ngIfElse]="editModeButton">
-      <button mat-icon-button (click)="toggleSessionEditMode()"> <mat-icon>check</mat-icon></button>
+      <button id="validate-session-button" mat-icon-button (click)="toggleSessionEditMode()">
+        <mat-icon>check</mat-icon></button>
     </ng-template>
 
     <ng-template #editModeButton>
-      <button mat-icon-button (click)="toggleSessionEditMode()"> <mat-icon>edit</mat-icon></button>
+      <button id="edit-session-button" mat-icon-button (click)="toggleSessionEditMode()">
+        <mat-icon>edit</mat-icon></button>
     </ng-template>
   </div>
 
