@@ -13,12 +13,18 @@ import {
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
 import { DEFAULT_DATE_FORMAT } from '../../../app/utils/Constants';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
-import { IWorkoutSession, IWorkoutType, IWorkoutStatsByPeriod } from './model/Workout';
+import {
+  IWorkoutSession,
+  IWorkoutType,
+  IWorkoutStatsByPeriod,
+  IWorkoutStatByMonth
+} from './model/Workout';
 import { WorkoutWidgetService } from './workout.widget.service';
 
 enum WORKOUT_WIDGET_VIEW {
   WORKOUT_SESSIONS_LIST_VIEW = 1,
-  EDIT_WORKOUT_SESSION_VIEW = 2
+  WORKOUT_STATISTICS_VIEW = 2,
+  EDIT_WORKOUT_SESSION_VIEW = 3
 }
 
 @Component({
@@ -32,6 +38,7 @@ export class WorkoutWidgetComponent {
   public workoutMonths: Date[];
   public workoutStatsByWeek: IWorkoutStatsByPeriod[] = [];
   public workoutStatsByMonth: IWorkoutStatsByPeriod[] = [];
+  public workoutStatsByYear: IWorkoutStatByMonth[] = [];
   public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
   public dateFormat = DEFAULT_DATE_FORMAT;
@@ -61,9 +68,7 @@ export class WorkoutWidgetComponent {
     this.workoutMonths = eachMonthOfInterval({
       start: this.FIRST_MONTH_OF_WORKOUTS,
       end: new Date()
-    })
-      .map((monthDate) => startOfMonth(new Date(monthDate)))
-      .sort((dateA: Date, dateB: Date) => dateA.getTime() - dateB.getTime());
+    }).map((monthDate) => startOfMonth(new Date(monthDate)));
     this.selectedMonth = this.workoutMonths[this.workoutMonths.length - 1];
   }
 
@@ -88,6 +93,13 @@ export class WorkoutWidgetComponent {
   public backToWorkoutSessionsList(): void {
     this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
     this.currentWorkoutSessionToEdit = undefined;
+  }
+
+  public goToStatisticsView(): void {
+    this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_STATISTICS_VIEW;
+    this.workoutWidgetService.getWorkoutStatsByYear(2022).subscribe({
+      next: (workoutStatsByYear) => (this.workoutStatsByYear = workoutStatsByYear)
+    });
   }
 
   public addWorkoutType(): void {
@@ -158,11 +170,7 @@ export class WorkoutWidgetComponent {
     this.workoutWidgetService
       .getWorkoutStatsByPeriod(startOfISOWeek(today), endOfWeek(today))
       .subscribe({
-        next: (workoutStatsByWeek) => {
-          this.workoutStatsByWeek = workoutStatsByWeek.sort((statA, statB) =>
-            statA.workoutTypeName.localeCompare(statB.workoutTypeName)
-          );
-        },
+        next: (workoutStatsByWeek) => (this.workoutStatsByWeek = workoutStatsByWeek),
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)
       });
@@ -173,12 +181,7 @@ export class WorkoutWidgetComponent {
       .getWorkoutStatsByPeriod(startOfMonth(this.selectedMonth), endOfMonth(this.selectedMonth))
       .subscribe({
         next: (workoutStatsByMonth) => {
-          this.workoutStatsByMonth = workoutStatsByMonth.sort(
-            (
-              statA,
-              statB // FIXME @TODO Sort in DB
-            ) => statA.workoutTypeName.localeCompare(statB.workoutTypeName)
-          );
+          this.workoutStatsByMonth = workoutStatsByMonth;
         },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)

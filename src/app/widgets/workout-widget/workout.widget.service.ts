@@ -7,6 +7,7 @@ import authorizationBearer from '../../services/authorizationBearer/authorizatio
 import {
   IWorkoutExercise,
   IWorkoutSession,
+  IWorkoutStatByMonth,
   IWorkoutStatsByPeriod,
   IWorkoutType
 } from './model/Workout';
@@ -77,6 +78,21 @@ export class WorkoutWidgetService {
         params: {
           dateIntervalStart: format(dateIntervalStart, this.dateFormat),
           dateIntervalEnd: format(dateIntervalEnd, this.dateFormat)
+        }
+      }
+    );
+  }
+
+  public getWorkoutStatsByYear(year: number): Observable<IWorkoutStatByMonth[]> {
+    return this.http.get<IWorkoutStatByMonth[]>(
+      `${environment.backend_url}/workoutWidget/workoutStatsByYear`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        },
+        params: {
+          year: year
         }
       }
     );
