@@ -1,3 +1,8 @@
+#workout-widget-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 #workout-sessions-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -7,7 +12,28 @@
   }
 
   .workout-exercise-container {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    &.edit-mode {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .workout-type-name {
+      margin: auto 0;
+    }
+
+    .edit-reps-container {
+      white-space: nowrap;
+
+      .workout-number-of-reps {
+        font-weight: bold;
+
+        &.edit-mode {
+          vertical-align: super;
+        }
+      }
+    }
   }
 }

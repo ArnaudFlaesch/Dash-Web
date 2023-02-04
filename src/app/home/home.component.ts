@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public editModeEnabled = false;
 
   private refreshInterval: NodeJS.Timer | null = null;
-  private refreshTimeout = 900000; // 15 minutes
+  private refreshTimeout = 600000; // 10 minutes
 
   private destroy$: Subject<unknown> = new Subject();
 
@@ -107,7 +107,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.activeWidgets = [];
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_TAB)
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_TAB)
     });
   }
 
@@ -128,7 +128,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_WIDGET),
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_WIDGET),
       complete: () =>
         (this.activeWidgets = this.activeWidgets.filter(
           (widget: IWidgetConfig) => widget.id !== id
@@ -139,7 +139,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public deleteTabFromDash(tabId: number): void {
     this.tabService.deleteTab(tabId).subscribe({
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_DELETE_TAB),
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_TAB),
       complete: () => this.deleteTabFromDashboard(tabId)
     });
   }
@@ -158,7 +158,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.activeWidgets = [...this.activeWidgets, response];
           },
           error: (error: HttpErrorResponse) =>
-            this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_ADD_WIDGET)
+            this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_WIDGET)
         });
       }
     });
@@ -187,7 +187,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         link.click();
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_EXPORT_CONFIGURATION)
+        this.errorHandlerService.handleError(error, this.ERROR_EXPORT_CONFIGURATION)
     });
   }
 
@@ -199,7 +199,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public updateWidgetOrder(updatedWidgets: IWidgetConfig[]): void {
     this.widgetService.updateWidgetsOrder(updatedWidgets).subscribe({
       error: (error) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_UPDATE_WIDGETS_ORDER)
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_UPDATE_WIDGETS_ORDER)
     });
   }
 
@@ -211,8 +211,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
     this.tabService.updateTabs(updatedTabs).subscribe({
       next: (tabs: ITab[]) => (this.tabs = tabs),
-      error: (error) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_UPDATING_TABS)
+      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_UPDATING_TABS)
     });
   }
 
@@ -240,7 +239,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.isDashboardLoaded = true;
       },
       error: (error: HttpErrorResponse) => {
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_INIT_DASHBOARD);
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_INIT_DASHBOARD);
         this.isDashboardLoaded = true;
       }
     });
@@ -255,7 +254,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.areWidgetsLoaded = true;
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_MESSAGE_GET_WIDGETS)
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_WIDGETS)
     });
   }
 

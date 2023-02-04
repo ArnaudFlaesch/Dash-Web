@@ -1,6 +1,6 @@
 import { ErrorHandlerService } from './../../../services/error.handler.service';
 import { SteamWidgetService } from './../steam.widget.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IAchievement, IAchievementResponse, IGameInfoDisplay } from '../ISteam';
 
@@ -9,7 +9,7 @@ import { IAchievement, IAchievementResponse, IGameInfoDisplay } from '../ISteam'
   templateUrl: './game-details.component.html',
   styleUrls: ['./game-details.component.scss']
 })
-export class GameDetailsComponent implements OnInit {
+export class GameDetailsComponent {
   @Input()
   public gameInfo: IGameInfoDisplay | undefined;
 
@@ -30,12 +30,6 @@ export class GameDetailsComponent implements OnInit {
     private steamWidgetService: SteamWidgetService
   ) {}
 
-  ngOnInit(): void {
-    if (this.steamUserId && this.gameInfo) {
-      this.loadAchievementsData(this.steamUserId, this.gameInfo);
-    }
-  }
-
   public loadAchievementsData(steamUserId: string, gameInfo: IGameInfoDisplay): void {
     this.steamWidgetService.getAchievementList(steamUserId, gameInfo.appid).subscribe({
       next: (response: unknown) => {
@@ -45,13 +39,13 @@ export class GameDetailsComponent implements OnInit {
           this.completedAchievements = achievementResponse.playerstats.achievements.filter(
             (achievement: IAchievement) => achievement.achieved === 1
           );
-          this.completionStatus = Math.round(
+          this.completionStatus = Math.floor(
             (this.completedAchievements.length / this.achievements.length) * 100
           );
         }
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACHIEVEMENTS_DATA)
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACHIEVEMENTS_DATA)
     });
   }
 }

@@ -35,8 +35,10 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
 
   private ownedGames: IGameInfoResponse[] = [];
   private destroy$: Subject<unknown> = new Subject();
+
   private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations Steam.';
   private ERROR_GETTING_OWNED_GAMES = 'Erreur lors de la récupération de la liste des jeux.';
+  private ERROR_GETTING_ACHIEVEMENTS_DATA = 'Erreur lors de la récupération des succès.';
 
   constructor(
     private errorHandlerService: ErrorHandlerService,
@@ -80,7 +82,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
         this.isPlayerDataLoaded = true;
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_PLAYER_DATA)
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_PLAYER_DATA)
     });
   }
 
@@ -96,7 +98,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
         this.areGamesLoaded = true;
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_OWNED_GAMES)
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_OWNED_GAMES)
     });
   }
 
@@ -109,6 +111,10 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
         this.pageNumber
       );
     }
+  }
+
+  public resetForm(): void {
+    this.searchFormControl.reset();
   }
 
   public getWidgetData():

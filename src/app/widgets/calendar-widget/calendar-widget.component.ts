@@ -55,11 +55,10 @@ export class CalendarWidgetComponent {
     this.calendarUrls.forEach((calendarUrl: string) => {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
         next: (calendarData) => {
-          this.parseEvents(calendarData);
+          this.events = [...this.events, ...this.parseEvents(calendarData)];
           this.isWidgetLoaded = true;
         },
-        error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_PARSING_EVENTS)
+        error: (error) => this.errorHandlerService.handleError(error, this.ERROR_PARSING_EVENTS)
       });
     });
   }
@@ -117,8 +116,8 @@ export class CalendarWidgetComponent {
     });
   }
 
-  private parseEvents(calendarData: ICalendarData[]) {
-    const parsedEvents: CalendarEvent[] = calendarData
+  private parseEvents(calendarData: ICalendarData[]): CalendarEvent[] {
+    return calendarData
       .filter((event) => event.startDate && event.endDate && event.description)
       .map((event) => {
         const startDate = new Date(event.startDate);
@@ -137,6 +136,5 @@ export class CalendarWidgetComponent {
           allDay: isAllDay
         };
       });
-    this.events = [...this.events, ...parsedEvents];
   }
 }
