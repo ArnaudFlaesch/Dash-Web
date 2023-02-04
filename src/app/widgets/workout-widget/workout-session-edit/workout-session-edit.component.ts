@@ -13,10 +13,11 @@ export class WorkoutSessionEditComponent {
   @Input() public workoutTypes: IWorkoutType[] = [];
   @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
+  public workoutExercises: IWorkoutExercise[] = [];
+
+  public sessionEditMode = false;
   public isWidgetUpdating = false;
   public workoutExercisesLoaded = false;
-
-  public workoutExercises: IWorkoutExercise[] = [];
 
   private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
   private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
@@ -48,6 +49,10 @@ export class WorkoutSessionEditComponent {
     } else return 0;
   }
 
+  public toggleSessionEditMode(): void {
+    this.sessionEditMode = !this.sessionEditMode;
+  }
+
   private fetchWorkoutExercisesBySessionId(workoutSessionId: number): void {
     this.workoutExercisesLoaded = false;
     this.workoutWidgetService.getWorkoutExercises(workoutSessionId).subscribe({
@@ -56,7 +61,7 @@ export class WorkoutSessionEditComponent {
         this.workoutExercisesLoaded = true;
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WORKOUT_EXERCISES)
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_EXERCISES)
     });
   }
 
@@ -77,7 +82,7 @@ export class WorkoutSessionEditComponent {
           this.isWidgetUpdating = false;
         },
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_CREATING_WORKOUT_EXERCISE)
+          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_EXERCISE)
       });
   }
 

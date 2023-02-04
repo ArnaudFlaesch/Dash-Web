@@ -3,14 +3,14 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Workout Widget tests', () => {
-  const mockedDateTime = new Date(2022, 6, 22, 0, 0, 0).getTime();
+  const mockedDate = new Date(2022, 6, 22, 0, 0, 0);
   const tabName = 'Workout';
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('WORKOUT'));
 
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
-  beforeEach(() => cy.clock(mockedDateTime).loginAsAdmin().navigateToTab(tabName));
+  beforeEach(() => cy.clock(mockedDate.getTime()).loginAsAdmin().navigateToTab(tabName));
 
   afterEach(() =>
     cy.clock().then((clock) => {
@@ -58,7 +58,9 @@ describe('Workout Widget tests', () => {
       .wait('@createWorkoutSession')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.workout-session').should('have.length', 1);
+        const month = mockedDate.getMonth() + 1; // Nécessaire car getMonth renvoie 6 au lieu de 07
+        const dateText = `${mockedDate.getDate()}/0${month}/${mockedDate.getFullYear()}`;
+        cy.get('#workoutSessionDate').should('have.text', `Session du ${dateText}`);
       });
   });
 
@@ -78,13 +80,15 @@ describe('Workout Widget tests', () => {
           .should('have.text', `Session du 22/07/2022`)
           .intercept('POST', '/workoutWidget/updateWorkoutExercise')
           .as('updateWorkoutExercise')
+          .get('#edit-session-button')
+          .click()
           .get('.addRepToWorkoutButton')
           .click()
           .wait('@updateWorkoutExercise')
           .then((request: Interception) => {
             expect(request.response.statusCode).to.equal(200);
             expect(request.response.body.numberOfReps).to.equal(1);
-            cy.get('.workoutNumberOfReps').should('have.text', 1);
+            cy.get('.workout-number-of-reps').should('have.text', 1);
           });
       });
   });

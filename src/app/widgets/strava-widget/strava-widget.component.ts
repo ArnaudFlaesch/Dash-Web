@@ -74,7 +74,7 @@ export class StravaWidgetComponent {
         this.router.navigate(['/']);
       },
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_TOKEN)
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_TOKEN)
     });
   }
 
@@ -89,7 +89,7 @@ export class StravaWidgetComponent {
           this.isWidgetLoaded = true;
         },
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ATHLETE_DATA)
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ATHLETE_DATA)
       });
     }
   }
@@ -105,7 +105,7 @@ export class StravaWidgetComponent {
           this.isWidgetLoaded = true;
         },
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_ACTIVITIES)
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACTIVITIES)
       });
     }
   }
@@ -199,7 +199,7 @@ export class StravaWidgetComponent {
           this.isWidgetLoaded = true;
         },
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_NO_REFRESH_TOKEN)
+          this.errorHandlerService.handleError(error, this.ERROR_NO_REFRESH_TOKEN)
       });
     } else {
       console.error('No refresh token');

@@ -42,7 +42,7 @@ export class TwitterWidgetComponent implements OnInit {
           next: (followedUsersResponse) =>
             (this.followedUsers = followedUsersResponse.slice(0, 10)),
           error: (error) =>
-            this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_FOLLOWED_USERS)
+            this.errorHandlerService.handleError(error, this.ERROR_GETTING_FOLLOWED_USERS)
         });
       });
   }
@@ -73,7 +73,7 @@ export class TwitterWidgetComponent implements OnInit {
         next: (addedFollowedUser: IFollowedUser) =>
           (this.followedUsers = [...this.followedUsers, addedFollowedUser]),
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_ADDING_FOLLOWED_USER)
+          this.errorHandlerService.handleError(error, this.ERROR_ADDING_FOLLOWED_USER)
       });
     }
   }
@@ -85,7 +85,7 @@ export class TwitterWidgetComponent implements OnInit {
           (followedUser) => followedUser.id !== followedUserId
         )),
       error: (error) =>
-        this.errorHandlerService.handleError(error.message, this.ERROR_REMOVING_FOLLOWED_USER)
+        this.errorHandlerService.handleError(error, this.ERROR_REMOVING_FOLLOWED_USER)
     });
   }
 

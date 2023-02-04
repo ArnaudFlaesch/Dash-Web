@@ -56,8 +56,7 @@ export class RssWidgetComponent {
           }
           this.isWidgetLoaded = true;
         },
-        error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_RSS_FEED),
+        error: (error) => this.errorHandlerService.handleError(error, this.ERROR_GETTING_RSS_FEED),
         complete: () => (this.isWidgetLoaded = true)
       });
     }
@@ -91,7 +90,7 @@ export class RssWidgetComponent {
             ? (response.data['readArticlesGuids'] as string[])
             : []),
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_MARKING_FEED_AS_READ)
+          this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ)
       });
   }
 }

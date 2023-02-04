@@ -9,7 +9,7 @@ import {
 } from '@ngneat/spectator';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IWorkoutSession, IWorkoutType } from './model/Workout';
-import { format, startOfMonth } from 'date-fns';
+import { format, startOfMonth, endOfMonth, startOfISOWeek, endOfWeek } from 'date-fns';
 
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -22,6 +22,8 @@ describe('WorkoutWidgetComponent', () => {
   let workoutWidgetService: SpectatorHttp<WorkoutWidgetService>;
 
   const userId = 2;
+
+  const dateFormat = 'yyyy-MM-dd';
 
   const createComponent = createComponentFactory({
     component: WorkoutWidgetComponent,
@@ -60,21 +62,35 @@ describe('WorkoutWidgetComponent', () => {
         method: HttpMethod.GET
       },
       {
-        url: environment.backend_url + `/workoutWidget/workoutSessions`,
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutSessions?dateIntervalStart=${format(
+            startOfMonth(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`,
         method: HttpMethod.GET
       },
       {
         url:
           environment.backend_url +
-          `/workoutWidget/workoutStatsByMonth?dateMonth=${format(
+          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+            startOfISOWeek(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`,
+        method: HttpMethod.GET
+      },
+      {
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
             startOfMonth(new Date()),
-            'yyyy-MM-dd'
-          )}`,
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`,
         method: HttpMethod.GET
       }
     ]);
 
-    workoutWidgetService.flushAll(dataRequest, [workoutTypesFromDB, [], []]);
+    workoutWidgetService.flushAll(dataRequest, [workoutTypesFromDB, [], [], []]);
 
     expect(spectator.component.isWidgetLoaded).toEqual(true);
     expect(spectator.component.workoutTypes).toEqual(workoutTypesFromDB);
@@ -93,23 +109,37 @@ describe('WorkoutWidgetComponent', () => {
         method: HttpMethod.GET
       },
       {
-        url: environment.backend_url + `/workoutWidget/workoutSessions`,
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutSessions?dateIntervalStart=${format(
+            startOfMonth(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`,
         method: HttpMethod.GET
       },
       {
         url:
           environment.backend_url +
-          `/workoutWidget/workoutStatsByMonth?dateMonth=${format(
+          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
             startOfMonth(new Date()),
-            'yyyy-MM-dd'
-          )}`,
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`,
+        method: HttpMethod.GET
+      },
+      {
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+            startOfISOWeek(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`,
         method: HttpMethod.GET
       }
     ]);
 
-    const newWorkoutTypeName = 'Haltères';
-    workoutWidgetService.flushAll(dataRequest, [[], [], []]);
+    workoutWidgetService.flushAll(dataRequest, [[], [], [], []]);
 
+    const newWorkoutTypeName = 'Haltères';
     spectator.component.workoutNameInput = newWorkoutTypeName;
     spectator.component.addWorkoutType();
 
@@ -144,16 +174,6 @@ describe('WorkoutWidgetComponent', () => {
     } as IWorkoutSession;
 
     addNewWorkoutSessionRequest.flush(mockedAddNewWorkoutSessionResponse);
-    const dataRequest = workoutWidgetService.expectOne(
-      environment.backend_url +
-        `/workoutWidget/workoutStatsByMonth?dateMonth=${format(
-          startOfMonth(new Date()),
-          'yyyy-MM-dd'
-        )}`,
-      HttpMethod.GET
-    );
-    dataRequest.flush([]);
-
     expect(spectator.component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
 
     spectator.component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
@@ -165,24 +185,38 @@ describe('WorkoutWidgetComponent', () => {
   });
 
   it('Should format timestamp', () => {
-    const timestamp = new Date(2022, 10, 20).getTime();
+    const timestamp = new Date(2022, 10, 20);
     expect(spectator.component.formatWorkoutDateMonth(timestamp)).toEqual('November');
   });
 
   it('Should check month selected', () => {
-    const selectedMonthTimestamp = new Date(2022, 10, 20).getTime();
-    spectator.component.selectMonth(selectedMonthTimestamp);
-    const dataRequest = workoutWidgetService.expectOne(
-      environment.backend_url +
-        `/workoutWidget/workoutStatsByMonth?dateMonth=${format(
-          selectedMonthTimestamp,
-          'yyyy-MM-dd'
-        )}`,
-      HttpMethod.GET
-    );
+    const selectedMonth = new Date(2022, 10, 20);
+    spectator.component.selectMonth(selectedMonth);
 
-    dataRequest.flush([]);
-    expect(spectator.component.isSelectedMonth(selectedMonthTimestamp)).toEqual(true);
-    expect(spectator.component.isSelectedMonth(new Date(2022, 6, 20).getTime())).toEqual(false);
+    const dataRequest = workoutWidgetService.expectConcurrent([
+      {
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutSessions?dateIntervalStart=${format(
+            startOfMonth(selectedMonth),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(selectedMonth), dateFormat)}`,
+        method: HttpMethod.GET
+      },
+      {
+        url:
+          environment.backend_url +
+          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+            startOfMonth(selectedMonth),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(selectedMonth), dateFormat)}`,
+        method: HttpMethod.GET
+      }
+    ]);
+
+    workoutWidgetService.flushAll(dataRequest, [[], []]);
+
+    expect(spectator.component.isSelectedMonth(selectedMonth)).toEqual(true);
+    expect(spectator.component.isSelectedMonth(new Date(2022, 6, 20))).toEqual(false);
   });
 });

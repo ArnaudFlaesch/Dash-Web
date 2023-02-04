@@ -45,15 +45,6 @@ export class AuthService {
     localStorage.removeItem('user');
   }
 
-  public getCurrentUserData(): IUser | null {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
-      return null;
-    } else {
-      return JSON.parse(userData);
-    }
-  }
-
   public userHasValidToken(): boolean {
     const authenticatedUser = this.getCurrentUserData();
     let result = false;
@@ -65,5 +56,14 @@ export class AuthService {
       }
     }
     return result;
+  }
+
+  private getCurrentUserData(): IUser | null {
+    const userData = localStorage.getItem('user');
+    if (!userData) {
+      return null;
+    } else {
+      return JSON.parse(userData);
+    }
   }
 }

@@ -21,6 +21,12 @@ describe('WeatherMiniWidgetComponent', () => {
     createHttp();
   });
 
+  it('Should create widget', () => {
+    expect(spectator.component.getWidgetData()).toEqual(undefined);
+    expect(spectator.component.isFormValid()).toEqual(false);
+    expect(spectator.component.isWidgetLoaded()).toEqual(false);
+  });
+
   it('Should get weather icons', () => {
     const icon = 'sunny';
     expect(spectator.component.getIconFromWeatherApi(icon)).toEqual(

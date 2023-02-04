@@ -30,7 +30,7 @@ export class WeatherMiniWidgetComponent {
       this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
         next: (weatherData) => (this.weather = weatherData),
         error: (error) =>
-          this.errorHandlerService.handleError(error.message, this.ERROR_GETTING_WEATHER_DATA)
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WEATHER_DATA)
       });
     }
   }
