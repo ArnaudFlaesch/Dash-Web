@@ -5,7 +5,7 @@ import {
   HttpMethod,
   SpectatorHost,
   SpectatorHttp
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/jest';
 
 import { environment } from '../../../../environments/environment';
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
