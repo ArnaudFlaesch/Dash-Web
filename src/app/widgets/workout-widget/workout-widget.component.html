@@ -82,7 +82,7 @@
       </div>
 
       <div *ngSwitchCase="widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW">
-        <button mat-icon-button (click)="backToWorkoutSessionsList()"><mat-icon>back</mat-icon></button>
+        <button mat-icon-button (click)="backToWorkoutSessionsList()"><mat-icon>arrow_back</mat-icon></button>
         <app-workout-session-edit [workoutTypes]="this.workoutTypes"
           [currentWorkoutSessionToEdit]="this.currentWorkoutSessionToEdit"></app-workout-session-edit>
       </div>
