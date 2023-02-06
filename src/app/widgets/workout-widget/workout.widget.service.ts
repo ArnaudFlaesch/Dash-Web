@@ -83,16 +83,20 @@ export class WorkoutWidgetService {
     );
   }
 
-  public getWorkoutStatsByYear(year: number): Observable<IWorkoutStatByMonth[]> {
+  public getWorkoutStatsByMonth(
+    dateIntervalStart: Date,
+    dateIntervalEnd: Date
+  ): Observable<IWorkoutStatByMonth[]> {
     return this.http.get<IWorkoutStatByMonth[]>(
-      `${environment.backend_url}/workoutWidget/workoutStatsByYear`,
+      `${environment.backend_url}/workoutWidget/workoutStatsByMonth`,
       {
         headers: {
           Authorization: authorizationBearer(),
           'Content-type': 'application/json'
         },
         params: {
-          year: year
+          dateIntervalStart: format(dateIntervalStart, this.dateFormat),
+          dateIntervalEnd: format(dateIntervalEnd, this.dateFormat)
         }
       }
     );

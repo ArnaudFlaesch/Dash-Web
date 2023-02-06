@@ -9,7 +9,7 @@ import {
 } from '@ngneat/spectator';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IWorkoutSession, IWorkoutType } from './model/Workout';
-import { format, startOfMonth, endOfMonth, startOfISOWeek, endOfWeek } from 'date-fns';
+import { format, startOfMonth, endOfMonth, startOfISOWeek, endOfWeek, subMonths } from 'date-fns';
 
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -184,11 +184,6 @@ describe('WorkoutWidgetComponent', () => {
     expect(spectator.component.currentWorkoutSessionToEdit).toEqual(undefined);
   });
 
-  it('Should format timestamp', () => {
-    const timestamp = new Date(2022, 10, 20);
-    expect(spectator.component.formatWorkoutDateMonth(timestamp)).toEqual('November');
-  });
-
   it('Should check month selected', () => {
     const selectedMonth = new Date(2022, 10, 20);
     spectator.component.selectMonth(selectedMonth);
@@ -216,7 +211,6 @@ describe('WorkoutWidgetComponent', () => {
 
     workoutWidgetService.flushAll(dataRequest, [[], []]);
 
-    expect(spectator.component.isSelectedMonth(selectedMonth)).toEqual(true);
-    expect(spectator.component.isSelectedMonth(new Date(2022, 6, 20))).toEqual(false);
+    expect(spectator.component.selectedMonthFormControl.value).toEqual(selectedMonth);
   });
 });

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
-import { eachMonthOfInterval, format } from 'date-fns';
+import { format, startOfMonth } from 'date-fns';
 import { IWorkoutStatByMonth, IWorkoutType } from '../model/Workout';
 
 @Component({
@@ -11,7 +11,7 @@ import { IWorkoutStatByMonth, IWorkoutType } from '../model/Workout';
 })
 export class WorkoutStatisticsComponent implements OnChanges {
   @Input()
-  public workoutStatsByYear: IWorkoutStatByMonth[] = [];
+  public workoutStatsByMonth: IWorkoutStatByMonth[] = [];
 
   @Input()
   public workoutTypes: IWorkoutType[] = [];
@@ -20,32 +20,33 @@ export class WorkoutStatisticsComponent implements OnChanges {
     undefined;
 
   ngOnChanges(): void {
-    const year = new Date(this.workoutStatsByYear[0].monthPeriod).getFullYear();
-    const labels = eachMonthOfInterval({
-      start: new Date(year, 0, 1),
-      end: new Date(year, 11, 1)
-    });
+    const labels = [
+      ...new Set(
+        this.workoutStatsByMonth.map((stat) => startOfMonth(new Date(stat.monthPeriod)).getTime())
+      )
+    ].sort((timeA, timeB) => timeA - timeB);
     this.workoutStatsChartData = {
-      labels: labels.map((date) => format(date, 'MMM')),
+      labels: labels.map((label) => format(new Date(label), 'MMM')),
       datasets: this.workoutTypes.map((workoutType) => {
         return {
           label: workoutType.name,
-          data: this.getRepsListOfWorkoutTypeByYear(workoutType.id)
+          data: this.getRepsListOfWorkoutTypeByMonth(workoutType.id, labels)
         };
       })
     };
   }
 
-  private getRepsListOfWorkoutTypeByYear(workoutTypeId: number): number[] {
-    return this.workoutStatsByYear.reduce(
-      (repListOfYear: number[], workoutStatByMonth: IWorkoutStatByMonth) => {
+  private getRepsListOfWorkoutTypeByMonth(workoutTypeId: number, monthsTimes: number[]): number[] {
+    return this.workoutStatsByMonth.reduce(
+      (repListOfPeriod: number[], workoutStatByMonth: IWorkoutStatByMonth) => {
         if (workoutStatByMonth.workoutTypeId === workoutTypeId) {
-          repListOfYear[new Date(workoutStatByMonth.monthPeriod).getMonth()] =
-            workoutStatByMonth.totalNumberOfReps;
+          repListOfPeriod[
+            monthsTimes.indexOf(startOfMonth(new Date(workoutStatByMonth.monthPeriod)).getTime())
+          ] = workoutStatByMonth.totalNumberOfReps;
         }
-        return repListOfYear;
+        return repListOfPeriod;
       },
-      Array(12).fill(0)
+      Array(monthsTimes.length).fill(0)
     );
   }
 }

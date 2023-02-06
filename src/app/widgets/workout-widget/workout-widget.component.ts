@@ -2,12 +2,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
-  eachMonthOfInterval,
   endOfMonth,
   endOfWeek,
-  format,
   startOfMonth,
-  startOfISOWeek
+  startOfISOWeek,
+  startOfYear,
+  endOfYear,
+  subMonths
 } from 'date-fns';
 
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
@@ -20,6 +21,8 @@ import {
   IWorkoutStatByMonth
 } from './model/Workout';
 import { WorkoutWidgetService } from './workout.widget.service';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 enum WORKOUT_WIDGET_VIEW {
   WORKOUT_SESSIONS_LIST_VIEW = 1,
@@ -27,18 +30,30 @@ enum WORKOUT_WIDGET_VIEW {
   EDIT_WORKOUT_SESSION_VIEW = 3
 }
 
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY'
+  },
+  display: {
+    dateInput: 'MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY'
+  }
+};
+
 @Component({
   selector: 'app-workout-widget',
   templateUrl: './workout-widget.component.html',
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
   styleUrls: ['./workout-widget.component.scss']
 })
 export class WorkoutWidgetComponent {
   public workoutTypes: IWorkoutType[] = [];
   public workoutSessions: IWorkoutSession[] = [];
-  public workoutMonths: Date[];
   public workoutStatsByWeek: IWorkoutStatsByPeriod[] = [];
   public workoutStatsByMonth: IWorkoutStatsByPeriod[] = [];
-  public workoutStatsByYear: IWorkoutStatByMonth[] = [];
+  public workoutStatsOfMonths: IWorkoutStatByMonth[] = [];
   public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
   public dateFormat = DEFAULT_DATE_FORMAT;
@@ -48,9 +63,7 @@ export class WorkoutWidgetComponent {
 
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl('');
-
-  private FIRST_MONTH_OF_WORKOUTS = new Date(2022, 0, 1);
-  private selectedMonth: Date = startOfMonth(new Date());
+  public selectedMonthFormControl = new FormControl(startOfMonth(new Date()));
 
   private ERROR_GETTING_WORKOUT_TYPES =
     "Erreur lors de la récupération de la liste des types d'exercices.";
@@ -64,13 +77,7 @@ export class WorkoutWidgetComponent {
     private errorHandlerService: ErrorHandlerService,
     private workoutWidgetService: WorkoutWidgetService,
     public dateUtilsService: DateUtilsService
-  ) {
-    this.workoutMonths = eachMonthOfInterval({
-      start: this.FIRST_MONTH_OF_WORKOUTS,
-      end: new Date()
-    }).map((monthDate) => startOfMonth(new Date(monthDate)));
-    this.selectedMonth = this.workoutMonths[this.workoutMonths.length - 1];
-  }
+  ) {}
 
   public refreshWidget(): void {
     this.workoutWidgetService.getWorkoutTypes().subscribe({
@@ -79,10 +86,10 @@ export class WorkoutWidgetComponent {
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES),
       complete: () => (this.isWidgetLoaded = true)
     });
-
-    this.getWorkoutSessionsOfMonth(this.selectedMonth);
+    const selectedMonth = this.selectedMonthFormControl.value || new Date();
+    this.getWorkoutSessionsOfMonth(selectedMonth);
     this.getWorkoutStatsOfCurrentWeek();
-    this.getWorkoutStatsOfMonth();
+    this.getWorkoutStatsOfMonth(selectedMonth);
   }
 
   public editWorkoutSession(workoutSession: IWorkoutSession): void {
@@ -97,9 +104,7 @@ export class WorkoutWidgetComponent {
 
   public goToStatisticsView(): void {
     this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_STATISTICS_VIEW;
-    this.workoutWidgetService.getWorkoutStatsByYear(2022).subscribe({
-      next: (workoutStatsByYear) => (this.workoutStatsByYear = workoutStatsByYear)
-    });
+    this.getWorkoutsStatsOfLastThreeMonths();
   }
 
   public addWorkoutType(): void {
@@ -135,31 +140,54 @@ export class WorkoutWidgetComponent {
     return <Record<string, string>>{};
   }
 
-  public formatWorkoutDateMonth(workoutDate: Date): string {
-    return format(workoutDate, 'MMMM');
-  }
-
-  public isSelectedMonth(workoutMonthDate: Date): boolean {
-    const selectedMonthDate = new Date(this.selectedMonth);
-    return (
-      workoutMonthDate.getMonth() === selectedMonthDate.getMonth() &&
-      workoutMonthDate.getFullYear() === selectedMonthDate.getFullYear()
-    );
-  }
-
   public selectMonth(monthDate: Date): void {
-    this.selectedMonth = monthDate;
-    this.getWorkoutSessionsOfMonth(this.selectedMonth);
-    this.getWorkoutStatsOfMonth();
+    this.selectedMonthFormControl.setValue(monthDate);
+    this.getWorkoutSessionsOfMonth(monthDate);
+    this.getWorkoutStatsOfMonth(monthDate);
+  }
+
+  public setMonthAndYear(normalizedMonthAndYear: Date, datepicker: MatDatepicker<Date>): void {
+    this.selectMonth(
+      new Date(normalizedMonthAndYear.getFullYear(), normalizedMonthAndYear.getMonth(), 1)
+    );
+    datepicker.close();
+  }
+
+  public getWorkoutsStatsOfCurrentYear(): void {
+    this.getWorkoutStatsOfInterval(startOfYear(new Date()), endOfYear(new Date()));
+  }
+
+  public getWorkoutsStatsOfLastThreeMonths(): void {
+    this.getWorkoutStatsOfLastMonths(2);
+  }
+
+  public getWorkoutsStatsOfLastSixMonths(): void {
+    this.getWorkoutStatsOfLastMonths(5);
+  }
+
+  public getWorkoutsStatsOfPastYear(): void {
+    const today = new Date();
+    const lastYear = new Date(today.getFullYear() - 1, 0, 1);
+    this.getWorkoutStatsOfInterval(startOfYear(lastYear), endOfYear(lastYear));
+  }
+
+  private getWorkoutStatsOfLastMonths(numberOfMonthsAgo: number): void {
+    const today = new Date();
+    const monthsAgo = subMonths(today, numberOfMonthsAgo);
+    this.getWorkoutStatsOfInterval(startOfMonth(monthsAgo), endOfMonth(today));
+  }
+
+  private getWorkoutStatsOfInterval(dateIntervalStart: Date, dateIntervalEnd: Date): void {
+    this.workoutWidgetService.getWorkoutStatsByMonth(dateIntervalStart, dateIntervalEnd).subscribe({
+      next: (workoutStatsOfMonths) => (this.workoutStatsOfMonths = workoutStatsOfMonths)
+    });
   }
 
   private getWorkoutSessionsOfMonth(selectedMonth: Date): void {
     this.workoutWidgetService
       .getWorkoutSessions(startOfMonth(selectedMonth), endOfMonth(selectedMonth))
       .subscribe({
-        next: (workoutSessions) => {
-          this.workoutSessions = workoutSessions;
-        },
+        next: (workoutSessions) => (this.workoutSessions = workoutSessions),
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_SESSIONS)
       });
@@ -176,9 +204,9 @@ export class WorkoutWidgetComponent {
       });
   }
 
-  private getWorkoutStatsOfMonth(): void {
+  private getWorkoutStatsOfMonth(date: Date): void {
     this.workoutWidgetService
-      .getWorkoutStatsByPeriod(startOfMonth(this.selectedMonth), endOfMonth(this.selectedMonth))
+      .getWorkoutStatsByPeriod(startOfMonth(date), endOfMonth(date))
       .subscribe({
         next: (workoutStatsByMonth) => {
           this.workoutStatsByMonth = workoutStatsByMonth;

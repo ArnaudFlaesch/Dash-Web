@@ -5,7 +5,7 @@ import { IWorkoutType } from '../model/Workout';
 
 describe('WorkoutStatisticsComponent', () => {
   const workoutTypes = [{ id: 1, name: 'Abdos' } as IWorkoutType];
-  const workoutStatsByYear = [
+  const workoutStatsByMonth = [
     {
       totalNumberOfReps: 6,
       workoutTypeId: workoutTypes[0].id,
@@ -28,17 +28,17 @@ describe('WorkoutStatisticsComponent', () => {
 
   beforeEach(() => {
     spectator = createHost(
-      `<app-workout-statistics [workoutStatsByYear]="workoutStatsByYear" [workoutTypes]="workoutTypes"></app-workout-statistics>`,
+      `<app-workout-statistics [workoutStatsByMonth]="workoutStatsByMonth" [workoutTypes]="workoutTypes"></app-workout-statistics>`,
       {
         hostProps: {
           workoutTypes: workoutTypes,
-          workoutStatsByYear: workoutStatsByYear
+          workoutStatsByMonth: workoutStatsByMonth
         }
       }
     );
   });
 
   it('should create', () => {
-    expect(spectator.component.workoutStatsByYear).toEqual(workoutStatsByYear);
+    expect(spectator.component.workoutStatsByMonth).toEqual(workoutStatsByMonth);
   });
 });

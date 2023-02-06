@@ -15,12 +15,13 @@
 
           <button mat-raised-button (click)="this.goToStatisticsView()">Statistiques</button>
 
-          <div class="flex flex-row flex-wrap space-x-1 space-y-0.5">
-            <button *ngFor="let workoutMonth of this.workoutMonths" class="workout-month"
-              [color]="this.isSelectedMonth(workoutMonth) ? 'primary' : ''" (click)="this.selectMonth(workoutMonth)"
-              mat-raised-button>
-              {{formatWorkoutDateMonth(workoutMonth) }} </button>
-          </div>
+          <mat-form-field appearance="fill">
+            <mat-label>Sélectionnez un mois</mat-label>
+            <input matInput [matDatepicker]="picker" [formControl]="selectedMonthFormControl">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker startView="multi-year" (monthSelected)="setMonthAndYear($event, picker)"
+              [startAt]="this.selectedMonthFormControl.value"></mat-datepicker>
+          </mat-form-field>
 
           <div id="workout-sessions-grid">
             <span class="workout-session" *ngFor="let workoutSession of this.workoutSessions"
@@ -77,8 +78,12 @@
 
       <div *ngSwitchCase="widgetViewEnum.WORKOUT_STATISTICS_VIEW">
         <button mat-icon-button (click)="backToWorkoutSessionsList()"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-raised-button (click)="getWorkoutsStatsOfPastYear()">Année dernière</button>
+        <button mat-raised-button (click)="getWorkoutsStatsOfCurrentYear()">Cette année</button>
+        <button mat-raised-button (click)="getWorkoutsStatsOfLastSixMonths()">6 derniers mois</button>
+        <button mat-raised-button (click)="getWorkoutsStatsOfLastThreeMonths()">3 derniers mois</button>
         <app-workout-statistics [workoutTypes]="this.workoutTypes"
-          [workoutStatsByYear]="this.workoutStatsByYear"></app-workout-statistics>
+          [workoutStatsByMonth]="this.workoutStatsOfMonths"></app-workout-statistics>
       </div>
 
       <div *ngSwitchCase="widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW">
