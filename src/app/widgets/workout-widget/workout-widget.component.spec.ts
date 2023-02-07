@@ -17,7 +17,8 @@ import {
   endOfYear,
   startOfISOWeek,
   endOfWeek,
-  subMonths
+  subMonths,
+  subYears
 } from 'date-fns';
 
 import { environment } from '../../../environments/environment';
@@ -264,5 +265,18 @@ describe('WorkoutWidgetComponent', () => {
     lastSixMonthsStatsRequest.flush([]);
     expect(spectator.component.isCurrentYearWorkoutStatisticsSelected()).toEqual(false);
     expect(spectator.component.isLastSixMonthsWorkoutStatisticsSelected()).toEqual(true);
+
+    spectator.component.getWorkoutsStatsOfPastYear();
+    const lastYearStatsRequest = workoutWidgetService.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
+          startOfYear(subYears(today, 1)),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfYear(today), dateFormat)}`,
+      HttpMethod.GET
+    );
+
+    lastYearStatsRequest.flush([]);
+    expect(spectator.component.isLastYearWorkoutStatisticsSelected()).toEqual(true);
   });
 });
