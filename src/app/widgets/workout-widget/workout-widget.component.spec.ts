@@ -9,7 +9,16 @@ import {
 } from '@ngneat/spectator';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IWorkoutSession, IWorkoutType } from './model/Workout';
-import { format, startOfMonth, endOfMonth, startOfISOWeek, endOfWeek, subMonths } from 'date-fns';
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  startOfISOWeek,
+  endOfWeek,
+  subMonths
+} from 'date-fns';
 
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -212,5 +221,48 @@ describe('WorkoutWidgetComponent', () => {
     workoutWidgetService.flushAll(dataRequest, [[], []]);
 
     expect(spectator.component.selectedMonthFormControl.value).toEqual(selectedMonth);
+  });
+
+  it('Should switch between statistics views', () => {
+    spectator.component.goToStatisticsView();
+    const today = startOfMonth(new Date());
+    const lastThreeMonthsStatsRequest = workoutWidgetService.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
+          subMonths(today, 2),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfMonth(today), dateFormat)}`,
+      HttpMethod.GET
+    );
+
+    lastThreeMonthsStatsRequest.flush([]);
+    expect(spectator.component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(true);
+
+    spectator.component.getWorkoutsStatsOfCurrentYear();
+    const currentYearStatsRequest = workoutWidgetService.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
+          startOfYear(today),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfYear(today), dateFormat)}`,
+      HttpMethod.GET
+    );
+    currentYearStatsRequest.flush([]);
+    expect(spectator.component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(false);
+    expect(spectator.component.isCurrentYearWorkoutStatisticsSelected()).toEqual(true);
+
+    spectator.component.getWorkoutsStatsOfLastSixMonths();
+    const lastSixMonthsStatsRequest = workoutWidgetService.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
+          subMonths(today, 5),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfMonth(today), dateFormat)}`,
+      HttpMethod.GET
+    );
+
+    lastSixMonthsStatsRequest.flush([]);
+    expect(spectator.component.isCurrentYearWorkoutStatisticsSelected()).toEqual(false);
+    expect(spectator.component.isLastSixMonthsWorkoutStatisticsSelected()).toEqual(true);
   });
 });

@@ -30,7 +30,14 @@ enum WORKOUT_WIDGET_VIEW {
   EDIT_WORKOUT_SESSION_VIEW = 3
 }
 
-export const MY_FORMATS = {
+enum WORKOUT_STATISTICS {
+  LAST_YEAR = 1,
+  CURRENT_YEAR = 2,
+  LAST_SIX_MONTHS = 3,
+  LAST_THREE_MONTHS = 4
+}
+
+export const DATE_FORMATS = {
   parse: {
     dateInput: 'MM/YYYY'
   },
@@ -45,7 +52,7 @@ export const MY_FORMATS = {
 @Component({
   selector: 'app-workout-widget',
   templateUrl: './workout-widget.component.html',
-  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }],
   styleUrls: ['./workout-widget.component.scss']
 })
 export class WorkoutWidgetComponent {
@@ -58,6 +65,7 @@ export class WorkoutWidgetComponent {
 
   public dateFormat = DEFAULT_DATE_FORMAT;
   public widgetViewEnum = WORKOUT_WIDGET_VIEW;
+  public selectedWorkoutStatistics: WORKOUT_STATISTICS | undefined;
   public WIDGET_VIEW: WORKOUT_WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
   public isWidgetLoaded = false;
 
@@ -154,22 +162,46 @@ export class WorkoutWidgetComponent {
   }
 
   public getWorkoutsStatsOfCurrentYear(): void {
-    this.getWorkoutStatsOfInterval(startOfYear(new Date()), endOfYear(new Date()));
+    if (!this.isCurrentYearWorkoutStatisticsSelected()) {
+      this.selectedWorkoutStatistics = WORKOUT_STATISTICS.CURRENT_YEAR;
+      this.getWorkoutStatsOfInterval(startOfYear(new Date()), endOfYear(new Date()));
+    }
   }
 
   public getWorkoutsStatsOfLastThreeMonths(): void {
-    this.getWorkoutStatsOfLastMonths(2);
+    if (!this.isLastThreeMonthsWorkoutStatisticsSelected()) {
+      this.selectedWorkoutStatistics = WORKOUT_STATISTICS.LAST_THREE_MONTHS;
+      this.getWorkoutStatsOfLastMonths(2);
+    }
   }
 
   public getWorkoutsStatsOfLastSixMonths(): void {
-    this.getWorkoutStatsOfLastMonths(5);
+    if (!this.isLastSixMonthsWorkoutStatisticsSelected()) {
+      this.selectedWorkoutStatistics = WORKOUT_STATISTICS.LAST_SIX_MONTHS;
+      this.getWorkoutStatsOfLastMonths(5);
+    }
   }
 
   public getWorkoutsStatsOfPastYear(): void {
-    const today = new Date();
-    const lastYear = new Date(today.getFullYear() - 1, 0, 1);
-    this.getWorkoutStatsOfInterval(startOfYear(lastYear), endOfYear(lastYear));
+    if (!this.isLastYearWorkoutStatisticsSelected()) {
+      this.selectedWorkoutStatistics = WORKOUT_STATISTICS.LAST_YEAR;
+      const today = new Date();
+      const lastYear = new Date(today.getFullYear() - 1, 0, 1);
+      this.getWorkoutStatsOfInterval(startOfYear(lastYear), endOfYear(lastYear));
+    }
   }
+
+  public isLastYearWorkoutStatisticsSelected = (): boolean =>
+    this.selectedWorkoutStatistics === WORKOUT_STATISTICS.LAST_YEAR;
+
+  public isCurrentYearWorkoutStatisticsSelected = (): boolean =>
+    this.selectedWorkoutStatistics === WORKOUT_STATISTICS.CURRENT_YEAR;
+
+  public isLastSixMonthsWorkoutStatisticsSelected = (): boolean =>
+    this.selectedWorkoutStatistics === WORKOUT_STATISTICS.LAST_SIX_MONTHS;
+
+  public isLastThreeMonthsWorkoutStatisticsSelected = (): boolean =>
+    this.selectedWorkoutStatistics === WORKOUT_STATISTICS.LAST_THREE_MONTHS;
 
   private getWorkoutStatsOfLastMonths(numberOfMonthsAgo: number): void {
     const today = new Date();
