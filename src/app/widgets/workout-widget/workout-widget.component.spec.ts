@@ -267,12 +267,13 @@ describe('WorkoutWidgetComponent', () => {
     expect(spectator.component.isLastSixMonthsWorkoutStatisticsSelected()).toEqual(true);
 
     spectator.component.getWorkoutsStatsOfPastYear();
+    const lastYear = subYears(today, 1);
     const lastYearStatsRequest = workoutWidgetService.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
-          startOfYear(subYears(today, 1)),
+          startOfYear(lastYear),
           dateFormat
-        )}&dateIntervalEnd=${format(endOfYear(today), dateFormat)}`,
+        )}&dateIntervalEnd=${format(endOfYear(lastYear), dateFormat)}`,
       HttpMethod.GET
     );
 
