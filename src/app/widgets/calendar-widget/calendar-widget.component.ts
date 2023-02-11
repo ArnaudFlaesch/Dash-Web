@@ -1,10 +1,11 @@
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { CalendarWidgetService } from './calendar-widget.service';
-import { Component, Inject, LOCALE_ID } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, LOCALE_ID, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { addMonths, endOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+
+import { ErrorHandlerService } from './../../services/error.handler.service';
+import { CalendarWidgetService } from './calendar-widget.service';
 import { EventDetailModalComponent } from './event-detail-modal/event-detail-modal.component';
 import { ICalendarData } from './ICalendarData';
 
@@ -13,7 +14,9 @@ import { ICalendarData } from './ICalendarData';
   templateUrl: './calendar-widget.component.html',
   styleUrls: ['./calendar-widget.component.scss']
 })
-export class CalendarWidgetComponent {
+export class CalendarWidgetComponent implements AfterViewInit {
+  @ViewChild('calendarContainer', { static: false }) calendarContainer: ElementRef | undefined;
+
   public calendarUrls: string[] = [];
   public isWidgetLoaded = true;
 
@@ -48,6 +51,12 @@ export class CalendarWidgetComponent {
     private errorHandlerService: ErrorHandlerService
   ) {
     this.locale = locale;
+  }
+
+  ngAfterViewInit(): void {
+    this.calendarContainer?.nativeElement
+      .getElementsByClassName('cal-today')[0]
+      .scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
   public refreshWidget(): void {

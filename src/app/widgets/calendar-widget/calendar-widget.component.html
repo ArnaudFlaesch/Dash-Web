@@ -56,7 +56,7 @@
       <h3 class="font-black">{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
     </div>
 
-    <div [ngSwitch]="view">
+    <div #calendarContainer [ngSwitch]="view">
       <mwl-calendar-month-view *ngSwitchCase="calendarView.Month" [locale]="locale" [viewDate]="viewDate"
         [events]="events" [weekStartsOn]="weekStartsOn" [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen"
         (eventClicked)="handleEvent('Clicked', $event.event)">

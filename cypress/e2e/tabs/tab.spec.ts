@@ -16,7 +16,7 @@ describe('Tab tests', () => {
   it('Should edit the created tab', () => {
     cy.intercept('POST', '/tab/updateTab')
       .as('updateTab')
-      .get('.tab:nth(-1) .tabLabel')
+      .get('.tab:nth(-1) .tab-label')
       .click()
       .dblclick()
       .invoke('text')
@@ -29,7 +29,7 @@ describe('Tab tests', () => {
       .dblclick()
       .wait('@updateTab')
       .then(() => {
-        cy.get('.tab.selected-item .tabLabel')
+        cy.get('.tab.selected-item .tab-label')
           .invoke('text')
           .then((text) => {
             expect(text.trim()).equal('News feed');
@@ -43,7 +43,7 @@ describe('Tab tests', () => {
           .type('News feed Updated{Enter}')
           .wait('@updateTab')
           .then(() => {
-            cy.get('.tab.selected-item .tabLabel')
+            cy.get('.tab.selected-item .tab-label')
               .invoke('text')
               .then((text) => {
                 expect(text.trim()).equal('News feed Updated');

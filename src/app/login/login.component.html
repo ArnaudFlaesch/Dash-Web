@@ -1,12 +1,12 @@
 <div class="flex h-screen">
-  <div class="flex flex-col px-16 py-6 bg-white border-black border-2 rounded items-center m-auto">
-    <div class="w-9/12 h-10/12 m-4 inline-block border-solid border-2 border-black rounded-full">
+  <div id="login-container">
+    <div id="logo-container">
       <img src="assets/logo.png" class="mx-auto mt-3" alt="dash logo" />
     </div>
     <div>
-      <h1 id="loginPageTitle" class="text-5xl">Dash</h1>
+      <h1 id="login-page-title">Dash</h1>
     </div>
-    <div class="flex flex-col mt-10 space-y-5">
+    <div id="login-form" class="space-y-5">
       <input id="inputUsername" placeholder="Username" [(ngModel)]="inputUsername" />
 
       <input id="inputPassword" placeholder="Password" [(ngModel)]="inputPassword" type="password" />
