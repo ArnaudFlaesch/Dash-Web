@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, LOCALE_ID, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, LOCALE_ID, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { addMonths, endOfDay } from 'date-fns';
@@ -14,9 +14,7 @@ import { ICalendarData } from './ICalendarData';
   templateUrl: './calendar-widget.component.html',
   styleUrls: ['./calendar-widget.component.scss']
 })
-export class CalendarWidgetComponent implements AfterViewInit {
-  @ViewChild('calendarContainer', { static: false }) calendarContainer: ElementRef | undefined;
-
+export class CalendarWidgetComponent {
   public calendarUrls: string[] = [];
   public isWidgetLoaded = true;
 
@@ -51,12 +49,6 @@ export class CalendarWidgetComponent implements AfterViewInit {
     private errorHandlerService: ErrorHandlerService
   ) {
     this.locale = locale;
-  }
-
-  ngAfterViewInit(): void {
-    this.calendarContainer?.nativeElement
-      .getElementsByClassName('cal-today')[0]
-      .scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
   public refreshWidget(): void {
