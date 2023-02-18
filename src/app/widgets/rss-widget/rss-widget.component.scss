@@ -1,0 +1,20 @@
+.rss-widget-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  img {
+    width: 2.25rem;
+    border-radius: 0.25rem;
+  }
+
+  .rss-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.rss-widget-description {
+  font-weight: 700;
+}

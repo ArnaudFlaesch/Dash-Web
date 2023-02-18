@@ -3,14 +3,49 @@
 $header-height: 2.5rem;
 
 .widget {
+
+  margin: 0.5rem;
+  border-radius: 0.25rem;
+  height: 24rem;
   background-color: white;
   border: 2px solid $widget-background-color;
+
+  .widget-read-mode {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .widget-edit-mode {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+    text-align: center;
+  }
 
   .header-container {
     background-color: $widget-background-color;
     height: $header-height;
     color: white;
     align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .header-widget {
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: 0.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      flex-direction: row;
+      margin: auto 0px;
+    }
 
     button {
       color: white;
@@ -19,5 +54,28 @@ $header-height: 2.5rem;
 
   .widget-body {
     height: calc(100% - $header-height);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1 1 0%;
+    margin: 0.25rem 0rem;
+    overflow-y: auto;
+
+    .widget-edit-component-container {
+      overflow-y: auto;
+      padding: 0.25rem;
+    }
+
+    .edit-component-actions {
+      display: flex;
+      flex-direction: row;
+      --tw-space-x-reverse: 0;
+      margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+      margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+    }
+
+    .widget-loading-spinner {
+      margin: auto;
+    }
   }
 }

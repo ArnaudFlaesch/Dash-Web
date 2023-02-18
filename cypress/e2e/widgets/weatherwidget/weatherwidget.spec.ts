@@ -39,13 +39,13 @@ describe('Weather Widget tests', () => {
   });
 
   it("Should toggle between today's, tomorrow's and the week's forecasts", () => {
-    cy.get('.widget .toggleForecast:nth(0)')
+    cy.get('.widget .selectForecast:nth(0)')
       .click()
       .get('.widget .forecast-row')
       .scrollIntoView()
       .get('.widget .forecast')
       .should('have.length.at.least', 2)
-      .get('.widget .toggleForecast:nth(1)')
+      .get('.widget .selectForecast:nth(1)')
       .click()
       .get('.forecast')
       .should('have.length.at.least', 5)

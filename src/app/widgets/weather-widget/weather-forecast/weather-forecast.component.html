@@ -1,28 +1,27 @@
-<div class="flex flex-row forecast-row overflow-x-auto">
-    <div class="forecast-container border-2 border-r-0 last:border-r-2 border-solid border-black rounded"
-        *ngFor="let forecastDay of this.forecast">
-        <div class="forecast flex flex-row">
-            <div class="my-auto" *ngIf="forecastDay">
-                {{ getDateToDisplay(forecastDay.dt, this.timezone) }}
-            </div>
-            <div>
-                <img [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')" class="max-h-14 max-w-12"
-                    [title]="forecastDay.weather[0].description" [alt]="forecastDay.weather[0].description" />
-            </div>
-        </div>
-        <div class="flex flex-col">
-            <div>
-                <mat-icon [ngStyle]="{ color: 'crimson' }" class="m-r-1 align-middle">device_thermostat</mat-icon>
-                {{ forecastDay.main.tempMax }}°
-            </div>
-            <div>
-                <mat-icon [ngStyle]="{ color: 'blue' }" class="m-r-1 align-middle">device_thermostat</mat-icon>
-                {{ forecastDay.main.tempMin }}°
-            </div>
-            <div>
-                <mat-icon [ngStyle]="{ color: 'lightblue' }" class="m-r-1 align-middle">opacity</mat-icon>
-                {{ forecastDay.main.humidity }}%
-            </div>
-        </div>
+<div class="forecast-row">
+  <div class="forecast-container" *ngFor="let forecastDay of this.forecast">
+    <div class="forecast">
+      <div class="forecast-time" *ngIf="forecastDay">
+        {{ getDateToDisplay(forecastDay.dt, this.timezone) }}
+      </div>
+      <div>
+        <img [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')" class="current-weather-icon"
+          [title]="forecastDay.weather[0].description" [alt]="forecastDay.weather[0].description" />
+      </div>
     </div>
+    <div class="forecast-icons">
+      <div>
+        <mat-icon [ngStyle]="{ color: 'crimson' }" class="weather-widget-icon">device_thermostat</mat-icon>
+        {{ forecastDay.main.tempMax }}°
+      </div>
+      <div>
+        <mat-icon [ngStyle]="{ color: 'blue' }" class="weather-widget-icon">device_thermostat</mat-icon>
+        {{ forecastDay.main.tempMin }}°
+      </div>
+      <div>
+        <mat-icon [ngStyle]="{ color: 'lightblue' }" class="weather-widget-icon">opacity</mat-icon>
+        {{ forecastDay.main.humidity }}%
+      </div>
+    </div>
+  </div>
 </div>

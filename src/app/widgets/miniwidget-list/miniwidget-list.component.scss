@@ -3,6 +3,7 @@
   border-radius: 0.25rem;
   display: flex;
   flex-direction: row;
+  overflow-x: auto;
 
   .miniwidget-container {
     background-color: white;

@@ -1,25 +1,25 @@
 <div class="feed">
   <mat-accordion>
     <mat-expansion-panel hideToggle *ngFor="let article of feed" class="rss-article"
-      (opened)="onOpenDetail(article.guid)">
+      (opened)="onOpenDetail(article.guid)" (closed)="onClosePanel()">
       <mat-expansion-panel-header>
-        <mat-panel-title class="articleTitle" [ngClass]="{ 'is-read': isArticleRead(article.guid) }">
-          <div class="line-clamp-2">{{ this.formatTitleForArticle(article) }}</div>
+        <mat-panel-title class="article-title" [ngClass]="{ 'is-read': isArticleRead(article.guid) }">
+          <div [ngClass]="{ 'line-clamp-2': !isArticleOpened(article.guid) }">{{ this.formatTitleForArticle(article) }}
+          </div>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <div class="border-2 border-gray-500 border-solid rounded">
-          <a class="rssPanelArticleTitle" [href]="article.link | safe: 'url'">
-            <p class="font-bold">{{ article.title }}</p>
+        <div class="rss-feed-content">
+          <a [href]="article.link | safe: 'url'">
+            <div class="article-content">
+              {{ stripHtmlFromContent(article.description) }}
+            </div>
+            <div class="article-pubdate">
+              Publié le
+              {{ (article.pubDate ? article.pubDate : article.updated) || '' | dateFormat }}
+              {{ article.author && 'par ' + article.author }}
+            </div>
           </a>
-          <div class="articleContent">
-            {{ stripHtmlFromContent(article.description) }}
-          </div>
-          <div class="articlePubDate">
-            Publié le
-            {{ (article.pubDate ? article.pubDate : article.updated) || '' | dateFormat }}
-            {{ article.author && 'par ' + article.author }}
-          </div>
         </div>
       </ng-template>
     </mat-expansion-panel>

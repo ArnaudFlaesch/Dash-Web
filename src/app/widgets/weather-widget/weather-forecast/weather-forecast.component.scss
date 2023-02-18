@@ -1,5 +1,41 @@
 .forecast-row {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+
   .forecast-container {
     flex: 0 0 calc(100% / 4);
+    border: 2px solid black;
+    border-radius: 0.25rem;
+    border-right-width: 0px;
+
+    &:last-child {
+      border-right-width: 2px;
+    }
+
+
+    .forecast {
+      display: flex;
+      flex-direction: row;
+
+      .forecast-time {
+        margin: auto 0px;
+      }
+    }
+
+    .current-weather-icon {
+      max-height: 3.5rem;
+      max-width: 3rem;
+    }
+
+    .forecast-icons {
+      display: flex;
+      flex-direction: column;
+    }
   }
+}
+
+
+.weather-widget-icon {
+  vertical-align: middle;
 }

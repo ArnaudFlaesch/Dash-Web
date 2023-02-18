@@ -21,11 +21,12 @@ body {
 .header-container {
   .header {
     height: 2.5rem;
+    width: 100%;
     display: flex;
     flex-direction: row;
     place-items: center;
 
-    > * {
+    >* {
       margin-right: 10px;
     }
   }

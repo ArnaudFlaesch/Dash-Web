@@ -31,7 +31,7 @@ describe('RSS Widget tests', () => {
       .wait('@refreshWidget')
       .then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.get('.rssTitle')
+        cy.get('.rss-title')
           .invoke('text')
           .then((text) => {
             expect(text.trim()).equal('Le Figaro - Actualité en direct et informations en continu');
@@ -55,18 +55,11 @@ describe('RSS Widget tests', () => {
         cy.get('.widget .rss-article')
           .should('have.length', NUMBER_OF_ARTICLES)
           .waitUntil(() =>
-            cy.get('.widget .rss-article:nth(0)  .articleTitle').should('be.visible')
+            cy.get('.widget .rss-article:nth(0)  .article-title').should('be.visible')
           )
           .get('.widget .rss-article:nth(0)')
           .click()
-          .get('.widget .rss-article:nth(0) .rssPanelArticleTitle')
-          .invoke('text')
-          .then((text) => {
-            expect(text.trim()).equal(
-              "EN DIRECT - Guerre en Ukraine : Poutine prévient qu'il atteindra ses objectifs «soit par la négociation, soit par la guerre»"
-            );
-          })
-          .get('.widget .articleContent')
+          .get('.widget .article-content')
           .invoke('text')
           .then((text) => {
             expect(text.trim()).equal(

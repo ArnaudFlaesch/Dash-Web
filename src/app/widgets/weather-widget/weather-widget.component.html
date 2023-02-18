@@ -14,12 +14,12 @@
     </mat-form-field>
   </ng-template>
   <ng-template #body>
-    <div *ngIf="city && weather && weather.weather" class="flex flex-col">
+    <div *ngIf="city && weather && weather.weather" class="weather-forecast-container">
       <app-weather-today [weather]="this.weather"></app-weather-today>
-      <div class="mx-2 mt-2" *ngIf="cityData && forecastResponse">
-        <div class="grid grid-cols-4 gap-2 mx-auto">
+      <div class="forecast-data-container" *ngIf="cityData && forecastResponse">
+        <div class="forecast-selector">
           <button *ngFor="let date of forecastDays" [color]="this.isSelectedDay(date) ? 'primary' : ''"
-            mat-raised-button (click)="selectDayForecast(date)" class="toggleForecast">
+            mat-raised-button (click)="selectDayForecast(date)" class="selectForecast">
             {{ formatDate(date) }}
           </button>
 
@@ -28,7 +28,7 @@
             Semaine
           </button>
         </div>
-        <div class="mt-4 mb-2">
+        <div class="toggle-forecast">
           <mat-slide-toggle color="'primary'" (change)="this.updateForecastData()" [(ngModel)]="displayAllForecast">
             Afficher les prévisions complètes
           </mat-slide-toggle>
