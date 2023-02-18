@@ -7,7 +7,7 @@
     flex: 0 0 calc(100% / 4);
     border: 2px solid black;
     border-radius: 0.25rem;
-    border-right-width: 0px;
+    border-right-width: 0;
 
     &:last-child {
       border-right-width: 2px;
@@ -19,7 +19,7 @@
       flex-direction: row;
 
       .forecast-time {
-        margin: auto 0px;
+        margin: auto 0;
       }
     }
 

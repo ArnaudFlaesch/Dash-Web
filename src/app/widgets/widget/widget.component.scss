@@ -3,7 +3,6 @@
 $header-height: 2.5rem;
 
 .widget {
-
   margin: 0.5rem;
   border-radius: 0.25rem;
   height: 24rem;
@@ -44,7 +43,7 @@ $header-height: 2.5rem;
     .header-actions {
       display: flex;
       flex-direction: row;
-      margin: auto 0px;
+      margin: auto 0;
     }
 
     button {
@@ -58,7 +57,7 @@ $header-height: 2.5rem;
     flex-direction: column;
     width: 100%;
     flex: 1 1 0%;
-    margin: 0.25rem 0rem;
+    margin: 0.25rem 0;
     overflow-y: auto;
 
     .widget-edit-component-container {
@@ -69,7 +68,9 @@ $header-height: 2.5rem;
     .edit-component-actions {
       display: flex;
       flex-direction: row;
+
       --tw-space-x-reverse: 0;
+
       margin-right: calc(0.5rem * var(--tw-space-x-reverse));
       margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
     }
