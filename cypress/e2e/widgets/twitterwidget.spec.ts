@@ -70,7 +70,7 @@ describe('Twitter Widget tests', () => {
         .wait('@searchFollowedUser')
         .then((searchUsersResponse: Interception) => {
           expect(searchUsersResponse.response.statusCode).to.equal(200);
-          cy.get('.deleteFollowedUserButton')
+          cy.get('.delete-followed-user-button')
             .should('have.length', 1)
             .click()
             .wait('@removeFollowedUser')

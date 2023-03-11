@@ -1,31 +1,60 @@
-#login-container {
+#login-page {
   display: flex;
-  flex-direction: column;
-  padding: 1.5rem 4rem;
-  background-color: rgb(255 255 255);
-  border-color: rgb(0 0 0);
-  border-width: 2px;
-  border-radius: 0.25rem;
-  align-items: center;
-  margin: auto;
+  height: 100vh;
 
-  #logo-container {
-    width: 75%;
-    display: inline-block;
-    height: 83.3333%;
-    margin: 1rem;
-    border: 2px solid black;
-    border-radius: 9999px;
-  }
-
-  #login-page-title {
-    font-size: 2rem;
-    line-height: 1;
-  }
-
-  #login-form {
+  #login-container {
     display: flex;
     flex-direction: column;
-    margin-top: 2.5rem;
+    padding: 1.5rem 4rem;
+    background-color: rgb(255 255 255);
+    border-color: rgb(0 0 0);
+    border-width: 2px;
+    border-radius: 0.25rem;
+    align-items: center;
+    margin: auto;
+
+    #logo-container {
+      width: 75%;
+      display: inline-block;
+      height: 83.3333%;
+      margin: 1rem;
+      border: 2px solid black;
+      border-radius: 9999px;
+
+      #dash-logo {
+        margin: 0.75rem auto 0 auto;
+      }
+    }
+
+    #login-page-title {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    #login-form {
+      display: flex;
+      flex-direction: column;
+      margin-top: 2.5rem;
+
+      > :not([hidden])~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
+      }
+
+      #login-button-label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        mat-spinner {
+          margin-right: 1.25rem;
+
+          span {
+            margin: 0 auto;
+          }
+        }
+      }
+    }
   }
 }

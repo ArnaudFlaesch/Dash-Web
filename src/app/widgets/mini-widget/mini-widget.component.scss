@@ -1,0 +1,52 @@
+.header {
+  display: flex;
+  align-items: flex-end;
+
+  button {
+    margin-left: auto;
+  }
+}
+
+.edit-mini-widget-body-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  text-align: center;
+
+  > :not([hidden])~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+  }
+
+  .edit-mini-widget-body {
+    padding: 0.25rem;
+    overflow-y: auto;
+  }
+
+  .edit-mini-widget-actions {
+    display: flex;
+    flex-direction: row;
+
+    > :not([hidden])~ :not([hidden]) {
+      --tw-space-x-reverse: 0;
+      margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+      margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+    }
+  }
+
+}
+
+.read-mini-widget-body-container {
+  flex: 1 1 0%;
+  margin: 0.25rem 0.5rem;
+  overflow-y: auto;
+
+  .loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto 0;
+  }
+}

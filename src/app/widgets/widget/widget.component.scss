@@ -27,6 +27,7 @@ $header-height: 2.5rem;
   .header-container {
     background-color: $widget-background-color;
     height: $header-height;
+    width: 100%;
     color: white;
     align-items: center;
     display: flex;
@@ -48,6 +49,7 @@ $header-height: 2.5rem;
 
     button {
       color: white;
+      margin-left: auto;
     }
   }
 
@@ -68,6 +70,7 @@ $header-height: 2.5rem;
     .edit-component-actions {
       display: flex;
       flex-direction: row;
+      place-content: center;
 
       --tw-space-x-reverse: 0;
 

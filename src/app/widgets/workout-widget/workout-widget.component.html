@@ -10,7 +10,7 @@
   <ng-template #body>
     <div [ngSwitch]="WIDGET_VIEW">
       <div *ngSwitchCase="widgetViewEnum.WORKOUT_SESSIONS_LIST_VIEW">
-        <div class="space-y-2">
+        <div>
           <h2>Sessions</h2>
 
           <button mat-raised-button (click)="this.goToStatisticsView()">Statistiques</button>

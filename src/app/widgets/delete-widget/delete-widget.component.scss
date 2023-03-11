@@ -4,4 +4,21 @@
   height: 24rem;
   place-items: center;
   justify-content: center;
+
+  > :not([hidden])~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
+  }
+
+  h4 {
+    font-weight: 700;
+  }
+
+  .delete-widget-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+  }
 }

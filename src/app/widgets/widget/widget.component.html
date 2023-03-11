@@ -1,13 +1,13 @@
 <div class="widget">
-  <div *ngIf="isModeEdit()" class="widget-edit-mode space-y-2">
+  <div *ngIf="isModeEdit()" class="widget-edit-mode">
     <div class="header-container">
       <div class="header">
-        <button class="ml-auto">
+        <button>
           <mat-icon (click)="this.toDeleteMode()" title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
         </button>
       </div>
     </div>
-    <div class="widget-body space-y-4">
+    <div class="widget-body">
       <div class="widget-edit-component-container">
         <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
       </div>
@@ -32,7 +32,7 @@
         <ng-container *ngTemplateOutlet="header"> </ng-container>
       </div>
 
-      <div class="header-actions space-x-1/2">
+      <div class="header-actions">
         <span *ngIf="additionalActions">
           <ng-container *ngTemplateOutlet="additionalActions"> </ng-container>
         </span>
