@@ -22,7 +22,7 @@
       border-radius: 9999px;
 
       #dash-logo {
-        margin: 0.75rem auto 0 auto;
+        margin: 0.75rem auto 0;
       }
     }
 
@@ -38,6 +38,7 @@
 
       > :not([hidden])~ :not([hidden]) {
         --tw-space-y-reverse: 0;
+
         margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
         margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
       }

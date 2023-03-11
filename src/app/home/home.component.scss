@@ -6,7 +6,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 0.25rem 0.5rem 0rem 0.5rem;
+    margin: 0.25rem 0.5rem 0;
 
     #tab-list-container {
       display: flex;
@@ -37,6 +37,7 @@
 
         > :not([hidden])~ :not([hidden]) {
           --tw-space-x-reverse: 0;
+
           margin-right: calc(0.125rem * var(--tw-space-x-reverse));
           margin-left: calc(0.125rem * calc(1 - var(--tw-space-x-reverse)));
         }
