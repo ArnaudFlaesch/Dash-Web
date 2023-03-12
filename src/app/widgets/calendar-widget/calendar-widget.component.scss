@@ -1,0 +1,60 @@
+#calendar-urls-list-container {
+  margin-bottom: 0.5rem;
+
+  > :not([hidden])~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+
+    margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+  }
+
+  .calendar-url-container {
+    display: flex;
+    flex-direction: row;
+
+    > :not([hidden])~ :not([hidden]) {
+      --tw-space-x-reverse: 0;
+
+      margin-right: calc(1rem * var(--tw-space-x-reverse));
+      margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+    }
+  }
+}
+
+#calendar-actions-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0.25rem;
+
+  #date-navigation-container {
+    > :not([hidden])~ :not([hidden]) {
+      --tw-space-x-reverse: 0;
+
+      margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+      margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+    }
+  }
+
+  #calendar-view-switch-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
+    > :not([hidden])~ :not([hidden]) {
+      --tw-space-x-reverse: 0;
+
+      margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+      margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+    }
+  }
+}
+
+#calendar-selected-date {
+  margin-left: 0.5rem;
+
+  h3 {
+    font-weight: 900;
+  }
+
+}

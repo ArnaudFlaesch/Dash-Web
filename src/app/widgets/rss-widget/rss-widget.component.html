@@ -2,7 +2,7 @@
   (refreshWidgetAction)="this.refreshWidget()">
   <ng-template #header>
     <div class="header">
-      <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="rss-widget-header space-x-2">
+      <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="rss-widget-header">
         <img src="{{ image.url }}" alt="logo" />
         <div class="rss-title">{{ this.title }}</div>
       </a>

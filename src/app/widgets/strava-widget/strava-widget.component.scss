@@ -1,0 +1,30 @@
+  .header-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    > :not([hidden])~ :not([hidden]) {
+      --tw-space-x-reverse: 0;
+      margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+      margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+    }
+
+    img {
+      width: 2.25rem;
+      border-radius: 0.25rem;
+    }
+  }
+
+  #strava-activities-container {
+    max-height: 12rem;
+    overflow-y: scroll;
+  }
+
+  #strava-statistics {
+    min-height: 6rem;
+    max-height: 24rem;
+  }
+
+  #loginToStravaButton {
+    margin: auto auto;
+  }

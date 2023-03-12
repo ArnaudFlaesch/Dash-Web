@@ -1,6 +1,19 @@
 .rss-article {
-  mat-panel-title.is-read {
-    color: grey;
+  .article-title {
+    &.is-read {
+      color: grey;
+    }
+
+    p {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+
+      &.is-article-opened {
+        -webkit-line-clamp: 3;
+      }
+    }
   }
 
   .rss-feed-content {

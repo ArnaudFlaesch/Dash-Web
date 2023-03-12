@@ -10,7 +10,6 @@
   <ng-template #editComponent>
     <div id="edit-twitter-widget-container">
       <div id="followed-users-list" *ngIf="this.followedUsers.length">
-
         <div class="followed-user-container" *ngFor="let followedUser of this.followedUsers">
           <div class="followed-user" [ngClass]="{ 'selected-user': followedUser.userHandle === selectedTwitterHandle }"
             (click)="selectUserHandle(followedUser.userHandle)">
@@ -22,7 +21,7 @@
         </div>
       </div>
 
-      <form class="flex flex-row">
+      <form id="add-followed-user-form">
         <mat-form-field appearance="fill">
           <mat-label id="searchTwitterUserLabel">Recherchez un utilisateur</mat-label>
           <input id="searchTwitterUserInput" matInput [formControl]="searchFormControl" />

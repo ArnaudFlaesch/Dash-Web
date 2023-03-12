@@ -8,9 +8,9 @@
   </ng-template>
 
   <ng-template #editComponent>
-    <div class="space-y-3 mb-2">
+    <div id="calendar-urls-list-container">
       <div *ngFor="let calendarUrl of this.calendarUrls; let index = index">
-        <div class="flex flex-row space-x-4">
+        <div class="calendar-url-container">
           <input id="{{ index.toString() }}" (change)="onCalendarUrlUpdated($event)" [value]="calendarUrl"
             placeholder="Saisissez une URL" />
 
@@ -23,8 +23,8 @@
   </ng-template>
 
   <ng-template #body>
-    <div class="flex flex-row justify-between m-1">
-      <div class="space-x-1">
+    <div id="calendar-actions-container">
+      <div id="date-navigation-container">
         <button mat-raised-button mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" color="primary"
           (viewDateChange)="closeOpenMonthViewDay()">
           <mat-icon title="Previous" aria-hidden="false">arrow_back</mat-icon>
@@ -36,7 +36,7 @@
         </button>
       </div>
 
-      <div class="flex flex-row space-x-1 items-start">
+      <div id="calendar-view-switch-container">
         <button mat-raised-button (click)="setView(calendarView.Month)"
           [color]="this.isCalendarViewMonth() ? 'primary' : ''">
           Month
@@ -52,8 +52,8 @@
       </div>
     </div>
 
-    <div class="ml-2">
-      <h3 class="font-black">{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
+    <div id="calendar-selected-date">
+      <h3>{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
     </div>
 
     <div [ngSwitch]="view">

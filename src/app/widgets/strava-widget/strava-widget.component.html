@@ -1,8 +1,8 @@
 <app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()" [isWidgetLoaded]="this.isWidgetLoaded">
   <ng-template #header>
     <div *ngIf="athlete" id="stravaWidgetHeader" class="header">
-      <a [href]="getAthleteProfileUrl(athlete.id)" class="flex flex-row items-center space-x-2">
-        <img class="w-9 rounded" [src]="athlete.profileMedium" alt="athlete profile" />
+      <a [href]="getAthleteProfileUrl(athlete.id)" class="header-content">
+        <img [src]="athlete.profileMedium" alt="athlete profile" />
         <p>{{ athlete.firstname }} {{ athlete.lastname }}</p>
       </a>
     </div>
@@ -15,20 +15,18 @@
   <ng-template #body>
     <ng-template [ngIf]="this.isUserLoggedIn()" [ngIfElse]="isUserNotConnected">
       <div *ngIf="this.activities.length">
-        <div class="max-h-48 overflow-y-scroll">
+        <div id="strava-activities-container">
           <app-strava-activities [activities]="this.activities"></app-strava-activities>
         </div>
-
-        <div class="min-h-24 max-h-96">
+        <div id="strava-statistics">
           <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
         </div>
       </div>
     </ng-template>
 
     <ng-template #isUserNotConnected>
-      <div class="my-auto text-center">
-        <button (click)="loginToStrava()" mat-raised-button color="primary">Se connecter</button>
-      </div>
+      <button (click)="loginToStrava()" id="loginToStravaButton" mat-raised-button color="primary">Se
+        connecter</button>
     </ng-template>
   </ng-template>
 </app-widget>

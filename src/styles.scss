@@ -1,12 +1,6 @@
 @import '../node_modules/angular-calendar/css/angular-calendar.css';
 @import 'colors';
 
-/* stylelint-disable */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* stylelint-enable */
-
 html,
 body {
   height: 100%;
@@ -37,6 +31,12 @@ mat-expansion-panel {
     &:hover {
       font-weight: bold;
     }
+  }
+}
+
+.hoverable-link {
+  &:hover {
+    font-weight: 700;
   }
 }
 

@@ -4,8 +4,9 @@
       (opened)="onOpenDetail(article.guid)" (closed)="onClosePanel()">
       <mat-expansion-panel-header>
         <mat-panel-title class="article-title" [ngClass]="{ 'is-read': isArticleRead(article.guid) }">
-          <div [ngClass]="{ 'line-clamp-2': !isArticleOpened(article.guid) }">{{ this.formatTitleForArticle(article) }}
-          </div>
+          <p [ngClass]="{ 'is-article-opened': isArticleOpened(article.guid) }">{{ this.formatTitleForArticle(article)
+            }}
+          </p>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>

@@ -1,3 +1,34 @@
+.game-info {
+  display: flex;
+  flex-direction: row;
+  height: 2.5rem;
+  align-items: center;
+
+  > :not([hidden])~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+}
+
+.game-data-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .game-achievements-data-container {
+    display: flex;
+    flex-direction: column;
+
+    .game-achievements-data {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+}
+
+
 .spinner-container {
   position: relative;
 

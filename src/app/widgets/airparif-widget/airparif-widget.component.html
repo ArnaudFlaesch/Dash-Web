@@ -1,5 +1,6 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
+
   <ng-template #header>
     <div class="header">
       <mat-icon>air</mat-icon>
@@ -23,8 +24,8 @@
   </ng-template>
 
   <ng-template #body>
-
-    <app-airparif-map [airParifApiKey]="this.airParifApiKey" [airParifForecast]="this.airParifForecast"
+    <app-airparif-map class="airparif-map" [airParifApiKey]="this.airParifApiKey"
+      [airParifForecast]="this.airParifForecast"
       [airParifCouleursIndices]="this.airParifCouleursIndices"></app-airparif-map>
   </ng-template>
 </app-widget>

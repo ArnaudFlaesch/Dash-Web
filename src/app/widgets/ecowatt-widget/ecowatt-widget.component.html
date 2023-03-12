@@ -9,7 +9,7 @@
   </ng-template>
 
   <ng-template #body>
-    <div class="h-full w-full" #iframeContainer>
+    <div id="ecowatt-info-container" #iframeContainer>
       <iframe [src]="ecowattIframeUrl | safe : 'resource_url'" title="ecowatt" [width]="iframeContainerWidth"
         [height]="iframeContainerHeight"></iframe>
     </div>
