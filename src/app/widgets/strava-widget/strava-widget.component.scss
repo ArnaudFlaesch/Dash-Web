@@ -1,30 +1,31 @@
-  .header-content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.header-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-    > :not([hidden])~ :not([hidden]) {
-      --tw-space-x-reverse: 0;
-      margin-right: calc(0.5rem * var(--tw-space-x-reverse));
-      margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
-    }
+  > :not([hidden])~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
 
-    img {
-      width: 2.25rem;
-      border-radius: 0.25rem;
-    }
+    margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
-  #strava-activities-container {
-    max-height: 12rem;
-    overflow-y: scroll;
+  img {
+    width: 2.25rem;
+    border-radius: 0.25rem;
   }
+}
 
-  #strava-statistics {
-    min-height: 6rem;
-    max-height: 24rem;
-  }
+#strava-activities-container {
+  max-height: 12rem;
+  overflow-y: scroll;
+}
 
-  #loginToStravaButton {
-    margin: auto auto;
-  }
+#strava-statistics {
+  min-height: 6rem;
+  max-height: 24rem;
+}
+
+#login-to-strava-button {
+  margin: auto;
+}
