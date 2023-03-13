@@ -13,6 +13,7 @@
             add_circle_outline</mat-icon>
         </button>
       </div>
+
       <div id="action-bar-buttons">
         <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
           <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
@@ -43,6 +44,7 @@
         </button>
       </div>
     </div>
+
     <div id="mini-widgets-container">
       <app-miniwidget-list></app-miniwidget-list>
     </div>
