@@ -1,12 +1,11 @@
 <app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()" [isWidgetLoaded]="this.isWidgetLoaded">
+
   <ng-template #header>
-    <div *ngIf="athlete" id="stravaWidgetHeader" class="header">
-      <a [href]="getAthleteProfileUrl(athlete.id)" class="header-content">
-        <img [src]="athlete.profileMedium" alt="athlete profile" />
-        <p>{{ athlete.firstname }} {{ athlete.lastname }}</p>
-      </a>
-    </div>
-    <div *ngIf="!athlete" class="header">
+    <a *ngIf="athlete" [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader" class="strava-header">
+      <img [src]="athlete.profileMedium" alt="athlete profile" />
+      <p>{{ athlete.firstname }} {{ athlete.lastname }}</p>
+    </a>
+    <div *ngIf="!athlete" class="strava-header">
       <mat-icon>directions_run</mat-icon>
       <div>Strava</div>
     </div>

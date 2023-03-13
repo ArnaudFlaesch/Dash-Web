@@ -12,20 +12,6 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-.header-container {
-  .header {
-    height: 2.5rem;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    place-items: center;
-
-    >* {
-      margin-right: 10px;
-    }
-  }
-}
-
 mat-expansion-panel {
   mat-expansion-panel-header {
     &:hover {

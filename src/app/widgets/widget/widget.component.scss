@@ -34,22 +34,22 @@ $header-height: 2.5rem;
     flex-direction: row;
     justify-content: space-between;
 
-    .header-widget {
-      font-weight: 700;
+    .header {
+      height: 2.5rem;
+      width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-left: 0.5rem;
+      display: flex;
+      place-items: center;
     }
 
     .header-actions {
       display: flex;
       flex-direction: row;
-      margin: auto 0;
-    }
 
-    button {
-      color: white;
-      margin-left: auto;
+      button {
+        margin-left: auto;
+      }
     }
   }
 
@@ -71,11 +71,6 @@ $header-height: 2.5rem;
       display: flex;
       flex-direction: row;
       place-content: center;
-
-      --tw-space-x-reverse: 0;
-
-      margin-right: calc(0.5rem * var(--tw-space-x-reverse));
-      margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
     }
 
     .widget-loading-spinner {

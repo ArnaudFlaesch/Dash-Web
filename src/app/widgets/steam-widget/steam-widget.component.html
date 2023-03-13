@@ -2,12 +2,10 @@
   [isWidgetLoaded]="true">
 
   <ng-template #header>
-    <div class="header">
-      <a href="{{ playerData?.profileurl }}" class="header-content">
-        <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
-        <p>{{ playerData?.personaname }}</p>
-      </a>
-    </div>
+    <a href="{{ playerData?.profileurl }}" class="steam-header">
+      <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
+      <p>{{ playerData?.personaname }}</p>
+    </a>
   </ng-template>
 
   <ng-template #editComponent>

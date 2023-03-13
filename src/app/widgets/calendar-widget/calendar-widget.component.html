@@ -1,7 +1,8 @@
 <app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
+
   <ng-template #header>
-    <div class="header">
+    <div class="calendar-header">
       <mat-icon>calendar_month</mat-icon>
       <div>Agenda</div>
     </div>

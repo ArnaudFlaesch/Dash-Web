@@ -1,5 +1,6 @@
-#header {
-  font-weight: bold;
+.weather-header {
+  display: flex;
+  flex-direction: row;
 }
 
 .weather-forecast-container {

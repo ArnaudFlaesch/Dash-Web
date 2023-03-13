@@ -1,10 +1,11 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
+
   <ng-template #header>
-    <div class="header">
-      <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="rss-widget-header">
-        <img src="{{ image.url }}" alt="logo" />
-        <div class="rss-title">{{ this.title }}</div>
+    <div *ngIf="this.image" class="rss-widget-header">
+      <img src="{{ image.url }}" alt="logo" />
+      <a [href]="this.image.link | safe: 'url'">
+        <p class="rss-title">{{ this.title }}</p>
       </a>
     </div>
   </ng-template>
@@ -17,7 +18,7 @@
   </ng-template>
 
   <ng-template #additionalActions>
-    <button class="markAllArticlesAsReadButton" (click)="markAllFeedAsRead()">
+    <button mat-icon-button class="markAllArticlesAsReadButton" (click)="markAllFeedAsRead()">
       <mat-icon>check</mat-icon>
     </button>
   </ng-template>
