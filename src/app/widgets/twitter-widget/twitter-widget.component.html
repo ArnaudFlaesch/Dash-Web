@@ -2,27 +2,29 @@
   [isWidgetLoaded]="isWidgetLoaded">
 
   <ng-template #header>
-    <div class="header">
-      <a href="{{'https://twitter.com/' + this.selectedTwitterHandle}}">@{{this.selectedTwitterHandle}}</a>
+    <div class="twitter-header">
+      <mat-icon>person</mat-icon>
+      <a href="{{'https://twitter.com/' + this.selectedTwitterHandle}}">
+        <p>@{{this.selectedTwitterHandle}}</p>
+      </a>
     </div>
   </ng-template>
 
   <ng-template #editComponent>
-    <div class="flex flex-col">
-      <div class="space-y-1" *ngIf="this.followedUsers.length">
-        <div class="flex flex-row space-x-1 justify-between" *ngFor="let followedUser of this.followedUsers">
-          <div class="rounded w-full py-2 followed-user hover:bg-cyan-400 my-auto"
-            [ngClass]="{ 'selected-user': followedUser.userHandle === selectedTwitterHandle }"
+    <div id="edit-twitter-widget-container">
+      <div id="followed-users-list" *ngIf="this.followedUsers.length">
+        <div class="followed-user-container" *ngFor="let followedUser of this.followedUsers">
+          <div class="followed-user" [ngClass]="{ 'selected-user': followedUser.userHandle === selectedTwitterHandle }"
             (click)="selectUserHandle(followedUser.userHandle)">
             {{followedUser.userHandle}}</div>
-          <button class="bg-gray-500" (click)="this.deleteFollowedUser(followedUser.id)"
-            class="deleteFollowedUserButton" mat-raised-button>
+          <button class="delete-followed-user-button" (click)="this.deleteFollowedUser(followedUser.id)"
+            mat-raised-button>
             <mat-icon title="Remove followed user" aria-hidden="false">delete</mat-icon>
           </button>
         </div>
       </div>
 
-      <form class="flex flex-row">
+      <form id="add-followed-user-form">
         <mat-form-field appearance="fill">
           <mat-label id="searchTwitterUserLabel">Recherchez un utilisateur</mat-label>
           <input id="searchTwitterUserInput" matInput [formControl]="searchFormControl" />

@@ -1,10 +1,11 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
+
   <ng-template #header>
-    <div class="header">
-      <a *ngIf="this.image" [href]="this.image.link | safe: 'url'" class="flex flex-row items-center space-x-2">
-        <img class="w-9 rounded" src="{{ image.url }}" alt="logo" />
-        <div class="rssTitle whitespace-nowrap overflow-hidden overflow-ellipsis">{{ this.title }}</div>
+    <div *ngIf="this.image" class="rss-widget-header">
+      <img src="{{ image.url }}" alt="logo" />
+      <a [href]="this.image.link | safe: 'url'">
+        <p class="rss-title">{{ this.title }}</p>
       </a>
     </div>
   </ng-template>
@@ -17,16 +18,14 @@
   </ng-template>
 
   <ng-template #additionalActions>
-    <div class="flex flex-row">
-      <button class="markAllArticlesAsReadButton" (click)="markAllFeedAsRead()">
-        <mat-icon>check</mat-icon>
-      </button>
-    </div>
+    <button mat-icon-button class="markAllArticlesAsReadButton" (click)="markAllFeedAsRead()">
+      <mat-icon>check</mat-icon>
+    </button>
   </ng-template>
 
   <ng-template #body>
     <div *ngIf="this.urlFeed">
-      <div class="font-bold">{{ this.description }}</div>
+      <div class="rss-widget-description">{{ this.description }}</div>
       <app-rss-feed [feed]="this.feed" [readArticles]="this.readArticles"
         (markArticleAsReadEvent)="this.markArticleAsRead($event)"></app-rss-feed>
     </div>

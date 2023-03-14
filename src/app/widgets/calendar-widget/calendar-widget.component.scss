@@ -1,0 +1,53 @@
+.calendar-header {
+  display: flex;
+  flex-direction: row;
+}
+
+#calendar-urls-list-container {
+  margin-bottom: 0.5rem;
+
+  > :not([hidden])~ :not([hidden]) {
+    margin-top: 0.75rem;
+  }
+
+  .calendar-url-container {
+    display: flex;
+    flex-direction: row;
+
+    > :not([hidden])~ :not([hidden]) {
+      margin-left: 1rem;
+    }
+  }
+}
+
+#calendar-actions-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0.25rem;
+
+  #date-navigation-container {
+    > :not([hidden])~ :not([hidden]) {
+      margin-left: 0.25rem;
+    }
+  }
+
+  #calendar-view-switch-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
+    > :not([hidden])~ :not([hidden]) {
+      margin-left: 0.25rem;
+    }
+  }
+}
+
+#calendar-selected-date {
+  margin-left: 0.5rem;
+
+  h3 {
+    font-weight: 900;
+  }
+
+}

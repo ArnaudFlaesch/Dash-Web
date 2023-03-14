@@ -1,0 +1,53 @@
+@import 'colors';
+
+.mini-widget {
+  background-color: $widget-background-color;
+
+  .header {
+    display: flex;
+    align-items: flex-end;
+
+    button {
+      margin-left: auto;
+    }
+  }
+
+  .edit-mini-widget-body-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+
+    > :not([hidden])~ :not([hidden]) {
+      margin-top: 1rem;
+    }
+
+    .edit-mini-widget-body {
+      padding: 0.25rem;
+      overflow-y: auto;
+    }
+
+    .edit-mini-widget-actions {
+      display: flex;
+      flex-direction: row;
+
+      > :not([hidden])~ :not([hidden]) {
+        margin-left: 0.5rem;
+      }
+    }
+
+  }
+
+  .read-mini-widget-body-container {
+    flex: 1 1 0%;
+    overflow-y: auto;
+
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto 0;
+    }
+  }
+}

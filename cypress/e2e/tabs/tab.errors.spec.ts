@@ -49,7 +49,7 @@ describe('Tab error tests', () => {
   it('Should fail to edit the tab', () => {
     cy.intercept('POST', '/tab/updateTab', { statusCode: 500 })
       .as('updateTabError')
-      .get('.tabLabel')
+      .get('.tab-label')
       .eq(0)
       .invoke('text')
       .then((text) => {
@@ -70,7 +70,7 @@ describe('Tab error tests', () => {
           .get('.tab')
           .should('have.length', 1)
           .eq(0)
-          .find('.tabLabel')
+          .find('.tab-label')
           .invoke('text')
           .then((text) => {
             expect(text.trim()).equal('Home');

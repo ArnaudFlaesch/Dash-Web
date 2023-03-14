@@ -103,7 +103,7 @@ function createNewTab(tabName: string): Cypress.Chainable {
         .wait('@createTab')
         .then((createTabResponse) => {
           expect(createTabResponse.response.statusCode).to.equal(200);
-          cy.get('.tab:nth(-1) .tabLabel')
+          cy.get('.tab:nth(-1) .tab-label')
             .click()
             .dblclick()
             .get('input')
@@ -113,7 +113,7 @@ function createNewTab(tabName: string): Cypress.Chainable {
             .wait('@updateTab')
             .then((updateTabResponse: Interception) => {
               expect(updateTabResponse.response.statusCode).to.equal(200);
-              cy.get('.tab.selected-item .tabLabel')
+              cy.get('.tab.selected-item .tab-label')
                 .invoke('text')
                 .then((text) => {
                   expect(text.trim()).equal(tabName);

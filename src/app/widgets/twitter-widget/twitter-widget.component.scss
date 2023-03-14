@@ -1,7 +1,51 @@
-.followed-user {
-  cursor: pointer;
+.twitter-header {
+  display: flex;
+  flex-direction: row;
+}
 
-  &.selected-user {
-    background-color: #46879d;
+#edit-twitter-widget-container {
+  display: flex;
+  flex-direction: column;
+
+  #followed-users-list {
+    > :not([hidden])~ :not([hidden]) {
+      margin-top: 0.25rem;
+    }
+
+    .followed-user-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      > :not([hidden])~ :not([hidden]) {
+        margin-left: 0.25rem;
+      }
+
+      .followed-user {
+        cursor: pointer;
+        border-radius: 0.25rem;
+        width: 100%;
+        padding: 0.5 0;
+        margin: auto 0;
+
+        &.selected-user {
+          background-color: #46879d;
+        }
+
+        :hover {
+          background-color: rgb(34 211 238);
+        }
+
+        .delete-followed-user-button {
+          background-color: rgb(107 114 128);
+        }
+      }
+    }
+
+    #add-followed-user-form {
+      display: flex;
+      flex-direction: row;
+    }
+
   }
 }

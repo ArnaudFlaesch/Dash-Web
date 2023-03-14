@@ -1,0 +1,23 @@
+#delete-widget-container {
+  display: flex;
+  flex-direction: column;
+  height: 24rem;
+  place-items: center;
+  justify-content: center;
+
+  > :not([hidden])~ :not([hidden]) {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  h4 {
+    font-weight: 700;
+  }
+
+  #delete-widget-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+  }
+}

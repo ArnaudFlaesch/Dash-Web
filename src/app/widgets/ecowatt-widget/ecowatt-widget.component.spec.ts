@@ -1,22 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
 
 import { EcowattWidgetComponent } from './ecowatt-widget.component';
 
 describe('EcowattWidgetComponent', () => {
-  let component: EcowattWidgetComponent;
-  let fixture: ComponentFixture<EcowattWidgetComponent>;
+  let spectator: Spectator<EcowattWidgetComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [EcowattWidgetComponent]
-    }).compileComponents();
+  const createComponent = createComponentFactory({
+    component: EcowattWidgetComponent
+  });
 
-    fixture = TestBed.createComponent(EcowattWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  beforeEach(() => {
+    spectator = createComponent();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    spectator.component.refreshWidget();
+    expect(spectator.component.getWidgetData()).toEqual({});
   });
 });

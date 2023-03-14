@@ -10,13 +10,13 @@
   </ng-template>
 
   <ng-template #body>
-    <div *ngIf="weather && weather.weather" class="flex flex-row">
-      <img class="w-14 h-12" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
+    <div *ngIf="weather && weather.weather" class="mini-widget-weather-container">
+      <img class="current-weather-icon" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
         [title]="weather.weather[0].description" [alt]="weather.weather[0].description" />
-      <div class="flex flex-col">
+      <div class="weather-data-container">
         <div>{{city}}</div>
-        <div class="flex flex-row">
-          <mat-icon matTooltip="weather.weather[0].description">device_thermostat</mat-icon>
+        <div class="temperature-container">
+          <mat-icon>device_thermostat</mat-icon>
           <div>{{ weather.main.temp }}°</div>
         </div>
       </div>

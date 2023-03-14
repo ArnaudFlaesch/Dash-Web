@@ -1,0 +1,52 @@
+.weather-today-container {
+  display: flex;
+  flex-direction: row;
+
+  .current-weather-icon {
+    width: 4rem;
+  }
+
+  .weather-container {
+    display: flex;
+    flex-direction: row;
+    place-items: center;
+
+    .current-temperature-container {
+      display: flex;
+      flex-direction: column;
+      margin-right: 1.25rem;
+
+      .current-temperature {
+        display: flex;
+        flex-direction: row;
+
+        .temperature {
+          margin: auto 0
+        }
+      }
+    }
+
+    .time-data-container {
+      display: flex;
+      flex-direction: column;
+
+      .day-data-container {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .time-container {
+        display: flex;
+        flex-direction: row;
+
+        mat-icon {
+          margin-right: 0.25rem;
+        }
+
+        .time-data {
+          margin: auto 0;
+        }
+      }
+    }
+  }
+}

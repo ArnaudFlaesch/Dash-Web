@@ -59,7 +59,7 @@ describe('TabComponent', () => {
       request.flush(updatedTabData);
       expect(spectator.component.editMode).toEqual(false);
       spectator.detectChanges();
-      expect(spectator.query('.tabLabel')?.textContent?.trim()).toEqual(updatedTabLabel);
+      expect(spectator.query('.tab-label')?.textContent?.trim()).toEqual(updatedTabLabel);
     });
 
     it('Should delete a tab when it exists', () => {

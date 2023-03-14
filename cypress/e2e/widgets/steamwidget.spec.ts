@@ -34,7 +34,7 @@ describe('Steam Widget tests', () => {
       .then((requests: Interception[]) => {
         expect(requests[0].response.statusCode).to.equal(200);
         expect(requests[1].response.statusCode).to.equal(200);
-        cy.get('.widget .gameInfo')
+        cy.get('.widget .game-info')
           .should('have.length', 25)
           .contains('Half-Life 2: Episode Two')
           .scrollIntoView()

@@ -3,6 +3,12 @@
   justify-content: space-between;
 }
 
+.loading-spinner {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 #workout-sessions-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));

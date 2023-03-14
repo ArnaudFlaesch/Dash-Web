@@ -2,34 +2,30 @@
   (afterExpand)="loadAchievementsData(this.steamUserId, this.gameInfo)" hideToggle>
   <mat-expansion-panel-header>
     <mat-panel-title>
-      <div class="gameInfo flex flex-row">
-        <div class="h-10">
-          <div class="flex flex-row items-center space-x-2">
-            <img [src]="gameInfo.gameImgSrc" alt="game icon" />
-            <p>{{ gameInfo.name }}</p>
-          </div>
-        </div>
+      <div class="game-info">
+        <img [src]="gameInfo.gameImgSrc" alt="game icon" />
+        <p>{{ gameInfo.name }}</p>
       </div>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>
 
-    <div class="flex flex-row justify-between">
-      <div class="flex flex-col">
+    <div class="game-data-container">
+      <div class="game-achievements-data-container">
         <a href="{{gameInfo.playerAchievementUrl}}"
-          *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="flex flex-row">
-          <div class="flex flex-col">
-            <div class="totalachievements">Succès : {{ achievements.length }}</div>
-            <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
-          </div>
+          *ngIf="this.achievements && this.completedAchievements && this.achievements.length"
+          class="game-achievements-data">
+          <div class="totalachievements">Succès : {{ achievements.length }}</div>
+          <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
         </a>
-        <a href="{{gameInfo.appIdLink}}" class="hover:font-bold"> Community hub </a>
+        <a href="{{gameInfo.appIdLink}}" class="hoverable-link"> Community hub </a>
       </div>
 
       <a href="{{gameInfo.playerAchievementUrl}}"
         *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="spinner-container">
         <div class="progress-value">{{ spinner.value }}%</div>
-        <mat-progress-spinner #spinner [color]="'primary'" [mode]="'determinate'" [value]="this.completionStatus">
+        <mat-progress-spinner #spinner [title]="'test'" [color]="'primary'" [mode]="'determinate'"
+          [value]="this.completionStatus">
         </mat-progress-spinner>
       </a>
     </div>

@@ -17,6 +17,8 @@ export class RssFeedComponent {
   @Output()
   public markArticleAsReadEvent = new EventEmitter<string>();
 
+  private currentOpenedArticle: string | undefined;
+
   public stripHtmlFromContent(content?: string): string {
     const div = document.createElement('div');
     div.innerHTML = content || '';
@@ -34,10 +36,19 @@ export class RssFeedComponent {
     return this.readArticles.includes(guid);
   }
 
+  public isArticleOpened(guid: string): boolean {
+    return this.currentOpenedArticle !== undefined && this.currentOpenedArticle === guid;
+  }
+
   public onOpenDetail(guid: string): void {
     if (!this.isArticleRead(guid)) {
       this.markArticleAsReadEvent.emit(guid);
     }
+    this.currentOpenedArticle = guid;
+  }
+
+  public onClosePanel(): void {
+    this.currentOpenedArticle = undefined;
   }
 
   private getPublicationDateToDisplay(articleDate: Date) {

@@ -14,3 +14,22 @@
     }
   }
 }
+
+#forecast-select-buttons {
+  margin-bottom: 0.5rem
+}
+
+#sidepanel-indices {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+
+  .airparif-indice {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.indice-label {
+  border-radius: 0.25rem;
+}

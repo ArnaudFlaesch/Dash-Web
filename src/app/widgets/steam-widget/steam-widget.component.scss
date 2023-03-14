@@ -1,3 +1,13 @@
+.steam-header {
+  display: flex;
+  flex-direction: row;
+
+  img {
+    width: 2.25rem;
+    border-radius: 0.25rem;
+  }
+}
+
 #search-game-form {
   display: flex;
   flex-direction: row;

@@ -41,7 +41,7 @@ describe('Login tests', () => {
           .click()
           .waitUntil(() =>
             cy
-              .get('#loginPageTitle')
+              .get('#login-page-title')
               .should('have.text', 'Dash')
               .url()
               .should('be.equal', `${Cypress.config('baseUrl')}login`)

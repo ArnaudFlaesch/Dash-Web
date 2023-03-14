@@ -1,10 +1,11 @@
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { CalendarWidgetService } from './calendar-widget.service';
 import { Component, Inject, LOCALE_ID } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { addMonths, endOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+
+import { ErrorHandlerService } from './../../services/error.handler.service';
+import { CalendarWidgetService } from './calendar-widget.service';
 import { EventDetailModalComponent } from './event-detail-modal/event-detail-modal.component';
 import { ICalendarData } from './ICalendarData';
 

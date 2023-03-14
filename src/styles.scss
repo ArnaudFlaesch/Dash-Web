@@ -1,12 +1,6 @@
 @import '../node_modules/angular-calendar/css/angular-calendar.css';
 @import 'colors';
 
-/* stylelint-disable */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* stylelint-enable */
-
 html,
 body {
   height: 100%;
@@ -18,23 +12,28 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-.header-container {
-  .header {
-    height: 2.5rem;
-    display: flex;
-    flex-direction: row;
-    place-items: center;
-
-    > * {
-      margin-right: 10px;
-    }
-  }
-}
-
 mat-expansion-panel {
   mat-expansion-panel-header {
     &:hover {
       font-weight: bold;
+    }
+  }
+}
+
+.widget {
+  mat-expansion-panel,
+  .cal-cell-row {
+    background-color: $widget-background-color !important;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+
+  &.hoverable-link {
+    &:hover {
+      font-weight: 700;
     }
   }
 }
