@@ -1,6 +1,6 @@
 .rss-article {
   .article-title {
-    &.is-read {
+    &.is-read:not(.article-opened, :hover) {
       color: grey;
     }
 
@@ -10,7 +10,7 @@
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
 
-      &.is-article-opened {
+      &.article-opened {
         -webkit-line-clamp: 3;
       }
     }

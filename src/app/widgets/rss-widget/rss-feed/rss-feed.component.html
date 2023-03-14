@@ -3,9 +3,9 @@
     <mat-expansion-panel hideToggle *ngFor="let article of feed" class="rss-article"
       (opened)="onOpenDetail(article.guid)" (closed)="onClosePanel()">
       <mat-expansion-panel-header>
-        <mat-panel-title class="article-title" [ngClass]="{ 'is-read': isArticleRead(article.guid) }">
-          <p [ngClass]="{ 'is-article-opened': isArticleOpened(article.guid) }">{{ this.formatTitleForArticle(article)
-            }}
+        <mat-panel-title [ngClass]="{ 'article-opened': isArticleOpened(article.guid),
+        'is-read': isArticleRead(article.guid) }" class="article-title">
+          <p>{{ this.formatTitleForArticle(article) }}
           </p>
         </mat-panel-title>
       </mat-expansion-panel-header>
