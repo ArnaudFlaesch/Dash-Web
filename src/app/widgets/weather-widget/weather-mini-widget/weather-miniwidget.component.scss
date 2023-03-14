@@ -10,6 +10,8 @@
   .weather-data-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    margin-right: 5px;
 
     .temperature-container {
       display: flex;
