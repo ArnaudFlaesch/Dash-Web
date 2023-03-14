@@ -55,7 +55,7 @@
     "@cypress/schematic": "2.5.0",
     "@ngneat/spectator": "14.0.0",
     "@types/jest": "29.4.1",
-    "@types/leaflet": "1.9.2",
+    "@types/leaflet": "1.9.3",
     "@types/node": "18.15.3",
     "@typescript-eslint/eslint-plugin": "5.55.0",
     "@typescript-eslint/parser": "5.55.0",
