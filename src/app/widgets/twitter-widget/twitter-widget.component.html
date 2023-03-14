@@ -4,7 +4,9 @@
   <ng-template #header>
     <div class="twitter-header">
       <mat-icon>person</mat-icon>
-      <a href="{{'https://twitter.com/' + this.selectedTwitterHandle}}">@{{this.selectedTwitterHandle}}</a>
+      <a href="{{'https://twitter.com/' + this.selectedTwitterHandle}}">
+        <p>@{{this.selectedTwitterHandle}}</p>
+      </a>
     </div>
   </ng-template>
 

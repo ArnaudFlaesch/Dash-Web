@@ -24,7 +24,8 @@
       <a href="{{gameInfo.playerAchievementUrl}}"
         *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="spinner-container">
         <div class="progress-value">{{ spinner.value }}%</div>
-        <mat-progress-spinner #spinner [color]="'primary'" [mode]="'determinate'" [value]="this.completionStatus">
+        <mat-progress-spinner #spinner [title]="'test'" [color]="'primary'" [mode]="'determinate'"
+          [value]="this.completionStatus">
         </mat-progress-spinner>
       </a>
     </div>
