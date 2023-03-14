@@ -1,37 +1,39 @@
-<div *ngIf="isModeEdit()">
-  <div class="header-container header">
-    <button>
-      <mat-icon (click)="this.toDeleteMode()" title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
-    </button>
-  </div>
-  <div class="edit-mini-widget-body-container">
-    <div class="edit-mini-widget-body">
-      <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
-    </div>
-    <div class="edit-mini-widget-actions">
-      <button class="cancelButton" mat-raised-button (click)="cancelEdition()">
-        Annuler
-      </button>
-      <button class="validateButton" mat-raised-button (click)="onValidation()" color="primary"
-        [disabled]="!this.isFormValid">
-        Valider
+<div class="mini-widget">
+  <div *ngIf="isModeEdit()">
+    <div class="header-container header">
+      <button>
+        <mat-icon (click)="this.toDeleteMode()" title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
       </button>
     </div>
-  </div>
-</div>
-
-<app-delete-widget *ngIf="this.isModeDelete()" (cancelWidgetDeletion)="toReadMode()"
-  (validateWidgetDeletion)="null"></app-delete-widget>
-
-<div *ngIf="this.isModeRead()">
-  <div class="read-mini-widget-body-container">
-    <ng-template [ngIf]="this.isWidgetLoaded" [ngIfElse]="isWidgetLoading">
-      <ng-container *ngTemplateOutlet="body"> </ng-container>
-    </ng-template>
-    <ng-template #isWidgetLoading>
-      <div class="loading-spinner">
-        <mat-spinner></mat-spinner>
+    <div class="edit-mini-widget-body-container">
+      <div class="edit-mini-widget-body">
+        <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
       </div>
-    </ng-template>
+      <div class="edit-mini-widget-actions">
+        <button class="cancelButton" mat-raised-button (click)="cancelEdition()">
+          Annuler
+        </button>
+        <button class="validateButton" mat-raised-button (click)="onValidation()" color="primary"
+          [disabled]="!this.isFormValid">
+          Valider
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <app-delete-widget *ngIf="this.isModeDelete()" (cancelWidgetDeletion)="toReadMode()"
+    (validateWidgetDeletion)="null"></app-delete-widget>
+
+  <div *ngIf="this.isModeRead()">
+    <div class="read-mini-widget-body-container">
+      <ng-template [ngIf]="this.isWidgetLoaded" [ngIfElse]="isWidgetLoading">
+        <ng-container *ngTemplateOutlet="body"> </ng-container>
+      </ng-template>
+      <ng-template #isWidgetLoading>
+        <div class="loading-spinner">
+          <mat-spinner></mat-spinner>
+        </div>
+      </ng-template>
+    </div>
   </div>
 </div>

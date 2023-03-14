@@ -5,7 +5,7 @@ $header-height: 2.5rem;
 .widget {
   margin: 0.5rem;
   height: 24rem;
-  background-color: $widget-background-color !important;
+  background-color: $widget-background-color;
   border: 2px solid $widget-header-color;
   border-radius: 0.25rem;
 

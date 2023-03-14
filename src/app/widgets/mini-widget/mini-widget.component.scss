@@ -1,48 +1,54 @@
-.header {
-  display: flex;
-  align-items: flex-end;
+@import 'colors';
 
-  button {
-    margin-left: auto;
-  }
-}
+.mini-widget {
+  background-color: $widget-background-color;
 
-.edit-mini-widget-body-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-  text-align: center;
-
-  > :not([hidden])~ :not([hidden]) {
-    margin-top: 1rem;
-  }
-
-  .edit-mini-widget-body {
-    padding: 0.25rem;
-    overflow-y: auto;
-  }
-
-  .edit-mini-widget-actions {
+  .header {
     display: flex;
-    flex-direction: row;
+    align-items: flex-end;
 
-    > :not([hidden])~ :not([hidden]) {
-      margin-left: 0.5rem;
+    button {
+      margin-left: auto;
     }
   }
 
-}
-
-.read-mini-widget-body-container {
-  flex: 1 1 0%;
-  margin: 0.25rem 0.5rem;
-  overflow-y: auto;
-
-  .loading-spinner {
+  .edit-mini-widget-body-container {
     display: flex;
+    flex-direction: column;
+    width: 100%;
     align-items: center;
-    justify-content: center;
-    margin: auto 0;
+    text-align: center;
+
+    > :not([hidden])~ :not([hidden]) {
+      margin-top: 1rem;
+    }
+
+    .edit-mini-widget-body {
+      padding: 0.25rem;
+      overflow-y: auto;
+    }
+
+    .edit-mini-widget-actions {
+      display: flex;
+      flex-direction: row;
+
+      > :not([hidden])~ :not([hidden]) {
+        margin-left: 0.5rem;
+      }
+    }
+
+  }
+
+  .read-mini-widget-body-container {
+    flex: 1 1 0%;
+    margin: 0.25rem 0.5rem;
+    overflow-y: auto;
+
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto 0;
+    }
   }
 }

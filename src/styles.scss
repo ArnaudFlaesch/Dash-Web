@@ -12,19 +12,18 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-.widget {
-
-  mat-expansion-panel,
-  .cal-cell-row {
-    background-color: $widget-background-color !important;
-  }
-}
-
 mat-expansion-panel {
   mat-expansion-panel-header {
     &:hover {
       font-weight: bold;
     }
+  }
+}
+
+.widget {
+  mat-expansion-panel,
+  .cal-cell-row {
+    background-color: $widget-background-color !important;
   }
 }
 
