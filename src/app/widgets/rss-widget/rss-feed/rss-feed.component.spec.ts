@@ -58,6 +58,7 @@ describe('RssFeedComponent', () => {
   it('Should check if an article is already read', () => {
     spectator.component.readArticles = ['1', '2'];
     expect(spectator.component.isArticleRead('3')).toEqual(false);
+    expect(spectator.component.isArticleOpened('3')).toEqual(false);
   });
 
   it('Should mark article as read', () => {
@@ -68,6 +69,7 @@ describe('RssFeedComponent', () => {
     spectator.component.readArticles = ['1', '2'];
     spectator.detectChanges();
     spectator.component.onOpenDetail('3');
+    expect(spectator.component.isArticleOpened('3')).toEqual(true);
     expect(markArticleAsReadEventSpy).toBeCalledTimes(1);
   });
 });
