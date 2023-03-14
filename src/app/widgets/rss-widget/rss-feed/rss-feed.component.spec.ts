@@ -71,5 +71,7 @@ describe('RssFeedComponent', () => {
     spectator.component.onOpenDetail('3');
     expect(spectator.component.isArticleOpened('3')).toEqual(true);
     expect(markArticleAsReadEventSpy).toBeCalledTimes(1);
+    spectator.component.onClosePanel();
+    expect(spectator.component.isArticleOpened('3')).toEqual(false);
   });
 });
