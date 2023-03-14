@@ -7,10 +7,7 @@
   margin-bottom: 0.5rem;
 
   > :not([hidden])~ :not([hidden]) {
-    --tw-space-y-reverse: 0;
-
-    margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
-    margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+    margin-top: 0.75rem;
   }
 
   .calendar-url-container {
@@ -18,10 +15,7 @@
     flex-direction: row;
 
     > :not([hidden])~ :not([hidden]) {
-      --tw-space-x-reverse: 0;
-
-      margin-right: calc(1rem * var(--tw-space-x-reverse));
-      margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+      margin-left: 1rem;
     }
   }
 }
@@ -34,10 +28,7 @@
 
   #date-navigation-container {
     > :not([hidden])~ :not([hidden]) {
-      --tw-space-x-reverse: 0;
-
-      margin-right: calc(0.25rem * var(--tw-space-x-reverse));
-      margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+      margin-left: 0.25rem;
     }
   }
 
@@ -47,10 +38,7 @@
     align-items: flex-start;
 
     > :not([hidden])~ :not([hidden]) {
-      --tw-space-x-reverse: 0;
-
-      margin-right: calc(0.25rem * var(--tw-space-x-reverse));
-      margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+      margin-left: 0.25rem;
     }
   }
 }

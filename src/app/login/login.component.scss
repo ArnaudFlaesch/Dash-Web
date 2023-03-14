@@ -16,13 +16,13 @@
     #logo-container {
       width: 75%;
       display: inline-block;
-      height: 83.3333%;
       margin: 1rem;
       border: 2px solid black;
       border-radius: 9999px;
 
       #dash-logo {
-        margin: 0.75rem auto 0;
+        display: flex;
+        margin: 0 auto;
       }
     }
 
@@ -37,10 +37,7 @@
       margin-top: 2.5rem;
 
       > :not([hidden])~ :not([hidden]) {
-        --tw-space-y-reverse: 0;
-
-        margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
-        margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
+        margin-top: 1.25rem;
       }
 
       #login-button-label {

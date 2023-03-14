@@ -15,10 +15,7 @@
   text-align: center;
 
   > :not([hidden])~ :not([hidden]) {
-    --tw-space-y-reverse: 0;
-
-    margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
-    margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+    margin-top: 1rem;
   }
 
   .edit-mini-widget-body {
@@ -31,10 +28,7 @@
     flex-direction: row;
 
     > :not([hidden])~ :not([hidden]) {
-      --tw-space-x-reverse: 0;
-
-      margin-right: calc(0.5rem * var(--tw-space-x-reverse));
-      margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+      margin-left: 0.5rem;
     }
   }
 

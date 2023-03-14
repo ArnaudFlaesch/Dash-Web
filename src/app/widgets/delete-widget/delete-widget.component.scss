@@ -6,10 +6,9 @@
   justify-content: center;
 
   > :not([hidden])~ :not([hidden]) {
-    --tw-space-y-reverse: 0;
 
-    margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
-    margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
   }
 
   h4 {
