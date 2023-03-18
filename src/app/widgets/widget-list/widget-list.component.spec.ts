@@ -4,6 +4,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { createHostFactory, Spectator } from '@ngneat/spectator/jest';
 
+import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
@@ -12,6 +13,7 @@ import { CalendarWidgetService } from '../calendar-widget/calendar-widget.servic
 import { RssWidgetService } from '../rss-widget/rss.widget.service';
 import { SteamWidgetService } from '../steam-widget/steam.widget.service';
 import { StravaWidgetService } from '../strava-widget/strava.widget.service';
+import { TwitterWidgetService } from '../twitter-widget/twitter.widget.service';
 import { WeatherWidgetService } from '../weather-widget/weather.widget.service';
 import { WorkoutWidgetService } from '../workout-widget/workout.widget.service';
 import { WidgetListComponent } from './widget-list.component';
@@ -27,6 +29,7 @@ describe('WidgetListComponent', () => {
       StravaWidgetService,
       AirParifWidgetService,
       WeatherWidgetService,
+      TwitterWidgetService,
       CalendarWidgetService,
       WorkoutWidgetService,
       ErrorHandlerService,
@@ -39,45 +42,56 @@ describe('WidgetListComponent', () => {
   const widgetListConfig = [
     {
       id: 43,
-      type: 1,
+      type: WidgetTypeEnum.WEATHER,
       widgetOrder: 1,
       tabId: 1
     },
     {
       id: 44,
-      type: 2,
-
+      type: WidgetTypeEnum.RSS,
       widgetOrder: 2,
       tabId: 1
     },
     {
       id: 45,
       type: 3,
-      widgetOrder: 3,
+      widgetOrder: WidgetTypeEnum.CALENDAR,
       tabId: 1
     },
     {
       id: 46,
-      type: 4,
+      type: WidgetTypeEnum.STRAVA,
       widgetOrder: 4,
       tabId: 1
     },
     {
       id: 47,
-      type: 5,
+      type: WidgetTypeEnum.STEAM,
       widgetOrder: 5,
       tabId: 1
     },
     {
       id: 48,
-      type: 6,
+      type: WidgetTypeEnum.WORKOUT,
       widgetOrder: 6,
       tabId: 1
     },
     {
       id: 49,
-      type: 7,
+      type: WidgetTypeEnum.AIRPARIF,
       widgetOrder: 7,
+      tabId: 1
+    },
+    {
+      id: 50,
+      type: WidgetTypeEnum.TWITTER,
+      widgetOrder: 8,
+      tabId: 1
+    },
+    {
+      id: 51,
+      type: WidgetTypeEnum.ECOWATT,
+      widgetOrder: 9,
       tabId: 1
     }
   ];
@@ -91,6 +105,6 @@ describe('WidgetListComponent', () => {
   });
 
   it('Should display the widgets', () => {
-    expect(spectator.component.widgetList.length).toEqual(7);
+    expect(spectator.component.widgetList.length).toEqual(9);
   });
 });

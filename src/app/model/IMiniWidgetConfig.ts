@@ -1,7 +1,7 @@
-import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
+import { MiniWidgetTypeEnum } from '../enums/MiniWidgetTypeEnum';
 
 export interface IMiniWidgetConfig {
   id: number;
-  type: WidgetTypeEnum;
+  type: MiniWidgetTypeEnum;
   data?: Record<string, unknown>;
 }
