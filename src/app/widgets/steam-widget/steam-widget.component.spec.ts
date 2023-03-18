@@ -115,12 +115,14 @@ describe('SteamWidgetComponent', () => {
     expect(spectator.component.pageNumber).toEqual(0);
     const steamUserId = '1337';
     spectator.component.steamUserId = steamUserId;
+    const searchValue = 'Mario';
+    spectator.component.searchFormControl.setValue(searchValue);
     spectator.component.onPageChanged(pageEvent);
     expect(spectator.component.pageNumber).toEqual(pageIndex);
 
     steamWidgetService.expectOne(
       environment.backend_url +
-        `/steamWidget/ownedGames?steamUserId=${steamUserId}&pageNumber=${pageIndex}`,
+        `/steamWidget/ownedGames?steamUserId=${steamUserId}&search=${searchValue}&pageNumber=${pageIndex}`,
       HttpMethod.GET
     );
   });
