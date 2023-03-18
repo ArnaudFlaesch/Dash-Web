@@ -38,7 +38,6 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
 
   private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations Steam.';
   private ERROR_GETTING_OWNED_GAMES = 'Erreur lors de la récupération de la liste des jeux.';
-  private ERROR_GETTING_ACHIEVEMENTS_DATA = 'Erreur lors de la récupération des succès.';
 
   constructor(
     private errorHandlerService: ErrorHandlerService,

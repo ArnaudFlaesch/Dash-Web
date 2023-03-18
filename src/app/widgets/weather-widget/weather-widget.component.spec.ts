@@ -194,11 +194,16 @@ describe('WeatherWidgetComponent', () => {
         const dateToSelect = new Date(spectator.component.forecastDays[1]);
         spectator.component.selectDayForecast(dateToSelect);
         expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(true);
+        // Select the same date a second time to check that nothing changes and to cover all possible cases
+        spectator.component.selectDayForecast(dateToSelect);
+        expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(true);
         expect(
           spectator.component.forecastToDisplay.map((forecast) =>
             format(new Date(forecast.dt * 1000), 'dd-MM-yyyy')
           )
         ).toEqual(['07-03-2022']);
+        spectator.component.selectWeekForecast();
+        expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(false);
         spectator.component.selectWeekForecast();
       }
     });

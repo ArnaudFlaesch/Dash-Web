@@ -89,6 +89,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Generate documentation
+        if: success() && github.ref == 'refs/heads/master'
         run: |
           npm run compodoc:build
           mv documentation public/documentation

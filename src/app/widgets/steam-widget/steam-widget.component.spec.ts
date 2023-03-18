@@ -115,14 +115,19 @@ describe('SteamWidgetComponent', () => {
     expect(spectator.component.pageNumber).toEqual(0);
     const steamUserId = '1337';
     spectator.component.steamUserId = steamUserId;
+    const searchValue = 'Mario';
+    spectator.component.searchFormControl.setValue(searchValue);
     spectator.component.onPageChanged(pageEvent);
     expect(spectator.component.pageNumber).toEqual(pageIndex);
 
     steamWidgetService.expectOne(
       environment.backend_url +
-        `/steamWidget/ownedGames?steamUserId=${steamUserId}&pageNumber=${pageIndex}`,
+        `/steamWidget/ownedGames?steamUserId=${steamUserId}&search=${searchValue}&pageNumber=${pageIndex}`,
       HttpMethod.GET
     );
+
+    spectator.component.resetForm();
+    expect(spectator.component.searchFormControl.value).toEqual(null);
   });
 
   it('Should get widget data and check form', () => {
