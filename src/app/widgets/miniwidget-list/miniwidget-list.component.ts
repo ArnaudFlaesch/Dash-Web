@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectorRef,
   Component,
@@ -7,14 +8,14 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
-import { IMiniWidgetConfig } from '../../model/IMiniWidgetConfig';
-import { WeatherMiniWidgetComponent } from '../weather-widget/weather-mini-widget/weather-miniwidget.component';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
+
+import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
 import { CreateMiniWidgetModalComponent } from '../../modals/create-mini-widget-modal/create-mini-widget-modal.component';
+import { IMiniWidgetConfig } from '../../model/IMiniWidgetConfig';
+import { ErrorHandlerService } from '../../services/error.handler.service';
+import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
+import { WeatherMiniWidgetComponent } from '../weather-widget/weather-mini-widget/weather-miniwidget.component';
 
 @Component({
   selector: 'app-miniwidget-list',
@@ -54,9 +55,9 @@ export class MiniWidgetListComponent implements OnInit {
       width: '600px'
     });
 
-    dialogRef.afterClosed().subscribe((result: WidgetTypeEnum) => {
+    dialogRef.afterClosed().subscribe((result: MiniWidgetTypeEnum) => {
       if (result) {
-        const type = WidgetTypeEnum[result];
+        const type = MiniWidgetTypeEnum[result];
         this.miniWidgetService.addMiniWidget(type).subscribe({
           next: (createdMiniWidgetResponse: IMiniWidgetConfig) => {
             this.miniWidgetList = [...this.miniWidgetList, createdMiniWidgetResponse];
@@ -85,7 +86,7 @@ export class MiniWidgetListComponent implements OnInit {
         });
         const widgetData = this.miniWidgetList[index].data;
         switch (this.miniWidgetList[index].type) {
-          case WidgetTypeEnum.WEATHER: {
+          case MiniWidgetTypeEnum.WEATHER: {
             component = target.createComponent(WeatherMiniWidgetComponent, {
               injector: injector
             });

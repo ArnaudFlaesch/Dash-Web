@@ -1,4 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   createComponentFactory,
   createHttpFactory,
@@ -6,12 +8,12 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
-import { MiniWidgetListComponent } from './miniwidget-list.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
-import { ErrorHandlerService } from '../../services/error.handler.service';
+
 import { environment } from '../../../environments/environment';
+import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
+import { ErrorHandlerService } from '../../services/error.handler.service';
+import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
+import { MiniWidgetListComponent } from './miniwidget-list.component';
 
 describe('MiniWidgetListComponent', () => {
   let spectator: Spectator<MiniWidgetListComponent>;
@@ -36,7 +38,12 @@ describe('MiniWidgetListComponent', () => {
       environment.backend_url + '/miniWidget/',
       HttpMethod.GET
     );
-    request.flush([]);
-    expect(spectator.component.miniWidgetList).toEqual([]);
+    request.flush([
+      {
+        id: 70,
+        type: MiniWidgetTypeEnum.WEATHER
+      }
+    ]);
+    expect(spectator.component.miniWidgetList.length).toEqual(1);
   });
 });
