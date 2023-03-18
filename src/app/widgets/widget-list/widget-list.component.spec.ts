@@ -1,7 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { createHostFactory, createHttpFactory, Spectator } from '@ngneat/spectator/jest';
+import { createHostFactory, Spectator } from '@ngneat/spectator/jest';
 
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from '../../services/error.handler.service';
@@ -14,7 +15,6 @@ import { StravaWidgetService } from '../strava-widget/strava.widget.service';
 import { WeatherWidgetService } from '../weather-widget/weather.widget.service';
 import { WorkoutWidgetService } from '../workout-widget/workout.widget.service';
 import { WidgetListComponent } from './widget-list.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('WidgetListComponent', () => {
   let spectator: Spectator<WidgetListComponent>;
@@ -35,17 +35,6 @@ describe('WidgetListComponent', () => {
     ],
     imports: [MatSnackBarModule, MatDialogModule, HttpClientTestingModule, RouterTestingModule]
   });
-
-  const initHttpServices = () => {
-    createHttpFactory(WeatherWidgetService);
-    createHttpFactory(RssWidgetService);
-    createHttpFactory(CalendarWidgetService);
-    createHttpFactory(StravaWidgetService);
-    createHttpFactory(SteamWidgetService);
-    createHttpFactory(WorkoutWidgetService);
-    createHttpFactory(AirParifWidgetService);
-    createHttpFactory(WidgetService);
-  };
 
   const widgetListConfig = [
     {
