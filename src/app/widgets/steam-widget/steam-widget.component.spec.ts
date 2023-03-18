@@ -125,6 +125,9 @@ describe('SteamWidgetComponent', () => {
         `/steamWidget/ownedGames?steamUserId=${steamUserId}&search=${searchValue}&pageNumber=${pageIndex}`,
       HttpMethod.GET
     );
+
+    spectator.component.resetForm();
+    expect(spectator.component.searchFormControl.value).toEqual(null);
   });
 
   it('Should get widget data and check form', () => {
