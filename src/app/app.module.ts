@@ -17,6 +17,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -135,6 +136,7 @@ registerLocaleData(localeFr);
     MatExpansionModule,
     MatDialogModule,
     MatCardModule,
+    MatToolbarModule,
     MatPaginatorModule,
     NgChartsModule,
     ReactiveFormsModule,

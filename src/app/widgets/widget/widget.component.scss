@@ -1,12 +1,10 @@
-@import 'colors';
-
 $header-height: 2.5rem;
+$widget-header-color: #000;
 
 .widget {
   margin: 0.5rem;
   height: 24rem;
-  background-color: $widget-background-color;
-  border: 2px solid $widget-header-color;
+  border: 2px solid;
   border-radius: 0.25rem;
 
   .widget-read-mode {

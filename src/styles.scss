@@ -1,15 +1,14 @@
 @import '../node_modules/angular-calendar/css/angular-calendar.css';
-@import 'colors';
 
 html,
 body {
   height: 100%;
-  background-color: $dash-background-color;
-}
 
-body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  --widget-header-color: #000;
+  --dash-light-mode-background-color: #4e4945;
+  --widget-light-mode-background-color: #fff;
+  --dash-dark-mode-background-color: #282a33;
+  --widget-dark-mode-background-color: hsl(208.4deg 17.6% 42.4%);
 }
 
 mat-expansion-panel {
@@ -20,10 +19,49 @@ mat-expansion-panel {
   }
 }
 
-.widget {
-  mat-expansion-panel,
-  .cal-cell-row {
-    background-color: $widget-background-color !important;
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: var(--dash-light-mode-background-color);
+
+  .widget {
+    background-color: var(--widget-light-mode-background-color);
+    border-color: var(--widget-header-color);
+
+    .header-container {
+      background-color: var(--widget-header-color);
+    }
+
+    mat-expansion-panel,
+    .cal-cell-row {
+      background-color: var(--widget-light-mode-background-color) !important;
+    }
+  }
+
+  .mini-widget {
+    background-color: var(--widget-light-mode-background-color);
+  }
+
+  &.dark-mode {
+    background-color: var(--dash-dark-mode-background-color);
+
+    .widget {
+      background-color: var(--widget-dark-mode-background-color);
+      border-color: var(--widget-dark-mode-header-color);
+
+      .header-container {
+        background-color: var(--widget-dark-mode-header-color);
+      }
+
+      mat-expansion-panel,
+      .cal-cell-row {
+        background-color: var(--widget-dark-mode-background-color) !important;
+      }
+    }
+
+    .mini-widget {
+      background-color: var(--widget-dark-mode-background-color);
+    }
   }
 }
 
