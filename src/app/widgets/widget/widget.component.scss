@@ -1,5 +1,4 @@
 $header-height: 2.5rem;
-$widget-header-color: #000;
 
 .widget {
   margin: 0.5rem;
@@ -23,10 +22,8 @@ $widget-header-color: #000;
   }
 
   .header-container {
-    background-color: $widget-header-color;
     height: $header-height;
     width: 100%;
-    color: white;
     align-items: center;
     display: flex;
     flex-direction: row;
