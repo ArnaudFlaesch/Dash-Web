@@ -4,14 +4,16 @@ html,
 body {
   height: 100%;
 
-
+  // Light mode
   --dash-light-mode-background-color: #4e4945;
   --widget-light-mode-header-color: #000;
-  --widget-light-mode-header-text-color: #ffffff;
+  --widget-light-mode-header-text-color: #fff;
   --widget-light-mode-background-color: #fff;
+
+  // Dark mode
   --dash-dark-mode-background-color: #282a33;
   --widget-dark-mode-header-color: #2b5182;
-  --widget-dark-mode-header-text-color: #000000;
+  --widget-dark-mode-header-text-color: #000;
   --widget-dark-mode-background-color: hsl(208.4deg 17.6% 42.4%);
 }
 
