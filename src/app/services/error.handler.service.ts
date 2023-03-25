@@ -30,6 +30,10 @@ export class ErrorHandlerService {
     }
   }
 
+  public handleLoginError(error: HttpErrorResponse, messageToDisplay: string): void {
+    this.displayErrorMessage(error.message, messageToDisplay);
+  }
+
   private displayErrorMessage(errorMessage: string, messageToDisplay: string) {
     console.error(errorMessage);
     this.snackbar.open(messageToDisplay, undefined, { duration: 3000 });
