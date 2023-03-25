@@ -16,11 +16,11 @@
 
       <div id="action-bar-buttons">
 
-
-        <mat-icon>brightness_5</mat-icon>
-        <mat-slide-toggle [formControl]="toggleControl">
-        </mat-slide-toggle>
-        <mat-icon>bedtime</mat-icon>
+        <div id="dark-mode-toggle-container">
+          <mat-icon>light_mode</mat-icon>
+          <mat-slide-toggle [formControl]="toggleControl"> </mat-slide-toggle>
+          <mat-icon>dark_mode</mat-icon>
+        </div>
 
         <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
           <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">

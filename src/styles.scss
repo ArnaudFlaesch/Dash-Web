@@ -1,4 +1,27 @@
+@use '@angular/material' as mat;
 @import '../node_modules/angular-calendar/css/angular-calendar.css';
+
+@include mat.core;
+
+// Define a dark theme
+$dark-theme: mat.define-dark-theme((color: (primary: mat.define-palette(mat.$pink-palette),
+        accent: mat.define-palette(mat.$blue-grey-palette),
+      ),
+      /* Only include `typography` and `density` in the default dark theme.*/
+      typography: mat.define-typography-config(),
+      density: 0,
+    ));
+
+// Define a light theme
+$light-theme: mat.define-light-theme((color: (primary: mat.define-palette(mat.$indigo-palette),
+        accent: mat.define-palette(mat.$pink-palette),
+      ),
+    ));
+
+// Apply the dark theme by default
+@include mat.core-theme($light-theme);
+@include mat.button-color($light-theme);
+
 
 html,
 body {
@@ -38,11 +61,6 @@ body {
       background-color: var(--widget-light-mode-header-color);
       color: var(--widget-light-mode-header-text-color);
     }
-
-    mat-expansion-panel,
-    .cal-cell-row {
-      background-color: var(--widget-light-mode-background-color) !important;
-    }
   }
 
   .mini-widget {
@@ -50,6 +68,9 @@ body {
   }
 
   &.dark-mode {
+    @include mat.core-theme($dark-theme);
+    @include mat.button-color($dark-theme);
+
     background-color: var(--dash-dark-mode-background-color);
 
     .widget {

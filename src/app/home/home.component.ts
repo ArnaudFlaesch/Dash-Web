@@ -3,7 +3,7 @@ import { ImportConfigModalComponent } from './../modals/import-config-modal/impo
 import { ConfigService } from './../services/config.service/config.service';
 import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
 import { CreateWidgetModalComponent } from './../modals/create-widget-modal/create-widget-modal.component';
-import { Component, HostBinding, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TabService } from '../services/tab.service/tab.service';
@@ -23,7 +23,8 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  @HostBinding('class') className = '';
+  readonly DARK_MODE_CLASS_NAME = 'dark-mode';
+  readonly PREFERRED_THEME_LOCALSTORAGE_KEY = 'preferredTheme';
 
   public tabs: ITab[] = [];
   public activeWidgets: IWidgetConfig[] = [];
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public areWidgetsLoaded = false;
   public editModeEnabled = false;
 
-  toggleControl = new FormControl(false);
+  public toggleControl = new FormControl(false);
 
   private refreshInterval: NodeJS.Timer | null = null;
   private refreshTimeout = 600000; // 10 minutes
@@ -84,11 +85,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
     this.setupWidgetAutoRefresh();
 
-    this.toggleControl.valueChanges.subscribe((darkMode) => {
-      const darkClassName = 'dark-mode';
-      this.className = darkMode ? darkClassName : '';
-      document.body.classList.toggle(darkClassName);
+    this.toggleControl.valueChanges.subscribe((isDarkModeEnabled) => {
+      const preferredTheme = isDarkModeEnabled ? 'dark' : 'light';
+      if (isDarkModeEnabled) {
+        document.body.classList.add(this.DARK_MODE_CLASS_NAME);
+      } else {
+        document.body.classList.remove(this.DARK_MODE_CLASS_NAME);
+      }
+      localStorage.setItem(this.PREFERRED_THEME_LOCALSTORAGE_KEY, preferredTheme);
     });
+
+    const preferredTheme = localStorage.getItem(this.PREFERRED_THEME_LOCALSTORAGE_KEY);
+    if (preferredTheme !== null) {
+      this.toggleControl.setValue(preferredTheme === 'dark');
+    }
   }
 
   ngOnDestroy(): void {
