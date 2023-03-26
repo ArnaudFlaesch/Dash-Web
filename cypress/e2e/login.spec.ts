@@ -37,8 +37,8 @@ describe('Login tests', () => {
         expect(request.response.statusCode).to.equal(200);
         cy.url()
           .should('be.equal', `${Cypress.config('baseUrl')}home`)
-          .as('importConfigError')
           .get('#dash-menu')
+          .click()
           .get('#logoutButton')
           .click()
           .waitUntil(() =>
