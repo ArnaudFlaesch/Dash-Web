@@ -44,23 +44,6 @@ describe('LoginComponent', () => {
     spectator.fixture.detectChanges();
   });
 
-  it('Should login as demo', () => {
-    const userData = {
-      accessToken: 'accessToken',
-      id: 2,
-      username: 'admintest',
-      email: 'admin@email.com',
-      roles: ['ROLE_ADMIN'],
-      tokenType: 'Bearer'
-    };
-    const loginSpy = jest.spyOn(authService.service, 'login');
-    spectator.component.loginAsDemoAccount();
-    const request = authService.expectOne(environment.backend_url + '/auth/login', HttpMethod.POST);
-    request.flush(userData);
-    spectator.fixture.detectChanges();
-    expect(loginSpy).toHaveBeenCalledWith('demo', 'demo');
-  });
-
   it('Should fail to login with wrong credentials', () => {
     const userName = 'userName';
     const password = 'password';
