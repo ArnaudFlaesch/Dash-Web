@@ -13,6 +13,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -126,9 +128,11 @@ registerLocaleData(localeFr);
     FormsModule,
     MatButtonModule,
     MatDatepickerModule,
+    MatDividerModule,
     MatNativeDateModule,
     MatIconModule,
     MatInputModule,
+    MatMenuModule,
     MatFormFieldModule,
     MatSnackBarModule,
     MatTabsModule,

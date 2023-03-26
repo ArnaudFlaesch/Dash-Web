@@ -40,10 +40,4 @@ export class LoginComponent {
       this.isLoading = false;
     }
   }
-
-  public loginAsDemoAccount(): void {
-    this.inputUsername = 'demo';
-    this.inputPassword = 'demo';
-    this.handleLogin();
-  }
 }

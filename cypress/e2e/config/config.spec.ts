@@ -12,6 +12,8 @@ describe('Config tests', () => {
   it('Should export config', () => {
     cy.intercept('GET', '/dashConfig/export')
       .as('downloadConfig')
+      .get('#dash-menu')
+      .click()
       .get('#downloadConfigButton')
       .click()
       .wait('@downloadConfig')
@@ -23,6 +25,8 @@ describe('Config tests', () => {
   it('Should import config', () => {
     cy.intercept('POST', '/dashConfig/import')
       .as('importConfig')
+      .get('#dash-menu')
+      .click()
       .get('#openImportConfigModal')
       .click()
       .get('#file')
