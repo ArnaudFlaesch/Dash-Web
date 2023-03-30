@@ -8,6 +8,7 @@ import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
+import { ThemeService } from '../../services/theme.service/theme.service';
 import { AirParifWidgetService } from '../airparif-widget/airparif-widget.service';
 import { CalendarWidgetService } from '../calendar-widget/calendar-widget.service';
 import { RssWidgetService } from '../rss-widget/rss.widget.service';
@@ -34,6 +35,7 @@ describe('WidgetListComponent', () => {
       WorkoutWidgetService,
       ErrorHandlerService,
       WidgetService,
+      ThemeService,
       DateUtilsService
     ],
     imports: [MatSnackBarModule, MatDialogModule, HttpClientTestingModule, RouterTestingModule]

@@ -1,11 +1,7 @@
-import { IWidgetConfig } from './../model/IWidgetConfig';
-import { WidgetTypeEnum } from './../enums/WidgetTypeEnum';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { ErrorHandlerService } from './../services/error.handler.service';
-import { ConfigService } from './../services/config.service/config.service';
-import { MatDialogModule } from '@angular/material/dialog';
-import { WidgetService } from './../services/widget.service/widget.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   createComponentFactory,
@@ -14,11 +10,17 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
+
 import { environment } from '../../environments/environment';
+import { WidgetTypeEnum } from './../enums/WidgetTypeEnum';
+import { IWidgetConfig } from './../model/IWidgetConfig';
 import { AuthService } from './../services/auth.service/auth.service';
+import { ConfigService } from './../services/config.service/config.service';
+import { ErrorHandlerService } from './../services/error.handler.service';
 import { TabService } from './../services/tab.service/tab.service';
+import { ThemeService } from './../services/theme.service/theme.service';
+import { WidgetService } from './../services/widget.service/widget.service';
 import { HomeComponent } from './home.component';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('HomeComponent', () => {
   let spectator: Spectator<HomeComponent>;
@@ -30,7 +32,14 @@ describe('HomeComponent', () => {
   const createComponent = createComponentFactory({
     component: HomeComponent,
     imports: [HttpClientTestingModule, RouterTestingModule, MatDialogModule, MatSnackBarModule],
-    providers: [AuthService, TabService, WidgetService, ConfigService, ErrorHandlerService],
+    providers: [
+      AuthService,
+      TabService,
+      WidgetService,
+      ConfigService,
+      ErrorHandlerService,
+      ThemeService
+    ],
     schemas: [NO_ERRORS_SCHEMA]
   });
   const createTabHttp = createHttpFactory(TabService);

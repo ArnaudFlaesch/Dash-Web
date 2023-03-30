@@ -9,6 +9,7 @@ import {
 
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
+import { ThemeService } from '../../services/theme.service/theme.service';
 import { IFollowedUser } from './ITwitter';
 import { TwitterWidgetComponent } from './twitter-widget.component';
 import { TwitterWidgetService } from './twitter.widget.service';
@@ -21,7 +22,7 @@ describe('TwitterWidgetComponent', () => {
     const createComponent = createComponentFactory({
       component: TwitterWidgetComponent,
       imports: [MatSnackBarModule],
-      providers: [TwitterWidgetService, ErrorHandlerService],
+      providers: [TwitterWidgetService, ErrorHandlerService, ThemeService],
       schemas: []
     });
     const createHttp = createHttpFactory(TwitterWidgetService);
@@ -96,7 +97,7 @@ describe('TwitterWidgetComponent', () => {
     const createComponent = createComponentFactory({
       component: TwitterWidgetComponent,
       imports: [MatSnackBarModule],
-      providers: [TwitterWidgetService, ErrorHandlerService],
+      providers: [TwitterWidgetService, ErrorHandlerService, ThemeService],
       schemas: []
     });
     const createHttp = createHttpFactory(TwitterWidgetService);
