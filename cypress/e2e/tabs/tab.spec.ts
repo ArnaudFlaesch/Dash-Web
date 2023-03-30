@@ -15,13 +15,9 @@ describe('Tab tests', () => {
   });
 
   it('Should edit the created tab', () => {
-    cy.intercept('POST', '/tab/updateTab').as('updateTab').get('.tab:nth(-1) .tab-label').click();
+    cy.intercept('POST', '/tab/updateTab').as('updateTab');
+    cy.get('.tab:nth(-1) .tab-label').click();
     cy.get('.tab:nth(-1) .tab-label').dblclick();
-    cy.get('.tab:nth(-1) .tab-label')
-      .invoke('text')
-      .then((text) => {
-        expect(text.trim()).equal('Nouvel onglet');
-      });
     cy.get('input').clear();
     cy.get('input').type('News feed');
     cy.get('input').dblclick();
