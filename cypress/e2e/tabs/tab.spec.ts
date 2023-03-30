@@ -10,46 +10,35 @@ describe('Tab tests', () => {
   });
 
   it('Should create a new tab', () => {
-    cy.get('#addNewTabButton').click().get('.tab').should('have.length', 2);
+    cy.get('#addNewTabButton').click();
+    cy.get('.tab').should('have.length', 2);
   });
 
   it('Should edit the created tab', () => {
-    cy.intercept('POST', '/tab/updateTab')
-      .as('updateTab')
-      .get('.tab:nth(-1) .tab-label')
-      .click()
-      .dblclick()
-      .invoke('text')
-      .then((text) => {
-        expect(text.trim()).equal('Nouvel onglet');
-      })
-      .get('input')
-      .clear()
-      .type('News feed')
-      .dblclick()
-      .wait('@updateTab')
-      .then(() => {
+    cy.intercept('POST', '/tab/updateTab').as('updateTab');
+    cy.get('.tab:nth(-1) .tab-label').click();
+    cy.get('.tab:nth(-1) .tab-label').dblclick();
+    cy.get('input').clear();
+    cy.get('input').type('News feed');
+    cy.get('input').dblclick();
+    cy.wait('@updateTab').then(() => {
+      cy.get('.tab.selected-item .tab-label')
+        .invoke('text')
+        .then((text) => {
+          expect(text.trim()).equal('News feed');
+        });
+      cy.get('.tab').contains('News feed').click();
+      cy.get('.tab').contains('News feed').dblclick();
+      cy.get('input').clear();
+      cy.get('input').type('News feed Updated{Enter}');
+      cy.wait('@updateTab').then(() => {
         cy.get('.tab.selected-item .tab-label')
           .invoke('text')
           .then((text) => {
-            expect(text.trim()).equal('News feed');
-          })
-          .get('.tab')
-          .contains('News feed')
-          .click()
-          .dblclick()
-          .get('input')
-          .clear()
-          .type('News feed Updated{Enter}')
-          .wait('@updateTab')
-          .then(() => {
-            cy.get('.tab.selected-item .tab-label')
-              .invoke('text')
-              .then((text) => {
-                expect(text.trim()).equal('News feed Updated');
-              });
+            expect(text.trim()).equal('News feed Updated');
           });
       });
+    });
   });
 
   it('Should delete the created tab', () => {
@@ -57,13 +46,11 @@ describe('Tab tests', () => {
       .as('deleteTab')
       .get('.tab')
       .contains('News feed Updated')
-      .dblclick()
-      .get('.deleteTabButton')
-      .click()
-      .wait('@deleteTab')
-      .then((response: Interception) => {
-        expect(response.response.statusCode).to.equal(200);
-        cy.get('.tab').should('have.length', 1);
-      });
+      .dblclick();
+    cy.get('.deleteTabButton').click();
+    cy.wait('@deleteTab').then((response: Interception) => {
+      expect(response.response.statusCode).to.equal(200);
+      cy.get('.tab').should('have.length', 1);
+    });
   });
 });
