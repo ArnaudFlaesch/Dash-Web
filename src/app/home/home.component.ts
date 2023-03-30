@@ -1,21 +1,23 @@
-import { ErrorHandlerService } from '../services/error.handler.service';
-import { ImportConfigModalComponent } from './../modals/import-config-modal/import-config-modal.component';
-import { ConfigService } from './../services/config.service/config.service';
-import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
-import { CreateWidgetModalComponent } from './../modals/create-widget-modal/create-widget-modal.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+
+import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
+import { ErrorHandlerService } from '../services/error.handler.service';
 import { TabService } from '../services/tab.service/tab.service';
+import { ThemeService } from '../services/theme.service/theme.service';
 import { WidgetService } from '../services/widget.service/widget.service';
+import { CreateWidgetModalComponent } from './../modals/create-widget-modal/create-widget-modal.component';
+import { ImportConfigModalComponent } from './../modals/import-config-modal/import-config-modal.component';
 import { IWidgetConfig } from './../model/IWidgetConfig';
 import { ITab } from './../model/Tab';
 import { AuthService } from './../services/auth.service/auth.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Location } from '@angular/common';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Subject, takeUntil } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { ConfigService } from './../services/config.service/config.service';
 
 @Component({
   selector: 'app-home',
@@ -23,9 +25,6 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  readonly DARK_MODE_CLASS_NAME = 'dark-mode';
-  readonly PREFERRED_THEME_LOCALSTORAGE_KEY = 'preferredTheme';
-
   public tabs: ITab[] = [];
   public activeWidgets: IWidgetConfig[] = [];
   public activeTab = -1;
@@ -62,6 +61,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private tabService: TabService,
     private widgetService: WidgetService,
     private configService: ConfigService,
+    private themeService: ThemeService,
     private errorHandlerService: ErrorHandlerService
   ) {
     this.initDashboard();
@@ -86,19 +86,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.setupWidgetAutoRefresh();
 
     this.toggleControl.valueChanges.subscribe((isDarkModeEnabled) => {
-      const preferredTheme = isDarkModeEnabled ? 'dark' : 'light';
-      if (isDarkModeEnabled) {
-        document.body.classList.add(this.DARK_MODE_CLASS_NAME);
-      } else {
-        document.body.classList.remove(this.DARK_MODE_CLASS_NAME);
-      }
-      localStorage.setItem(this.PREFERRED_THEME_LOCALSTORAGE_KEY, preferredTheme);
+      this.themeService.selectDarkMode(isDarkModeEnabled || false);
     });
 
-    const preferredTheme = localStorage.getItem(this.PREFERRED_THEME_LOCALSTORAGE_KEY);
-    if (preferredTheme !== null) {
-      this.toggleControl.setValue(preferredTheme === 'dark');
-    }
+    this.toggleControl.setValue(this.themeService.isPreferredThemeDarkMode());
   }
 
   ngOnDestroy(): void {

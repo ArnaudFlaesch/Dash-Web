@@ -11,16 +11,14 @@
     #tab-list-container {
       display: flex;
       flex-direction: row;
+      flex: 1 1 70%;
       overflow-x: hidden;
       overflow-y: hidden;
-
-      @media (max-width: 640px) {
-        width: 80%;
-      }
 
       #tab-list {
         display: flex;
         flex-direction: row;
+        max-width: 70%;
         overflow-x: auto;
 
         > :not([hidden])~ :not([hidden]) {
@@ -56,7 +54,6 @@
       @media (max-width: 640px) {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        max-width: 20%;
       }
 
       #toggle-mode-container {
@@ -67,7 +64,6 @@
 
   #mini-widgets-container {
     margin-top: 5px;
-    margin-left: 5px;
   }
 }
 

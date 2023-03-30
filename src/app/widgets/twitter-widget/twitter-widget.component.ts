@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IFollowedUser } from './ITwitter';
 import { TwitterWidgetService } from './twitter.widget.service';
+import { ThemeService } from '../../services/theme.service/theme.service';
 
 @Component({
   selector: 'app-twitter-widget',
@@ -28,6 +29,7 @@ export class TwitterWidgetComponent implements OnInit {
   constructor(
     private cdRef: ChangeDetectorRef,
     private twitterWidgetService: TwitterWidgetService,
+    private themeService: ThemeService,
     private errorHandlerService: ErrorHandlerService
   ) {}
 
@@ -45,10 +47,6 @@ export class TwitterWidgetComponent implements OnInit {
             this.errorHandlerService.handleError(error, this.ERROR_GETTING_FOLLOWED_USERS)
         });
       });
-  }
-
-  ngAfterViewInit(): void {
-    this.initTwitterWidget();
   }
 
   public refreshWidget(): void {
@@ -101,32 +99,11 @@ export class TwitterWidgetComponent implements OnInit {
     return !!this.selectedTwitterHandle && this.selectedTwitterHandle?.length > 0;
   }
 
+  public getPreferredTheme(): string {
+    return this.themeService.isPreferredThemeDarkMode() ? 'dark' : 'light';
+  }
+
   private createTimelineUrl(): string {
     return `https://twitter.com/${this.selectedTwitterHandle}?ref_src=twsrc%5Etfw`;
   }
-
-  /* eslint-disable */
-  private initTwitterWidget(): void {
-    (<any>window).twttr = (function (d, s, id) {
-      const fjs: any = d.getElementsByTagName(s)[0],
-        t = (<any>window).twttr || {};
-      if (d.getElementById(id)) return t;
-      const js: any = d.createElement(s);
-      js.id = id;
-      js.src = 'https://platform.twitter.com/widgets.js';
-      fjs?.parentNode?.insertBefore(js, fjs);
-
-      t._e = [];
-      t.ready = function (f: any) {
-        t._e.push(f);
-      };
-
-      return t;
-    })(document, 'script', 'twitter-wjs');
-
-    if ((<any>window).twttr.ready()) {
-      (<any>window).twttr.widgets.load();
-    }
-  }
-  /* eslint-enable */
 }
