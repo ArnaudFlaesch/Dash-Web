@@ -13,44 +13,34 @@ describe('Config tests', () => {
     cy.intercept('GET', '/dashConfig/export')
       .as('downloadConfig')
       .get('#downloadConfigButton')
-      .click()
-      .wait('@downloadConfig')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-      });
+      .click();
+    cy.wait('@downloadConfig').then((request: Interception) => {
+      expect(request.response.statusCode).to.equal(200);
+    });
   });
 
   it('Should import config', () => {
     cy.intercept('POST', '/dashConfig/import')
       .as('importConfig')
       .get('#openImportConfigModal')
-      .click()
-      .get('#file')
-      .attachFile('dashboardConfigTest.json')
-      .get('#uploadFileButton')
-      .click()
-      .wait('@importConfig')
-      .then((request: Interception) => {
+      .click();
+    cy.get('#file').attachFile('dashboardConfigTest.json');
+    cy.get('#uploadFileButton').click();
+    cy.wait('@importConfig').then((request: Interception) => {
+      expect(request.response.statusCode).to.equal(200);
+      cy.reload()
+        .intercept('DELETE', '/tab/deleteTab*')
+        .as('deleteTab')
+        .get('.tab')
+        .should('have.length', 2)
+        .contains('Perso')
+        .click();
+      cy.get('.widget').should('have.length', 5).get('.tab').contains('Perso').dblclick();
+      cy.get('.deleteTabButton').click();
+      cy.wait('@deleteTab').then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
-        cy.reload()
-          .intercept('DELETE', '/tab/deleteTab*')
-          .as('deleteTab')
-          .get('.tab')
-          .should('have.length', 2)
-          .contains('Perso')
-          .click()
-          .get('.widget')
-          .should('have.length', 5)
-          .get('.tab')
-          .contains('Perso')
-          .dblclick()
-          .get('.deleteTabButton')
-          .click()
-          .wait('@deleteTab')
-          .then((request: Interception) => {
-            expect(request.response.statusCode).to.equal(200);
-            cy.get('.tab').should('have.length', 1);
-          });
+        cy.get('.tab').should('have.length', 1);
       });
+    });
   });
 });

@@ -39,16 +39,16 @@ Cypress.Commands.add('createNewTab', (tabName: string): Cypress.Chainable => {
   return createNewTab(tabName);
 });
 
-Cypress.Commands.add('deleteTab', (tabName: string): Cypress.Chainable => {
-  return deleteTab(tabName);
+Cypress.Commands.add('deleteTab', (tabName: string): void => {
+  deleteTab(tabName);
 });
 
-Cypress.Commands.add('createWidget', (widgetType: string): Cypress.Chainable => {
-  return createWidget(widgetType);
+Cypress.Commands.add('createWidget', (widgetType: string): void => {
+  createWidget(widgetType);
 });
 
-Cypress.Commands.add('shouldDisplayErrorMessage', (errorMessage: string): Cypress.Chainable => {
-  return shouldDisplayErrorMessage(errorMessage);
+Cypress.Commands.add('shouldDisplayErrorMessage', (errorMessage: string): void => {
+  shouldDisplayErrorMessage(errorMessage);
 });
 
 function loginAs(username: string, password: string): Cypress.Chainable<Response> {
@@ -76,13 +76,10 @@ function navigateToTab(tabName: string): Cypress.Chainable {
     .wait('@getTabs')
     .then((getTabResponse: Interception) => {
       expect(getTabResponse.response.statusCode).to.equal(200);
-      cy.get('.tab')
-        .contains(tabName)
-        .click()
-        .wait('@getWidgets')
-        .then((getWidgetsResponse: Interception) => {
-          expect(getWidgetsResponse.response.statusCode).to.equal(200);
-        });
+      cy.get('.tab').contains(tabName).click();
+      cy.wait('@getWidgets').then((getWidgetsResponse: Interception) => {
+        expect(getWidgetsResponse.response.statusCode).to.equal(200);
+      });
     });
 }
 
@@ -98,59 +95,43 @@ function createNewTab(tabName: string): Cypress.Chainable {
     .wait('@getTabs')
     .then((getTabsResponse) => {
       expect(getTabsResponse.response.statusCode).to.equal(200);
-      cy.get('#addNewTabButton')
-        .click()
-        .wait('@createTab')
-        .then((createTabResponse) => {
-          expect(createTabResponse.response.statusCode).to.equal(200);
-          cy.get('.tab:nth(-1) .tab-label')
-            .click()
-            .dblclick()
-            .get('input')
-            .clear()
-            .type(tabName)
-            .dblclick()
-            .wait('@updateTab')
-            .then((updateTabResponse: Interception) => {
-              expect(updateTabResponse.response.statusCode).to.equal(200);
-              cy.get('.tab.selected-item .tab-label')
-                .invoke('text')
-                .then((text) => {
-                  expect(text.trim()).equal(tabName);
-                });
+      cy.get('#addNewTabButton').click();
+      cy.wait('@createTab').then((createTabResponse) => {
+        expect(createTabResponse.response.statusCode).to.equal(200);
+        cy.get('.tab:nth(-1) .tab-label').click();
+        cy.get('.tab:nth(-1) .tab-label').dblclick();
+        cy.get('input').clear();
+        cy.get('input').type(tabName);
+        cy.get('input').dblclick();
+        cy.wait('@updateTab').then((updateTabResponse: Interception) => {
+          expect(updateTabResponse.response.statusCode).to.equal(200);
+          cy.get('.tab.selected-item .tab-label')
+            .invoke('text')
+            .then((text) => {
+              expect(text.trim()).equal(tabName);
             });
         });
+      });
     });
 }
 
-function deleteTab(tabName: string): Cypress.Chainable {
-  return cy
-    .intercept('DELETE', '/tab/deleteTab*')
-    .as('deleteTab')
-    .get('.tab')
-    .contains(tabName)
-    .dblclick()
-    .get('.deleteTabButton')
-    .click()
-    .wait('@deleteTab')
-    .then((deleteTabResponse: Interception) => {
-      expect(deleteTabResponse.response.statusCode).to.equal(200);
-    });
+function deleteTab(tabName: string): void {
+  cy.intercept('DELETE', '/tab/deleteTab*').as('deleteTab');
+  cy.get('.tab').contains(tabName).dblclick();
+  cy.get('.deleteTabButton').click();
+  cy.wait('@deleteTab').then((deleteTabResponse: Interception) => {
+    expect(deleteTabResponse.response.statusCode).to.equal(200);
+  });
 }
 
-function createWidget(widgetType: string): Cypress.Chainable {
-  return cy
-    .intercept('POST', '/widget/addWidget')
-    .as('addWidget')
-    .get('#openAddWidgetModal')
-    .click()
-    .get(`#${widgetType}`)
-    .click()
-    .wait('@addWidget')
-    .then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(200);
-      cy.get('.widget').should('have.length', 1);
-    });
+function createWidget(widgetType: string): void {
+  cy.intercept('POST', '/widget/addWidget').as('addWidget');
+  cy.get('#openAddWidgetModal').click();
+  cy.get(`#${widgetType}`).click();
+  cy.wait('@addWidget').then((request: Interception) => {
+    expect(request.response.statusCode).to.equal(200);
+    cy.get('.widget').should('have.length', 1);
+  });
 }
 
 function shouldDisplayErrorMessage(errorMessage: string): Cypress.Chainable {
