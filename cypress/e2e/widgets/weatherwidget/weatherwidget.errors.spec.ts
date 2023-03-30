@@ -17,15 +17,13 @@ describe('Weather Widget error tests', () => {
     cy.intercept('POST', '/widget/addWidget', { statusCode: 500 })
       .as('addWidgetError')
       .get('#openAddWidgetModal')
-      .click()
-      .get('#WEATHER')
-      .click()
-      .wait('@addWidgetError')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(500);
-        cy.get('.widget')
-          .should('have.length', 0)
-          .shouldDisplayErrorMessage("Erreur lors de l'ajout d'un widget.");
-      });
+      .click();
+    cy.get('#WEATHER').click();
+    cy.wait('@addWidgetError').then((request: Interception) => {
+      expect(request.response.statusCode).to.equal(500);
+      cy.get('.widget')
+        .should('have.length', 0)
+        .shouldDisplayErrorMessage("Erreur lors de l'ajout d'un widget.");
+    });
   });
 });

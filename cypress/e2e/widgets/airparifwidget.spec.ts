@@ -15,22 +15,17 @@ describe('AirParif Widget tests', () => {
 
   it('Should insert valid configuration', () => {
     const communeInseeCode = '75112';
-    cy.get('#airParifApiKey')
-      .type(AIR_PARIF_VALID_TOKEN)
-      .get('#communeInseeCodeLabel')
-      .click()
-      .get('#communeInseeCode')
-      .type(communeInseeCode)
-      .intercept('GET', `/airParifWidget/previsionCommune?commune=${communeInseeCode}`)
+    cy.get('#airParifApiKey').type(AIR_PARIF_VALID_TOKEN);
+    cy.get('#communeInseeCodeLabel').click();
+    cy.get('#communeInseeCode').type(communeInseeCode);
+    cy.intercept('GET', `/airParifWidget/previsionCommune?commune=${communeInseeCode}`)
       .as('getForecastData')
       .intercept('GET', `/airParifWidget/couleurs*`)
-      .as('getColorsData')
-      .get('.validateButton')
-      .click()
-      .wait(['@getForecastData', '@getColorsData'])
-      .then((requests: Interception[]) => {
-        expect(requests[0].response.statusCode).to.equal(200);
-        expect(requests[1].response.statusCode).to.equal(200);
-      });
+      .as('getColorsData');
+    cy.get('.validateButton').click();
+    cy.wait(['@getForecastData', '@getColorsData']).then((requests: Interception[]) => {
+      expect(requests[0].response.statusCode).to.equal(200);
+      expect(requests[1].response.statusCode).to.equal(200);
+    });
   });
 });

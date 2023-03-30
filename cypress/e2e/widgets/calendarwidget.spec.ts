@@ -23,58 +23,39 @@ describe('Calendar Widget tests', () => {
     cy.intercept('POST', `/calendarWidget/`)
       .as('getCalendarDataRequest')
       .get('#addCalendarUrl')
-      .click()
-      .get('input')
-      .type(`${icalFrenchHolidays}`)
-      .get('.validateButton')
-      .click()
-      .wait('@getCalendarDataRequest')
-      .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
-        cy.get('h3')
-          .should('have.text', 'juillet 2022')
-          .get('.refreshButton')
-          .click()
-          .wait('@getCalendarDataRequest')
-          .then(() => {
-            cy.get('.cal-future:nth(14)')
-              .find('.cal-day-badge')
-              .should('have.text', 1)
-              .get('.editButton')
-              .click()
-              .get('#addCalendarUrl')
-              .click()
-              .get('input')
-              .eq(1)
-              .type(`${icalUsaHolidays}`)
-              .get('.validateButton')
-              .click();
-            cy.wait(['@getCalendarDataRequest', '@getCalendarDataRequest']).then(
-              (request: Interception[]) => {
-                expect(request[0].response.statusCode).to.equal(200);
-                expect(request[1].response.statusCode).to.equal(200);
-                cy.get('.cal-future:nth(4)')
-                  .scrollIntoView()
-                  .get('.editButton')
-                  .click()
-                  .get('.removeCalendarUrl')
-                  .eq(1)
-                  .click()
-                  .get('.validateButton')
-                  .click()
-                  .wait('@getCalendarDataRequest')
-                  .then(() =>
-                    cy
-                      .get('.cal-day-badge')
-                      .should('have.length', 1)
-                      .clock()
-                      .then((clock) => {
-                        clock.restore();
-                      })
-                  );
-              }
+      .click();
+    cy.get('input').type(`${icalFrenchHolidays}`);
+    cy.get('.validateButton').click();
+    cy.wait('@getCalendarDataRequest').then((request: Interception) => {
+      expect(request.response.statusCode).to.equal(200);
+      cy.get('h3').should('have.text', 'juillet 2022');
+      cy.get('.refreshButton').click();
+      cy.wait('@getCalendarDataRequest').then(() => {
+        cy.get('.cal-future:nth(14)').find('.cal-day-badge').should('have.text', 1);
+        cy.get('.editButton').click();
+        cy.get('#addCalendarUrl').click();
+        cy.get('input').eq(1).type(`${icalUsaHolidays}`);
+        cy.get('.validateButton').click();
+        cy.wait(['@getCalendarDataRequest', '@getCalendarDataRequest']).then(
+          (request: Interception[]) => {
+            expect(request[0].response.statusCode).to.equal(200);
+            expect(request[1].response.statusCode).to.equal(200);
+            cy.get('.cal-future:nth(4)').scrollIntoView();
+            cy.get('.editButton').click();
+            cy.get('.removeCalendarUrl').eq(1).click();
+            cy.get('.validateButton').click();
+            cy.wait('@getCalendarDataRequest').then(() =>
+              cy
+                .get('.cal-day-badge')
+                .should('have.length', 1)
+                .clock()
+                .then((clock) => {
+                  clock.restore();
+                })
             );
-          });
+          }
+        );
       });
+    });
   });
 });
