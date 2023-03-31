@@ -2,9 +2,11 @@
   <div *ngIf="isModeEdit()" class="widget-edit-mode">
     <div class="header-container">
       <div class="header">
-        <button mat-icon-button (click)="this.toDeleteMode()">
-          <mat-icon title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
-        </button>
+        <div class="header-actions">
+          <button mat-icon-button (click)="this.toDeleteMode()">
+            <mat-icon title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
     <div class="widget-body">

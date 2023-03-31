@@ -9,6 +9,10 @@
     flex-direction: row;
     overflow-x: auto;
 
+    @media (max-width: 320px) {
+      width: 90%;
+    }
+
     .miniwidget-container {
       background-color: white;
       border: 1px solid black;
