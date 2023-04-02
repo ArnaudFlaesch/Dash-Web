@@ -242,4 +242,15 @@ describe('HomeComponent', () => {
     );
     deleteLastTabRequest.flush(null);
   });
+
+  it('Should switch between light and dark mode', () => {
+    const getTabsRequest = tabService.expectOne(environment.backend_url + '/tab/', HttpMethod.GET);
+    getTabsRequest.flush([]);
+    spectator.component.toggleTheme(true);
+    expect(localStorage.getItem('preferredTheme')).toEqual('dark');
+    spectator.component.toggleTheme(true);
+    expect(localStorage.getItem('preferredTheme')).toEqual('dark');
+    spectator.component.toggleTheme(false);
+    expect(localStorage.getItem('preferredTheme')).toEqual('light');
+  });
 });

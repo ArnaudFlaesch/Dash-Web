@@ -84,11 +84,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
     });
     this.setupWidgetAutoRefresh();
-
-    this.toggleControl.valueChanges.subscribe((isDarkModeEnabled) => {
-      this.themeService.selectDarkMode(isDarkModeEnabled || false);
-    });
-
     this.toggleControl.setValue(this.themeService.isPreferredThemeDarkMode());
   }
 
@@ -229,6 +224,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public toggleEditMode(): void {
     this.editModeEnabled = !this.editModeEnabled;
+  }
+
+  public toggleTheme(isToggleChecked: boolean): void {
+    this.themeService.selectDarkMode(isToggleChecked);
   }
 
   private initDashboard(): void {
