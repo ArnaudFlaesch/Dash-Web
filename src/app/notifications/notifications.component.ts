@@ -116,8 +116,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         return 'info';
       case NotificationTypeEnum.WARN:
         return 'warning';
-      default:
-        return 'info';
     }
   }
 
