@@ -6,6 +6,7 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -14,6 +15,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -79,6 +81,8 @@ import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-se
 import { WorkoutStatisticsComponent } from './widgets/workout-widget/workout-statistics/workout-statistics.component';
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { NotificationService } from './services/notification.service/NotificationService';
 
 registerLocaleData(localeFr);
 
@@ -117,7 +121,8 @@ registerLocaleData(localeFr);
     EcowattWidgetComponent,
     AirParifMapComponent,
     AbstractWidgetComponent,
-    WorkoutStatisticsComponent
+    WorkoutStatisticsComponent,
+    NotificationsComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -134,6 +139,8 @@ registerLocaleData(localeFr);
     MatNativeDateModule,
     MatIconModule,
     MatInputModule,
+    MatBadgeModule,
+    MatTooltipModule,
     MatMenuModule,
     MatFormFieldModule,
     MatSnackBarModule,
@@ -166,6 +173,7 @@ registerLocaleData(localeFr);
     WorkoutWidgetService,
     CalendarWidgetService,
     StravaWidgetService,
+    NotificationService,
     TwitterWidgetService,
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },

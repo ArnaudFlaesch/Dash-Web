@@ -6,7 +6,7 @@ import {
   HttpMethod,
   Spectator,
   SpectatorHttp
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/jest';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IWorkoutSession, IWorkoutType } from './model/Workout';
 import {

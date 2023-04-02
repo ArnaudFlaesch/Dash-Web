@@ -5,8 +5,11 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class ErrorHandlerService {
+  private ERROR_AUTHENTICATING_USER = "Erreur lors de la connexion de l'utilisateur.";
+
   private ERROR_UNAUTHORIZED_CODE =
     "Votre jeton d'authentification n'est plus valide, veuillez vous reconnecter.";
+
   private ERROR_FORBIDDEN_CODE =
     "Vous n'avez pas les droits nécessaires pour effectuer cette opération.";
 
@@ -30,8 +33,8 @@ export class ErrorHandlerService {
     }
   }
 
-  public handleLoginError(error: HttpErrorResponse, messageToDisplay: string): void {
-    this.displayErrorMessage(error.message, messageToDisplay);
+  public handleLoginError(error: HttpErrorResponse): void {
+    this.displayErrorMessage(error.message, this.ERROR_AUTHENTICATING_USER);
   }
 
   private displayErrorMessage(errorMessage: string, messageToDisplay: string) {

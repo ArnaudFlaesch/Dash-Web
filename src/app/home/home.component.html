@@ -15,6 +15,7 @@
       </div>
 
       <div id="action-bar-buttons">
+        <app-notifications></app-notifications>
         <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
           <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
             <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>
@@ -60,7 +61,6 @@
             <span>Déconnexion</span>
           </button>
         </mat-menu>
-
       </div>
     </div>
 
