@@ -22,8 +22,6 @@ export class ThemeService {
 
   public isPreferredThemeDarkMode(): boolean {
     const preferredTheme = localStorage.getItem(this.PREFERRED_THEME_LOCALSTORAGE_KEY);
-    if (preferredTheme !== null) {
-      return preferredTheme === 'dark';
-    } else return false;
+    return preferredTheme !== null && preferredTheme === 'dark';
   }
 }
