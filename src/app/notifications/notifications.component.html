@@ -4,8 +4,8 @@
 
 
 <mat-menu #notificationsMenu="matMenu">
-  <button id="mark-all-notifications-as-read-button" (click)="markAllNotificationsAsRead($event)"
-    mat-icon-button><mat-icon>check</mat-icon></button>
+  <button id="mark-all-notifications-as-read-button" *ngIf="this.unreadNotificationsForBadge !== ''"
+    (click)="markAllNotificationsAsRead($event)" mat-icon-button><mat-icon>check</mat-icon></button>
 
   <div class="notification-container" [ngClass]="{'unread-notification' : !notification.isRead, 'info': notification.notificationType.toString() === notificationTypeEnum.INFO,
      'warn': notification.notificationType.toString() === notificationTypeEnum.WARN}"

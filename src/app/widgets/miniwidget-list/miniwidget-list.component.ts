@@ -4,6 +4,7 @@ import {
   Component,
   Injector,
   OnInit,
+  OnDestroy,
   QueryList,
   ViewChildren,
   ViewContainerRef
@@ -16,20 +17,23 @@ import { IMiniWidgetConfig } from '../../model/IMiniWidgetConfig';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
 import { WeatherMiniWidgetComponent } from '../weather-widget/weather-mini-widget/weather-miniwidget.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-miniwidget-list',
   templateUrl: './miniwidget-list.component.html',
   styleUrls: ['./miniwidget-list.component.scss']
 })
-export class MiniWidgetListComponent implements OnInit {
+export class MiniWidgetListComponent implements OnInit, OnDestroy {
   @ViewChildren('dynamic', { read: ViewContainerRef })
   private miniWidgetTargets: QueryList<ViewContainerRef> | undefined;
 
   public miniWidgetList: IMiniWidgetConfig[] = [];
+  private destroy$: Subject<unknown> = new Subject();
 
   private ERROR_MESSAGE_GET_MINI_WIDGETS = 'Erreur lors de la récupération des mini widgets.';
   private ERROR_MESSAGE_ADD_MINI_WIDGET = "Erreur lors de l'ajout d'un mini widget.";
+  private ERROR_MESSAGE_DELETE_MINI_WIDGET = 'Erreur lors de la suppression du mini widget.';
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -47,6 +51,24 @@ export class MiniWidgetListComponent implements OnInit {
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_MINI_WIDGETS)
     });
+
+    this.miniWidgetService.miniWidgetDeleted.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (miniWidgetId) => {
+        this.miniWidgetService.deleteMiniWidget(miniWidgetId).subscribe({
+          next: () =>
+            (this.miniWidgetList = this.miniWidgetList.filter(
+              (miniWidget) => miniWidget.id !== miniWidgetId
+            )),
+          error: (error) =>
+            this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_MINI_WIDGET)
+        });
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+    this.destroy$.complete();
   }
 
   public openCreateMiniWidgetModal(): void {

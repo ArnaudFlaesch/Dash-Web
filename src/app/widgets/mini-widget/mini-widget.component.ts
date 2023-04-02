@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 
-import { AbstractWidgetComponent } from '../abstract-widget/abstract-widget.component';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
+import { AbstractWidgetComponent } from '../abstract-widget/abstract-widget.component';
 
 @Component({
   selector: 'app-mini-widget',
@@ -37,5 +37,9 @@ export class MiniWidgetComponent extends AbstractWidgetComponent {
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_DATA)
       });
+  }
+
+  public deleteMiniWidget(): void {
+    this.miniWidgetService._miniWidgetDeletedEvent.next(this.widgetId);
   }
 }

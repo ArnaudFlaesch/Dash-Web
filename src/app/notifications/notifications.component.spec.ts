@@ -7,7 +7,7 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
-import { format, startOfYesterday } from 'date-fns';
+import { startOfYesterday } from 'date-fns';
 
 import { Pageable } from '../../app/model/IPage';
 import { environment } from '../../environments/environment';

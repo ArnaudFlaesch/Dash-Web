@@ -14,7 +14,8 @@
         <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
       </div>
       <div class="edit-component-actions">
-        <button class="cancelButton" mat-raised-button (click)="cancelEdition()">
+        <button class="cancelButton" mat-raised-button (click)="cancelEdition()"
+          *ngIf="this.isWidgetLoaded && this.widgetData">
           Annuler
         </button>
         <button class="validateButton" mat-raised-button (click)="onValidation()" color="primary"
