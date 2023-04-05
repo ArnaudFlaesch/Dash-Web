@@ -3,8 +3,11 @@ import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { RoleEnum } from '../../../app/model/RoleEnum';
 import { environment } from '../../../environments/environment';
 import { IUser } from './../../model/User';
+
 interface IJwt {
   sub: string;
   iat: number;
@@ -34,6 +37,7 @@ export class AuthService {
       .pipe(
         map((response) => {
           if (response.accessToken) {
+            console.log(response);
             localStorage.setItem('user', JSON.stringify(response));
           }
           return response;
@@ -56,6 +60,11 @@ export class AuthService {
       }
     }
     return result;
+  }
+
+  public isUserAdmin(): boolean {
+    const authenticatedUser = this.getCurrentUserData();
+    return authenticatedUser !== null && authenticatedUser.roles.includes(RoleEnum.ROLE_ADMIN);
   }
 
   private getCurrentUserData(): IUser | null {

@@ -230,6 +230,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.themeService.selectDarkMode(isToggleChecked);
   }
 
+  public canUserSeeNotifications(): boolean {
+    return this.authService.isUserAdmin();
+  }
+
   private initDashboard(): void {
     this.tabService.getTabs().subscribe({
       next: (tabs) => {

@@ -15,7 +15,7 @@
       </div>
 
       <div id="action-bar-buttons">
-        <app-notifications></app-notifications>
+        <app-notifications *ngIf="this.canUserSeeNotifications()"></app-notifications>
         <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
           <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
             <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>

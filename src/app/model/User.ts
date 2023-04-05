@@ -1,9 +1,9 @@
+import { RoleEnum } from './RoleEnum';
+
 export interface IUser {
   id: number;
-  login: string;
-  password: string;
+  username: string;
   email: string;
   accessToken: string;
-  name: string;
-  firstname: string;
+  roles: RoleEnum[];
 }
