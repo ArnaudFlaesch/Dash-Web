@@ -106,7 +106,6 @@ export class WeatherWidgetComponent {
   }
 
   public isWidgetLoaded(): boolean {
-    console.log('iswidgetloaded');
     return this.isWeatherLoaded && this.isForecastLoaded;
   }
 

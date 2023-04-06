@@ -37,7 +37,6 @@ export class AuthService {
       .pipe(
         map((response) => {
           if (response.accessToken) {
-            console.log(response);
             localStorage.setItem('user', JSON.stringify(response));
           }
           return response;
