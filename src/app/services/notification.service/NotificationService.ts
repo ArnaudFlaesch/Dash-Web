@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import authorizationBearer from '../authorizationBearer/authorizationBearer';
 import { INotification } from '../../../app/model/INotification';
-import { Pageable } from '../../../app/model/IPage';
+import { IPage } from '../../../app/model/IPage';
 
 @Injectable()
 export class NotificationService {
   constructor(private http: HttpClient) {}
 
-  public getNotifications(): Observable<Pageable<INotification>> {
-    return this.http.get<Pageable<INotification>>(`${environment.backend_url}/notifications/`, {
+  public getNotifications(): Observable<IPage<INotification>> {
+    return this.http.get<IPage<INotification>>(`${environment.backend_url}/notifications/`, {
       headers: {
         Authorization: authorizationBearer(),
         'Content-type': 'application/json'

@@ -1,9 +1,10 @@
-import { IPlayerDataResponse, IAchievementResponse, IOwnedGamesResponse } from './ISteam';
+import { IPlayerDataResponse, IAchievementResponse, IGameInfoResponse } from './ISteam';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
+import { IPage } from 'src/app/model/IPage';
 
 @Injectable()
 export class SteamWidgetService {
@@ -37,7 +38,7 @@ export class SteamWidgetService {
     steamUserId: string,
     search?: string,
     pageNumber?: number
-  ): Observable<IOwnedGamesResponse> {
+  ): Observable<IPage<IGameInfoResponse>> {
     const params: { search?: string; pageNumber?: number } = {};
     if (search) {
       params.search = search;
@@ -45,7 +46,7 @@ export class SteamWidgetService {
     if (pageNumber) {
       params.pageNumber = pageNumber;
     }
-    return this.http.get<IOwnedGamesResponse>(
+    return this.http.get<IPage<IGameInfoResponse>>(
       `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`,
       {
         headers: {

@@ -1,4 +1,4 @@
-export interface Pageable<T> {
+export interface IPage<T> {
   content: T[];
   totalPages: number;
   totalElements: number;

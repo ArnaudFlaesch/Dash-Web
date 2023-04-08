@@ -6,6 +6,7 @@ import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IFollowedUser } from './ITwitter';
 import { TwitterWidgetService } from './twitter.widget.service';
 import { ThemeService } from '../../services/theme.service/theme.service';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-twitter-widget',
@@ -20,6 +21,11 @@ export class TwitterWidgetComponent implements OnInit {
   public isWidgetLoaded = true;
   public searchFormControl = new FormControl('');
   public twitterTimelineUrl = '';
+
+  public followedUsersCount = 0;
+  public pageSize = 10;
+  public pageSizeOptions = [this.pageSize];
+  public pageNumber = 0;
 
   private ERROR_GETTING_FOLLOWED_USERS =
     'Erreur lors de la récupération de la liste des utilisateurs suivis sur Twitter.';
@@ -40,12 +46,8 @@ export class TwitterWidgetComponent implements OnInit {
     this.searchFormControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
-        this.twitterWidgetService.getFollowedUsers(searchValue || undefined).subscribe({
-          next: (followedUsersResponse) =>
-            (this.followedUsers = followedUsersResponse.slice(0, 10)),
-          error: (error) =>
-            this.errorHandlerService.handleError(error, this.ERROR_GETTING_FOLLOWED_USERS)
-        });
+        this.pageNumber = 0;
+        this.fetchFollowedUsers(this.pageNumber, searchValue || undefined);
       });
   }
 
@@ -101,6 +103,23 @@ export class TwitterWidgetComponent implements OnInit {
 
   public getPreferredTheme(): string {
     return this.themeService.isPreferredThemeDarkMode() ? 'dark' : 'light';
+  }
+
+  public onPageChanged(event: PageEvent): void {
+    this.pageNumber = event.pageIndex;
+    this.fetchFollowedUsers(this.pageNumber, this.searchFormControl.value || undefined);
+  }
+
+  private fetchFollowedUsers(pageNumber: number, searchValue?: string): void {
+    this.twitterWidgetService.getFollowedUsers(pageNumber, searchValue || undefined).subscribe({
+      next: (followedUsersResponse) => {
+        this.followedUsers = followedUsersResponse.content;
+        this.pageNumber = followedUsersResponse.number;
+        this.followedUsersCount = followedUsersResponse.totalElements;
+      },
+      error: (error) =>
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_FOLLOWED_USERS)
+    });
   }
 
   private createTimelineUrl(): string {

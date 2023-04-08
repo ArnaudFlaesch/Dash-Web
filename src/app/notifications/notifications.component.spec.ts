@@ -9,7 +9,7 @@ import {
 } from '@ngneat/spectator/jest';
 import { startOfYesterday } from 'date-fns';
 
-import { Pageable } from '../../app/model/IPage';
+import { IPage } from '../../app/model/IPage';
 import { environment } from '../../environments/environment';
 import { INotification, NotificationTypeEnum } from '../model/INotification';
 import { ErrorHandlerService } from '../services/error.handler.service';
@@ -59,7 +59,7 @@ describe('NotificationsComponent', () => {
     last: true,
     size: 1,
     number: 0
-  } as Pageable<INotification>;
+  } as IPage<INotification>;
 
   beforeEach(() => {
     spectator = createComponent();
