@@ -5,14 +5,10 @@ import { PageEvent } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
-import {
-  IGameInfoDisplay,
-  IGameInfoResponse,
-  IOwnedGamesResponse,
-  IPlayerDataResponse
-} from './ISteam';
+import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from './ISteam';
 import { SteamWidgetService } from './steam.widget.service';
 import { Subject } from 'rxjs';
+import { IPage } from '../../../app/model/IPage';
 
 @Component({
   selector: 'app-steam-widget',
@@ -25,7 +21,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
 
   public gameCount = 0;
   public pageSize = 25;
-  public pageSizeOptions = [25];
+  public pageSizeOptions = [this.pageSize];
   public pageNumber = 0;
 
   public steamUserId: string | undefined;
@@ -85,22 +81,6 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
     });
   }
 
-  public getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {
-    this.areGamesLoaded = false;
-    this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).subscribe({
-      next: (response: IOwnedGamesResponse) => {
-        this.gameCount = response.gameCount;
-        this.ownedGames = response.games;
-        this.ownedGamesDisplay = this.ownedGames.map((game) =>
-          this.gameInfoResponseToGameInfoDisplay(game)
-        );
-        this.areGamesLoaded = true;
-      },
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_OWNED_GAMES)
-    });
-  }
-
   public onPageChanged(event: PageEvent): void {
     if (this.steamUserId) {
       this.pageNumber = event.pageIndex;
@@ -126,6 +106,22 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
 
   public isFormValid(): boolean {
     return !!this.steamUserId && this.steamUserId?.length > 0;
+  }
+
+  private getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {
+    this.areGamesLoaded = false;
+    this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).subscribe({
+      next: (response: IPage<IGameInfoResponse>) => {
+        this.gameCount = response.totalElements;
+        this.ownedGames = response.content;
+        this.ownedGamesDisplay = this.ownedGames.map((game) =>
+          this.gameInfoResponseToGameInfoDisplay(game)
+        );
+        this.areGamesLoaded = true;
+      },
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_OWNED_GAMES)
+    });
   }
 
   private gameInfoResponseToGameInfoDisplay(gameInfoResponse: IGameInfoResponse): IGameInfoDisplay {

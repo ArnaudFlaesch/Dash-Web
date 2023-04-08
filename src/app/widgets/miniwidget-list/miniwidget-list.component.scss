@@ -3,17 +3,24 @@
   flex-direction: row;
 
   #miniwidget-list {
-    border: 2px black;
-    border-radius: 0.25rem;
     display: flex;
     flex-direction: row;
     overflow-x: auto;
 
+    @media (max-width: 320px) {
+      width: 90%;
+    }
+
     .miniwidget-container {
       background-color: white;
       border: 1px solid black;
-      margin: 0 5px;
+      border-radius: 0.25rem;
+      flex-grow: 0;
       flex-shrink: 0;
+
+      &:not(:last-child) {
+        margin: 0 5px;
+      }
     }
   }
 }

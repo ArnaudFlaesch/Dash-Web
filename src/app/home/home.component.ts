@@ -1,20 +1,23 @@
-import { ErrorHandlerService } from '../services/error.handler.service';
-import { ImportConfigModalComponent } from './../modals/import-config-modal/import-config-modal.component';
-import { ConfigService } from './../services/config.service/config.service';
-import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
-import { CreateWidgetModalComponent } from './../modals/create-widget-modal/create-widget-modal.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+
+import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
+import { ErrorHandlerService } from '../services/error.handler.service';
 import { TabService } from '../services/tab.service/tab.service';
+import { ThemeService } from '../services/theme.service/theme.service';
 import { WidgetService } from '../services/widget.service/widget.service';
+import { CreateWidgetModalComponent } from './../modals/create-widget-modal/create-widget-modal.component';
+import { ImportConfigModalComponent } from './../modals/import-config-modal/import-config-modal.component';
 import { IWidgetConfig } from './../model/IWidgetConfig';
 import { ITab } from './../model/Tab';
 import { AuthService } from './../services/auth.service/auth.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Location } from '@angular/common';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Subject, takeUntil } from 'rxjs';
+import { ConfigService } from './../services/config.service/config.service';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +32,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   public isDashboardLoaded = false;
   public areWidgetsLoaded = false;
   public editModeEnabled = false;
+
+  public toggleControl = new FormControl(false);
 
   private refreshInterval: NodeJS.Timer | null = null;
   private refreshTimeout = 600000; // 10 minutes
@@ -56,6 +61,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private tabService: TabService,
     private widgetService: WidgetService,
     private configService: ConfigService,
+    private themeService: ThemeService,
     private errorHandlerService: ErrorHandlerService
   ) {
     this.initDashboard();
@@ -78,6 +84,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
     });
     this.setupWidgetAutoRefresh();
+    this.toggleControl.setValue(this.themeService.isPreferredThemeDarkMode());
   }
 
   ngOnDestroy(): void {
@@ -217,6 +224,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public toggleEditMode(): void {
     this.editModeEnabled = !this.editModeEnabled;
+  }
+
+  public toggleTheme(isToggleChecked: boolean): void {
+    this.themeService.selectDarkMode(isToggleChecked);
+  }
+
+  public canUserSeeNotifications(): boolean {
+    return this.authService.isUserAdmin();
   }
 
   private initDashboard(): void {

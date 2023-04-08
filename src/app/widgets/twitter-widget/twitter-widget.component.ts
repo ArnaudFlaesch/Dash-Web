@@ -5,6 +5,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IFollowedUser } from './ITwitter';
 import { TwitterWidgetService } from './twitter.widget.service';
+import { ThemeService } from '../../services/theme.service/theme.service';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-twitter-widget',
@@ -20,6 +22,11 @@ export class TwitterWidgetComponent implements OnInit {
   public searchFormControl = new FormControl('');
   public twitterTimelineUrl = '';
 
+  public followedUsersCount = 0;
+  public pageSize = 10;
+  public pageSizeOptions = [this.pageSize];
+  public pageNumber = 0;
+
   private ERROR_GETTING_FOLLOWED_USERS =
     'Erreur lors de la récupération de la liste des utilisateurs suivis sur Twitter.';
   private ERROR_ADDING_FOLLOWED_USER = "Erreur lors de l'ajout de l'utilisateur.";
@@ -28,6 +35,7 @@ export class TwitterWidgetComponent implements OnInit {
   constructor(
     private cdRef: ChangeDetectorRef,
     private twitterWidgetService: TwitterWidgetService,
+    private themeService: ThemeService,
     private errorHandlerService: ErrorHandlerService
   ) {}
 
@@ -38,17 +46,9 @@ export class TwitterWidgetComponent implements OnInit {
     this.searchFormControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
-        this.twitterWidgetService.getFollowedUsers(searchValue || undefined).subscribe({
-          next: (followedUsersResponse) =>
-            (this.followedUsers = followedUsersResponse.slice(0, 10)),
-          error: (error) =>
-            this.errorHandlerService.handleError(error, this.ERROR_GETTING_FOLLOWED_USERS)
-        });
+        this.pageNumber = 0;
+        this.fetchFollowedUsers(this.pageNumber, searchValue || undefined);
       });
-  }
-
-  ngAfterViewInit(): void {
-    this.initTwitterWidget();
   }
 
   public refreshWidget(): void {
@@ -101,32 +101,28 @@ export class TwitterWidgetComponent implements OnInit {
     return !!this.selectedTwitterHandle && this.selectedTwitterHandle?.length > 0;
   }
 
+  public getPreferredTheme(): string {
+    return this.themeService.isPreferredThemeDarkMode() ? 'dark' : 'light';
+  }
+
+  public onPageChanged(event: PageEvent): void {
+    this.pageNumber = event.pageIndex;
+    this.fetchFollowedUsers(this.pageNumber, this.searchFormControl.value || undefined);
+  }
+
+  private fetchFollowedUsers(pageNumber: number, searchValue?: string): void {
+    this.twitterWidgetService.getFollowedUsers(pageNumber, searchValue || undefined).subscribe({
+      next: (followedUsersResponse) => {
+        this.followedUsers = followedUsersResponse.content;
+        this.pageNumber = followedUsersResponse.number;
+        this.followedUsersCount = followedUsersResponse.totalElements;
+      },
+      error: (error) =>
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_FOLLOWED_USERS)
+    });
+  }
+
   private createTimelineUrl(): string {
     return `https://twitter.com/${this.selectedTwitterHandle}?ref_src=twsrc%5Etfw`;
   }
-
-  /* eslint-disable */
-  private initTwitterWidget(): void {
-    (<any>window).twttr = (function (d, s, id) {
-      const fjs: any = d.getElementsByTagName(s)[0],
-        t = (<any>window).twttr || {};
-      if (d.getElementById(id)) return t;
-      const js: any = d.createElement(s);
-      js.id = id;
-      js.src = 'https://platform.twitter.com/widgets.js';
-      fjs?.parentNode?.insertBefore(js, fjs);
-
-      t._e = [];
-      t.ready = function (f: any) {
-        t._e.push(f);
-      };
-
-      return t;
-    })(document, 'script', 'twitter-wjs');
-
-    if ((<any>window).twttr.ready()) {
-      (<any>window).twttr.widgets.load();
-    }
-  }
-  /* eslint-enable */
 }

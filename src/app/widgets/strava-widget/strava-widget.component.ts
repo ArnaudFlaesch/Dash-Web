@@ -201,8 +201,6 @@ export class StravaWidgetComponent {
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_NO_REFRESH_TOKEN)
       });
-    } else {
-      console.error('No refresh token');
     }
   }
 }

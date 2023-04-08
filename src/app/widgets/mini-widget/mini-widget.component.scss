@@ -1,8 +1,4 @@
-@import 'colors';
-
 .mini-widget {
-  background-color: $widget-background-color;
-
   .header {
     display: flex;
     align-items: flex-end;
@@ -40,7 +36,6 @@
   }
 
   .read-mini-widget-body-container {
-    flex: 1 1 0%;
     overflow-y: auto;
 
     .loading-spinner {

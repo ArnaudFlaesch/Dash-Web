@@ -4,19 +4,30 @@ import { Observable } from 'rxjs';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
 import { IFollowedUser } from './ITwitter';
+import { IPage } from 'src/app/model/IPage';
 
 @Injectable()
 export class TwitterWidgetService {
   constructor(private http: HttpClient) {}
 
-  public getFollowedUsers(search?: string): Observable<IFollowedUser[]> {
-    return this.http.get<IFollowedUser[]>(`${environment.backend_url}/twitterWidget/followed`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
-      },
-      params: search ? { search: search } : {}
-    });
+  public getFollowedUsers(pageNumber: number, search?: string): Observable<IPage<IFollowedUser>> {
+    const params: { search?: string; pageNumber?: number } = {};
+    if (search) {
+      params.search = search;
+    }
+    if (pageNumber) {
+      params.pageNumber = pageNumber;
+    }
+    return this.http.get<IPage<IFollowedUser>>(
+      `${environment.backend_url}/twitterWidget/followed`,
+      {
+        headers: {
+          Authorization: authorizationBearer(),
+          'Content-type': 'application/json'
+        },
+        params: params
+      }
+    );
   }
 
   public addFollowedUser(followedUserHandle: string): Observable<IFollowedUser> {

@@ -7,8 +7,10 @@ import {
   SpectatorHttp
 } from '@ngneat/spectator/jest';
 
+import { IPage } from '../../../app/model/IPage';
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
+import { ThemeService } from '../../services/theme.service/theme.service';
 import { IFollowedUser } from './ITwitter';
 import { TwitterWidgetComponent } from './twitter-widget.component';
 import { TwitterWidgetService } from './twitter.widget.service';
@@ -21,7 +23,7 @@ describe('TwitterWidgetComponent', () => {
     const createComponent = createComponentFactory({
       component: TwitterWidgetComponent,
       imports: [MatSnackBarModule],
-      providers: [TwitterWidgetService, ErrorHandlerService],
+      providers: [TwitterWidgetService, ErrorHandlerService, ThemeService],
       schemas: []
     });
     const createHttp = createHttpFactory(TwitterWidgetService);
@@ -62,7 +64,14 @@ describe('TwitterWidgetComponent', () => {
         );
 
         const searchedUser = { id: 2, userHandle: 'testHandle' };
-        searchFollowedUsersRequest.flush([searchedUser]);
+        searchFollowedUsersRequest.flush({
+          content: [searchedUser],
+          totalPages: 1,
+          totalElements: 1,
+          last: true,
+          size: 1,
+          number: 0
+        } as IPage<IFollowedUser>);
 
         expect(spectator.component.followedUsers).toEqual([searchedUser]);
         done();
@@ -96,7 +105,7 @@ describe('TwitterWidgetComponent', () => {
     const createComponent = createComponentFactory({
       component: TwitterWidgetComponent,
       imports: [MatSnackBarModule],
-      providers: [TwitterWidgetService, ErrorHandlerService],
+      providers: [TwitterWidgetService, ErrorHandlerService, ThemeService],
       schemas: []
     });
     const createHttp = createHttpFactory(TwitterWidgetService);

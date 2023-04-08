@@ -1,15 +1,43 @@
+@use '@angular/material' as mat;
 @import '../node_modules/angular-calendar/css/angular-calendar.css';
-@import 'colors';
+
+@include mat.core;
+
+// Define a dark theme
+$dark-theme: mat.define-dark-theme((color: (primary: mat.define-palette(mat.$pink-palette),
+accent: mat.define-palette(mat.$blue-grey-palette),
+),
+/* Only include `typography` and `density` in the default dark theme.*/
+typography: mat.define-typography-config(),
+density: 0,
+));
+
+// Define a light theme
+$light-theme: mat.define-light-theme((color: (primary: mat.define-palette(mat.$indigo-palette),
+accent: mat.define-palette(mat.$pink-palette),
+),
+));
+
+// Apply the dark theme by default
+@include mat.core-theme($light-theme);
+@include mat.button-color($light-theme);
+
 
 html,
 body {
   height: 100%;
-  background-color: $dash-background-color;
-}
 
-body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  // Light mode
+  --dash-light-mode-background-color: #4e4945;
+  --widget-light-mode-header-color: #000;
+  --widget-light-mode-header-text-color: #fff;
+  --widget-light-mode-background-color: #fff;
+
+  // Dark mode
+  --dash-dark-mode-background-color: #282a33;
+  --widget-dark-mode-header-color: #2b5182;
+  --widget-dark-mode-header-text-color: #000;
+  --widget-dark-mode-background-color: hsl(208.4deg 17.6% 42.4%);
 }
 
 mat-expansion-panel {
@@ -20,10 +48,49 @@ mat-expansion-panel {
   }
 }
 
-.widget {
-  mat-expansion-panel,
-  .cal-cell-row {
-    background-color: $widget-background-color !important;
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: var(--dash-light-mode-background-color);
+
+  .widget {
+    background-color: var(--widget-light-mode-background-color);
+    border-color: var(--widget-header-color);
+
+    .header-container {
+      background-color: var(--widget-light-mode-header-color);
+      color: var(--widget-light-mode-header-text-color);
+    }
+  }
+
+  .mini-widget {
+    background-color: var(--widget-light-mode-background-color);
+  }
+
+  &.dark-mode {
+    @include mat.core-theme($dark-theme);
+    @include mat.button-color($dark-theme);
+
+    background-color: var(--dash-dark-mode-background-color);
+
+    .widget {
+      background-color: var(--widget-dark-mode-background-color);
+      border-color: var(--widget-dark-mode-header-color);
+
+      .header-container {
+        background-color: var(--widget-dark-mode-header-color);
+        color: var(--widget-dark-mode-header-text-color);
+      }
+
+      mat-expansion-panel,
+      .cal-cell-row {
+        background-color: var(--widget-dark-mode-background-color) !important;
+      }
+    }
+
+    .mini-widget {
+      background-color: var(--widget-dark-mode-background-color);
+    }
   }
 }
 

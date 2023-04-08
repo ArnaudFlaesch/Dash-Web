@@ -4,11 +4,6 @@ export interface IPlayerDataResponse {
   avatar: string;
 }
 
-export interface IOwnedGamesResponse {
-  gameCount: number;
-  games: IGameInfoResponse[];
-}
-
 export interface IGameInfoResponse {
   appid: string;
   name: string;

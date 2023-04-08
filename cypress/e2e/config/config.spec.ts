@@ -10,20 +10,18 @@ describe('Config tests', () => {
   });
 
   it('Should export config', () => {
-    cy.intercept('GET', '/dashConfig/export')
-      .as('downloadConfig')
-      .get('#downloadConfigButton')
-      .click();
+    cy.intercept('GET', '/dashConfig/export').as('downloadConfig');
+    cy.get('#dash-menu').click();
+    cy.get('#downloadConfigButton').click();
     cy.wait('@downloadConfig').then((request: Interception) => {
       expect(request.response.statusCode).to.equal(200);
     });
   });
 
   it('Should import config', () => {
-    cy.intercept('POST', '/dashConfig/import')
-      .as('importConfig')
-      .get('#openImportConfigModal')
-      .click();
+    cy.intercept('POST', '/dashConfig/import').as('importConfig');
+    cy.get('#dash-menu').click();
+    cy.get('#openImportConfigModal').click();
     cy.get('#file').attachFile('dashboardConfigTest.json');
     cy.get('#uploadFileButton').click();
     cy.wait('@importConfig').then((request: Interception) => {

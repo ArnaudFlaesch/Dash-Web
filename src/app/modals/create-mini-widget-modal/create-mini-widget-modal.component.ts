@@ -23,12 +23,6 @@ export class CreateMiniWidgetModalComponent {
       case MiniWidgetTypeEnum.WEATHER.toString(): {
         return 'sunny';
       }
-      case MiniWidgetTypeEnum.AIRPARIF.toString(): {
-        return 'air';
-      }
-      case MiniWidgetTypeEnum.ECOWATT.toString(): {
-        return 'electric_bolt';
-      }
       default: {
         return '';
       }

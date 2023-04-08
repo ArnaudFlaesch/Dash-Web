@@ -10,7 +10,8 @@
         <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
       </div>
       <div class="edit-mini-widget-actions">
-        <button class="cancelButton" mat-raised-button (click)="cancelEdition()">
+        <button class="cancelButton" mat-raised-button (click)="cancelEdition()"
+          *ngIf="this.isWidgetLoaded && this.widgetData">
           Annuler
         </button>
         <button class="validateButton" mat-raised-button (click)="onValidation()" color="primary"
@@ -21,8 +22,13 @@
     </div>
   </div>
 
-  <app-delete-widget *ngIf="this.isModeDelete()" (cancelWidgetDeletion)="toReadMode()"
-    (validateWidgetDeletion)="null"></app-delete-widget>
+  <div *ngIf="this.isModeDelete()">
+    <h4>Êtes-vous sûr de vouloir supprimer ce widget ?</h4>
+    <div id="delete-mini-widget-actions">
+      <button (click)="deleteMiniWidget()" mat-raised-button color="warn"
+        class="validateDeletionButton">Supprimer</button>
+    </div>
+  </div>
 
   <div *ngIf="this.isModeRead()">
     <div class="read-mini-widget-body-container">

@@ -5,7 +5,7 @@ import {
   HttpMethod,
   Spectator,
   SpectatorHttp
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/jest';
 import { DateAdapter } from 'angular-calendar';
 import { environment } from '../../../environments/environment';
 import { CalendarWidgetComponent } from './calendar-widget.component';

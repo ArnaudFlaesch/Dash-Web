@@ -14,8 +14,6 @@ export class LoginComponent {
   public inputUsername = '';
   public inputPassword = '';
 
-  private ERROR_AUTHENTICATING_USER = "Erreur lors de la connexion de l'utilisateur.";
-
   constructor(
     private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
@@ -32,7 +30,7 @@ export class LoginComponent {
         },
         error: (error: HttpErrorResponse) => {
           this.isLoading = false;
-          this.errorHandlerService.handleError(error, this.ERROR_AUTHENTICATING_USER);
+          this.errorHandlerService.handleLoginError(error);
         },
         complete: () => (this.isLoading = false)
       });
