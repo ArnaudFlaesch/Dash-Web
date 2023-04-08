@@ -7,6 +7,7 @@ import {
   SpectatorHttp
 } from '@ngneat/spectator/jest';
 
+import { IPage } from '../../../app/model/IPage';
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { ThemeService } from '../../services/theme.service/theme.service';
@@ -63,7 +64,14 @@ describe('TwitterWidgetComponent', () => {
         );
 
         const searchedUser = { id: 2, userHandle: 'testHandle' };
-        searchFollowedUsersRequest.flush([searchedUser]);
+        searchFollowedUsersRequest.flush({
+          content: [searchedUser],
+          totalPages: 1,
+          totalElements: 1,
+          last: true,
+          size: 1,
+          number: 0
+        } as IPage<IFollowedUser>);
 
         expect(spectator.component.followedUsers).toEqual([searchedUser]);
         done();
