@@ -1,6 +1,10 @@
 .strava-header {
   display: flex;
   flex-direction: row;
+
+  #strava-profile-picture {
+    max-height: 2.3rem;
+  }
 }
 
 #strava-activities-container {

@@ -62,7 +62,11 @@ export class AbstractWidgetComponent {
   }
 
   public toReadMode(): void {
-    this.mode = ModeEnum.READ;
+    if (this.widgetData) {
+      this.mode = ModeEnum.READ;
+    } else {
+      this.toEditMode();
+    }
   }
 
   public cancelEdition(): void {
