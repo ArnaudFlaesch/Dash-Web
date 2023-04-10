@@ -7,7 +7,7 @@
     flex-direction: row;
     overflow-x: auto;
 
-    @media (max-width: 320px) {
+    @media (width <= 320px) {
       width: 90%;
     }
 
