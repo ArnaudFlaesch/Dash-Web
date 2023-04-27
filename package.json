@@ -43,7 +43,7 @@
     "leaflet": "1.9.3",
     "leaflet-sidebar-v2": "3.2.3",
     "ng2-charts": "4.1.1",
-    "rxjs": "7.8.0",
+    "rxjs": "7.8.1",
     "tslib": "2.5.0",
     "zone.js": "0.13.0"
   },
