@@ -35,6 +35,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public toggleControl = new FormControl(false);
 
+  public cashManagerApplicationUrl = 'https://arnaudflaesch.github.io/CashManager/';
+
   private refreshInterval: NodeJS.Timer | null = null;
   private refreshTimeout = 600000; // 10 minutes
 
