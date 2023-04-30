@@ -15,6 +15,10 @@
       </div>
 
       <div id="action-bar-buttons">
+        <button mat-mini-fab [matMenuTriggerFor]="appsMenu" color="primary">
+          <mat-icon>apps</mat-icon>
+        </button>
+
         <app-notifications *ngIf="this.canUserSeeNotifications()"></app-notifications>
         <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
           <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
@@ -37,6 +41,13 @@
         <button id="dash-menu" mat-mini-fab [matMenuTriggerFor]="dashMenu" color="primary">
           <mat-icon>account_circle</mat-icon>
         </button>
+
+        <mat-menu #appsMenu="matMenu">
+          <a [href]="cashManagerApplicationUrl">
+            <mat-icon>savings</mat-icon>
+            <span>CashManager</span>
+          </a>
+        </mat-menu>
 
         <mat-menu #dashMenu="matMenu">
           <div mat-menu-item>
