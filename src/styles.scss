@@ -10,11 +10,11 @@ $dark-theme: mat.define-dark-theme(
       primary: mat.define-palette(mat.$pink-palette),
       accent: mat.define-palette(mat.$blue-grey-palette)
     ),
-     typography:
-      mat.define-typography-config(),
+    typography:
+    mat.define-typography-config(),
     density: 0
   )
-)    ;
+);
 
 // Define a light theme
 $light-theme: mat.define-light-theme(
