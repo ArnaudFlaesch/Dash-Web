@@ -202,7 +202,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public logout(): void {
     this.authService.logout();
-    this.router.navigate(['login']);
+    this.router.navigate(['login']).catch((error) => console.log(error));
   }
 
   public updateWidgetOrder(updatedWidgets: IWidgetConfig[]): void {

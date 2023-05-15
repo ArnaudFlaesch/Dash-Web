@@ -71,7 +71,7 @@ export class StravaWidgetComponent {
         window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
         window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
         window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
-        this.router.navigate(['/']);
+        this.router.navigate(['/']).catch((error) => console.log(error));
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_TOKEN)
@@ -111,7 +111,7 @@ export class StravaWidgetComponent {
   }
 
   public getActivitiesByMonth(): Record<string, number[]> {
-    return this.activities
+    return [...this.activities]
       .reverse()
       .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
         const month = format(new Date(activity.startDateLocal), 'yyyy-MM');

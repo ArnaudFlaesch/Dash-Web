@@ -26,7 +26,7 @@ export class LoginComponent {
       this.authService.login(this.inputUsername, this.inputPassword).subscribe({
         next: () => {
           this.isLoading = false;
-          this.router.navigate(['home']);
+          this.router.navigate(['home']).catch((error) => console.log(error));
         },
         error: (error: HttpErrorResponse) => {
           this.isLoading = false;

@@ -20,6 +20,7 @@ export class ErrorHandlerService {
       case 401: {
         this.router
           .navigate(['login'])
+          .catch((error) => console.log(error))
           .then(() => this.displayErrorMessage(error.message, this.ERROR_UNAUTHORIZED_CODE));
         break;
       }
