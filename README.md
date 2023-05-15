@@ -29,7 +29,8 @@ L'application est ensuite accessible à l'addresse <http://localhost:4200>.
 
 - Démarrage du backend
 
-Il est nécessaire d'exécuter le backend et sa base de données pour que l'application fonctionne. Les sources et le README sont accessibles ici : <https://github.com/ArnaudFlaesch/Dash-WebServices>.
+Il est nécessaire d'exécuter le backend et sa base de données pour que l'application fonctionne.
+Les sources et le README sont accessibles ici : <https://github.com/ArnaudFlaesch/Dash-WebServices>.
 
 Pour lancer le frontend sans avoir à utiliser le backend en local, il est possible d'exécuter la commande :
 
