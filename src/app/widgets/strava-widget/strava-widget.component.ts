@@ -112,8 +112,8 @@ export class StravaWidgetComponent {
   }
 
   public getActivitiesByMonth(): Record<string, number[]> {
-    return [...this.activities]
-      .reverse()
+    return this.activities
+      .sort(this.sortByActivityDateDesc)
       .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
         const month = format(new Date(activity.startDateLocal), 'yyyy-MM');
         if (!activitiesByMonth[month]) {
@@ -173,6 +173,16 @@ export class StravaWidgetComponent {
 
   public getAthleteProfileUrl(athleteId: number): string {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
+  }
+
+  private sortByActivityDateDesc(activityA: IActivity, activityB: IActivity): number {
+    const startDateA = Date.parse(activityA.startDate);
+    const startDateB = Date.parse(activityB.startDate);
+    if (startDateA === startDateB) {
+      return 0;
+    } else {
+      return startDateA > startDateB ? 1 : -1;
+    }
   }
 
   private getTokenValue(): string | null {
