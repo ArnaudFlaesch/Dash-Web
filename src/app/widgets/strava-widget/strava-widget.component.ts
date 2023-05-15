@@ -101,7 +101,7 @@ export class StravaWidgetComponent {
       this.isWidgetLoaded = false;
       this.stravaWidgetService.getActivities(token, this.paginationActivities).subscribe({
         next: (response) => {
-          this.activities = response;
+          this.activities = [...response].sort(this.sortByActivityDateDesc);
           this.getChartData();
           this.isWidgetLoaded = true;
         },
@@ -112,16 +112,17 @@ export class StravaWidgetComponent {
   }
 
   public getActivitiesByMonth(): Record<string, number[]> {
-    return [...this.activities]
-      .sort(this.sortByActivityDateAsc)
-      .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
+    return this.activities.reduce(
+      (activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
         const month = format(new Date(activity.startDateLocal), 'yyyy-MM');
         if (!activitiesByMonth[month]) {
           activitiesByMonth[month] = [];
         }
         activitiesByMonth[month].push(Math.round(activity.distance * 1000) / 1000000);
         return activitiesByMonth;
-      }, {});
+      },
+      {}
+    );
   }
 
   public getStatsFromActivities(): IActivitiesStatsByMonth[] {
@@ -175,13 +176,13 @@ export class StravaWidgetComponent {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
   }
 
-  private sortByActivityDateAsc(activityA: IActivity, activityB: IActivity): number {
+  private sortByActivityDateDesc(activityA: IActivity, activityB: IActivity): number {
     const startDateA = Date.parse(activityA.startDate);
     const startDateB = Date.parse(activityB.startDate);
     if (startDateA === startDateB) {
       return 0;
     } else {
-      return startDateA > startDateB ? 1 : -1;
+      return startDateA < startDateB ? 1 : -1;
     }
   }
 
