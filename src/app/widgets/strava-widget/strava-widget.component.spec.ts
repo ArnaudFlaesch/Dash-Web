@@ -298,8 +298,8 @@ describe('StravaWidgetComponent', () => {
       '2022-10': [10.5298, 12.3976, 10.7047]
     });
     const statsFromActivities = spectator.component.getStatsFromActivities();
-    expect(statsFromActivities[0].y).toEqual(34);
-    expect(statsFromActivities[1].y).toEqual(12);
+    expect(statsFromActivities[0].y).toEqual(12);
+    expect(statsFromActivities[1].y).toEqual(34);
   });
 
   it('Should display athlete url', () => {
@@ -334,6 +334,7 @@ describe('StravaWidgetComponent', () => {
   });
 
   it('Should get refresh token', () => {
+    initComponent();
     window.localStorage.removeItem(STRAVA_TOKEN_KEY);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
     spectator.component.getUserData();

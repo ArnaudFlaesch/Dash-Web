@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
+
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetService } from './strava.widget.service';
@@ -71,7 +72,7 @@ export class StravaWidgetComponent {
         window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
         window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
         window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
-        this.router.navigate(['/']).catch((error) => console.log(error));
+        this.router.navigate(['/']);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_TOKEN)
