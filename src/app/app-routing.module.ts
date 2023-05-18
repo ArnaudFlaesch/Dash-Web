@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [inject(AuthService).userHasValidToken()]
+    canActivate: [() => inject(AuthService).userHasValidToken()]
   },
   { path: '**', redirectTo: 'home' }
 ];
