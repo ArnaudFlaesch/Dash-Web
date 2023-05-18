@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service/auth.service';
 import { ThemeService } from './services/theme.service/theme.service';
@@ -13,25 +13,19 @@ export interface IMenu {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Dash';
 
   constructor(
     private authService: AuthService,
     private themeService: ThemeService,
     private router: Router
-  ) {
-    this.initApplication();
-  }
+  ) {}
 
-  private async initApplication(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     if (!this.authService.userHasValidToken()) {
-      await this.navigateToLoginPage();
+      await this.router.navigate(['/login']);
     }
     this.themeService.selectDarkMode(this.themeService.isPreferredThemeDarkMode());
-  }
-
-  private async navigateToLoginPage(): Promise<void> {
-    await this.router.navigate(['/login']);
   }
 }
