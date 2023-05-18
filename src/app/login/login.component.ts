@@ -37,9 +37,9 @@ export class LoginComponent {
     }
   }
 
-  public loginAsDemoAccount(): void {
+  public async loginAsDemoAccount(): Promise<void> {
     this.inputUsername = 'demo';
     this.inputPassword = 'demo';
-    this.handleLogin();
+    await this.handleLogin();
   }
 }
