@@ -47,7 +47,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
       .subscribe((searchValue) => {
         if (this.steamUserId) {
           this.pageNumber = 0;
-          this.getOwnedGames(this.steamUserId, searchValue || undefined);
+          this.getOwnedGames(this.steamUserId, searchValue ?? undefined);
         }
       });
   }
@@ -63,7 +63,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
       this.getPlayerData(steamUserId);
       this.getOwnedGames(
         this.steamUserId,
-        this.searchFormControl.value || undefined,
+        this.searchFormControl.value ?? undefined,
         this.pageNumber
       );
     }
@@ -86,7 +86,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
       this.pageNumber = event.pageIndex;
       this.getOwnedGames(
         this.steamUserId,
-        this.searchFormControl.value || undefined,
+        this.searchFormControl.value ?? undefined,
         this.pageNumber
       );
     }

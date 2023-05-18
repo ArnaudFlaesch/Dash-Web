@@ -92,20 +92,18 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
               injector: injector
             });
             component.instance.urlFeed = widgetData ? (widgetData['url'] as string) : null;
-            component.instance.readArticles =
-              widgetData && widgetData['readArticlesGuids']
-                ? (widgetData['readArticlesGuids'] as string[])
-                : [];
+            component.instance.readArticles = widgetData?.['readArticlesGuids']
+              ? (widgetData['readArticlesGuids'] as string[])
+              : [];
             break;
           }
           case WidgetTypeEnum.CALENDAR: {
             component = target.createComponent(CalendarWidgetComponent, {
               injector: injector
             });
-            component.instance.calendarUrls =
-              widgetData && widgetData['calendarUrls']
-                ? (widgetData['calendarUrls'] as string[])
-                : [];
+            component.instance.calendarUrls = widgetData?.['calendarUrls']
+              ? (widgetData['calendarUrls'] as string[])
+              : [];
             break;
           }
           case WidgetTypeEnum.STRAVA: {
@@ -118,10 +116,9 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
             component = target.createComponent(SteamWidgetComponent, {
               injector: injector
             });
-            component.instance.steamUserId =
-              widgetData && widgetData['steamUserId']
-                ? (widgetData['steamUserId'] as string)
-                : undefined;
+            component.instance.steamUserId = widgetData?.['steamUserId']
+              ? (widgetData['steamUserId'] as string)
+              : undefined;
             break;
           }
           case WidgetTypeEnum.WORKOUT: {
