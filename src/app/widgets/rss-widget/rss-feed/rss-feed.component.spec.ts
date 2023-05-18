@@ -31,12 +31,12 @@ describe('RssFeedComponent', () => {
 
     expect(spectator.component.formatTitleForArticle(article)).toEqual(`19:00 ${article.title}`);
 
-    advanceTo(new Date(2022, 1, 15, 0, 0, 0)); // 15/02/2022
+    advanceTo(Date.parse('2022-02-15'));
     expect(spectator.component.formatTitleForArticle(article)).toEqual(
       `15/03 19:00:02 ${article.title}`
     );
 
-    advanceTo(new Date(2021, 1, 5, 0, 0, 0)); // 05/02/2021
+    advanceTo(Date.parse('2021-02-05'));
     expect(spectator.component.formatTitleForArticle(article)).toEqual(
       `15/03/2022 19:00:02 ${article.title}`
     );
