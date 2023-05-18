@@ -22,7 +22,7 @@ export class AppComponent {
     private router: Router
   ) {
     if (!this.authService.userHasValidToken()) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']).catch((error) => console.log(error));
     }
     this.themeService.selectDarkMode(this.themeService.isPreferredThemeDarkMode());
   }

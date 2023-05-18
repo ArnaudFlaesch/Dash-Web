@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
+
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetService } from './strava.widget.service';
@@ -100,7 +101,7 @@ export class StravaWidgetComponent {
       this.isWidgetLoaded = false;
       this.stravaWidgetService.getActivities(token, this.paginationActivities).subscribe({
         next: (response) => {
-          this.activities = response;
+          this.activities = [...response].sort(this.sortByActivityDateDesc);
           this.getChartData();
           this.isWidgetLoaded = true;
         },
@@ -111,16 +112,17 @@ export class StravaWidgetComponent {
   }
 
   public getActivitiesByMonth(): Record<string, number[]> {
-    return this.activities
-      .reverse()
-      .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
+    return this.activities.reduce(
+      (activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
         const month = format(new Date(activity.startDateLocal), 'yyyy-MM');
         if (!activitiesByMonth[month]) {
           activitiesByMonth[month] = [];
         }
         activitiesByMonth[month].push(Math.round(activity.distance * 1000) / 1000000);
         return activitiesByMonth;
-      }, {});
+      },
+      {}
+    );
   }
 
   public getStatsFromActivities(): IActivitiesStatsByMonth[] {
@@ -172,6 +174,16 @@ export class StravaWidgetComponent {
 
   public getAthleteProfileUrl(athleteId: number): string {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
+  }
+
+  private sortByActivityDateDesc(activityA: IActivity, activityB: IActivity): number {
+    const startDateA = Date.parse(activityA.startDate);
+    const startDateB = Date.parse(activityB.startDate);
+    if (startDateA === startDateB) {
+      return 0;
+    } else {
+      return startDateA < startDateB ? 1 : -1;
+    }
   }
 
   private getTokenValue(): string | null {

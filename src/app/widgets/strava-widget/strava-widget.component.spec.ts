@@ -295,7 +295,7 @@ describe('StravaWidgetComponent', () => {
     expect(spectator.component.activities.length).toEqual(4);
     expect(spectator.component.getActivitiesByMonth()).toEqual({
       '2022-09': [11.6664],
-      '2022-10': [10.5298, 12.3976, 10.7047]
+      '2022-10': [10.7047, 12.3976, 10.5298]
     });
     const statsFromActivities = spectator.component.getStatsFromActivities();
     expect(statsFromActivities[0].y).toEqual(34);
@@ -334,6 +334,7 @@ describe('StravaWidgetComponent', () => {
   });
 
   it('Should get refresh token', () => {
+    initComponent();
     window.localStorage.removeItem(STRAVA_TOKEN_KEY);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
     spectator.component.getUserData();
