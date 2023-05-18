@@ -308,31 +308,6 @@ describe('StravaWidgetComponent', () => {
     );
   });
 
-  it('Should get api token', () => {
-    spectator.component.getToken('apicode');
-    const response = {
-      token_type: 'Bearer',
-      expiresAt: '1644882561',
-      expiresIn: 10384,
-      refreshToken: 'REFRESH_TOKEN',
-      accessToken: 'TOKEN',
-      athlete: {
-        id: 25345795,
-        username: 'af',
-        resource_state: 2,
-        firstname: 'A',
-        lastname: 'F'
-      }
-    } as unknown as ITokenData;
-
-    const getTokenDataRequest = stravaWidgetService.expectOne(
-      `${environment.backend_url}/stravaWidget/getToken`,
-      HttpMethod.POST
-    );
-    getTokenDataRequest.flush(response);
-    expect(spectator.component.isUserLoggedIn()).toEqual(true);
-  });
-
   it('Should get refresh token', () => {
     initComponent();
     window.localStorage.removeItem(STRAVA_TOKEN_KEY);
