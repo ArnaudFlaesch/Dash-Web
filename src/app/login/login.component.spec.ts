@@ -1,26 +1,26 @@
-import { ErrorHandlerService } from './../services/error.handler.service';
-import { AuthService } from './../services/auth.service/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { RouterTestingModule } from '@angular/router/testing';
 import {
-  createComponentFactory,
   createHttpFactory,
+  createRoutingFactory,
   HttpMethod,
-  Spectator,
+  SpectatorRouting,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
-import { LoginComponent } from './login.component';
+
 import { environment } from '../../environments/environment';
+import { AuthService } from './../services/auth.service/auth.service';
+import { ErrorHandlerService } from './../services/error.handler.service';
+import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
-  let spectator: Spectator<LoginComponent>;
+  let spectator: SpectatorRouting<LoginComponent>;
   let authService: SpectatorHttp<AuthService>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: LoginComponent,
-    imports: [HttpClientModule, FormsModule, MatSnackBarModule, RouterTestingModule],
+    imports: [HttpClientModule, FormsModule, MatSnackBarModule],
     providers: [AuthService, ErrorHandlerService]
   });
   const createHttp = createHttpFactory(AuthService);
