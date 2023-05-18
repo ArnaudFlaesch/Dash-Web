@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
@@ -7,13 +7,14 @@ import { format, isAfter } from 'date-fns';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetService } from './strava.widget.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-strava-widget',
   templateUrl: './strava-widget.component.html',
   styleUrls: ['./strava-widget.component.scss']
 })
-export class StravaWidgetComponent {
+export class StravaWidgetComponent implements OnInit {
   public activities: IActivity[] = [];
   public athlete: IAthlete | undefined;
   public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
@@ -41,10 +42,12 @@ export class StravaWidgetComponent {
     private route: ActivatedRoute,
     private errorHandlerService: ErrorHandlerService,
     private router: Router
-  ) {
+  ) {}
+
+  public async ngOnInit(): Promise<void> {
     const apiCode = this.route.snapshot.queryParamMap.get('code');
     if (apiCode) {
-      this.getToken(apiCode);
+      await this.getToken(apiCode);
     }
   }
 
@@ -65,18 +68,17 @@ export class StravaWidgetComponent {
     }
   }
 
-  public getToken(apiCode: string): void {
+  public async getToken(apiCode: string): Promise<void> {
     this.isWidgetLoaded = false;
-    this.stravaWidgetService.getToken(apiCode).subscribe({
-      next: (response: ITokenData) => {
-        window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
-        window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
-        window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
-        this.refreshPage();
-      },
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_TOKEN)
-    });
+    try {
+      const response: ITokenData = await firstValueFrom(this.stravaWidgetService.getToken(apiCode));
+      window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
+      window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
+      window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
+      await this.refreshPage();
+    } catch (error) {
+      this.errorHandlerService.handleError(error as HttpErrorResponse, this.ERROR_GETTING_TOKEN);
+    }
   }
 
   public getAthleteData(): void {
