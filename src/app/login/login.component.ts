@@ -1,8 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service/auth.service';
 import { ErrorHandlerService } from './../services/error.handler.service';
+import { firstValueFrom } from 'rxjs';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,7 +25,7 @@ export class LoginComponent {
     if (this.inputUsername && this.inputPassword) {
       this.isLoading = true;
       try {
-        await this.authService.login(this.inputUsername, this.inputPassword);
+        await firstValueFrom(this.authService.login(this.inputUsername, this.inputPassword));
         this.isLoading = false;
         await this.router.navigate(['home']);
       } catch (error) {
