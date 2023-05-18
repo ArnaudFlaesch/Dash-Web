@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
@@ -44,7 +44,7 @@ export class StravaWidgetComponent implements OnInit {
     private router: Router
   ) {}
 
-  public async ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
     const apiCode = this.route.snapshot.queryParamMap.get('code');
     if (apiCode) {
       await this.getToken(apiCode);
