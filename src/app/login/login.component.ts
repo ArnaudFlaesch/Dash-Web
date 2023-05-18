@@ -24,9 +24,9 @@ export class LoginComponent {
     if (this.inputUsername && this.inputPassword) {
       this.isLoading = true;
       this.authService.login(this.inputUsername, this.inputPassword).subscribe({
-        next: () => {
+        next: async () => {
           this.isLoading = false;
-          this.router.navigate(['home']).catch((error) => console.log(error));
+          await this.router.navigate(['home']);
         },
         error: (error: HttpErrorResponse) => {
           this.isLoading = false;

@@ -51,7 +51,7 @@ export class AuthService {
   public userHasValidToken(): boolean {
     const authenticatedUser = this.getCurrentUserData();
     let result = false;
-    if (authenticatedUser && authenticatedUser.accessToken) {
+    if (authenticatedUser?.accessToken) {
       try {
         result = Date.now() < jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000;
       } catch (error) {
@@ -63,7 +63,7 @@ export class AuthService {
 
   public isUserAdmin(): boolean {
     const authenticatedUser = this.getCurrentUserData();
-    return authenticatedUser !== null && authenticatedUser.roles.includes(RoleEnum.ROLE_ADMIN);
+    return authenticatedUser?.roles.includes(RoleEnum.ROLE_ADMIN) ?? false;
   }
 
   private getCurrentUserData(): IUser | null {

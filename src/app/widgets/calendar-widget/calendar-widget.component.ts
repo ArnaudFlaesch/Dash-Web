@@ -65,9 +65,7 @@ export class CalendarWidgetComponent {
   }
 
   public getWidgetConfig(): { calendarUrls: string[] } | undefined {
-    return this.calendarUrls && this.calendarUrls.length
-      ? { calendarUrls: this.calendarUrls }
-      : undefined;
+    return this.calendarUrls?.length ? { calendarUrls: this.calendarUrls } : undefined;
   }
 
   public onCalendarUrlAdded(): void {

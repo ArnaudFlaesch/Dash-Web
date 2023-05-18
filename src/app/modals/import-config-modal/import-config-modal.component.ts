@@ -20,7 +20,7 @@ export class ImportConfigModalComponent {
   ) {}
 
   public selectFile(event: any): void {
-    if (event.target.files && event.target.files[0]) {
+    if (event.target.files?.[0]) {
       this.fileToUpload = event.target.files[0];
     }
   }

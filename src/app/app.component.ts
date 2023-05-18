@@ -22,8 +22,12 @@ export class AppComponent {
     private router: Router
   ) {
     if (!this.authService.userHasValidToken()) {
-      this.router.navigate(['/login']).catch((error) => console.log(error));
+      this.navigateToLoginPage();
     }
     this.themeService.selectDarkMode(this.themeService.isPreferredThemeDarkMode());
+  }
+
+  private async navigateToLoginPage(): Promise<void> {
+    await this.router.navigate(['/login']);
   }
 }

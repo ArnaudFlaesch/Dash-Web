@@ -94,7 +94,7 @@ export class WorkoutWidgetComponent {
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES),
       complete: () => (this.isWidgetLoaded = true)
     });
-    const selectedMonth = this.selectedMonthFormControl.value || new Date();
+    const selectedMonth = this.selectedMonthFormControl.value ?? new Date();
     this.getWorkoutSessionsOfMonth(selectedMonth);
     this.getWorkoutStatsOfCurrentWeek();
     this.getWorkoutStatsOfMonth(selectedMonth);
