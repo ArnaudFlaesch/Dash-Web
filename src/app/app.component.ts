@@ -21,8 +21,12 @@ export class AppComponent {
     private themeService: ThemeService,
     private router: Router
   ) {
+    this.initApplication();
+  }
+
+  private async initApplication(): Promise<void> {
     if (!this.authService.userHasValidToken()) {
-      this.navigateToLoginPage();
+      await this.navigateToLoginPage();
     }
     this.themeService.selectDarkMode(this.themeService.isPreferredThemeDarkMode());
   }
