@@ -7,6 +7,7 @@ import { format, isAfter } from 'date-fns';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetService } from './strava.widget.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-strava-widget',
@@ -65,18 +66,17 @@ export class StravaWidgetComponent {
     }
   }
 
-  public getToken(apiCode: string): void {
+  public async getToken(apiCode: string): Promise<void> {
     this.isWidgetLoaded = false;
-    this.stravaWidgetService.getToken(apiCode).subscribe({
-      next: async (response: ITokenData) => {
-        window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
-        window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
-        window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
-        await this.refreshPage();
-      },
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_TOKEN)
-    });
+    try {
+      const response: ITokenData = await firstValueFrom(this.stravaWidgetService.getToken(apiCode));
+      window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
+      window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
+      window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
+      await this.refreshPage();
+    } catch (error) {
+      this.errorHandlerService.handleError(error as HttpErrorResponse, this.ERROR_GETTING_TOKEN);
+    }
   }
 
   public getAthleteData(): void {
