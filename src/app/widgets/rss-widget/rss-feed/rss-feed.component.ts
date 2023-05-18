@@ -21,8 +21,8 @@ export class RssFeedComponent {
 
   public stripHtmlFromContent(content?: string): string {
     const div = document.createElement('div');
-    div.innerHTML = content || '';
-    return div.textContent || div.innerText || '';
+    div.innerHTML = content ?? '';
+    return div.textContent ?? div.innerText ?? '';
   }
 
   public formatTitleForArticle(article: IArticle): string {

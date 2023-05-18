@@ -47,7 +47,7 @@ export class TwitterWidgetComponent implements OnInit {
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
         this.pageNumber = 0;
-        this.fetchFollowedUsers(this.pageNumber, searchValue || undefined);
+        this.fetchFollowedUsers(this.pageNumber, searchValue ?? undefined);
       });
   }
 
@@ -68,7 +68,7 @@ export class TwitterWidgetComponent implements OnInit {
   }
 
   public addFollowedUser(): void {
-    if (this.searchFormControl.value && this.searchFormControl.value.length) {
+    if (this.searchFormControl.value?.length) {
       this.twitterWidgetService.addFollowedUser(this.searchFormControl.value).subscribe({
         next: (addedFollowedUser: IFollowedUser) =>
           (this.followedUsers = [...this.followedUsers, addedFollowedUser]),
@@ -107,11 +107,11 @@ export class TwitterWidgetComponent implements OnInit {
 
   public onPageChanged(event: PageEvent): void {
     this.pageNumber = event.pageIndex;
-    this.fetchFollowedUsers(this.pageNumber, this.searchFormControl.value || undefined);
+    this.fetchFollowedUsers(this.pageNumber, this.searchFormControl.value ?? undefined);
   }
 
   private fetchFollowedUsers(pageNumber: number, searchValue?: string): void {
-    this.twitterWidgetService.getFollowedUsers(pageNumber, searchValue || undefined).subscribe({
+    this.twitterWidgetService.getFollowedUsers(pageNumber, searchValue ?? undefined).subscribe({
       next: (followedUsersResponse) => {
         this.followedUsers = followedUsersResponse.content;
         this.pageNumber = followedUsersResponse.number;

@@ -20,8 +20,8 @@ export class ErrorHandlerService {
       case 401: {
         this.router
           .navigate(['login'])
-          .catch((error) => console.log(error))
-          .then(() => this.displayErrorMessage(error.message, this.ERROR_UNAUTHORIZED_CODE));
+          .then(() => this.displayErrorMessage(error.message, this.ERROR_UNAUTHORIZED_CODE))
+          .catch((error) => console.log(error));
         break;
       }
       case 403: {
@@ -34,7 +34,7 @@ export class ErrorHandlerService {
     }
   }
 
-  public handleLoginError(error: HttpErrorResponse): void {
+  public handleLoginError(error: Error): void {
     this.displayErrorMessage(error.message, this.ERROR_AUTHENTICATING_USER);
   }
 
