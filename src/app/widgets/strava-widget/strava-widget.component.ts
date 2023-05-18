@@ -68,11 +68,11 @@ export class StravaWidgetComponent {
   public getToken(apiCode: string): void {
     this.isWidgetLoaded = false;
     this.stravaWidgetService.getToken(apiCode).subscribe({
-      next: (response: ITokenData) => {
+      next: async (response: ITokenData) => {
         window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
         window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
         window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
-        this.refreshPage();
+        await this.refreshPage();
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_TOKEN)
