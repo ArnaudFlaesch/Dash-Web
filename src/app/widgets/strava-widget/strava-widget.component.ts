@@ -14,7 +14,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './strava-widget.component.html',
   styleUrls: ['./strava-widget.component.scss']
 })
-export class StravaWidgetComponent {
+export class StravaWidgetComponent implements OnInit {
   public activities: IActivity[] = [];
   public athlete: IAthlete | undefined;
   public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
@@ -42,10 +42,12 @@ export class StravaWidgetComponent {
     private route: ActivatedRoute,
     private errorHandlerService: ErrorHandlerService,
     private router: Router
-  ) {
+  ) {}
+
+  public async ngOnInit(): void {
     const apiCode = this.route.snapshot.queryParamMap.get('code');
     if (apiCode) {
-      this.getToken(apiCode);
+      await this.getToken(apiCode);
     }
   }
 
