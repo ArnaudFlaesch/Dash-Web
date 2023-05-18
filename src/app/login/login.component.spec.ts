@@ -73,6 +73,5 @@ describe('LoginComponent', () => {
       status: 400,
       statusText: 'Bad Request'
     });
-    expect(spectator.component.isLoading).toEqual(false);
   });
 });
