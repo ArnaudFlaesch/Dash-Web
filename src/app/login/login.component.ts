@@ -20,20 +20,17 @@ export class LoginComponent {
     private router: Router
   ) {}
 
-  public handleLogin(): void {
+  public async handleLogin(): Promise<void> {
     if (this.inputUsername && this.inputPassword) {
       this.isLoading = true;
-      this.authService.login(this.inputUsername, this.inputPassword).subscribe({
-        next: async () => {
-          this.isLoading = false;
-          await this.router.navigate(['home']);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.isLoading = false;
-          this.errorHandlerService.handleLoginError(error);
-        },
-        complete: () => (this.isLoading = false)
-      });
+      try {
+        await this.authService.login(this.inputUsername, this.inputPassword);
+        this.isLoading = false;
+        await this.router.navigate(['home']);
+      } catch (error) {
+        this.isLoading = false;
+        this.errorHandlerService.handleLoginError(error as Error);
+      }
     } else {
       this.isLoading = false;
     }
