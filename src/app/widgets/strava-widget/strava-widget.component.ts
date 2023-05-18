@@ -72,7 +72,7 @@ export class StravaWidgetComponent {
         window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
         window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
         window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
-        this.router.navigate(['/']).catch((error) => console.log(error));
+        this.refreshPage();
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_TOKEN)
@@ -174,6 +174,10 @@ export class StravaWidgetComponent {
 
   public getAthleteProfileUrl(athleteId: number): string {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
+  }
+
+  private async refreshPage(): Promise<void> {
+    await this.router.navigate(['/']);
   }
 
   private sortByActivityDateDesc(activityA: IActivity, activityB: IActivity): number {
