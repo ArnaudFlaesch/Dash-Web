@@ -4,9 +4,9 @@ import { HttpClientModule } from '@angular/common/http';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -15,7 +15,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -23,6 +22,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -31,18 +31,19 @@ import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthGuard } from './guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { CreateMiniWidgetModalComponent } from './modals/create-mini-widget-modal/create-mini-widget-modal.component';
 import { CreateWidgetModalComponent } from './modals/create-widget-modal/create-widget-modal.component';
 import { ImportConfigModalComponent } from './modals/import-config-modal/import-config-modal.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 import { DateFormatPipe } from './pipes/date-format.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import { AuthService } from './services/auth.service/auth.service';
 import { ConfigService } from './services/config.service/config.service';
 import { DateUtilsService } from './services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './services/error.handler.service';
+import { NotificationService } from './services/notification.service/NotificationService';
 import { TabService } from './services/tab.service/tab.service';
 import { ThemeService } from './services/theme.service/theme.service';
 import { MiniWidgetService } from './services/widget.service/miniwidget.service';
@@ -81,8 +82,6 @@ import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-se
 import { WorkoutStatisticsComponent } from './widgets/workout-widget/workout-statistics/workout-statistics.component';
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
-import { NotificationsComponent } from './notifications/notifications.component';
-import { NotificationService } from './services/notification.service/NotificationService';
 
 registerLocaleData(localeFr);
 
@@ -177,7 +176,6 @@ registerLocaleData(localeFr);
     TwitterWidgetService,
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
-    AuthGuard,
     { provide: LOCALE_ID, useValue: 'fr-FR' }
   ],
   bootstrap: [AppComponent]
