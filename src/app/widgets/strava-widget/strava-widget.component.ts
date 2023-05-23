@@ -103,7 +103,7 @@ export class StravaWidgetComponent implements OnInit {
       this.isWidgetLoaded = false;
       this.stravaWidgetService.getActivities(token, this.paginationActivities).subscribe({
         next: (response) => {
-          this.activities = [...response].sort(this.sortByActivityDateDesc);
+          this.activities = [...response].sort(this.sortByActivityDate);
           this.getChartData();
           this.isWidgetLoaded = true;
         },
@@ -114,17 +114,16 @@ export class StravaWidgetComponent implements OnInit {
   }
 
   public getActivitiesByMonth(): Record<string, number[]> {
-    return this.activities.reduce(
-      (activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
+    return [...this.activities]
+      .sort((activityA, activityB) => this.sortByActivityDate(activityA, activityB, false))
+      .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
         const month = format(new Date(activity.startDateLocal), 'yyyy-MM');
         if (!activitiesByMonth[month]) {
           activitiesByMonth[month] = [];
         }
         activitiesByMonth[month].push(Math.round(activity.distance * 1000) / 1000000);
         return activitiesByMonth;
-      },
-      {}
-    );
+      }, {});
   }
 
   public getStatsFromActivities(): IActivitiesStatsByMonth[] {
@@ -182,13 +181,21 @@ export class StravaWidgetComponent implements OnInit {
     await this.router.navigate(['/']);
   }
 
-  private sortByActivityDateDesc(activityA: IActivity, activityB: IActivity): number {
+  private sortByActivityDate(
+    activityA: IActivity,
+    activityB: IActivity,
+    sortByDateDesc = true
+  ): number {
     const startDateA = Date.parse(activityA.startDate);
     const startDateB = Date.parse(activityB.startDate);
     if (startDateA === startDateB) {
       return 0;
     } else {
-      return startDateA < startDateB ? 1 : -1;
+      if (sortByDateDesc) {
+        return startDateA < startDateB ? 1 : -1;
+      } else {
+        return startDateA > startDateB ? 1 : -1;
+      }
     }
   }
 
