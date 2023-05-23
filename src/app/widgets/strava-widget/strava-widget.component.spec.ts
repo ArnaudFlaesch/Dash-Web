@@ -295,7 +295,7 @@ describe('StravaWidgetComponent', () => {
     expect(spectator.component.activities.length).toEqual(4);
     expect(spectator.component.getActivitiesByMonth()).toEqual({
       '2022-09': [11.6664],
-      '2022-10': [10.7047, 12.3976, 10.5298]
+      '2022-10': [10.5298, 12.3976, 10.7047]
     });
     const statsFromActivities = spectator.component.getStatsFromActivities();
     expect(statsFromActivities[0].y).toEqual(12);
