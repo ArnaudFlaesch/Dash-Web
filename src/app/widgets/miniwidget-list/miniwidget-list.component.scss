@@ -9,7 +9,7 @@
     overflow-x: auto;
     flex-basis: 95%;
 
-    @media (width <= 320px) {
+    @media (width <= 640) {
       flex-basis: 85%;
     }
 
