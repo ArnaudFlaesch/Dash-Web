@@ -21,6 +21,8 @@ export class StravaWidgetComponent implements OnInit {
     undefined;
 
   public isWidgetLoaded = true;
+  public pageNumber = 1;
+  public paginationActivities = 25;
 
   private STRAVA_CLIENT_ID = 30391;
   private loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
@@ -34,8 +36,6 @@ export class StravaWidgetComponent implements OnInit {
   private ERROR_NO_REFRESH_TOKEN = "Vous n'êtes pas connecté à Strava.";
   private ERROR_GETTING_ATHLETE_DATA = 'Erreur lors de la récupération de vos informations Strava.';
   private ERROR_GETTING_ACTIVITIES = 'Erreur lors de la récupération des activités Strava.';
-
-  private paginationActivities = 20;
 
   constructor(
     private stravaWidgetService: StravaWidgetService,
@@ -93,22 +93,6 @@ export class StravaWidgetComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_ATHLETE_DATA)
-      });
-    }
-  }
-
-  public getActivities(): void {
-    const token = this.getTokenValue();
-    if (token && this.isUserLoggedIn()) {
-      this.isWidgetLoaded = false;
-      this.stravaWidgetService.getActivities(token, this.paginationActivities).subscribe({
-        next: (response) => {
-          this.activities = [...response].sort(this.sortByActivityDate);
-          this.getChartData();
-          this.isWidgetLoaded = true;
-        },
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACTIVITIES)
       });
     }
   }
@@ -173,12 +157,40 @@ export class StravaWidgetComponent implements OnInit {
     window.open(this.loginToStravaUrl, '_self');
   }
 
+  public getPreviousActivitiesPage(): void {
+    this.pageNumber--;
+    this.getActivities();
+  }
+
+  public getNextActivitiesPage(): void {
+    this.pageNumber++;
+    this.getActivities();
+  }
+
   public getAthleteProfileUrl(athleteId: number): string {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
   }
 
   private async refreshPage(): Promise<void> {
     await this.router.navigate(['/']);
+  }
+
+  private getActivities(): void {
+    const token = this.getTokenValue();
+    if (token && this.isUserLoggedIn()) {
+      this.isWidgetLoaded = false;
+      this.stravaWidgetService
+        .getActivities(token, this.pageNumber, this.paginationActivities)
+        .subscribe({
+          next: (response) => {
+            this.activities = [...response].sort(this.sortByActivityDate);
+            this.getChartData();
+            this.isWidgetLoaded = true;
+          },
+          error: (error: HttpErrorResponse) =>
+            this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACTIVITIES)
+        });
+    }
   }
 
   private sortByActivityDate(
