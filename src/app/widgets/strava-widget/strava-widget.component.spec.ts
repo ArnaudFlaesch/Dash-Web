@@ -286,7 +286,7 @@ describe('StravaWidgetComponent', () => {
     getAthleteDataRequest.flush(athleteData);
 
     const getActivitiesRequest = stravaWidgetService.expectOne(
-      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&numberOfActivities=20`,
+      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`,
       HttpMethod.GET
     );
     getActivitiesRequest.flush(activitiesData);
