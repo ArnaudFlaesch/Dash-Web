@@ -92,7 +92,8 @@ export class StravaWidgetComponent implements OnInit {
           this.isWidgetLoaded = true;
         },
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ATHLETE_DATA)
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ATHLETE_DATA),
+        complete: () => (this.isWidgetLoaded = true)
       });
     }
   }
@@ -188,7 +189,8 @@ export class StravaWidgetComponent implements OnInit {
             this.isWidgetLoaded = true;
           },
           error: (error: HttpErrorResponse) =>
-            this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACTIVITIES)
+            this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACTIVITIES),
+          complete: () => (this.isWidgetLoaded = true)
         });
     }
   }

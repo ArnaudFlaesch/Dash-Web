@@ -16,11 +16,11 @@
       <div *ngIf="this.activities.length">
         <div id="strava-activities-container">
           <div id="activities-pagination-container">
-            <button (click)="this.getPreviousActivitiesPage()" mat-icon-button *ngIf="this.pageNumber > 1">
-              <mat-icon>arrow_back</mat-icon></button>
             <button (click)="this.getNextActivitiesPage()" mat-icon-button
               *ngIf="this.activities.length === this.paginationActivities">
               <mat-icon>arrow_forward</mat-icon></button>
+            <button (click)="this.getPreviousActivitiesPage()" mat-icon-button *ngIf="this.pageNumber > 1">
+              <mat-icon>arrow_back</mat-icon></button>
           </div>
           <app-strava-activities [activities]="this.activities"></app-strava-activities>
         </div>
