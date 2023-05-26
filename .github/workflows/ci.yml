@@ -88,15 +88,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Generate documentation
-        #    if: success() && github.ref == 'refs/heads/master'
+      - name:
+          Generate documentation
+          #if: success() && github.ref == 'refs/heads/master'
         run: |
           npm run compodoc:build
           mv documentation public/documentation
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1
-        if: success() && github.ref == 'refs/heads/master'
+        #if: success() && github.ref == 'refs/heads/master'
         with:
           path: ./public
 
@@ -112,7 +113,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: test
-    #  if: success() && github.ref == 'refs/heads/master'
+    #if: success() && github.ref == 'refs/heads/master'
 
     steps:
       - name: Deploy to GitHub Pages
