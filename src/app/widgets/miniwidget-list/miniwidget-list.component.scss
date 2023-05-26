@@ -1,16 +1,19 @@
 #miniwidget-list-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
 
   #miniwidget-list {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
-    flex-basis: 95%;
+    max-width: 95%;
 
-    @media (width <= 640) {
-      flex-basis: 85%;
+    @media (640px <= width <= 1280px) {
+      max-width: 90%;
+    }
+
+    @media (width <= 640px) {
+      max-width: 85%;
     }
 
     .miniwidget-container {
