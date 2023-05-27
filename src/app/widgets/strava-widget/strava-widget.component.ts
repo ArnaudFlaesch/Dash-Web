@@ -159,13 +159,17 @@ export class StravaWidgetComponent implements OnInit {
   }
 
   public getPreviousActivitiesPage(): void {
-    this.pageNumber--;
-    this.getActivities();
+    if (this.pageNumber > 1) {
+      this.pageNumber--;
+      this.getActivities();
+    }
   }
 
   public getNextActivitiesPage(): void {
-    this.pageNumber++;
-    this.getActivities();
+    if (this.activities.length === this.paginationActivities) {
+      this.pageNumber++;
+      this.getActivities();
+    }
   }
 
   public getAthleteProfileUrl(athleteId: number): string {
