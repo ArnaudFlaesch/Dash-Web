@@ -10,6 +10,13 @@
 #strava-activities-container {
   max-height: 12rem;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: row;
+
+  #activities-pagination-container {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 #strava-statistics {

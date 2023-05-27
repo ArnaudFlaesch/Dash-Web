@@ -47,9 +47,13 @@ export class StravaWidgetService {
     );
   }
 
-  public getActivities(token: string, numberOfActivities?: number): Observable<IActivity[]> {
+  public getActivities(
+    token: string,
+    pageNumber?: number,
+    numberOfActivities?: number
+  ): Observable<IActivity[]> {
     return this.http.get<IActivity[]>(
-      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${token}&numberOfActivities=${numberOfActivities}`,
+      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${token}&pageNumber=${pageNumber}&numberOfActivities=${numberOfActivities}`,
       {
         headers: {
           Authorization: authorizationBearer(),
