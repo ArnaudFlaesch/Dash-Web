@@ -140,6 +140,7 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
               : undefined;
             break;
           }
+          /* @TODO Fix or remove Twitter widget
           case WidgetTypeEnum.TWITTER: {
             this.isTwitterWidgetInList = true;
             component = target.createComponent(TwitterWidgetComponent, {
@@ -150,6 +151,7 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
               : undefined;
             break;
           }
+          */
           case WidgetTypeEnum.ECOWATT: {
             target.createComponent(EcowattWidgetComponent, {
               injector: injector

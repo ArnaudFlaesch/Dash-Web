@@ -6,7 +6,7 @@ export enum WidgetTypeEnum {
   STEAM = 5,
   WORKOUT = 6,
   AIRPARIF = 7,
-  TWITTER = 8,
+  // TWITTER = 8,
   ECOWATT = 9,
   INCIDENT = 10
 }
