@@ -85,12 +85,6 @@ describe('WidgetListComponent', () => {
       tabId: 1
     },
     {
-      id: 50,
-      type: WidgetTypeEnum.TWITTER,
-      widgetOrder: 8,
-      tabId: 1
-    },
-    {
       id: 51,
       type: WidgetTypeEnum.ECOWATT,
       widgetOrder: 9,
@@ -107,6 +101,6 @@ describe('WidgetListComponent', () => {
   });
 
   it('Should display the widgets', () => {
-    expect(spectator.component.widgetList.length).toEqual(9);
+    expect(spectator.component.widgetList.length).toEqual(8);
   });
 });

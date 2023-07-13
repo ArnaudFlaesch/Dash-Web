@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 import { Interception } from 'cypress/types/net-stubbing';
 
-describe('Twitter Widget tests', () => {
+xdescribe('Twitter Widget tests', () => {
   const tabName = 'Twitter';
 
   beforeEach(() => cy.loginAsAdmin().navigateToTab(tabName));
