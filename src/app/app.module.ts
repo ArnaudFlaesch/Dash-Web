@@ -82,6 +82,7 @@ import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-se
 import { WorkoutStatisticsComponent } from './widgets/workout-widget/workout-statistics/workout-statistics.component';
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
+import { IncidentWidgetComponent } from './widgets/incident-widget/incident-widget.component';
 
 registerLocaleData(localeFr);
 
@@ -121,7 +122,8 @@ registerLocaleData(localeFr);
     AirParifMapComponent,
     AbstractWidgetComponent,
     WorkoutStatisticsComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    IncidentWidgetComponent
   ],
   imports: [
     BrowserAnimationsModule,
