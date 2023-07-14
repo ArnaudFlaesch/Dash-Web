@@ -83,6 +83,7 @@ import { WorkoutStatisticsComponent } from './widgets/workout-widget/workout-sta
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
 import { IncidentWidgetComponent } from './widgets/incident-widget/incident-widget.component';
+import { IncidentWidgetService } from './widgets/incident-widget/incident.widget.service';
 
 registerLocaleData(localeFr);
 
@@ -176,6 +177,7 @@ registerLocaleData(localeFr);
     StravaWidgetService,
     NotificationService,
     TwitterWidgetService,
+    IncidentWidgetService,
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr-FR' }

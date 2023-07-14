@@ -1,6 +1,6 @@
-import { Component, Inject } from '@angular/core';
-import { WidgetService } from '../../services/widget.service/widget.service';
-import { ErrorHandlerService } from 'src/app/services/error.handler.service';
+import { Component, Inject, OnInit } from '@angular/core';
+import { ErrorHandlerService } from '../../services/error.handler.service';
+import { IncidentWidgetService } from './incident.widget.service';
 
 @Component({
   selector: 'app-incident-widget',
@@ -12,37 +12,46 @@ export class IncidentWidgetComponent {
   public lastIncidentDate?: string;
   public streaks: { startDate: string; endDate: string }[] = [];
 
-  public isWidgetLoaded = true;
+  public isWidgetLoaded = false;
 
-  private ERROR_UPDATING_WIDGET = 'Erreur lors de la mise à jour du widget.';
+  private ERROR_GETTING_WIDGET_CONFIG =
+    'Erreur lors de la récupération de la configuration du widget.';
+  private ERROR_UPDATING_WIDGET_CONFIG = 'Erreur lors de la mise à jour du widget.';
 
   constructor(
-    private widgetService: WidgetService,
+    private incidentWidgetService: IncidentWidgetService,
     private errorHandlerService: ErrorHandlerService,
     @Inject('widgetId') private widgetId: number
   ) {}
 
+  public refreshWidget(): void {
+    this.isWidgetLoaded = false;
+    this.incidentWidgetService.getIncidentConfigForWidget(this.widgetId).subscribe({
+      next: (incidentConfig) => {
+        this.lastIncidentDate = incidentConfig.lastIncidentDate;
+        this.isWidgetLoaded = true;
+      },
+      error: (error) =>
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WIDGET_CONFIG)
+    });
+  }
+
   public startNewStreak(): void {
-    const newWidgetConfig = { ...this.getWidgetConfig(), lastIncidentDate: new Date() };
-    this.updateWidgetConfig(newWidgetConfig);
+    this.incidentWidgetService.startFirstStreak(this.widgetId).subscribe({
+      next: (updatedIncidentConfig) =>
+        (this.lastIncidentDate = updatedIncidentConfig.lastIncidentDate),
+      error: (error) =>
+        this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_CONFIG)
+    });
   }
 
   public endCurrentStreak(): void {
-    if (this.lastIncidentDate) {
-      const streaks: { startDate: string; endDate: string }[] = [
-        ...this.streaks,
-        {
-          startDate: new Date(this.lastIncidentDate).toString(),
-          endDate: new Date().toString()
-        } as { startDate: string; endDate: string }
-      ];
-      const newWidgetConfig = {
-        ...this.getWidgetConfig(),
-        streaks: streaks,
-        lastIncidentDate: new Date()
-      };
-      this.updateWidgetConfig(newWidgetConfig);
-    }
+    this.incidentWidgetService.endStreak(this.widgetId).subscribe({
+      next: (updatedIncidentConfig) =>
+        (this.lastIncidentDate = updatedIncidentConfig.lastIncidentDate),
+      error: (error) =>
+        this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_CONFIG)
+    });
   }
 
   public getWidgetConfig():
@@ -58,15 +67,5 @@ export class IncidentWidgetComponent {
 
   public isFormValid(): boolean {
     return this.incidentName !== undefined && this.incidentName.length > 0;
-  }
-
-  private updateWidgetConfig(newWidgetConfig: any): void {
-    this.widgetService.updateWidgetData(this.widgetId, newWidgetConfig).subscribe({
-      next: (widgetConfig) => {
-        this.lastIncidentDate = widgetConfig.data?.['lastIncidentDate'] as string;
-        this.streaks = widgetConfig.data?.['streaks'] as { startDate: string; endDate: string }[];
-      },
-      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET)
-    });
   }
 }

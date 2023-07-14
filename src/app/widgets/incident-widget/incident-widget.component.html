@@ -1,10 +1,10 @@
 <app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
-  (refreshWidgetAction)="null">
+  (refreshWidgetAction)="refreshWidget()">
 
   <ng-template #header>
     <div class="incident-widget-header">
       <mat-icon>warning</mat-icon>
-      <p>Incident</p>
+      <p>Incident {{incidentName}}</p>
     </div>
   </ng-template>
 
@@ -17,14 +17,13 @@
   </ng-template>
 
   <ng-template #body>
-
     <ng-template [ngIf]="this.lastIncidentDate" [ngIfElse]="startStreak">
+      Dernier incident le {{lastIncidentDate | dateFormat : 'short'}}
       <button mat-raised-button (click)="endCurrentStreak()">Terminer</button>
     </ng-template>
 
     <ng-template #startStreak>
       <button mat-raised-button (click)="startNewStreak()">Départ</button>
     </ng-template>
-
   </ng-template>
 </app-widget>
