@@ -165,9 +165,6 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
             component.instance.incidentName = widgetData
               ? (widgetData['incidentName'] as string)
               : undefined;
-            component.instance.lastIncidentDate = widgetData
-              ? (widgetData['lastIncidentDate'] as string)
-              : undefined;
             break;
           }
         }

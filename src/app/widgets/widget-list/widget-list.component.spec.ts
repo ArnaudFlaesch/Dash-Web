@@ -18,6 +18,7 @@ import { TwitterWidgetService } from '../twitter-widget/twitter.widget.service';
 import { WeatherWidgetService } from '../weather-widget/weather.widget.service';
 import { WorkoutWidgetService } from '../workout-widget/workout.widget.service';
 import { WidgetListComponent } from './widget-list.component';
+import { IncidentWidgetService } from '../incident-widget/incident.widget.service';
 
 describe('WidgetListComponent', () => {
   let spectator: Spectator<WidgetListComponent>;
@@ -33,6 +34,7 @@ describe('WidgetListComponent', () => {
       TwitterWidgetService,
       CalendarWidgetService,
       WorkoutWidgetService,
+      IncidentWidgetService,
       ErrorHandlerService,
       WidgetService,
       ThemeService,
@@ -89,6 +91,12 @@ describe('WidgetListComponent', () => {
       type: WidgetTypeEnum.ECOWATT,
       widgetOrder: 9,
       tabId: 1
+    },
+    {
+      id: 52,
+      type: WidgetTypeEnum.INCIDENT,
+      widgetOrder: 10,
+      tabId: 1
     }
   ];
 
@@ -101,6 +109,6 @@ describe('WidgetListComponent', () => {
   });
 
   it('Should display the widgets', () => {
-    expect(spectator.component.widgetList.length).toEqual(8);
+    expect(spectator.component.widgetList.length).toEqual(9);
   });
 });

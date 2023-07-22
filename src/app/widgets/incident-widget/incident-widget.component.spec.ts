@@ -37,9 +37,11 @@ describe('IncidentWidgetComponent', () => {
       incidentName: 'Incident name',
       lastIncidentDate: new Date().toString()
     } as IIncident;
+
     expect(spectator.component.getWidgetConfig()).toEqual(undefined);
     spectator.component.incidentName = incidentWidgetConfig.incidentName;
     spectator.component.refreshWidget();
+
     expect(spectator.component.isWidgetLoaded).toEqual(false);
     const request = incidentWidgetService.expectOne(
       environment.backend_url + '/incidentWidget/incidentWidgetConfig?widgetId=' + widgetId,
@@ -56,5 +58,14 @@ describe('IncidentWidgetComponent', () => {
     expect(spectator.component.getWidgetConfig()).toEqual({
       incidentName: incidentWidgetConfig.incidentName
     });
+
+    spectator.component.startNewStreak();
+    const startStreakRequest = incidentWidgetService.expectOne(
+      environment.backend_url + '/incidentWidget/startFirstStreak',
+      HttpMethod.POST
+    );
+    startStreakRequest.flush(incidentWidgetConfig);
+
+    expect(spectator.component.isFormValid()).toEqual(true);
   });
 });
