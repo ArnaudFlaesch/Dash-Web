@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
-import { IIncident } from './IIncident';
+import { IIncident, IIncidentStreak } from './IIncident';
 
 @Injectable()
 export class IncidentWidgetService {
@@ -49,5 +49,17 @@ export class IncidentWidgetService {
         }
       }
     );
+  }
+
+  public getIncidentStreaks(incidentId: number): Observable<IIncidentStreak[]> {
+    return this.http.get<IIncidentStreak[]>(`${environment.backend_url}/incidentWidget/streaks`, {
+      headers: {
+        Authorization: authorizationBearer(),
+        'Content-type': 'application/json'
+      },
+      params: {
+        incidentId: incidentId
+      }
+    });
   }
 }

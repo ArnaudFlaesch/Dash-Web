@@ -18,8 +18,21 @@
 
   <ng-template #body>
     <ng-template [ngIf]="this.lastIncidentDate" [ngIfElse]="startStreak">
-      Dernier incident le {{lastIncidentDate | dateFormat : 'short'}}
-      <button mat-raised-button (click)="endCurrentStreak()">Terminer</button>
+      <ng-template [ngIf]="this.isWidgetViewCurrentStreak()" [ngIfElse]="pastStreaksView">
+        Dernier incident le {{lastIncidentDate | dateFormat : 'short'}}
+        <button (click)="this.goToPastStreaksView()" *ngIf="this.streaks.length > 0" mat-raised-button>Séries
+          précédentes</button>
+
+        <button mat-raised-button (click)="endCurrentStreak()">Terminer</button>
+      </ng-template>
+
+      <ng-template #pastStreaksView>
+        <div *ngIf="this.streaks.length > 0">
+          <div *ngFor="let streak of this.streaks">{{this.getNumberOfDaysFromStreak(streak)}}</div>
+        </div>
+        <button (click)="this.goToCurrentStreakView()" mat-raised-button>Série actuelle</button>
+      </ng-template>
+
     </ng-template>
 
     <ng-template #startStreak>

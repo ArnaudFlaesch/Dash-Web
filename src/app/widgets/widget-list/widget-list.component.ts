@@ -168,9 +168,6 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
             component.instance.lastIncidentDate = widgetData
               ? (widgetData['lastIncidentDate'] as string)
               : undefined;
-            component.instance.streaks = widgetData
-              ? (widgetData['streaks'] as { startDate: string; endDate: string }[])
-              : [];
             break;
           }
         }
