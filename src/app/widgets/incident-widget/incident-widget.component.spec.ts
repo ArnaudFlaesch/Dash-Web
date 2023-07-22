@@ -11,7 +11,7 @@ import { IncidentWidgetService } from './incident.widget.service';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
-import { IIncident } from './IIncident';
+import { IIncident, IIncidentStreak } from './IIncident';
 
 describe('IncidentWidgetComponent', () => {
   let spectator: Spectator<IncidentWidgetComponent>;
@@ -67,5 +67,29 @@ describe('IncidentWidgetComponent', () => {
     startStreakRequest.flush(incidentWidgetConfig);
 
     expect(spectator.component.isFormValid()).toEqual(true);
+
+    spectator.component.goToPastStreaksView();
+    expect(spectator.component.isWidgetViewCurrentStreak()).toEqual(false);
+    expect(spectator.component.isWidgetViewPastStreaks()).toEqual(true);
+
+    spectator.component.goToCurrentStreakView();
+    expect(spectator.component.isWidgetViewPastStreaks()).toEqual(false);
+    expect(spectator.component.isWidgetViewCurrentStreak()).toEqual(true);
+
+    spectator.component.endCurrentStreak();
+    const endStreakRequest = incidentWidgetService.expectOne(
+      environment.backend_url + '/incidentWidget/endStreak',
+      HttpMethod.POST
+    );
+    endStreakRequest.flush(incidentWidgetConfig);
+  });
+
+  it('Should calculate number of days of streak', () => {
+    const streak = {
+      streakStartDate: new Date(2022, 6, 1, 0, 0, 0).toString(),
+      streakEndDate: new Date(2022, 7, 1, 0, 0, 0).toString()
+    } as IIncidentStreak;
+
+    expect(spectator.component.getNumberOfDaysFromStreak(streak).months).toEqual(1);
   });
 });

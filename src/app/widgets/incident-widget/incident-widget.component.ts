@@ -74,13 +74,11 @@ export class IncidentWidgetComponent {
     }
   }
 
-  public getNumberOfDaysFromStreak(streak: IIncidentStreak): number {
-    return (
-      intervalToDuration({
-        start: Date.parse(streak.streakStartDate),
-        end: Date.parse(streak.streakEndDate)
-      }).days ?? 0
-    );
+  public getNumberOfDaysFromStreak(streak: IIncidentStreak): Duration {
+    return intervalToDuration({
+      start: Date.parse(streak.streakStartDate),
+      end: Date.parse(streak.streakEndDate)
+    });
   }
 
   public isWidgetViewCurrentStreak(): boolean {
