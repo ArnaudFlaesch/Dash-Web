@@ -91,15 +91,8 @@ export class IncidentWidgetComponent {
     return this.widgetView === IIncidentViewEnum.PAST_STREAKS;
   }
 
-  public getWidgetConfig():
-    | {
-        incidentName: string;
-        lastIncidentDate?: string;
-      }
-    | undefined {
-    return this.incidentName
-      ? { incidentName: this.incidentName, lastIncidentDate: this.lastIncidentDate }
-      : undefined;
+  public getWidgetConfig(): { incidentName: string } | undefined {
+    return this.incidentName ? { incidentName: this.incidentName } : undefined;
   }
 
   public isFormValid(): boolean {
