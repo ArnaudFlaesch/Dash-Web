@@ -3,7 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IIncidentStreak, IIncidentViewEnum } from './IIncident';
 import { IncidentWidgetService } from './incident.widget.service';
-import { intervalToDuration } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 
 @Component({
   selector: 'app-incident-widget',
@@ -74,11 +74,8 @@ export class IncidentWidgetComponent {
     }
   }
 
-  public getNumberOfDaysFromStreak(streak: IIncidentStreak): Duration {
-    return intervalToDuration({
-      start: Date.parse(streak.streakStartDate),
-      end: Date.parse(streak.streakEndDate)
-    });
+  public getNumberOfDaysFromStreak(streak: IIncidentStreak): number {
+    return differenceInDays(Date.parse(streak.streakEndDate), Date.parse(streak.streakStartDate));
   }
 
   public isWidgetViewCurrentStreak(): boolean {
