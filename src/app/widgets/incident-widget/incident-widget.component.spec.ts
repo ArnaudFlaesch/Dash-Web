@@ -90,6 +90,8 @@ describe('IncidentWidgetComponent', () => {
       streakEndDate: new Date(2022, 7, 1, 0, 0, 0).toString()
     } as IIncidentStreak;
 
-    expect(spectator.component.getNumberOfDaysFromStreak(streak)).toEqual(31);
+    expect(
+      spectator.component.getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate)
+    ).toEqual(31);
   });
 });
