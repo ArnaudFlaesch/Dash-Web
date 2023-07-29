@@ -5,7 +5,7 @@ import { IIncidentStreak, IIncidentViewEnum } from './IIncident';
 import { IncidentWidgetService } from './incident.widget.service';
 import { differenceInDays } from 'date-fns';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmModalComponent } from 'src/app/modals/confirm-modal/confirm-modal.component';
+import { ConfirmModalComponent } from '../../modals/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-incident-widget',

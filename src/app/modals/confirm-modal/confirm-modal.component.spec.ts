@@ -1,21 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ConfirmModalComponent } from './confirm-modal.component';
+import { Spectator, createComponentFactory } from '@ngneat/spectator/jest';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 describe('ConfirmModalComponent', () => {
-  let component: ConfirmModalComponent;
-  let fixture: ComponentFixture<ConfirmModalComponent>;
+  let spectator: Spectator<ConfirmModalComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ConfirmModalComponent]
-    });
-    fixture = TestBed.createComponent(ConfirmModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  const createComponent = createComponentFactory({
+    component: ConfirmModalComponent,
+    imports: [],
+    providers: [
+      { provide: MatDialogRef, useValue: {} },
+      { provide: MAT_DIALOG_DATA, useValue: { confirmMessage: 'test' } }
+    ]
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  beforeEach(() => {
+    spectator = createComponent();
+  });
+
+  it('Should create the component', () => {
+    expect(spectator.component).toBeTruthy();
   });
 });

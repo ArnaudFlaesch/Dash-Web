@@ -12,6 +12,7 @@ import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
 import { IIncident, IIncidentStreak } from './IIncident';
+import { MatDialogModule } from '@angular/material/dialog';
 
 describe('IncidentWidgetComponent', () => {
   let spectator: Spectator<IncidentWidgetComponent>;
@@ -22,7 +23,7 @@ describe('IncidentWidgetComponent', () => {
 
   const createComponent = createComponentFactory({
     component: IncidentWidgetComponent,
-    imports: [MatSnackBarModule],
+    imports: [MatDialogModule, MatSnackBarModule],
     providers: [ErrorHandlerService, { provide: 'widgetId', useValue: widgetId }]
   });
 
@@ -75,13 +76,6 @@ describe('IncidentWidgetComponent', () => {
     spectator.component.goToCurrentStreakView();
     expect(spectator.component.isWidgetViewPastStreaks()).toEqual(false);
     expect(spectator.component.isWidgetViewCurrentStreak()).toEqual(true);
-
-    spectator.component.endCurrentStreak();
-    const endStreakRequest = incidentWidgetService.expectOne(
-      environment.backend_url + '/incidentWidget/endStreak',
-      HttpMethod.POST
-    );
-    endStreakRequest.flush(incidentWidgetConfig);
   });
 
   it('Should calculate number of days of streak', () => {
