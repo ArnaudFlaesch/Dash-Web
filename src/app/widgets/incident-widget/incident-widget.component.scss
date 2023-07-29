@@ -2,3 +2,35 @@
   display: flex;
   flex-direction: row;
 }
+
+#incident-widget-body-header {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#go-to-current-streak-button {
+  margin-left: auto;
+  margin-top: 5px;
+}
+
+#past-streaks-list {
+  margin-left: 10px;
+  > :not(:first-child) {
+    margin-top: 5px;
+  }
+}
+
+#incident-widget-body {
+  margin: 0 auto;
+  text-align: center;
+
+  #number-of-days-since-last-incident {
+    margin-top: 50%;
+  }
+
+  #end-current-streak-button {
+    margin-top: 50%;
+  }
+}

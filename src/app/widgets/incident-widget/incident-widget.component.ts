@@ -4,6 +4,8 @@ import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IIncidentStreak, IIncidentViewEnum } from './IIncident';
 import { IncidentWidgetService } from './incident.widget.service';
 import { differenceInDays } from 'date-fns';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmModalComponent } from 'src/app/modals/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-incident-widget',
@@ -21,10 +23,12 @@ export class IncidentWidgetComponent {
 
   private ERROR_GETTING_WIDGET_CONFIG =
     'Erreur lors de la récupération de la configuration du widget.';
-  private ERROR_UPDATING_WIDGET_CONFIG = 'Erreur lors de la mise à jour du widget.';
+  private ERROR_STARTING_NEW_STREAK = 'Erreur lors du démarrage de la série.';
+  private ERROR_ENDING_NEW_STREAK = 'Erreur lors de la clôture de la série.';
   private ERROR_GETTING_INCIDENT_STREAKS = 'Erreur lors de la récupération des séries.';
 
   constructor(
+    private dialog: MatDialog,
     private incidentWidgetService: IncidentWidgetService,
     private errorHandlerService: ErrorHandlerService,
     @Inject('widgetId') private widgetId: number
@@ -48,17 +52,21 @@ export class IncidentWidgetComponent {
     this.incidentWidgetService.startFirstStreak(this.widgetId).subscribe({
       next: (updatedIncidentConfig) =>
         (this.lastIncidentDate = updatedIncidentConfig.lastIncidentDate),
-      error: (error) =>
-        this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_CONFIG)
+      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_STARTING_NEW_STREAK)
     });
   }
 
-  public endCurrentStreak(): void {
-    this.incidentWidgetService.endStreak(this.widgetId).subscribe({
-      next: (updatedIncidentConfig) =>
-        (this.lastIncidentDate = updatedIncidentConfig.lastIncidentDate),
-      error: (error) =>
-        this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_CONFIG)
+  public openEndStreakModal(): void {
+    const dialogRef = this.dialog.open(ConfirmModalComponent, {
+      height: '400px',
+      width: '600px',
+      data: { confirmMessage: 'Êtes-vous sûr de vouloir clôturer cette série ?' }
+    });
+
+    dialogRef.afterClosed().subscribe((choice: string) => {
+      if (choice === 'ok') {
+        this.endCurrentStreak();
+      }
     });
   }
 
@@ -99,9 +107,21 @@ export class IncidentWidgetComponent {
     return this.incidentName !== undefined && this.incidentName.length > 0;
   }
 
+  private endCurrentStreak(): void {
+    this.incidentWidgetService.endStreak(this.widgetId).subscribe({
+      next: (updatedIncidentConfig) =>
+        (this.lastIncidentDate = updatedIncidentConfig.lastIncidentDate),
+      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_ENDING_NEW_STREAK)
+    });
+  }
+
   private getIncidentStreaks(incidentId: number): void {
     this.incidentWidgetService.getIncidentStreaks(incidentId).subscribe({
-      next: (incidentStreaks) => (this.streaks = incidentStreaks),
+      next: (incidentStreaks) =>
+        (this.streaks = incidentStreaks.sort(
+          (streakA: IIncidentStreak, streakB: IIncidentStreak) =>
+            Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
+        )),
       error: (error) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS)
     });

@@ -63,10 +63,9 @@ describe('LoginComponent', () => {
 
   it('Should fail to login with wrong credentials', () => {
     const userName = 'userName';
-    const password = 'password';
 
     spectator.component.inputUsername = userName;
-    spectator.component.inputPassword = password;
+    spectator.component.inputPassword = 'password';
     spectator.component.handleLogin();
     const request = authService.expectOne(environment.backend_url + '/auth/login', HttpMethod.POST);
     request.flush('Bad credentials', {

@@ -84,6 +84,7 @@ import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
 import { IncidentWidgetComponent } from './widgets/incident-widget/incident-widget.component';
 import { IncidentWidgetService } from './widgets/incident-widget/incident.widget.service';
+import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
 
 registerLocaleData(localeFr);
 
@@ -124,7 +125,8 @@ registerLocaleData(localeFr);
     AbstractWidgetComponent,
     WorkoutStatisticsComponent,
     NotificationsComponent,
-    IncidentWidgetComponent
+    IncidentWidgetComponent,
+    ConfirmModalComponent
   ],
   imports: [
     BrowserAnimationsModule,
