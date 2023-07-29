@@ -13,6 +13,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
 import { IIncident, IIncidentStreak } from './IIncident';
 import { MatDialogModule } from '@angular/material/dialog';
+import { startOfYesterday } from 'date-fns';
 
 describe('IncidentWidgetComponent', () => {
   let spectator: Spectator<IncidentWidgetComponent>;
@@ -33,10 +34,12 @@ describe('IncidentWidgetComponent', () => {
   });
 
   it('should create', () => {
+    expect(spectator.component.getDaysSinceLastIncident()).toEqual(0);
+
     const incidentWidgetConfig = {
       id: 1,
       incidentName: 'Incident name',
-      lastIncidentDate: new Date().toString()
+      lastIncidentDate: startOfYesterday().toString()
     } as IIncident;
 
     expect(spectator.component.getWidgetConfig()).toEqual(undefined);
@@ -76,6 +79,8 @@ describe('IncidentWidgetComponent', () => {
     spectator.component.goToCurrentStreakView();
     expect(spectator.component.isWidgetViewPastStreaks()).toEqual(false);
     expect(spectator.component.isWidgetViewCurrentStreak()).toEqual(true);
+
+    expect(spectator.component.getDaysSinceLastIncident()).toEqual(1);
   });
 
   it('Should calculate number of days of streak', () => {
