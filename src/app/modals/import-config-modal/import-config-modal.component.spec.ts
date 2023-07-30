@@ -1,18 +1,12 @@
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
+import { createComponentFactory, createHttpFactory, Spectator } from '@ngneat/spectator/jest';
 import { ConfigService } from './../../services/config.service/config.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { ImportConfigModalComponent } from './import-config-modal.component';
 
 describe('ImportConfigModalComponent', () => {
   let spectator: Spectator<ImportConfigModalComponent>;
-  let configService: SpectatorHttp<ConfigService>;
 
   const createComponent = createComponentFactory({
     component: ImportConfigModalComponent,
@@ -23,7 +17,7 @@ describe('ImportConfigModalComponent', () => {
 
   beforeEach(() => {
     spectator = createComponent();
-    configService = createHttp();
+    createHttp();
   });
 
   it('Should create the component', () => {
