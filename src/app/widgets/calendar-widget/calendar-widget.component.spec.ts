@@ -36,7 +36,7 @@ describe('CalendarWidgetComponent', () => {
     spectator.component.refreshWidget();
     expect(spectator.component.events).toEqual([]);
     expect(spectator.component.isCalendarViewMonth()).toEqual(true);
-    spectator.component.calendarUrls.push('http://calendar.ical');
+    spectator.component.calendarUrls.push('https://calendar.ical');
     spectator.component.refreshWidget();
     const getCalendarDataRequest = calendarWidgetService.expectOne(
       environment.backend_url + `/calendarWidget/`,

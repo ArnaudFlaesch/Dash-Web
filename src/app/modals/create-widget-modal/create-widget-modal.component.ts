@@ -48,6 +48,9 @@ export class CreateWidgetModalComponent {
       case WidgetTypeEnum.ECOWATT.toString(): {
         return 'electric_bolt';
       }
+      case WidgetTypeEnum.INCIDENT.toString(): {
+        return 'priority_high';
+      }
       default: {
         return '';
       }

@@ -24,6 +24,7 @@ import { WorkoutWidgetComponent } from '../workout-widget/workout-widget.compone
 import { AirParifWidgetComponent } from '../airparif-widget/airparif-widget.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { EcowattWidgetComponent } from '../ecowatt-widget/ecowatt-widget.component';
+import { IncidentWidgetComponent } from '../incident-widget/incident-widget.component';
 
 @Component({
   selector: 'app-widget-list',
@@ -155,6 +156,15 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
             target.createComponent(EcowattWidgetComponent, {
               injector: injector
             });
+            break;
+          }
+          case WidgetTypeEnum.INCIDENT: {
+            component = target.createComponent(IncidentWidgetComponent, {
+              injector: injector
+            });
+            component.instance.incidentName = widgetData
+              ? (widgetData['incidentName'] as string)
+              : undefined;
             break;
           }
         }

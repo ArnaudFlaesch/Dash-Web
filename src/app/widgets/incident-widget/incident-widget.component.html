@@ -1,0 +1,50 @@
+<app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="refreshWidget()">
+
+  <ng-template #header>
+    <div class="incident-widget-header">
+      <mat-icon>priority_high</mat-icon>
+      <p>Incident {{incidentName}}</p>
+    </div>
+  </ng-template>
+
+  <ng-template #editComponent>
+    <mat-form-field appearance="fill">
+      <mat-label>Type d'incident</mat-label>
+      <input id="incidentName" name="incidentName" matInput [(ngModel)]="this.incidentName"
+        placeholder="Saisissez le type d'incident" />
+    </mat-form-field>
+  </ng-template>
+
+  <ng-template #body>
+    <ng-template [ngIf]="this.lastIncidentDate" [ngIfElse]="startStreak">
+      <ng-template [ngIf]="this.isWidgetViewCurrentStreak()" [ngIfElse]="pastStreaksView">
+        <div id="incident-widget-body-header">
+          <div> Dernier incident le {{lastIncidentDate | dateFormat : 'short'}}</div>
+          <button (click)="this.goToPastStreaksView()" *ngIf="this.streaks.length > 0" mat-raised-button>Séries
+            précédentes</button>
+        </div>
+
+        <div id="incident-widget-body">
+          <div id="number-of-days-since-last-incident">{{this.getDaysSinceLastIncident()}} jours</div>
+          <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">Terminer</button>
+        </div>
+      </ng-template>
+
+      <ng-template #pastStreaksView>
+        <button id="go-to-current-streak-button" (click)="this.goToCurrentStreakView()" mat-raised-button>Série
+          actuelle</button>
+
+        <div id="past-streaks-list" *ngIf="this.streaks.length > 0">
+          <div *ngFor="let streak of this.streaks">{{this.getNumberOfDaysFromStreak(streak.streakStartDate,
+            streak.streakEndDate)}} jours</div>
+        </div>
+      </ng-template>
+
+    </ng-template>
+
+    <ng-template #startStreak>
+      <button mat-raised-button (click)="startNewStreak()">Départ</button>
+    </ng-template>
+  </ng-template>
+</app-widget>

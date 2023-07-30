@@ -54,7 +54,9 @@ export class AbstractWidgetComponent {
 
   public refreshWidget(): void {
     console.log('Refresh widget ' + JSON.stringify(this.widgetData));
-    this.refreshWidgetAction.emit();
+    if (this.isFormValid) {
+      this.refreshWidgetAction.emit();
+    }
   }
 
   public toEditMode(): void {
