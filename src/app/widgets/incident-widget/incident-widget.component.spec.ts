@@ -38,12 +38,10 @@ describe('IncidentWidgetComponent', () => {
 
     const incidentWidgetConfig = {
       id: 1,
-      incidentName: 'Incident name',
       lastIncidentDate: startOfYesterday().toString()
     } as IIncident;
 
     expect(spectator.component.getWidgetConfig()).toEqual(undefined);
-    spectator.component.incidentName = incidentWidgetConfig.incidentName;
     spectator.component.refreshWidget();
 
     expect(spectator.component.isWidgetLoaded).toEqual(false);
@@ -58,10 +56,6 @@ describe('IncidentWidgetComponent', () => {
       HttpMethod.GET
     );
     getStreaksRequest.flush([]);
-
-    expect(spectator.component.getWidgetConfig()).toEqual({
-      incidentName: incidentWidgetConfig.incidentName
-    });
 
     spectator.component.startNewStreak();
     const startStreakRequest = incidentWidgetService.expectOne(
