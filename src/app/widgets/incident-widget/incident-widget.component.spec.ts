@@ -64,6 +64,8 @@ describe('IncidentWidgetComponent', () => {
     );
     startStreakRequest.flush(incidentWidgetConfig);
 
+    spectator.component.incidentName = 'Incident test';
+
     expect(spectator.component.isFormValid()).toEqual(true);
 
     spectator.component.goToPastStreaksView();
