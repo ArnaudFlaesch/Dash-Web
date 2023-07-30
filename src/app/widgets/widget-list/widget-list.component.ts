@@ -1,4 +1,3 @@
-import { TwitterWidgetComponent } from './../twitter-widget/twitter-widget.component';
 import {
   AfterViewInit,
   ChangeDetectorRef,

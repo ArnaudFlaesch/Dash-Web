@@ -1,9 +1,4 @@
-import {
-  createComponentFactory,
-  createHttpFactory,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
+import { createComponentFactory, createHttpFactory, Spectator } from '@ngneat/spectator/jest';
 
 import { AirParifWidgetService } from '../airparif-widget.service';
 import { AirParifIndiceEnum, IForecast, IAirParifCouleur } from '../model/IAirParif';
@@ -11,7 +6,6 @@ import { AirParifMapComponent } from './airparif-map.component';
 
 describe('AirParifMapComponent', () => {
   let spectator: Spectator<AirParifMapComponent>;
-  let airParifWidgetService: SpectatorHttp<AirParifWidgetService>;
 
   const createComponent = createComponentFactory({
     component: AirParifMapComponent,
@@ -22,7 +16,7 @@ describe('AirParifMapComponent', () => {
 
   it('Should create an AirParif map', () => {
     spectator = createComponent();
-    airParifWidgetService = createHttpAirParifWidgetService();
+    createHttpAirParifWidgetService();
 
     const couleursIndicesData = [
       {

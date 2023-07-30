@@ -19,7 +19,7 @@ export class EcowattWidgetComponent {
   constructor(private cdRef: ChangeDetectorRef) {}
 
   @HostListener('window:resize', ['$event'])
-  private onResize(event: Event): void {
+  private onResize(): void {
     this.resizeWidget();
   }
 

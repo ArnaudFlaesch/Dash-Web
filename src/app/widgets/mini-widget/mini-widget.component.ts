@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, Inject } from '@angular/core';
 
 import { ErrorHandlerService } from '../../services/error.handler.service';
