@@ -63,7 +63,7 @@
     "cypress": "12.17.3",
     "cypress-file-upload": "5.0.8",
     "cypress-multi-reporters": "1.6.3",
-    "cypress-wait-until": "2.0.0",
+    "cypress-wait-until": "2.0.1",
     "eslint": "8.46.0",
     "eslint-config-prettier": "8.10.0",
     "eslint-plugin-cypress": "2.13.3",
