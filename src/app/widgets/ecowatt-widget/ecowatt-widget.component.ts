@@ -1,11 +1,18 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild
+} from '@angular/core';
 
 @Component({
   selector: 'app-ecowatt-widget',
   templateUrl: './ecowatt-widget.component.html',
   styleUrls: ['./ecowatt-widget.component.scss']
 })
-export class EcowattWidgetComponent {
+export class EcowattWidgetComponent implements AfterViewInit {
   @ViewChild('iframeContainer')
   private iframeContainer: ElementRef | undefined;
 
@@ -20,6 +27,10 @@ export class EcowattWidgetComponent {
 
   @HostListener('window:resize', ['$event'])
   private onResize(): void {
+    this.resizeWidget();
+  }
+
+  public ngAfterViewInit(): void {
     this.resizeWidget();
   }
 
