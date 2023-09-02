@@ -210,7 +210,7 @@ describe('WeatherWidgetComponent', () => {
 
     it('Should format date', () => {
       const date = new Date(2022, 5, 1);
-      expect(spectator.component.formatDate(date)).toEqual('Wed 01');
+      expect(spectator.component.formatDate(date)).toEqual('mer. 01');
     });
   });
 

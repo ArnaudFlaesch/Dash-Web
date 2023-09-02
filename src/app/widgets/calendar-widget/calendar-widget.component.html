@@ -30,7 +30,7 @@
           (viewDateChange)="closeOpenMonthViewDay()">
           <mat-icon title="Previous" aria-hidden="false">arrow_back</mat-icon>
         </button>
-        <button mat-raised-button mwlCalendarToday [(viewDate)]="viewDate">Today</button>
+        <button mat-raised-button mwlCalendarToday [(viewDate)]="viewDate">{{displayTodaysDate()}}</button>
         <button mat-raised-button mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" color="primary"
           (viewDateChange)="closeOpenMonthViewDay()">
           <mat-icon title="Next" aria-hidden="false">arrow_forward</mat-icon>
@@ -40,15 +40,15 @@
       <div id="calendar-view-switch-container">
         <button mat-raised-button (click)="setView(calendarView.Month)"
           [color]="this.isCalendarViewMonth() ? 'primary' : ''">
-          Month
+          Mois
         </button>
         <button mat-raised-button (click)="setView(calendarView.Week)"
           [color]="this.isCalendarViewWeek() ? 'primary' : ''">
-          Week
+          Semaine
         </button>
         <button mat-raised-button (click)="setView(calendarView.Day)"
           [color]="this.isCalendarViewDay() ? 'primary' : ''">
-          Day
+          Jour
         </button>
       </div>
     </div>

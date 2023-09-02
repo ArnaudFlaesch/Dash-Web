@@ -181,7 +181,7 @@ registerLocaleData(localeFr);
     TwitterWidgetService,
     IncidentWidgetService,
     ThemeService,
-    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: MAT_DATE_LOCALE, useValue: 'fr' },
     { provide: LOCALE_ID, useValue: 'fr-FR' }
   ],
   bootstrap: [AppComponent]
