@@ -48,8 +48,8 @@
     "zone.js": "0.13.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "16.2.1",
-    "@angular/cli": "16.2.1",
+    "@angular-devkit/build-angular": "16.2.2",
+    "@angular/cli": "16.2.2",
     "@angular/compiler-cli": "16.2.4",
     "@compodoc/compodoc": "1.1.21",
     "@cypress/schematic": "2.5.1",
