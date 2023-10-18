@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public cashManagerApplicationUrl = 'https://arnaudflaesch.github.io/CashManager/';
 
-  private refreshInterval: NodeJS.Timer | null = null;
+  private refreshInterval: NodeJS.Timeout | null = null;
   private refreshTimeout = 600000; // 10 minutes
 
   private destroy$: Subject<unknown> = new Subject();
