@@ -60,7 +60,7 @@
     "@typescript-eslint/eslint-plugin": "6.8.0",
     "@typescript-eslint/parser": "6.8.0",
     "angular-calendar": "0.31.0",
-    "cypress": "13.3.1",
+    "cypress": "13.3.2",
     "cypress-file-upload": "5.0.8",
     "cypress-multi-reporters": "1.6.3",
     "cypress-wait-until": "2.0.1",
