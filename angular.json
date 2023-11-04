@@ -103,31 +103,6 @@
           "options": {
             "browserTarget": "Dash-Web:build"
           }
-        },
-        "e2e": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "Dash-Web:serve",
-            "browser": "firefox"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "Dash-Web:serve:production"
-            }
-          }
-        },
-        "e2e-ci": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "Dash-Web:serve",
-            "configFile": "cypress-test.config.ts",
-            "browser": "firefox"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "Dash-Web:production"
-            }
-          }
         }
       }
     }
