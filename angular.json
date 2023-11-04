@@ -108,7 +108,7 @@
           "builder": "@cypress/schematic:cypress",
           "options": {
             "devServerTarget": "Dash-Web:serve",
-            "browser": "chrome"
+            "browser": "firefox"
           },
           "configurations": {
             "production": {
@@ -121,7 +121,7 @@
           "options": {
             "devServerTarget": "Dash-Web:serve",
             "configFile": "cypress-test.config.ts",
-            "browser": "chrome"
+            "browser": "firefox"
           },
           "configurations": {
             "production": {
