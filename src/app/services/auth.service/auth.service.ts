@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -53,7 +53,7 @@ export class AuthService {
     let result = false;
     if (authenticatedUser?.accessToken) {
       try {
-        result = Date.now() < jwt_decode<IJwt>(authenticatedUser.accessToken).exp * 1000;
+        result = Date.now() < jwtDecode<IJwt>(authenticatedUser.accessToken).exp * 1000;
       } catch (error) {
         result = false;
       }
