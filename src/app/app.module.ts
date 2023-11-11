@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -27,12 +28,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import fr from 'date-fns/locale/fr';
 import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
+import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
 import { CreateMiniWidgetModalComponent } from './modals/create-mini-widget-modal/create-mini-widget-modal.component';
 import { CreateWidgetModalComponent } from './modals/create-widget-modal/create-widget-modal.component';
 import { ImportConfigModalComponent } from './modals/import-config-modal/import-config-modal.component';
@@ -58,6 +61,8 @@ import { CalendarWidgetService } from './widgets/calendar-widget/calendar-widget
 import { EventDetailModalComponent } from './widgets/calendar-widget/event-detail-modal/event-detail-modal.component';
 import { DeleteWidgetComponent } from './widgets/delete-widget/delete-widget.component';
 import { EcowattWidgetComponent } from './widgets/ecowatt-widget/ecowatt-widget.component';
+import { IncidentWidgetComponent } from './widgets/incident-widget/incident-widget.component';
+import { IncidentWidgetService } from './widgets/incident-widget/incident.widget.service';
 import { MiniWidgetComponent } from './widgets/mini-widget/mini-widget.component';
 import { MiniWidgetListComponent } from './widgets/miniwidget-list/miniwidget-list.component';
 import { RssFeedComponent } from './widgets/rss-widget/rss-feed/rss-feed.component';
@@ -82,9 +87,6 @@ import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-se
 import { WorkoutStatisticsComponent } from './widgets/workout-widget/workout-statistics/workout-statistics.component';
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
-import { IncidentWidgetComponent } from './widgets/incident-widget/incident-widget.component';
-import { IncidentWidgetService } from './widgets/incident-widget/incident.widget.service';
-import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
 
 registerLocaleData(localeFr);
 
@@ -156,6 +158,7 @@ registerLocaleData(localeFr);
     MatToolbarModule,
     MatPaginatorModule,
     NgChartsModule,
+    MatDateFnsModule,
     ReactiveFormsModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
@@ -181,7 +184,7 @@ registerLocaleData(localeFr);
     TwitterWidgetService,
     IncidentWidgetService,
     ThemeService,
-    { provide: MAT_DATE_LOCALE, useValue: 'fr' },
+    { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: 'fr-FR' }
   ],
   bootstrap: [AppComponent]
