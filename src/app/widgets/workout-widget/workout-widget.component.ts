@@ -1,13 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDatepicker } from '@angular/material/datepicker';
 import {
   endOfMonth,
   endOfWeek,
-  startOfMonth,
-  startOfISOWeek,
-  startOfYear,
   endOfYear,
+  startOfISOWeek,
+  startOfMonth,
+  startOfYear,
   subMonths
 } from 'date-fns';
 
@@ -16,13 +17,11 @@ import { DEFAULT_DATE_FORMAT } from '../../../app/utils/Constants';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import {
   IWorkoutSession,
-  IWorkoutType,
+  IWorkoutStatByMonth,
   IWorkoutStatsByPeriod,
-  IWorkoutStatByMonth
+  IWorkoutType
 } from './model/Workout';
 import { WorkoutWidgetService } from './workout.widget.service';
-import { MAT_DATE_FORMATS } from '@angular/material/core';
-import { MatDatepicker } from '@angular/material/datepicker';
 
 enum WORKOUT_WIDGET_VIEW {
   WORKOUT_SESSIONS_LIST_VIEW = 1,
@@ -37,22 +36,9 @@ enum WORKOUT_STATISTICS {
   LAST_THREE_MONTHS = 4
 }
 
-export const DATE_FORMATS = {
-  parse: {
-    dateInput: 'MM/YYYY'
-  },
-  display: {
-    dateInput: 'MM/YYYY',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY'
-  }
-};
-
 @Component({
   selector: 'app-workout-widget',
   templateUrl: './workout-widget.component.html',
-  providers: [{ provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }],
   styleUrls: ['./workout-widget.component.scss']
 })
 export class WorkoutWidgetComponent {
