@@ -1,7 +1,8 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
-import { addMonths, endOfDay } from 'date-fns';
+import { addMonths, endOfDay, format, startOfDay } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import { Subject } from 'rxjs';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
@@ -40,6 +41,7 @@ export class CalendarWidgetComponent {
   prevBtnDisabled = false;
   nextBtnDisabled = false;
 
+  private readonly MILLISECONDS_IN_A_DAY = 86400000;
   private ERROR_PARSING_EVENTS = 'Erreur lors de la récupération des évènements.';
 
   constructor(
@@ -119,15 +121,22 @@ export class CalendarWidgetComponent {
     return calendarData
       .filter((event) => event.startDate && event.endDate && event.description)
       .map((event) => {
-        const startDate = new Date(event.startDate);
-        const endDate = new Date(event.endDate);
-        const isAllDay =
-          endDate.getDay() === startDate.getDay() + 1 &&
-          endDate.getHours() === startDate.getHours();
-        if (isAllDay) {
-          endDate.setDate(endDate.getDate() - 1);
-          endDate.setHours(23);
+        let startDate = new Date(event.startDate);
+        let endDate = new Date(event.endDate);
+        const isAllDay = endDate.getTime() - startDate.getTime() === this.MILLISECONDS_IN_A_DAY;
+        if (
+          endDate.getHours() + endDate.getTimezoneOffset() / 60 === 0 &&
+          endDate.getMinutes() === 0
+        ) {
+          endDate = endOfDay(new Date(endDate.getTime() - this.MILLISECONDS_IN_A_DAY));
         }
+        if (
+          startDate.getHours() + startDate.getTimezoneOffset() / 60 === 0 &&
+          startDate.getMinutes() === 0
+        ) {
+          startDate = startOfDay(startDate);
+        }
+
         return {
           title: event.description,
           start: startDate,

@@ -38,7 +38,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   public cashManagerApplicationUrl = 'https://arnaudflaesch.github.io/CashManager/';
 
   private refreshInterval: NodeJS.Timeout | null = null;
-  private refreshTimeout = 600000; // 10 minutes
 
   private destroy$: Subject<unknown> = new Subject();
 
@@ -53,6 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
   private ERROR_UPDATING_TABS = 'Erreurs lors de la mise à jour des onglets';
   private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
+  private readonly refreshTimeout = 600000; // 10 minutes
 
   constructor(
     public dialog: MatDialog,
