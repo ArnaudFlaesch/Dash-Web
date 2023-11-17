@@ -11,6 +11,7 @@ import {
   IWeatherAPIResponse
 } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
+import fr from 'date-fns/locale/fr';
 
 @Component({
   selector: 'app-weather-widget',
@@ -73,7 +74,7 @@ export class WeatherWidgetComponent {
   }
 
   public formatDate(date: Date): string {
-    return format(date, 'eee dd');
+    return format(date, 'eee dd', { locale: fr });
   }
 
   public isSelectedDay(date: Date): boolean {
