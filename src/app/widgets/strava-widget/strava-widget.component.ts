@@ -8,7 +8,7 @@ import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetService } from './strava.widget.service';
 import { firstValueFrom } from 'rxjs';
-import fr from 'date-fns/locale/fr';
+import { fr } from 'date-fns/locale';
 
 @Component({
   selector: 'app-strava-widget',

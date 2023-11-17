@@ -11,7 +11,7 @@ import {
   IWeatherAPIResponse
 } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
-import fr from 'date-fns/locale/fr';
+import { fr } from 'date-fns/locale';
 
 @Component({
   selector: 'app-weather-widget',

@@ -8,7 +8,7 @@ import { ErrorHandlerService } from './../../services/error.handler.service';
 import { CalendarWidgetService } from './calendar-widget.service';
 import { EventDetailModalComponent } from './event-detail-modal/event-detail-modal.component';
 import { ICalendarData } from './ICalendarData';
-import fr from 'date-fns/locale/fr';
+import { fr } from 'date-fns/locale';
 
 @Component({
   selector: 'app-calendar-widget',
