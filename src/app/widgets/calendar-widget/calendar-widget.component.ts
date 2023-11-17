@@ -2,13 +2,13 @@ import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { addMonths, endOfDay, format, startOfDay } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { Subject } from 'rxjs';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { CalendarWidgetService } from './calendar-widget.service';
 import { EventDetailModalComponent } from './event-detail-modal/event-detail-modal.component';
 import { ICalendarData } from './ICalendarData';
+import { fr } from 'date-fns/locale';
 
 @Component({
   selector: 'app-calendar-widget',
@@ -76,6 +76,10 @@ export class CalendarWidgetComponent {
 
   public removeCalendarUrl(calendarUrl: string): void {
     this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl);
+  }
+
+  public displayTodaysDate(): string {
+    return format(new Date(), 'eee dd', { locale: fr });
   }
 
   public onCalendarUrlUpdated(event: Event): void {

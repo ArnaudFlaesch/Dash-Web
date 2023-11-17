@@ -8,6 +8,7 @@ import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetService } from './strava.widget.service';
 import { firstValueFrom } from 'rxjs';
+import { fr } from 'date-fns/locale';
 
 @Component({
   selector: 'app-strava-widget',
@@ -138,7 +139,9 @@ export class StravaWidgetComponent implements OnInit {
   public getChartData(): void {
     const activitiesStats = this.getStatsFromActivities();
     this.activitiesChartData = {
-      labels: activitiesStats.map((data: IActivitiesStatsByMonth) => format(data.x, 'MMM yyyy')),
+      labels: activitiesStats.map((data: IActivitiesStatsByMonth) =>
+        format(data.x, 'MMM yyyy', { locale: fr })
+      ),
       datasets: [
         {
           label: 'Distance (kms)',
