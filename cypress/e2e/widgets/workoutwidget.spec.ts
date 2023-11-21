@@ -48,13 +48,20 @@ describe('Workout Widget tests', () => {
       .get('#workoutDatePickerField .mat-datepicker-toggle')
       .click();
     cy.get('.mat-calendar-body-today').click();
-    cy.get('#createWorkoutSessionButton').click();
-    cy.wait('@createWorkoutSession').then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(200);
-      const month = mockedDate.getMonth() + 1; // Nécessaire car getMonth renvoie 6 au lieu de 07
-      const dateText = `${mockedDate.getDate()}/0${month}/${mockedDate.getFullYear()}`;
-      cy.get('#workoutSessionDate').should('have.text', `Session du ${dateText}`);
-    });
+    cy.waitUntil(() =>
+      cy
+        .get('.cdk-overlay-backdrop')
+        .should('have.length', 0)
+        .then(() => {
+          cy.get('#createWorkoutSessionButton').click();
+          cy.wait('@createWorkoutSession').then((request: Interception) => {
+            expect(request.response.statusCode).to.equal(200);
+            const month = mockedDate.getMonth() + 1; // Nécessaire car getMonth renvoie 6 au lieu de 07
+            const dateText = `${mockedDate.getDate()}/0${month}/${mockedDate.getFullYear()}`;
+            cy.get('#workoutSessionDate').should('have.text', `Session du ${dateText}`);
+          });
+        })
+    );
   });
 
   it('Should add a new workout exercise', () => {
