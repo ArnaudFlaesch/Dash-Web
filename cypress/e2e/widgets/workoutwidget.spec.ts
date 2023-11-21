@@ -48,6 +48,7 @@ describe('Workout Widget tests', () => {
       .get('#workoutDatePickerField .mat-datepicker-toggle')
       .click();
     cy.get('.mat-calendar-body-today').click();
+    cy.get('.cdk-overlay-backdrop').eq(0).should('not.be.visible');
     cy.get('#createWorkoutSessionButton').click();
     cy.wait('@createWorkoutSession').then((request: Interception) => {
       expect(request.response.statusCode).to.equal(200);
