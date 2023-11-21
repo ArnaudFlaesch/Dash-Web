@@ -51,8 +51,7 @@ describe('Workout Widget tests', () => {
     cy.waitUntil(() =>
       cy
         .get('.cdk-overlay-backdrop')
-        .eq(0)
-        .should('not.be.visible')
+        .should('have.length', 0)
         .then(() => {
           cy.get('#createWorkoutSessionButton').click();
           cy.wait('@createWorkoutSession').then((request: Interception) => {
