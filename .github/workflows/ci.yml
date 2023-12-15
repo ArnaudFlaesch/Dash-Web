@@ -75,7 +75,7 @@ jobs:
           cp -r cypress/screenshots cypress/reports/html/screenshots
 
       - name: Upload Cypress report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: Cypress report
