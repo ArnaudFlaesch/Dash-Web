@@ -18,7 +18,10 @@ export class TabComponent {
 
   private ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
 
-  constructor(private tabService: TabService, private errorHandlerService: ErrorHandlerService) {}
+  constructor(
+    private tabService: TabService,
+    private errorHandlerService: ErrorHandlerService
+  ) {}
 
   public deleteTabFromDash(): void {
     if (this.tab) {

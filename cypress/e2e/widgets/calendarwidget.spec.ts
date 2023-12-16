@@ -16,7 +16,9 @@ describe('Calendar Widget tests', () => {
 
   beforeEach(() => {
     // July 1st 2022
-    cy.clock(new Date(2022, 6, 1, 0, 0, 0).getTime()).loginAsAdmin().navigateToTab(tabName);
+    cy.clock(new Date(2022, 6, 1, 0, 0, 0).getTime())
+      .loginAsAdmin()
+      .navigateToTab(tabName);
   });
 
   it('Should edit Calendar widget and add an Ical feed', () => {
