@@ -33,7 +33,10 @@ export class AbstractWidgetComponent {
 
   private destroy$: Subject<unknown> = new Subject();
 
-  constructor(protected widgetService: WidgetService, @Inject('widgetId') widgetId: number) {
+  constructor(
+    protected widgetService: WidgetService,
+    @Inject('widgetId') widgetId: number
+  ) {
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.widgetId = widgetId;
   }
