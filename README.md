@@ -3,6 +3,8 @@
 [![Node.js CI](https://github.com/ArnaudFlaesch/Dash-Web/actions/workflows/ci.yml/badge.svg)](https://github.com/ArnaudFlaesch/Dash-Web/actions/workflows/ci.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ArnaudFlaesch_Dash-Web&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ArnaudFlaesch_Dash-Web)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ArnaudFlaesch_Dash-Web&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ArnaudFlaesch_Dash-Web)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ArnaudFlaesch_Dash-Web&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ArnaudFlaesch_Dash-Web)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ArnaudFlaesch_Dash-Web&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ArnaudFlaesch_Dash-Web)
 [![codecov](https://codecov.io/gh/ArnaudFlaesch/Dash-Web/branch/master/graph/badge.svg)](https://codecov.io/gh/ArnaudFlaesch/Dash-Web)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d07fe5a81ce643de88b74717bb532791)](https://app.codacy.com/gh/ArnaudFlaesch/Dash-Web/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/d07fe5a81ce643de88b74717bb532791)](https://app.codacy.com/gh/ArnaudFlaesch/Dash-Web/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
