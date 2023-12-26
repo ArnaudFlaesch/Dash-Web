@@ -118,10 +118,12 @@ export class IncidentWidgetComponent {
   private getIncidentStreaks(incidentId: number): void {
     this.incidentWidgetService.getIncidentStreaks(incidentId).subscribe({
       next: (incidentStreaks) =>
-        (this.streaks = incidentStreaks.sort(
-          (streakA: IIncidentStreak, streakB: IIncidentStreak) =>
-            Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
-        )),
+        (this.streaks = incidentStreaks
+          .slice()
+          .sort(
+            (streakA: IIncidentStreak, streakB: IIncidentStreak) =>
+              Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
+          )),
       error: (error) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS)
     });
