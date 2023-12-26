@@ -1,4 +1,5 @@
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   createComponentFactory,
   createHttpFactory,
@@ -6,14 +7,13 @@ import {
   Spectator,
   SpectatorHttp
 } from '@ngneat/spectator/jest';
-import { DateAdapter } from 'angular-calendar';
+import { CalendarView, DateAdapter } from 'angular-calendar';
+
 import { environment } from '../../../environments/environment';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { ErrorHandlerService } from './../../services/error.handler.service';
 import { CalendarWidgetComponent } from './calendar-widget.component';
 import { CalendarWidgetService } from './calendar-widget.service';
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
-import { CalendarView } from 'angular-calendar';
 
 describe('CalendarWidgetComponent', () => {
   let spectator: Spectator<CalendarWidgetComponent>;

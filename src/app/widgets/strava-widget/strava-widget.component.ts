@@ -211,12 +211,10 @@ export class StravaWidgetComponent implements OnInit {
     const startDateB = Date.parse(activityB.startDate);
     if (startDateA === startDateB) {
       return 0;
+    } else if (sortByDateDesc) {
+      return startDateA < startDateB ? 1 : -1;
     } else {
-      if (sortByDateDesc) {
-        return startDateA < startDateB ? 1 : -1;
-      } else {
-        return startDateA > startDateB ? 1 : -1;
-      }
+      return startDateA > startDateB ? 1 : -1;
     }
   }
 
