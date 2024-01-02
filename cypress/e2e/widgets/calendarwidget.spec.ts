@@ -10,13 +10,15 @@ describe('Calendar Widget tests', () => {
 
   const tabName = 'Agenda';
 
+  const lastYearNumber = new Date().getFullYear() - 1;
+
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('CALENDAR'));
 
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   beforeEach(() => {
     // July 1st 2022
-    cy.clock(new Date(2023, 6, 1, 0, 0, 0).getTime())
+    cy.clock(new Date(lastYearNumber, 6, 1, 0, 0, 0).getTime())
       .loginAsAdmin()
       .navigateToTab(tabName);
   });
@@ -30,10 +32,10 @@ describe('Calendar Widget tests', () => {
     cy.get('.validateButton').click();
     cy.wait('@getCalendarDataRequest').then((request: Interception) => {
       expect(request.response.statusCode).to.equal(200);
-      cy.get('h3').should('have.text', 'juillet 2022');
+      cy.get('h3').should('have.text', `juillet ${lastYearNumber}`);
       cy.get('.refreshButton').click();
       cy.wait('@getCalendarDataRequest').then(() => {
-        cy.get('.cal-future:nth(14)').find('.cal-day-badge').should('have.text', 1);
+        cy.get('.cal-future:nth(13)').find('.cal-day-badge').should('have.text', 1);
         cy.get('.editButton').click();
         cy.get('#addCalendarUrl').click();
         cy.get('input').eq(1).type(`${icalUsaHolidays}`);
@@ -43,12 +45,13 @@ describe('Calendar Widget tests', () => {
             expect(request[0].response.statusCode).to.equal(200);
             expect(request[1].response.statusCode).to.equal(200);
             cy.get('.cal-future:nth(4)').scrollIntoView();
+            cy.get('.cal-events').should('have.length', 2);
             cy.get('.editButton').click();
             cy.get('.removeCalendarUrl').eq(1).click();
             cy.get('.validateButton').click();
             cy.wait('@getCalendarDataRequest').then(() =>
               cy
-                .get('.cal-day-badge')
+                .get('.cal-events')
                 .should('have.length', 1)
                 .clock()
                 .then((clock) => {
