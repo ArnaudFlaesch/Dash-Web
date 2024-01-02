@@ -16,7 +16,7 @@ describe('Calendar Widget tests', () => {
 
   beforeEach(() => {
     // July 1st 2022
-    cy.clock(new Date(2022, 6, 1, 0, 0, 0).getTime())
+    cy.clock(new Date(2023, 6, 1, 0, 0, 0).getTime())
       .loginAsAdmin()
       .navigateToTab(tabName);
   });

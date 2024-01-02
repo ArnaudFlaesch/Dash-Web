@@ -3,7 +3,7 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Workout Widget tests', () => {
-  const mockedDate = new Date(2022, 6, 22, 0, 0, 0);
+  const mockedDate = new Date(2023, 6, 22, 0, 0, 0);
   const tabName = 'Workout';
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('WORKOUT'));
