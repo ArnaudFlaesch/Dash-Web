@@ -74,7 +74,7 @@ describe('Workout Widget tests', () => {
     cy.wait('@getWorkoutExercises').then((request: Interception) => {
       expect(request.response.statusCode).to.equal(200);
       cy.get('#workoutSessionDate')
-        .should('have.text', `Session du 22/07/2022`)
+        .should('have.text', `Session du 22/07/${mockedDate.getFullYear()}`)
         .intercept('POST', '/workoutWidget/updateWorkoutExercise')
         .as('updateWorkoutExercise')
         .get('#edit-session-button')
