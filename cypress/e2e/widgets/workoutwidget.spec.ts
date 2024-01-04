@@ -47,7 +47,7 @@ describe('Workout Widget tests', () => {
       .should('have.length', 0)
       .get('#workoutDatePickerField .mat-datepicker-toggle')
       .click();
-    cy.get('.mat-calendar-body-today').click();
+    cy.get('.mat-calendar-body-today').dblclick();
     cy.waitUntil(() =>
       cy
         .get('.cdk-overlay-backdrop')
