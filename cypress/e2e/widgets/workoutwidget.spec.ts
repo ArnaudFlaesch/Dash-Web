@@ -3,7 +3,7 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Workout Widget tests', () => {
-  const mockedDate = new Date(2022, 6, 22, 0, 0, 0);
+  const mockedDate = new Date(2023, 6, 22, 0, 0, 0);
   const tabName = 'Workout';
 
   before(() => cy.loginAsAdmin().createNewTab(tabName).createWidget('WORKOUT'));
@@ -50,8 +50,8 @@ describe('Workout Widget tests', () => {
     cy.get('.mat-calendar-body-today').click();
     cy.waitUntil(() =>
       cy
-        .get('.cdk-overlay-backdrop')
-        .should('have.length', 0)
+        .get('#createWorkoutSessionButton')
+        .should('be.visible')
         .then(() => {
           cy.get('#createWorkoutSessionButton').click();
           cy.wait('@createWorkoutSession').then((request: Interception) => {
@@ -74,7 +74,7 @@ describe('Workout Widget tests', () => {
     cy.wait('@getWorkoutExercises').then((request: Interception) => {
       expect(request.response.statusCode).to.equal(200);
       cy.get('#workoutSessionDate')
-        .should('have.text', `Session du 22/07/2022`)
+        .should('have.text', `Session du 22/07/${mockedDate.getFullYear()}`)
         .intercept('POST', '/workoutWidget/updateWorkoutExercise')
         .as('updateWorkoutExercise')
         .get('#edit-session-button')
