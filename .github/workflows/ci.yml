@@ -82,7 +82,7 @@ jobs:
           path: cypress/reports/html
 
       - name: Send coverage report
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           directory: coverage-jest
 
