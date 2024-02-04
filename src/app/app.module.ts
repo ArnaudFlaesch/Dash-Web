@@ -2,7 +2,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import localeFr from '@angular/common/locales/fr';
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule, isDevMode } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -87,6 +87,7 @@ import { WorkoutSessionEditComponent } from './widgets/workout-widget/workout-se
 import { WorkoutStatisticsComponent } from './widgets/workout-widget/workout-statistics/workout-statistics.component';
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 registerLocaleData(localeFr);
 
@@ -163,6 +164,12 @@ registerLocaleData(localeFr);
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory
+    }),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
     })
   ],
   providers: [
