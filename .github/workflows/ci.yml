@@ -81,10 +81,11 @@ jobs:
           name: Cypress report
           path: cypress/reports/html
 
-      - name: Send coverage report
-        uses: codecov/codecov-action@v3
+      - name: Report coverage for Codecov
+        uses: codecov/codecov-action@v4
         with:
           directory: coverage-jest
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Report coverage for Codacy
         run: |
