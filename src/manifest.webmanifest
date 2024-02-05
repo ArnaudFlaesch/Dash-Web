@@ -1,8 +1,8 @@
 {
-  "name": "Dash-Web",
-  "short_name": "Dash-Web",
-  "theme_color": "#1976d2",
+  "name": "Dash",
+  "short_name": "Dash",
   "background_color": "#fafafa",
+  "theme_color": "#1976d2",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
