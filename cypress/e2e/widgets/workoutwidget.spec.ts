@@ -44,9 +44,7 @@ describe('Workout Widget tests', () => {
     cy.get('.workoutTypeName')
       .should('have.length', 1)
       .get('.workout-session')
-      .should('have.length', 0)
-      .get('#workoutDatePickerField .mat-datepicker-toggle')
-      .click();
+      .should('have.length', 0);
     cy.get('#workoutDatePickerField').type(format(new Date(), 'dd/MM/yyyy'));
     cy.waitUntil(() =>
       cy
