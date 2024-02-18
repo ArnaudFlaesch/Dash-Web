@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { Interception } from 'cypress/types/net-stubbing';
-
+import { format } from 'date-fns';
 describe('Workout Widget tests', () => {
   const mockedDate = new Date(2023, 6, 22, 0, 0, 0);
   const tabName = 'Workout';
@@ -47,8 +47,7 @@ describe('Workout Widget tests', () => {
       .should('have.length', 0)
       .get('#workoutDatePickerField .mat-datepicker-toggle')
       .click();
-    cy.get('.mat-calendar-body-today').click();
-    cy.get('#workout-sessions-grid').click(); // Clic sur le body du widget pour fermer l'overlay si toujours ouvert
+    cy.get('#workoutDatePickerField').type(format(new Date(), 'dd/MM/yyyy'));
     cy.waitUntil(() =>
       cy
         .get('#createWorkoutSessionButton')
