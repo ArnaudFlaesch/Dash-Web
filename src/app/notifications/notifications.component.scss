@@ -2,20 +2,15 @@
   display: flex;
   flex-direction: row;
   place-items: center center;
+  column-gap: 0.2rem;
 
   &.unread-notification {
-    .mark-action-as-read-button,
-    .notification-date,
-    .mark-notification-as-read-button {
-      margin-left: 0.5rem;
-    }
-
     &.info {
-      background-color: lightblue;
+      background-color: #add8e6;
     }
 
     &.warn {
-      background-color: orange;
+      background-color: #ffa500;
     }
   }
 }

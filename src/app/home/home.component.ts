@@ -1,7 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -67,18 +67,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     private errorHandlerService: ErrorHandlerService
   ) {
     this.initDashboard();
-  }
-
-  @HostListener('window:focus', ['$event'])
-  private onFocus(): void {
-    console.log('Focus called from HostListener');
-    this.setupWidgetAutoRefresh();
-  }
-
-  @HostListener('window:blur', ['$event'])
-  private onFocusout(): void {
-    console.log('Focus out called from HostListener');
-    this.clearWidgetAutoRefresh();
   }
 
   ngOnInit(): void {

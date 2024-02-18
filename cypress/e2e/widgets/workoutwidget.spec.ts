@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { Interception } from 'cypress/types/net-stubbing';
-
+import { format } from 'date-fns';
 describe('Workout Widget tests', () => {
   const mockedDate = new Date(2023, 6, 22, 0, 0, 0);
   const tabName = 'Workout';
@@ -44,10 +44,8 @@ describe('Workout Widget tests', () => {
     cy.get('.workoutTypeName')
       .should('have.length', 1)
       .get('.workout-session')
-      .should('have.length', 0)
-      .get('#workoutDatePickerField .mat-datepicker-toggle')
-      .click();
-    cy.get('.mat-calendar-body-today').click();
+      .should('have.length', 0);
+    cy.get('#workoutDatePickerField').type(format(mockedDate, 'dd/MM/yyyy'));
     cy.waitUntil(() =>
       cy
         .get('#createWorkoutSessionButton')
