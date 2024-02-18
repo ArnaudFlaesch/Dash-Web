@@ -1,31 +1,20 @@
 #miniwidget-list-container {
   display: flex;
   flex-direction: row;
+  column-gap: 5px;
+  align-items: center;
 
   #miniwidget-list {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
     max-width: 95%;
-
-    @media (640px <= width <= 1280px) {
-      max-width: 90%;
-    }
-
-    @media (width <= 640px) {
-      max-width: 85%;
-    }
+    column-gap: 5px;
 
     .miniwidget-container {
       background-color: white;
       border: 1px solid black;
       border-radius: 0.25rem;
-      flex-grow: 0;
-      flex-shrink: 0;
-
-      &:not(:last-child) {
-        margin-right: 5px;
-      }
     }
   }
 }

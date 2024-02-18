@@ -54,3 +54,5 @@ cypress/downloads/
 cypress/screenshots/
 
 .iac-data/
+
+.vscode/

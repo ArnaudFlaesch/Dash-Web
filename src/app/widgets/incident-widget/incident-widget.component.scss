@@ -24,14 +24,9 @@
 }
 
 #incident-widget-body {
-  margin: 0 auto;
+  height: 100%;
   text-align: center;
-
-  #number-of-days-since-last-incident {
-    margin-top: 50%;
-  }
-
-  #end-current-streak-button {
-    margin-top: 50%;
-  }
+  place-content: center;
+  display: grid;
+  row-gap: 2em;
 }

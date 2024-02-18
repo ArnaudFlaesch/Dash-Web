@@ -2,17 +2,19 @@
   display: flex;
   flex-direction: row;
   overflow-x: auto;
+  border: 2px solid #000000;
+  border-radius: 0.25rem;
+  background-color: #3d6a7b;
 
   .forecast-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     flex: 0 0 calc(100% / 4);
-    border: 2px solid black;
-    border-radius: 0.25rem;
-    border-right-width: 0;
 
-    &:last-child {
-      border-right-width: 2px;
+    &:not(:last-child) {
+      border-right: 1px solid #000000;
     }
-
 
     .forecast {
       display: flex;
@@ -34,7 +36,6 @@
     }
   }
 }
-
 
 .weather-widget-icon {
   vertical-align: middle;

@@ -4,7 +4,7 @@
   height: 2.5rem;
   align-items: center;
 
-  > :not([hidden])~ :not([hidden]) {
+  > * {
     margin-left: 0.5rem;
   }
 }
@@ -23,7 +23,6 @@
       flex-direction: column;
     }
   }
-
 }
 
 .spinner-container {
