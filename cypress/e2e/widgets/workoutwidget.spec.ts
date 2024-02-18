@@ -45,7 +45,7 @@ describe('Workout Widget tests', () => {
       .should('have.length', 1)
       .get('.workout-session')
       .should('have.length', 0);
-    cy.get('#workoutDatePickerField').type(format(new Date(), 'dd/MM/yyyy'));
+    cy.get('#workoutDatePickerField').type(format(mockedDate, 'dd/MM/yyyy'));
     cy.waitUntil(() =>
       cy
         .get('#createWorkoutSessionButton')
