@@ -48,6 +48,7 @@ describe('Workout Widget tests', () => {
       .get('#workoutDatePickerField .mat-datepicker-toggle')
       .click();
     cy.get('.mat-calendar-body-today').click();
+    cy.get('#workout-sessions-grid').click(); // Clic sur le body du widget pour fermer l'overlay si toujours ouvert
     cy.waitUntil(() =>
       cy
         .get('#createWorkoutSessionButton')
