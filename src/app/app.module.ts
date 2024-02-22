@@ -88,6 +88,7 @@ import { WorkoutStatisticsComponent } from './widgets/workout-widget/workout-sta
 import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.component';
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { NotificationsListComponent } from './notifications/notifications-list/notifications-list.component';
 
 registerLocaleData(localeFr);
 
@@ -102,6 +103,7 @@ registerLocaleData(localeFr);
     DeleteWidgetComponent,
     WeatherWidgetComponent,
     WidgetListComponent,
+    NotificationsListComponent,
     MiniWidgetListComponent,
     MiniWidgetComponent,
     StravaWidgetComponent,

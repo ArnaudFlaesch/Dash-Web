@@ -65,14 +65,14 @@ describe('TabComponent', () => {
     it('Should delete a tab when it exists', () => {
       const deletedEventSpy = jest.spyOn(spectator.component.tabDeletedEvent, 'emit');
       spectator.component.deleteTabFromDash();
-      expect(deletedEventSpy).toBeCalledTimes(0);
+      expect(deletedEventSpy).toHaveBeenCalledTimes(0);
       spectator.component.tab = {
         id: 1,
         label: 'Nouvel onglet',
         tabOrder: 1
       } as ITab;
       spectator.component.deleteTabFromDash();
-      expect(deletedEventSpy).toBeCalledTimes(1);
+      expect(deletedEventSpy).toHaveBeenCalledTimes(1);
     });
   });
 

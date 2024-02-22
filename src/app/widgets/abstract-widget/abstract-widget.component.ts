@@ -42,7 +42,7 @@ export class AbstractWidgetComponent {
   }
 
   ngOnInit(): void {
-    console.log('ng on init widget ' + JSON.stringify(this.widgetData));
+    // console.log('ng on init widget ' + JSON.stringify(this.widgetData));
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
     this.widgetService.refreshWidgetsAction.pipe(takeUntil(this.destroy$)).subscribe({
@@ -56,7 +56,7 @@ export class AbstractWidgetComponent {
   }
 
   public refreshWidget(): void {
-    console.log('Refresh widget ' + JSON.stringify(this.widgetData));
+    // console.log('Refresh widget ' + JSON.stringify(this.widgetData));
     if (this.isFormValid) {
       this.refreshWidgetAction.emit();
     }

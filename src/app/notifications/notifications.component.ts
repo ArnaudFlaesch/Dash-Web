@@ -43,8 +43,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  public markNotificationAsRead(notificationId: number, event: Event): void {
-    event.stopPropagation();
+  public markNotificationAsRead(notificationId: number): void {
     this.markNotificationsAsRead([notificationId]);
   }
 
