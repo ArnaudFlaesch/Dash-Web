@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { INotificationToDisplay, NotificationTypeEnum } from 'src/app/model/INotification';
+import { INotificationToDisplay, NotificationTypeEnum } from '../../model/INotification';
 
 @Component({
   selector: 'app-notifications-list',
