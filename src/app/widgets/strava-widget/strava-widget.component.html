@@ -3,7 +3,7 @@
 
   <ng-template #headerIcon>
     <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected">
-      <a [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader" class="strava-header">
+      <a [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader">
         <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="athlete profile" />
       </a>
     </ng-template>
@@ -13,7 +13,7 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected">
+    <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected" class="strava-header">
       <p>{{ athlete.firstname }} {{ athlete.lastname }}</p>
     </ng-template>
     <ng-template #noAthleteConnected>

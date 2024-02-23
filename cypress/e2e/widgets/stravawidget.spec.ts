@@ -40,7 +40,7 @@ describe('Strava Widget tests', () => {
           const getActivitiesResponse = getActivitiesRequest.response;
           expect(getActivitiesResponse.statusCode).to.equal(200);
           cy.get('.widget')
-            .find('#stravaWidgetHeader')
+            .find('.strava-header')
             .should('have.text', 'Arnaud Flaesch')
             .get('.widget')
             .find('.stravaActivity')
