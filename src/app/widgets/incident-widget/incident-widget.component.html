@@ -1,11 +1,12 @@
 <app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="refreshWidget()">
 
-  <ng-template #header>
-    <div class="incident-widget-header">
-      <mat-icon>priority_high</mat-icon>
-      <p>Incident {{incidentName}}</p>
-    </div>
+  <ng-template #headerIcon>
+    <mat-icon>priority_high</mat-icon>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <p>Incident {{incidentName}}</p>
   </ng-template>
 
   <ng-template #editComponent>

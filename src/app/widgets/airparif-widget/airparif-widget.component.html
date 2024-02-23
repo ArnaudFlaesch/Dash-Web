@@ -1,13 +1,14 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
 
-  <ng-template #header>
-    <div class="airparif-header">
-      <mat-icon>air</mat-icon>
-      <a [href]="[airParifWebsiteUrl | safe: 'url']">
-        <p>AirParif</p>
-      </a>
-    </div>
+  <ng-template #headerIcon>
+    <mat-icon>air</mat-icon>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <a [href]="[airParifWebsiteUrl | safe: 'url']">
+      <p>AirParif</p>
+    </a>
   </ng-template>
 
   <ng-template #editComponent>

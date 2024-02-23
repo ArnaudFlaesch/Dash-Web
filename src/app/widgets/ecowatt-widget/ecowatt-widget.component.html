@@ -1,11 +1,12 @@
 <app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()"
   [isWidgetLoaded]="isWidgetLoaded">
 
-  <ng-template #header>
-    <div class="ecowatt-header">
-      <mat-icon>electric_bolt</mat-icon>
-      <div>Ecowatt</div>
-    </div>
+  <ng-template #headerIcon>
+    <mat-icon>electric_bolt</mat-icon>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <p>Ecowatt</p>
   </ng-template>
 
   <ng-template #body>

@@ -10,8 +10,11 @@ import { AbstractWidgetComponent } from '../abstract-widget/abstract-widget.comp
   styleUrls: ['./widget.component.scss']
 })
 export class WidgetComponent extends AbstractWidgetComponent {
-  @ContentChild('header', { static: false })
-  header: TemplateRef<unknown> | null = null;
+  @ContentChild('headerIcon', { static: false })
+  headerIcon: TemplateRef<unknown> | null = null;
+
+  @ContentChild('headerTitle', { static: false })
+  headerTitle: TemplateRef<unknown> | null = null;
 
   @ContentChild('additionalActions', { static: false })
   additionalActions: TemplateRef<unknown> | null = null;

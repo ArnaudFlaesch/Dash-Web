@@ -1,11 +1,12 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="true" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
 
-  <ng-template #header>
-    <div class="workout-header">
-      <mat-icon>fitness_center</mat-icon>
-      <p>Workout</p>
-    </div>
+  <ng-template #headerIcon>
+    <mat-icon>fitness_center</mat-icon>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <p>Workout</p>
   </ng-template>
 
   <ng-template #body>

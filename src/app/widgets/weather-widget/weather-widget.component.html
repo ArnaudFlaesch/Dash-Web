@@ -1,11 +1,12 @@
 <app-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()"
   [isWidgetLoaded]="isWeatherLoaded && isForecastLoaded" (refreshWidgetAction)="this.refreshWidget()">
 
-  <ng-template #header>
-    <div class="weather-header">
-      <mat-icon>sunny</mat-icon>
-      <p>La météo aujourd'hui à {{ city }}</p>
-    </div>
+  <ng-template #headerIcon>
+    <mat-icon>sunny</mat-icon>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <p>La météo aujourd'hui à {{ city }}</p>
   </ng-template>
 
   <ng-template #editComponent>
