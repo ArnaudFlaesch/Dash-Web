@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ContentChild,
   EventEmitter,
@@ -14,7 +15,8 @@ import { WidgetService } from '../../services/widget.service/widget.service';
 @Component({
   selector: 'app-abstract-widget',
   templateUrl: './abstract-widget.component.html',
-  styleUrls: ['./abstract-widget.component.scss']
+  styleUrls: ['./abstract-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AbstractWidgetComponent {
   @ContentChild('body', { static: false })

@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <div *ngIf="this.isModeRead()">
+  <div *ngIf="this.isModeRead()" (dblclick)="this.toEditMode()">
     <div class="read-mini-widget-body-container">
       <ng-template [ngIf]="this.isWidgetLoaded" [ngIfElse]="isWidgetLoading">
         <ng-container *ngTemplateOutlet="body"> </ng-container>

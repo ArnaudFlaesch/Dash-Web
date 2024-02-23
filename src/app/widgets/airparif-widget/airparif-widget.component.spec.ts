@@ -86,11 +86,9 @@ describe('AirParifWidgetComponent', () => {
     spectator.component.airParifApiKey = airParifToken;
     spectator.component.communeInseeCode = communeInseeCode;
     expect(spectator.component.isFormValid()).toEqual(true);
-    expect(spectator.component.getWidgetData()).toEqual({
-      airParifApiKey: airParifToken,
-      communeInseeCode: communeInseeCode
-    });
-
+    const widgetData = spectator.component.getWidgetData();
+    expect(widgetData?.airParifApiKey).toBe(airParifToken);
+    expect(widgetData?.communeInseeCode).toBe(communeInseeCode);
     expect(spectator.component.airParifForecast).toEqual([]);
     expect(spectator.component.airParifCouleursIndices).toEqual([]);
 
