@@ -1,9 +1,14 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()"
   [isWidgetLoaded]="true">
 
-  <ng-template #header>
+  <ng-template #headerIcon>
     <a href="{{ playerData?.profileurl }}" class="steam-header">
       <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
+    </a>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <a href="{{ playerData?.profileurl }}" class="steam-header">
       <p>{{ playerData?.personaname }}</p>
     </a>
   </ng-template>

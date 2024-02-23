@@ -12,6 +12,19 @@
     </div>
   </ng-template>
 
+
+  <ng-template #headerIcon>
+    <a href="{{ playerData?.profileurl }}" class="steam-header">
+      <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
+    </a>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <a href="{{ playerData?.profileurl }}" class="steam-header">
+      <p>{{ playerData?.personaname }}</p>
+    </a>
+  </ng-template>
+
   <ng-template #body>
     <ng-template [ngIf]="this.isUserLoggedIn()" [ngIfElse]="isUserNotConnected">
       <div *ngIf="this.activities.length">
