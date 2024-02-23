@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -30,7 +29,7 @@ import { IncidentWidgetComponent } from '../incident-widget/incident-widget.comp
   templateUrl: './widget-list.component.html',
   styleUrls: ['./widget-list.component.scss']
 })
-export class WidgetListComponent implements OnChanges, AfterViewInit {
+export class WidgetListComponent implements OnChanges {
   @Input() widgetList: IWidgetConfig[] = [];
   @Input() toggleEditMode = false;
   @Output() updateWidgetsOrderEvent = new EventEmitter<IWidgetConfig[]>();
@@ -38,20 +37,12 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
   @ViewChildren('dynamic', { read: ViewContainerRef })
   private widgetTargets: QueryList<ViewContainerRef> | undefined;
 
-  private isTwitterWidgetInList = false;
-
   constructor(private cdRef: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['widgetList']) {
       this.cdRef.detectChanges();
       this.createWidgets();
-    }
-  }
-
-  ngAfterViewInit(): void {
-    if (this.isTwitterWidgetInList) {
-      this.initTwitterWidget();
     }
   }
 
@@ -66,7 +57,6 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
 
   private createWidgets(): void {
     if (this.widgetTargets) {
-      this.isTwitterWidgetInList = false;
       this.widgetTargets.forEach((target, index) => {
         target.detach();
         let component;
@@ -139,18 +129,6 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
               : undefined;
             break;
           }
-          /* @TODO Fix or remove Twitter widget
-          case WidgetTypeEnum.TWITTER: {
-            this.isTwitterWidgetInList = true;
-            component = target.createComponent(TwitterWidgetComponent, {
-              injector: injector
-            });
-            component.instance.selectedTwitterHandle = widgetData
-              ? (widgetData['twitterHandle'] as string)
-              : undefined;
-            break;
-          }
-          */
           case WidgetTypeEnum.ECOWATT: {
             target.createComponent(EcowattWidgetComponent, {
               injector: injector
@@ -170,29 +148,4 @@ export class WidgetListComponent implements OnChanges, AfterViewInit {
       });
     }
   }
-
-  /* eslint-disable */
-  private initTwitterWidget(): void {
-    (<any>window).twttr = (function (d, s, id) {
-      const fjs: any = d.getElementsByTagName(s)[0],
-        t = (<any>window).twttr || {};
-      if (d.getElementById(id)) return t;
-      const js: any = d.createElement(s);
-      js.id = id;
-      js.src = 'https://platform.twitter.com/widgets.js';
-      fjs?.parentNode?.insertBefore(js, fjs);
-
-      t._e = [];
-      t.ready = function (f: any) {
-        t._e.push(f);
-      };
-
-      return t;
-    })(document, 'script', 'twitter-wjs');
-
-    if ((<any>window).twttr.ready()) {
-      (<any>window).twttr.widgets.load();
-    }
-  }
-  /* eslint-enable */
 }

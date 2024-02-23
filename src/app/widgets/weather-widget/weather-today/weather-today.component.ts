@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { IWeatherAPIResponse } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
@@ -6,7 +6,8 @@ import { WeatherWidgetService } from '../weather.widget.service';
 @Component({
   selector: 'app-weather-today',
   templateUrl: './weather-today.component.html',
-  styleUrls: ['./weather-today.component.scss']
+  styleUrls: ['./weather-today.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WeatherTodayComponent {
   @Input()

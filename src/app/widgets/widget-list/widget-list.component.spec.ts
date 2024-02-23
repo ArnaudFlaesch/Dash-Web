@@ -14,7 +14,6 @@ import { CalendarWidgetService } from '../calendar-widget/calendar-widget.servic
 import { RssWidgetService } from '../rss-widget/rss.widget.service';
 import { SteamWidgetService } from '../steam-widget/steam.widget.service';
 import { StravaWidgetService } from '../strava-widget/strava.widget.service';
-import { TwitterWidgetService } from '../twitter-widget/twitter.widget.service';
 import { WeatherWidgetService } from '../weather-widget/weather.widget.service';
 import { WorkoutWidgetService } from '../workout-widget/workout.widget.service';
 import { WidgetListComponent } from './widget-list.component';
@@ -31,7 +30,6 @@ describe('WidgetListComponent', () => {
       StravaWidgetService,
       AirParifWidgetService,
       WeatherWidgetService,
-      TwitterWidgetService,
       CalendarWidgetService,
       WorkoutWidgetService,
       IncidentWidgetService,

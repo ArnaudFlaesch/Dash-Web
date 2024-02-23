@@ -40,11 +40,6 @@ export class CreateWidgetModalComponent {
       case WidgetTypeEnum.AIRPARIF.toString(): {
         return 'air';
       }
-      /* @TODO Fix or remove Twitter widget
-      case WidgetTypeEnum.TWITTER.toString(): {
-        return 'newspaper';
-      }
-      */
       case WidgetTypeEnum.ECOWATT.toString(): {
         return 'electric_bolt';
       }

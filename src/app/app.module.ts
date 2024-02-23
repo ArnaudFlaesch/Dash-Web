@@ -74,8 +74,7 @@ import { SteamWidgetService } from './widgets/steam-widget/steam.widget.service'
 import { StravaActivitiesComponent } from './widgets/strava-widget/strava-activities/strava-activities.component';
 import { StravaWidgetComponent } from './widgets/strava-widget/strava-widget.component';
 import { StravaWidgetService } from './widgets/strava-widget/strava.widget.service';
-import { TwitterWidgetComponent } from './widgets/twitter-widget/twitter-widget.component';
-import { TwitterWidgetService } from './widgets/twitter-widget/twitter.widget.service';
+
 import { WeatherForecastComponent } from './widgets/weather-widget/weather-forecast/weather-forecast.component';
 import { WeatherMiniWidgetComponent } from './widgets/weather-widget/weather-mini-widget/weather-miniwidget.component';
 import { WeatherTodayComponent } from './widgets/weather-widget/weather-today/weather-today.component';
@@ -124,7 +123,6 @@ registerLocaleData(localeFr);
     WeatherTodayComponent,
     WeatherMiniWidgetComponent,
     WorkoutSessionEditComponent,
-    TwitterWidgetComponent,
     EcowattWidgetComponent,
     AirParifMapComponent,
     AbstractWidgetComponent,
@@ -190,7 +188,6 @@ registerLocaleData(localeFr);
     CalendarWidgetService,
     StravaWidgetService,
     NotificationService,
-    TwitterWidgetService,
     IncidentWidgetService,
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: fr },
