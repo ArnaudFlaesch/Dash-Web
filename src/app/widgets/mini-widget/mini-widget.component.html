@@ -1,25 +1,20 @@
 <div class="mini-widget">
   <div *ngIf="isModeEdit()">
-    <div class="header-container header">
-      <button>
-        <mat-icon (click)="this.toDeleteMode()" title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
+    <div class="edit-mini-widget">
+      <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
+      <button class="cancelButton" mat-icon-button (click)="cancelEdition()"
+        *ngIf="this.isWidgetLoaded && this.widgetData">
+        <mat-icon>undo</mat-icon>
+      </button>
+      <button class="validateButton" mat-icon-button (click)="onValidation()" color="primary"
+        [disabled]="!this.isFormValid">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button (click)="this.toDeleteMode()" color="alert">
+        <mat-icon title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
       </button>
     </div>
-    <div class="edit-mini-widget-body-container">
-      <div class="edit-mini-widget-body">
-        <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
-      </div>
-      <div class="edit-mini-widget-actions">
-        <button class="cancelButton" mat-raised-button (click)="cancelEdition()"
-          *ngIf="this.isWidgetLoaded && this.widgetData">
-          Annuler
-        </button>
-        <button class="validateButton" mat-raised-button (click)="onValidation()" color="primary"
-          [disabled]="!this.isFormValid">
-          Valider
-        </button>
-      </div>
-    </div>
+
   </div>
 
   <div *ngIf="this.isModeDelete()">
