@@ -11,7 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { WidgetService } from '../services/widget.service/widget.service';
 
 @Component({
-  selector: 'app-notifications',
+  selector: 'dash-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss']
 })

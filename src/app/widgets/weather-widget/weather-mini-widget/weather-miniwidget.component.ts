@@ -4,7 +4,7 @@ import { IWeatherAPIResponse, IForecast, ICity } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
 
 @Component({
-  selector: 'app-weather-miniwidget',
+  selector: 'dash-weather-miniwidget',
   templateUrl: './weather-miniwidget.component.html',
   styleUrls: ['./weather-miniwidget.component.scss']
 })

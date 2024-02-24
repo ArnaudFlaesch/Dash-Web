@@ -1,4 +1,4 @@
-<app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
+<dash-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
 
   <ng-template #headerIcon>
@@ -72,4 +72,4 @@
         [refresh]="refresh"></mwl-calendar-day-view>
     </div>
   </ng-template>
-</app-widget>
+</dash-widget>

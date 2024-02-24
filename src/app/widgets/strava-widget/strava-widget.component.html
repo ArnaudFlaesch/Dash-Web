@@ -1,4 +1,4 @@
-<app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()" [isFormValid]="true"
+<dash-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()" [isFormValid]="true"
   [isWidgetLoaded]="this.isWidgetLoaded">
 
   <ng-template #headerIcon>
@@ -32,7 +32,7 @@
             <button (click)="this.getPreviousActivitiesPage()" mat-icon-button *ngIf="this.pageNumber > 1">
               <mat-icon>arrow_back</mat-icon></button>
           </div>
-          <app-strava-activities [activities]="this.activities"></app-strava-activities>
+          <dash-strava-activities [activities]="this.activities"></dash-strava-activities>
         </div>
         <div id="strava-statistics">
           <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
@@ -45,4 +45,4 @@
         connecter</button>
     </ng-template>
   </ng-template>
-</app-widget>
+</dash-widget>

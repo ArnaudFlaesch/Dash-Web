@@ -5,7 +5,7 @@ import { AirParifWidgetService } from './airparif-widget.service';
 import { IAirParifCouleur, IForecast } from './model/IAirParif';
 
 @Component({
-  selector: 'app-airparif-widget',
+  selector: 'dash-airparif-widget',
   templateUrl: './airparif-widget.component.html',
   styleUrls: ['./airparif-widget.component.scss']
 })

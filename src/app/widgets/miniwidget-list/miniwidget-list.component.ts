@@ -20,7 +20,7 @@ import { MiniWidgetService } from '../../services/widget.service/miniwidget.serv
 import { WeatherMiniWidgetComponent } from '../weather-widget/weather-mini-widget/weather-miniwidget.component';
 
 @Component({
-  selector: 'app-miniwidget-list',
+  selector: 'dash-miniwidget-list',
   templateUrl: './miniwidget-list.component.html',
   styleUrls: ['./miniwidget-list.component.scss']
 })

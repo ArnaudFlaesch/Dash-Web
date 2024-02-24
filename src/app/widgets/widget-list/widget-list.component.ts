@@ -25,7 +25,7 @@ import { EcowattWidgetComponent } from '../ecowatt-widget/ecowatt-widget.compone
 import { IncidentWidgetComponent } from '../incident-widget/incident-widget.component';
 
 @Component({
-  selector: 'app-widget-list',
+  selector: 'dash-widget-list',
   templateUrl: './widget-list.component.html',
   styleUrls: ['./widget-list.component.scss']
 })

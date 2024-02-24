@@ -1,4 +1,4 @@
-<app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
+<dash-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
 
   <ng-template #headerIcon>
@@ -27,8 +27,8 @@
   <ng-template #body>
     <div *ngIf="this.urlFeed">
       <div class="rss-widget-description">{{ this.description }}</div>
-      <app-rss-feed [feed]="this.feed" [readArticles]="this.readArticles"
-        (markArticleAsReadEvent)="this.markArticleAsRead($event)"></app-rss-feed>
+      <dash-rss-feed [feed]="this.feed" [readArticles]="this.readArticles"
+        (markArticleAsReadEvent)="this.markArticleAsRead($event)"></dash-rss-feed>
     </div>
   </ng-template>
-</app-widget>
+</dash-widget>

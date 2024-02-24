@@ -1,4 +1,4 @@
-<app-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()"
+<dash-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()"
   [isWidgetLoaded]="isWeatherLoaded && isForecastLoaded" (refreshWidgetAction)="this.refreshWidget()">
 
   <ng-template #headerIcon>
@@ -19,7 +19,7 @@
 
   <ng-template #body>
     <div *ngIf="city && weather && weather.weather" class="weather-forecast-container">
-      <app-weather-today [weather]="this.weather"></app-weather-today>
+      <dash-weather-today [weather]="this.weather"></dash-weather-today>
       <div class="forecast-data-container" *ngIf="cityData && forecastResponse">
         <div class="forecast-selector">
           <button *ngFor="let date of forecastDays" [color]="this.isSelectedDay(date) ? 'primary' : ''"
@@ -37,9 +37,9 @@
             Afficher les prévisions complètes
           </mat-slide-toggle>
         </div>
-        <app-weather-forecast *ngIf="this.cityData" [forecast]="this.forecastToDisplay"
-          [forecastMode]="this.forecastMode" [timezone]="this.cityData.timezone"></app-weather-forecast>
+        <dash-weather-forecast *ngIf="this.cityData" [forecast]="this.forecastToDisplay"
+          [forecastMode]="this.forecastMode" [timezone]="this.cityData.timezone"></dash-weather-forecast>
       </div>
     </div>
   </ng-template>
-</app-widget>
+</dash-widget>

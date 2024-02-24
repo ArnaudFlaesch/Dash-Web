@@ -14,7 +14,7 @@ import { WeatherWidgetService } from './weather.widget.service';
 import { fr } from 'date-fns/locale';
 
 @Component({
-  selector: 'app-weather-widget',
+  selector: 'dash-weather-widget',
   templateUrl: './weather-widget.component.html',
   styleUrls: ['./weather-widget.component.scss']
 })

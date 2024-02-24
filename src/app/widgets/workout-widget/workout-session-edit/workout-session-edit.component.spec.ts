@@ -36,7 +36,7 @@ describe('WorkoutSessionEditComponent', () => {
 
   beforeEach(() => {
     spectator = createHost(
-      `<app-workout-session-edit [workoutTypes]="workoutTypes" [currentWorkoutSessionToEdit]="currentWorkoutSessionToEdit"></app-workout-session-edit>`,
+      `<dash-workout-session-edit [workoutTypes]="workoutTypes" [currentWorkoutSessionToEdit]="currentWorkoutSessionToEdit"></dash-workout-session-edit>`,
       {
         hostProps: {
           workoutTypes: workoutTypes,

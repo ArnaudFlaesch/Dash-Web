@@ -1,4 +1,4 @@
-<app-widget [widgetData]="getWidgetData()" [isFormValid]="true" [isWidgetLoaded]="isWidgetLoaded"
+<dash-widget [widgetData]="getWidgetData()" [isFormValid]="true" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
 
   <ng-template #headerIcon>
@@ -92,16 +92,16 @@
           <button mat-raised-button [color]="this.isLastThreeMonthsWorkoutStatisticsSelected() ? 'primary' : ''"
             (click)="getWorkoutsStatsOfLastThreeMonths()">3 derniers mois</button>
         </div>
-        <app-workout-statistics [workoutTypes]="this.workoutTypes"
-          [workoutStatsByMonth]="this.workoutStatsOfMonths"></app-workout-statistics>
+        <dash-workout-statistics [workoutTypes]="this.workoutTypes"
+          [workoutStatsByMonth]="this.workoutStatsOfMonths"></dash-workout-statistics>
       </div>
 
       <div *ngSwitchCase="widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW">
         <button mat-icon-button (click)="backToWorkoutSessionsList()"><mat-icon>arrow_back</mat-icon></button>
-        <app-workout-session-edit [workoutTypes]="this.workoutTypes"
-          [currentWorkoutSessionToEdit]="this.currentWorkoutSessionToEdit"></app-workout-session-edit>
+        <dash-workout-session-edit [workoutTypes]="this.workoutTypes"
+          [currentWorkoutSessionToEdit]="this.currentWorkoutSessionToEdit"></dash-workout-session-edit>
       </div>
 
     </div>
   </ng-template>
-</app-widget>
+</dash-widget>

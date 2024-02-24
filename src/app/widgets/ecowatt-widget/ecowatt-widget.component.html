@@ -1,4 +1,4 @@
-<app-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()"
+<dash-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()"
   [isWidgetLoaded]="isWidgetLoaded">
 
   <ng-template #headerIcon>
@@ -15,4 +15,4 @@
         [height]="iframeContainerHeight"></iframe>
     </div>
   </ng-template>
-</app-widget>
+</dash-widget>

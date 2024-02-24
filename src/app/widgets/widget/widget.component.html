@@ -26,8 +26,8 @@
     </div>
   </div>
 
-  <app-delete-widget *ngIf="this.isModeDelete()" (cancelWidgetDeletion)="toReadMode()"
-    (validateWidgetDeletion)="deleteWidget()"></app-delete-widget>
+  <dash-delete-widget *ngIf="this.isModeDelete()" (cancelWidgetDeletion)="toReadMode()"
+    (validateWidgetDeletion)="deleteWidget()"></dash-delete-widget>
 
   <div *ngIf="this.isModeRead()" class="widget-read-mode">
     <div class="header-container">

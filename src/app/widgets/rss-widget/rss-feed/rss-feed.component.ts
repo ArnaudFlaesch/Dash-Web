@@ -3,7 +3,7 @@ import { isToday, isThisYear } from 'date-fns';
 import { IArticle } from '../IArticle';
 
 @Component({
-  selector: 'app-rss-feed',
+  selector: 'dash-rss-feed',
   templateUrl: './rss-feed.component.html',
   styleUrls: ['./rss-feed.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

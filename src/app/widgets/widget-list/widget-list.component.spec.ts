@@ -99,7 +99,7 @@ describe('WidgetListComponent', () => {
   ];
 
   beforeEach(() => {
-    spectator = createHost(`<app-widget-list [widgetList]="widgetList"></app-widget-list>`, {
+    spectator = createHost(`<dash-widget-list [widgetList]="widgetList"></dash-widget-list>`, {
       hostProps: {
         widgetList: widgetListConfig
       }

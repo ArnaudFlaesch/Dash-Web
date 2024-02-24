@@ -1,4 +1,4 @@
-<app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
+<dash-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="refreshWidget()">
 
   <ng-template #headerIcon>
@@ -48,4 +48,4 @@
       <button mat-raised-button (click)="startNewStreak()">Départ</button>
     </ng-template>
   </ng-template>
-</app-widget>
+</dash-widget>

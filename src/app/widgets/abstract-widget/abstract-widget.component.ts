@@ -13,7 +13,7 @@ import { ModeEnum } from '../../enums/ModeEnum';
 import { WidgetService } from '../../services/widget.service/widget.service';
 
 @Component({
-  selector: 'app-abstract-widget',
+  selector: 'dash-abstract-widget',
   templateUrl: './abstract-widget.component.html',
   styleUrls: ['./abstract-widget.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

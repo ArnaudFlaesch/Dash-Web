@@ -37,7 +37,7 @@ enum WORKOUT_STATISTICS {
 }
 
 @Component({
-  selector: 'app-workout-widget',
+  selector: 'dash-workout-widget',
   templateUrl: './workout-widget.component.html',
   styleUrls: ['./workout-widget.component.scss']
 })

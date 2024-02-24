@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 
 @Component({
-  selector: 'app-create-widget-modal',
+  selector: 'dash-create-widget-modal',
   templateUrl: './create-widget-modal.component.html',
   styleUrls: ['./create-widget-modal.component.scss']
 })

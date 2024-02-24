@@ -11,7 +11,7 @@ import { ICalendarData } from './ICalendarData';
 import { fr } from 'date-fns/locale';
 
 @Component({
-  selector: 'app-calendar-widget',
+  selector: 'dash-calendar-widget',
   templateUrl: './calendar-widget.component.html',
   styleUrls: ['./calendar-widget.component.scss']
 })

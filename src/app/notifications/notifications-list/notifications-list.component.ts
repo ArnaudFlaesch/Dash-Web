@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from 
 import { INotificationToDisplay, NotificationTypeEnum } from '../../model/INotification';
 
 @Component({
-  selector: 'app-notifications-list',
+  selector: 'dash-notifications-list',
   templateUrl: './notifications-list.component.html',
   styleUrl: './notifications-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

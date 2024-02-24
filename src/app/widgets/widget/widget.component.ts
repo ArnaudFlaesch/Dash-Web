@@ -5,7 +5,7 @@ import { WidgetService } from '../../../app/services/widget.service/widget.servi
 import { AbstractWidgetComponent } from '../abstract-widget/abstract-widget.component';
 
 @Component({
-  selector: 'app-widget',
+  selector: 'dash-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss']
 })

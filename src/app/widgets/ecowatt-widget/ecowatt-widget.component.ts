@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'app-ecowatt-widget',
+  selector: 'dash-ecowatt-widget',
   templateUrl: './ecowatt-widget.component.html',
   styleUrls: ['./ecowatt-widget.component.scss']
 })
