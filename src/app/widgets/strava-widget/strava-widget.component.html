@@ -13,8 +13,8 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected" class="strava-header">
-      <p>{{ athlete.firstname }} {{ athlete.lastname }}</p>
+    <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected">
+      <p class="strava-header">{{ athlete.firstname }} {{ athlete.lastname }}</p>
     </ng-template>
     <ng-template #noAthleteConnected>
       <p>Strava</p>

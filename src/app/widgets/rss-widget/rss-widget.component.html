@@ -1,13 +1,14 @@
 <app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
 
-  <ng-template #header>
-    <div *ngIf="this.image" class="rss-widget-header">
-      <img src="{{ image.url }}" alt="logo" />
-      <a [href]="this.image.link | safe: 'url'">
-        <p class="rss-title">{{ this.title }}</p>
-      </a>
-    </div>
+  <ng-template #headerIcon>
+    <img class="rss-widget-header" *ngIf="this.image" src="{{ image.url }}" alt="logo" />
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <a *ngIf="this.image" [href]="this.image.link | safe: 'url'">
+      <p class="rss-title">{{ this.title }}</p>
+    </a>
   </ng-template>
 
   <ng-template #editComponent>
