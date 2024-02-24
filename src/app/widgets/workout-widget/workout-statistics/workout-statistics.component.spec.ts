@@ -28,7 +28,7 @@ describe('WorkoutStatisticsComponent', () => {
 
   beforeEach(() => {
     spectator = createHost(
-      `<app-workout-statistics [workoutStatsByMonth]="workoutStatsByMonth" [workoutTypes]="workoutTypes"></app-workout-statistics>`,
+      `<dash-workout-statistics [workoutStatsByMonth]="workoutStatsByMonth" [workoutTypes]="workoutTypes"></dash-workout-statistics>`,
       {
         hostProps: {
           workoutTypes: workoutTypes,

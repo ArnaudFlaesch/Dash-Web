@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 
 @Component({
-  selector: 'app-event-detail-modal',
+  selector: 'dash-event-detail-modal',
   templateUrl: './event-detail-modal.component.html',
   styleUrls: ['./event-detail-modal.component.scss']
 })

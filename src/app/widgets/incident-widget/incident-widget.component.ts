@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmModalComponent } from '../../modals/confirm-modal/confirm-modal.component';
 
 @Component({
-  selector: 'app-incident-widget',
+  selector: 'dash-incident-widget',
   templateUrl: './incident-widget.component.html',
   styleUrls: ['./incident-widget.component.scss']
 })

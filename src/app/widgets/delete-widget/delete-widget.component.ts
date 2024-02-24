@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-delete-widget',
+  selector: 'dash-delete-widget',
   templateUrl: './delete-widget.component.html',
-  styleUrls: ['./delete-widget.component.scss']
+  styleUrls: ['./delete-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DeleteWidgetComponent {
   @Output() validateWidgetDeletion = new EventEmitter();

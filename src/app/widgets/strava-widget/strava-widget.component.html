@@ -1,15 +1,24 @@
-<app-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()" [isFormValid]="true"
+<dash-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()" [isFormValid]="true"
   [isWidgetLoaded]="this.isWidgetLoaded">
 
-  <ng-template #header>
-    <a *ngIf="athlete" [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader" class="strava-header">
-      <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="athlete profile" />
-      <p>{{ athlete.firstname }} {{ athlete.lastname }}</p>
-    </a>
-    <div *ngIf="!athlete" class="strava-header">
+  <ng-template #headerIcon>
+    <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected">
+      <a [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader">
+        <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="athlete profile" />
+      </a>
+    </ng-template>
+    <ng-template #noAthleteConnected>
       <mat-icon>directions_run</mat-icon>
-      <div>Strava</div>
-    </div>
+    </ng-template>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected">
+      <p class="strava-header">{{ athlete.firstname }} {{ athlete.lastname }}</p>
+    </ng-template>
+    <ng-template #noAthleteConnected>
+      <p>Strava</p>
+    </ng-template>
   </ng-template>
 
   <ng-template #body>
@@ -23,7 +32,7 @@
             <button (click)="this.getPreviousActivitiesPage()" mat-icon-button *ngIf="this.pageNumber > 1">
               <mat-icon>arrow_back</mat-icon></button>
           </div>
-          <app-strava-activities [activities]="this.activities"></app-strava-activities>
+          <dash-strava-activities [activities]="this.activities"></dash-strava-activities>
         </div>
         <div id="strava-statistics">
           <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
@@ -36,4 +45,4 @@
         connecter</button>
     </ng-template>
   </ng-template>
-</app-widget>
+</dash-widget>

@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
 
 @Component({
-  selector: 'app-create-mini-widget-modal',
+  selector: 'dash-create-mini-widget-modal',
   templateUrl: './create-mini-widget-modal.component.html',
   styleUrls: ['./create-mini-widget-modal.component.scss']
 })

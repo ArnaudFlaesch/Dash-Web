@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
 import { IPage } from '../../../app/model/IPage';
 
 @Component({
-  selector: 'app-steam-widget',
+  selector: 'dash-steam-widget',
   templateUrl: './steam-widget.component.html',
   styleUrls: ['./steam-widget.component.scss']
 })

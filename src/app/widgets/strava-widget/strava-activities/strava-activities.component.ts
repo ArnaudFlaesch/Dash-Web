@@ -3,10 +3,10 @@ import { format } from 'date-fns';
 import { IActivity } from '../IStrava';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-strava-activities',
+  selector: 'dash-strava-activities',
   templateUrl: './strava-activities.component.html',
-  styleUrls: ['./strava-activities.component.scss']
+  styleUrls: ['./strava-activities.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StravaActivitiesComponent {
   @Input()

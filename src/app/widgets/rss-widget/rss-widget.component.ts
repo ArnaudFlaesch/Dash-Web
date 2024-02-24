@@ -8,7 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 
 @Component({
-  selector: 'app-rss-widget',
+  selector: 'dash-rss-widget',
   templateUrl: './rss-widget.component.html',
   styleUrls: ['./rss-widget.component.scss']
 })

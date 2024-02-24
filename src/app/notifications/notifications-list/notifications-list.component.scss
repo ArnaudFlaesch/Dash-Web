@@ -1,0 +1,16 @@
+.notification-container {
+  display: flex;
+  flex-direction: row;
+  place-items: center center;
+  column-gap: 0.2rem;
+
+  &.unread-notification {
+    &.info {
+      background-color: #add8e6;
+    }
+
+    &.warn {
+      background-color: #ffa500;
+    }
+  }
+}

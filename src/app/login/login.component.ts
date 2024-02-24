@@ -5,7 +5,7 @@ import { ErrorHandlerService } from './../services/error.handler.service';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-login',
+  selector: 'dash-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })

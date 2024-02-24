@@ -4,10 +4,10 @@ import { ForecastMode, IForecast } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-weather-forecast',
+  selector: 'dash-weather-forecast',
   templateUrl: './weather-forecast.component.html',
-  styleUrls: ['./weather-forecast.component.scss']
+  styleUrls: ['./weather-forecast.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WeatherForecastComponent {
   @Input()
