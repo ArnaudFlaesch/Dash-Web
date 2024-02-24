@@ -7,7 +7,7 @@
 
   <ng-template #headerTitle>
     <a *ngIf="this.image" [href]="this.image.link | safe: 'url'">
-      <p class="rss-title">{{ this.title }}</p>
+      <div>{{ this.title }}</div>
     </a>
   </ng-template>
 

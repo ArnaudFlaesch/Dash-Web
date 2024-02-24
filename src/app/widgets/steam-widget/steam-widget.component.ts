@@ -13,7 +13,7 @@ import { IPage } from '../../../app/model/IPage';
 @Component({
   selector: 'dash-steam-widget',
   templateUrl: './steam-widget.component.html',
-  styleUrls: ['./steam-widget.component.scss']
+  styleUrls: ['./steam-widget.component.scss', '../widget/widget.component.scss']
 })
 export class SteamWidgetComponent implements OnInit, OnDestroy {
   public playerData: IPlayerDataResponse | undefined;

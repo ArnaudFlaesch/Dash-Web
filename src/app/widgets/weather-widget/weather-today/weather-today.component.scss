@@ -1,52 +1,55 @@
 .weather-today-container {
   display: flex;
   flex-direction: row;
-
-  .current-weather-icon {
-    width: 4rem;
-  }
+  justify-content: space-between;
+  margin: 0.5em;
 
   .weather-container {
     display: flex;
     flex-direction: row;
     place-items: center;
+    flex: 1 0 40%;
+
+    img {
+      width: 4rem;
+    }
 
     .current-temperature-container {
       display: flex;
       flex-direction: column;
-      margin-right: 1.25rem;
 
       .current-temperature {
         display: flex;
         flex-direction: row;
-
-        .temperature {
-          margin: auto 0
-        }
+        align-items: center;
       }
     }
+  }
 
-    .time-data-container {
+  .time-data-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto 0;
+    flex: 1 0 50%;
+
+    .sunrise-time {
+      color: #ffbe0a;
+    }
+
+    .sunset-time {
+      color: rgb(161, 155, 155);
+    }
+
+    .day-data-container {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+    }
 
-      .day-data-container {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .time-container {
-        display: flex;
-        flex-direction: row;
-
-        mat-icon {
-          margin-right: 0.25rem;
-        }
-
-        .time-data {
-          margin: auto 0;
-        }
-      }
+    .time-container {
+      display: flex;
+      flex-direction: row;
+      column-gap: 10px;
+      place-items: center;
     }
   }
 }

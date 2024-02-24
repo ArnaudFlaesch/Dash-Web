@@ -8,9 +8,9 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <a href="{{ playerData?.profileurl }}" class="steam-header">
-      <p>{{ playerData?.personaname }}</p>
-    </a>
+    <div><a href="{{ playerData?.profileurl }}" class="steam-header">
+        {{ playerData?.personaname }}
+      </a></div>
   </ng-template>
 
   <ng-template #editComponent>
