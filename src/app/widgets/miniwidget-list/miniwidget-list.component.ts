@@ -3,24 +3,24 @@ import {
   ChangeDetectorRef,
   Component,
   Injector,
-  OnInit,
   OnDestroy,
+  OnInit,
   QueryList,
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
+import { Subject, takeUntil } from 'rxjs';
 import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
 import { CreateMiniWidgetModalComponent } from '../../modals/create-mini-widget-modal/create-mini-widget-modal.component';
 import { IMiniWidgetConfig } from '../../model/IMiniWidgetConfig';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
 import { WeatherMiniWidgetComponent } from '../weather-widget/weather-mini-widget/weather-miniwidget.component';
-import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-miniwidget-list',
+  selector: 'dash-miniwidget-list',
   templateUrl: './miniwidget-list.component.html',
   styleUrls: ['./miniwidget-list.component.scss']
 })

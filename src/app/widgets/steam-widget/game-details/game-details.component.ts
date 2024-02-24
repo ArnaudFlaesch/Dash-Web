@@ -5,7 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { IAchievement, IAchievementResponse, IGameInfoDisplay } from '../ISteam';
 
 @Component({
-  selector: 'app-game-details',
+  selector: 'dash-game-details',
   templateUrl: './game-details.component.html',
   styleUrls: ['./game-details.component.scss']
 })

@@ -1,11 +1,12 @@
-<app-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
+<dash-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
   (refreshWidgetAction)="this.refreshWidget()">
 
-  <ng-template #header>
-    <div class="calendar-header">
-      <mat-icon>calendar_month</mat-icon>
-      <p>Agenda</p>
-    </div>
+  <ng-template #headerIcon>
+    <mat-icon>calendar_month</mat-icon>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <p>Agenda</p>
   </ng-template>
 
   <ng-template #editComponent>
@@ -71,4 +72,4 @@
         [refresh]="refresh"></mwl-calendar-day-view>
     </div>
   </ng-template>
-</app-widget>
+</dash-widget>

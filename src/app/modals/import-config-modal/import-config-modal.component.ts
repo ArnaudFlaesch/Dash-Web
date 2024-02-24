@@ -5,7 +5,7 @@ import { ConfigService } from './../../services/config.service/config.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-import-config-modal',
+  selector: 'dash-import-config-modal',
   templateUrl: './import-config-modal.component.html',
   styleUrls: ['./import-config-modal.component.scss']
 })

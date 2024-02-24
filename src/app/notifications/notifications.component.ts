@@ -11,7 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { WidgetService } from '../services/widget.service/widget.service';
 
 @Component({
-  selector: 'app-notifications',
+  selector: 'dash-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss']
 })
@@ -43,8 +43,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  public markNotificationAsRead(notificationId: number, event: Event): void {
-    event.stopPropagation();
+  public markNotificationAsRead(notificationId: number): void {
     this.markNotificationsAsRead([notificationId]);
   }
 

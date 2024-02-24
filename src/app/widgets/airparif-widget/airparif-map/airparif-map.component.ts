@@ -17,7 +17,7 @@ import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from '.
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-airparif-map',
+  selector: 'dash-airparif-map',
   templateUrl: './airparif-map.component.html',
   styleUrls: ['./airparif-map.component.scss']
 })

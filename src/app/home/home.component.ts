@@ -20,7 +20,7 @@ import { AuthService } from './../services/auth.service/auth.service';
 import { ConfigService } from './../services/config.service/config.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'dash-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

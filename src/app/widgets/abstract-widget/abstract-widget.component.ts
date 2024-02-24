@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ContentChild,
   EventEmitter,
@@ -12,9 +13,10 @@ import { ModeEnum } from '../../enums/ModeEnum';
 import { WidgetService } from '../../services/widget.service/widget.service';
 
 @Component({
-  selector: 'app-abstract-widget',
+  selector: 'dash-abstract-widget',
   templateUrl: './abstract-widget.component.html',
-  styleUrls: ['./abstract-widget.component.scss']
+  styleUrls: ['./abstract-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AbstractWidgetComponent {
   @ContentChild('body', { static: false })
@@ -42,7 +44,7 @@ export class AbstractWidgetComponent {
   }
 
   ngOnInit(): void {
-    console.log('ng on init widget ' + JSON.stringify(this.widgetData));
+    // console.log('ng on init widget ' + JSON.stringify(this.widgetData));
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
     this.widgetService.refreshWidgetsAction.pipe(takeUntil(this.destroy$)).subscribe({
@@ -56,7 +58,7 @@ export class AbstractWidgetComponent {
   }
 
   public refreshWidget(): void {
-    console.log('Refresh widget ' + JSON.stringify(this.widgetData));
+    // console.log('Refresh widget ' + JSON.stringify(this.widgetData));
     if (this.isFormValid) {
       this.refreshWidgetAction.emit();
     }

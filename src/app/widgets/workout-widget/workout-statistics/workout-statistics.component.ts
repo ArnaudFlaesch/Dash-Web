@@ -4,10 +4,10 @@ import { format, startOfMonth } from 'date-fns';
 import { IWorkoutStatByMonth, IWorkoutType } from '../model/Workout';
 
 @Component({
-  selector: 'app-workout-statistics',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dash-workout-statistics',
   templateUrl: './workout-statistics.component.html',
-  styleUrls: ['./workout-statistics.component.scss']
+  styleUrls: ['./workout-statistics.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkoutStatisticsComponent implements OnChanges {
   @Input()

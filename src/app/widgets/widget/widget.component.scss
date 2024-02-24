@@ -30,6 +30,10 @@ $header-height: 2.5rem;
     justify-content: space-between;
 
     .header {
+      display: flex;
+      flex-direction: row;
+      column-gap: 5px;
+      margin: auto 0;
       width: 100%;
       font-weight: 600;
       overflow: hidden;

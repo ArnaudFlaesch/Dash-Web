@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 
 @Component({
-  selector: 'app-create-widget-modal',
+  selector: 'dash-create-widget-modal',
   templateUrl: './create-widget-modal.component.html',
   styleUrls: ['./create-widget-modal.component.scss']
 })
@@ -40,11 +40,6 @@ export class CreateWidgetModalComponent {
       case WidgetTypeEnum.AIRPARIF.toString(): {
         return 'air';
       }
-      /* @TODO Fix or remove Twitter widget
-      case WidgetTypeEnum.TWITTER.toString(): {
-        return 'newspaper';
-      }
-      */
       case WidgetTypeEnum.ECOWATT.toString(): {
         return 'electric_bolt';
       }

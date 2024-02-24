@@ -3,10 +3,10 @@
     <div id="home-header-top-bar">
       <div id="tab-list-container">
         <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)">
-          <app-tab *ngFor="let tab of this.tabs" class="tab" (click)="selectTab(tab.id)"
+          <dash-tab *ngFor="let tab of this.tabs" class="tab" (click)="selectTab(tab.id)"
             (tabDeletedEvent)="deleteTabFromDash($event)" [cdkDragDisabled]="!editModeEnabled"
             [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag
-            cdkDragBoundary="#tab-list"></app-tab>
+            cdkDragBoundary="#tab-list"></dash-tab>
         </div>
         <button (click)="this.addNewTab()" id="addNewTabButton" mat-mini-fab color="primary">
           <mat-icon title="Add a new tab" aria-hidden="false">
@@ -19,7 +19,7 @@
           <mat-icon>apps</mat-icon>
         </button>
 
-        <app-notifications *ngIf="this.canUserSeeNotifications()"></app-notifications>
+        <dash-notifications *ngIf="this.canUserSeeNotifications()"></dash-notifications>
         <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
           <button (click)="this.toggleEditMode()" id="validateWidgetListButton" mat-mini-fab color="primary">
             <mat-icon title="Validate widget order" aria-hidden="false">check</mat-icon>
@@ -77,13 +77,13 @@
     </div>
 
     <div id="mini-widgets-container">
-      <app-miniwidget-list></app-miniwidget-list>
+      <dash-miniwidget-list></dash-miniwidget-list>
     </div>
   </div>
 
   <ng-template [ngIf]="this.areWidgetsLoaded" [ngIfElse]="widgetsLoading">
-    <app-widget-list [widgetList]="this.activeWidgets" *ngIf="this.activeWidgets.length"
-      [toggleEditMode]="editModeEnabled" (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"></app-widget-list>
+    <dash-widget-list [widgetList]="this.activeWidgets" *ngIf="this.activeWidgets.length"
+      [toggleEditMode]="editModeEnabled" (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"></dash-widget-list>
   </ng-template>
 
   <ng-template #widgetsLoading>

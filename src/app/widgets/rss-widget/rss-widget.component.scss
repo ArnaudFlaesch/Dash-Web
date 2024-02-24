@@ -1,17 +1,12 @@
 .rss-widget-header {
-  display: flex;
-  flex-direction: row;
+  width: 2.25rem;
+  border-radius: 0.25rem;
+}
 
-  img {
-    width: 2.25rem;
-    border-radius: 0.25rem;
-  }
-
-  .rss-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.rss-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rss-widget-description {

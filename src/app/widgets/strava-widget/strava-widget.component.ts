@@ -11,7 +11,7 @@ import { firstValueFrom } from 'rxjs';
 import { fr } from 'date-fns/locale';
 
 @Component({
-  selector: 'app-strava-widget',
+  selector: 'dash-strava-widget',
   templateUrl: './strava-widget.component.html',
   styleUrls: ['./strava-widget.component.scss']
 })

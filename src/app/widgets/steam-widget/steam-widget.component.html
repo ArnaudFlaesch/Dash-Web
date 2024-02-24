@@ -1,9 +1,14 @@
-<app-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()"
+<dash-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()"
   [isWidgetLoaded]="true">
 
-  <ng-template #header>
+  <ng-template #headerIcon>
     <a href="{{ playerData?.profileurl }}" class="steam-header">
       <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
+    </a>
+  </ng-template>
+
+  <ng-template #headerTitle>
+    <a href="{{ playerData?.profileurl }}" class="steam-header">
       <p>{{ playerData?.personaname }}</p>
     </a>
   </ng-template>
@@ -30,11 +35,11 @@
     </form>
 
     <div *ngFor="let game of this.ownedGamesDisplay">
-      <app-game-details [steamUserId]="this.steamUserId" [profileUrl]="this.playerData?.profileurl"
-        [gameInfo]="game"></app-game-details>
+      <dash-game-details [steamUserId]="this.steamUserId" [profileUrl]="this.playerData?.profileurl"
+        [gameInfo]="game"></dash-game-details>
     </div>
     <mat-paginator (page)="onPageChanged($event)" [length]="gameCount" [pageSize]="pageSize" [pageIndex]="pageNumber"
       [pageSizeOptions]="pageSizeOptions" aria-label="Sélectionnez une page">
     </mat-paginator>
   </ng-template>
-</app-widget>
+</dash-widget>

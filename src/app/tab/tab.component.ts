@@ -5,7 +5,7 @@ import { ITab } from '../model/Tab';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-tab',
+  selector: 'dash-tab',
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss']
 })

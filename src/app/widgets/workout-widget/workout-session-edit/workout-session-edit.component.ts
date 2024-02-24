@@ -5,7 +5,7 @@ import { WorkoutWidgetService } from '../workout.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-workout-session-edit',
+  selector: 'dash-workout-session-edit',
   templateUrl: './workout-session-edit.component.html',
   styleUrls: ['./workout-session-edit.component.scss']
 })
