@@ -27,6 +27,7 @@ $header-height: 2.5rem;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
 
     .header {
       display: flex;
@@ -39,7 +40,6 @@ $header-height: 2.5rem;
       align-items: center;
       flex: 0 1 60%;
       height: 100%;
-      width: 100%;
 
       ::ng-deep img {
         max-height: 2.25rem;
