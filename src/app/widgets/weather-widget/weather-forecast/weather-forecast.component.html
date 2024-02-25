@@ -11,15 +11,15 @@
     </div>
     <div class="forecast-icons">
       <div>
-        <mat-icon [ngStyle]="{ color: 'crimson' }" class="weather-widget-icon">device_thermostat</mat-icon>
+        <mat-icon class="weather-widget-icon temp-max">device_thermostat</mat-icon>
         {{ forecastDay.main.tempMax }}°
       </div>
       <div>
-        <mat-icon [ngStyle]="{ color: 'blue' }" class="weather-widget-icon">device_thermostat</mat-icon>
+        <mat-icon class="weather-widget-icon temp-min">device_thermostat</mat-icon>
         {{ forecastDay.main.tempMin }}°
       </div>
       <div>
-        <mat-icon [ngStyle]="{ color: 'lightblue' }" class="weather-widget-icon">opacity</mat-icon>
+        <mat-icon class="weather-widget-icon humidity">opacity</mat-icon>
         {{ forecastDay.main.humidity }}%
       </div>
     </div>

@@ -1,37 +1,7 @@
 .mini-widget {
-  .header {
+  .edit-mini-widget {
     display: flex;
-    align-items: flex-end;
-
-    button {
-      margin-left: auto;
-    }
-  }
-
-  .edit-mini-widget-body-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-    text-align: center;
-
-    > * {
-      margin-top: 1rem;
-    }
-
-    .edit-mini-widget-body {
-      padding: 0.25rem;
-      overflow-y: auto;
-    }
-
-    .edit-mini-widget-actions {
-      display: flex;
-      flex-direction: row;
-
-      > * {
-        margin-left: 0.5rem;
-      }
-    }
+    flex-direction: row;
   }
 
   .read-mini-widget-body-container {

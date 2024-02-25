@@ -14,10 +14,10 @@
 
   <ng-template #headerTitle>
     <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected">
-      <p class="strava-header">{{ athlete.firstname }} {{ athlete.lastname }}</p>
+      <div class="strava-header">{{ athlete.firstname }} {{ athlete.lastname }}</div>
     </ng-template>
     <ng-template #noAthleteConnected>
-      <p>Strava</p>
+      <div>Strava</div>
     </ng-template>
   </ng-template>
 

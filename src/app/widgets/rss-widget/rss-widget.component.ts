@@ -10,7 +10,7 @@ import { DateUtilsService } from '../../services/date.utils.service/date.utils.s
 @Component({
   selector: 'dash-rss-widget',
   templateUrl: './rss-widget.component.html',
-  styleUrls: ['./rss-widget.component.scss']
+  styleUrls: ['./rss-widget.component.scss', '../widget/widget.component.scss']
 })
 export class RssWidgetComponent {
   public feed: IArticle[] = [];

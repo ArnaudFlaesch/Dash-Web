@@ -1,7 +1,8 @@
 <div *ngIf="weather && weather.weather" class="weather-today-container">
-  <img class="current-weather-icon" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
-    [title]="weather.weather[0].description" [alt]="weather.weather[0].description" />
   <div class="weather-container">
+    <img class="current-weather-icon" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
+      [title]="weather.weather[0].description" [alt]="weather.weather[0].description" />
+
     <div class="current-temperature-container">
       <div>{{ weather.weather[0].description }}</div>
       <div class="current-temperature">
@@ -9,40 +10,41 @@
         <div class="temperature">{{ weather.main.temp }}°</div>
       </div>
     </div>
-    <div class="time-data-container">
-      <div class="day-data-container">
+  </div>
 
-        <div class="time-container">
-          <mat-icon>wb_sunny</mat-icon>
-          <div class="time-data"> {{
-            this.dateUtils
-            .formatDateFromTimestamp(weather.sys.sunrise,
-            this.dateUtils.adjustTimeWithOffset(weather.timezone))
-            .toLocaleTimeString('fr')
-            }}</div>
-        </div>
+  <div class="time-data-container">
+    <div class="day-data-container">
 
-        <div class="time-container">
-          <mat-icon>brightness_3</mat-icon>
-          <div class="time-data"> {{
-            this.dateUtils
-            .formatDateFromTimestamp(weather.sys.sunset,
-            this.dateUtils.adjustTimeWithOffset(weather.timezone))
-            .toLocaleTimeString('fr')
-            }}</div>
-        </div>
+      <div class="time-container">
+        <mat-icon class="sunrise-time">wb_sunny</mat-icon>
+        <div> {{
+          this.dateUtils
+          .formatDateFromTimestamp(weather.sys.sunrise,
+          this.dateUtils.adjustTimeWithOffset(weather.timezone))
+          .toLocaleTimeString('fr')
+          }}</div>
       </div>
 
       <div class="time-container">
-        <mat-icon>schedule</mat-icon>
-        <div class="time-data">{{
+        <mat-icon class="sunset-time">brightness_3</mat-icon>
+        <div> {{
           this.dateUtils
-          .formatDateFromTimestamp(weather.dt, this.dateUtils.adjustTimeWithOffset(weather.timezone))
-          .toLocaleString('fr')
-          }}
-        </div>
+          .formatDateFromTimestamp(weather.sys.sunset,
+          this.dateUtils.adjustTimeWithOffset(weather.timezone))
+          .toLocaleTimeString('fr')
+          }}</div>
       </div>
-
     </div>
+
+    <div class="time-container">
+      <mat-icon class="lastupdated-time">schedule</mat-icon>
+      <div>{{
+        this.dateUtils
+        .formatDateFromTimestamp(weather.dt, this.dateUtils.adjustTimeWithOffset(weather.timezone))
+        .toLocaleString('fr')
+        }}
+      </div>
+    </div>
+
   </div>
 </div>
