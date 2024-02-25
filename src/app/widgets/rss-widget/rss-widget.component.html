@@ -19,7 +19,8 @@
   </ng-template>
 
   <ng-template #additionalActions>
-    <button mat-icon-button class="markAllArticlesAsReadButton" (click)="markAllFeedAsRead()">
+    <button mat-icon-button matTooltip="Marquer tout le flux comme lu" class="markAllArticlesAsReadButton"
+      (click)="markAllFeedAsRead()">
       <mat-icon>check</mat-icon>
     </button>
   </ng-template>

@@ -27,14 +27,15 @@
   <ng-template #body>
     <div id="calendar-actions-container">
       <div id="date-navigation-container">
-        <button mat-raised-button mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" color="primary"
-          (viewDateChange)="closeOpenMonthViewDay()">
-          <mat-icon title="Previous" aria-hidden="false">arrow_back</mat-icon>
+        <button mat-raised-button matTooltip="Précédent" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+          color="primary" (viewDateChange)="closeOpenMonthViewDay()">
+          <mat-icon aria-hidden="false">arrow_back</mat-icon>
         </button>
-        <button mat-raised-button mwlCalendarToday [(viewDate)]="viewDate">{{displayTodaysDate()}}</button>
-        <button mat-raised-button mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" color="primary"
-          (viewDateChange)="closeOpenMonthViewDay()">
-          <mat-icon title="Next" aria-hidden="false">arrow_forward</mat-icon>
+        <button mat-raised-button matTooltip="Aujourd'hui" mwlCalendarToday
+          [(viewDate)]="viewDate">{{displayTodaysDate()}}</button>
+        <button mat-raised-button matTooltip="Suivant" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+          color="primary" (viewDateChange)="closeOpenMonthViewDay()">
+          <mat-icon aria-hidden="false">arrow_forward</mat-icon>
         </button>
       </div>
 

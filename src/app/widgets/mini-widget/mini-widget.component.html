@@ -10,8 +10,8 @@
         [disabled]="!this.isFormValid">
         <mat-icon>check</mat-icon>
       </button>
-      <button mat-icon-button (click)="this.toDeleteMode()" color="alert">
-        <mat-icon title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
+      <button mat-icon-button matTooltip="Supprimer le widget" (click)="this.toDeleteMode()" color="alert">
+        <mat-icon aria-hidden="false">delete</mat-icon>
       </button>
     </div>
 
