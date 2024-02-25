@@ -39,6 +39,7 @@ $header-height: 2.5rem;
       align-items: center;
       flex: 0 1 60%;
       height: 100%;
+      width: 100%;
 
       ::ng-deep img {
         max-height: 2.25rem;
@@ -58,10 +59,6 @@ $header-height: 2.5rem;
       column-gap: 0.5em;
       justify-content: flex-end;
       margin: 0.5em;
-
-      ::ng-deep button {
-        width: 28px;
-      }
     }
   }
 
