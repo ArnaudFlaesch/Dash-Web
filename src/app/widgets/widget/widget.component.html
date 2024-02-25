@@ -3,8 +3,8 @@
     <div class="header-container">
       <div class="header">
         <div class="header-actions">
-          <button mat-icon-button (click)="this.toDeleteMode()">
-            <mat-icon title="Supprimer le widget" aria-hidden="false">delete</mat-icon>
+          <button mat-icon-button matTooltip="Supprimer le widget" (click)="this.toDeleteMode()">
+            <mat-icon aria-hidden="false">delete</mat-icon>
           </button>
         </div>
       </div>
@@ -40,14 +40,13 @@
         <span *ngIf="additionalActions">
           <ng-container *ngTemplateOutlet="additionalActions"> </ng-container>
         </span>
-        <button mat-icon-button (click)="this.toEditMode()" class="editButton">
-          <mat-icon *ngIf="this.editComponent">settings</mat-icon>
-        </button>
-        <button mat-icon-button (click)="this.refreshWidget()" class="refreshButton">
+
+        <button mat-icon-button matTooltip="Actualiser le widget" (click)="this.refreshWidget()" class="refreshButton">
           <mat-icon aria-hidden="false">refresh</mat-icon>
         </button>
-        <button mat-icon-button (click)="this.toDeleteMode()" class="deleteButton">
-          <mat-icon aria-hidden="false">delete</mat-icon>
+        <button *ngIf="this.editComponent" mat-icon-button matTooltip="Modifier le widget" (click)="this.toEditMode()"
+          class="editButton">
+          <mat-icon>settings</mat-icon>
         </button>
       </div>
     </div>

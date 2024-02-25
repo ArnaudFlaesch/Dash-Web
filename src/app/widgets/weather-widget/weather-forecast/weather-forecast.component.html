@@ -6,20 +6,20 @@
       </div>
       <div>
         <img [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')" class="current-weather-icon"
-          [title]="forecastDay.weather[0].description" [alt]="forecastDay.weather[0].description" />
+          [matTooltip]="forecastDay.weather[0].description" [alt]="forecastDay.weather[0].description" />
       </div>
     </div>
     <div class="forecast-icons">
       <div>
-        <mat-icon class="weather-widget-icon temp-max">device_thermostat</mat-icon>
+        <mat-icon matTooltip="Température maximum" class="weather-widget-icon temp-max">device_thermostat</mat-icon>
         {{ forecastDay.main.tempMax }}°
       </div>
       <div>
-        <mat-icon class="weather-widget-icon temp-min">device_thermostat</mat-icon>
+        <mat-icon matTooltip="Température minimum" class="weather-widget-icon temp-min">device_thermostat</mat-icon>
         {{ forecastDay.main.tempMin }}°
       </div>
       <div>
-        <mat-icon class="weather-widget-icon humidity">opacity</mat-icon>
+        <mat-icon matTooltip="Humidité" class="weather-widget-icon humidity">opacity</mat-icon>
         {{ forecastDay.main.humidity }}%
       </div>
     </div>

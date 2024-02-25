@@ -1,5 +1,5 @@
 <dash-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()"
-  [isWidgetLoaded]="isPlayerDataLoaded && areGamesLoaded">
+  [isWidgetLoaded]="true">
 
   <ng-template #headerIcon>
     <a href="{{ playerData?.profileurl }}" class="steam-header">
@@ -26,11 +26,11 @@
       <mat-form-field appearance="fill">
         <mat-label>Recherchez un jeu</mat-label>
         <input matInput [formControl]="searchFormControl" />
-
       </mat-form-field>
+
       <button *ngIf="this.searchFormControl.dirty && this.searchFormControl.value" mat-icon-button
-        id="reset-form-button" (click)="this.resetForm()">
-        <mat-icon title="Reset form" aria-hidden="false">close</mat-icon>
+        matTooltip="Annuler la recherche" id="reset-form-button" (click)="this.resetForm()">
+        <mat-icon aria-hidden="false">close</mat-icon>
       </button>
     </form>
 
