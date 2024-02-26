@@ -2,11 +2,11 @@
   <div *ngIf="isModeEdit()">
     <div class="edit-mini-widget">
       <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
-      <button class="cancelButton" mat-icon-button (click)="cancelEdition()"
+      <button class="cancelButton" matTooltip="Annuler" mat-icon-button (click)="cancelEdition()"
         *ngIf="this.isWidgetLoaded && this.widgetData">
         <mat-icon>undo</mat-icon>
       </button>
-      <button class="validateButton" mat-icon-button (click)="onValidation()" color="primary"
+      <button class="validateButton" matTooltip="Valider" mat-icon-button (click)="onValidation()" color="primary"
         [disabled]="!this.isFormValid">
         <mat-icon>check</mat-icon>
       </button>

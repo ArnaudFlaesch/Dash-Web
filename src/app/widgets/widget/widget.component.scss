@@ -1,7 +1,6 @@
 $header-height: 2.5rem;
 
 .widget {
-  margin: 0.5rem;
   height: 24rem;
   border: 2px solid;
   border-radius: 0.25rem;
@@ -55,10 +54,8 @@ $header-height: 2.5rem;
     .header-actions {
       display: flex;
       flex-direction: row;
-      flex: 0 0 40%;
-      column-gap: 0.5em;
+      flex: 1 0 40%;
       justify-content: flex-end;
-      margin: 0.5em;
     }
   }
 
@@ -67,16 +64,17 @@ $header-height: 2.5rem;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    padding: 0.5em;
 
     .widget-edit-component-container {
       overflow-y: auto;
-      padding: 0.25rem;
     }
 
     .edit-component-actions {
       display: flex;
       flex-direction: row;
-      place-content: center;
+      justify-content: space-evenly;
+      margin: auto 0;
     }
 
     .widget-loading-spinner {
