@@ -9,8 +9,7 @@ $dark-theme: mat.define-dark-theme(
       primary: mat.define-palette(mat.$pink-palette),
       accent: mat.define-palette(mat.$blue-grey-palette)
     ),
-    typography:
-    mat.define-typography-config(),
+    typography: mat.define-typography-config(),
     density: 0
   )
 );
@@ -72,7 +71,6 @@ body {
   .mini-widget {
     background-color: var(--widget-light-mode-background-color);
   }
-
   &.dark-mode {
     @include mat.core-color($dark-theme);
     @include mat.button-color($dark-theme);

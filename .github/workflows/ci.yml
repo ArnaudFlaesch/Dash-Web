@@ -54,6 +54,7 @@ jobs:
 
       - name: E2E Tests
         uses: cypress-io/github-action@v6
+        id: e2e-tests
         with:
           browser: firefox
           config-file: cypress-test.config.ts
@@ -61,7 +62,7 @@ jobs:
           wait-on: 'http://localhost:4200'
 
       - name: Generate test report
-        if: failure()
+        if: steps.e2e-tests.outcome == 'failure'
         run: |
           mkdir cypress/screenshots || true
           npx mochawesome-merge ./cypress/results/mochawesome-report/*.json > tests-report.json
@@ -70,7 +71,7 @@ jobs:
 
       - name: Upload Cypress report
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: steps.e2e-tests.outcome == 'failure'
         with:
           name: Cypress report
           path: cypress/reports/html
