@@ -78,7 +78,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('ondestroy home');
     this.clearWidgetAutoRefresh();
     this.destroy$.next(null);
     this.destroy$.complete();
@@ -90,7 +89,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public clearWidgetAutoRefresh(): void {
     if (this.refreshInterval) {
-      console.log('clearInterval');
+      //console.log('clearInterval');
       clearInterval(this.refreshInterval);
     }
   }

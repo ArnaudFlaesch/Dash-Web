@@ -29,6 +29,7 @@ jobs:
           cp public/index.html public/404.html
 
       - name: Test
+        id: application-tests
         run: npm run test
 
       - name: Login to Github Container Registry
@@ -38,28 +39,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
+      - name: Start mock server
+        run: |
+          [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]] && tagName=${{github.ref_name}} || tagName=latest
+          docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:$tagName
+
       - name: Start database image
         run: |
           docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash postgres:13.2-alpine
 
-      - name: Start mock server
-        run: |
-          if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' ]]; then
-            docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:${GITHUB_REF#refs/*/}
-          else
-            docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:latest
-          fi
-
       - name: Start backend image
         run: |
-          if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' ]]; then
-            docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:${GITHUB_REF#refs/*/}
-          else
-            docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:latest
-          fi
+          [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]] && tagName=${{github.ref_name}} || tagName=latest
+          docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:$tagName
 
       - name: E2E Tests
         uses: cypress-io/github-action@v6
+        id: e2e-tests
         with:
           browser: firefox
           config-file: cypress-test.config.ts
@@ -67,7 +63,8 @@ jobs:
           wait-on: 'http://localhost:4200'
 
       - name: Generate test report
-        if: failure()
+        id: generate-e2e-report
+        if: always() && steps.e2e-tests.outcome == 'failure'
         run: |
           mkdir cypress/screenshots || true
           npx mochawesome-merge ./cypress/results/mochawesome-report/*.json > tests-report.json
@@ -76,18 +73,20 @@ jobs:
 
       - name: Upload Cypress report
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: always() && steps.generate-e2e-report.outcome == 'success'
         with:
           name: Cypress report
           path: cypress/reports/html
 
       - name: Report coverage for Codecov
         uses: codecov/codecov-action@v4
+        if: always() && steps.application-tests.outcome == 'success'
         with:
           directory: coverage-jest
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Report coverage for Codacy
+        if: always() && steps.application-tests.outcome == 'success'
         run: |
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage-jest/lcov.info
         env:
@@ -95,19 +94,20 @@ jobs:
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
+        if: always() && steps.application-tests.outcome == 'success'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Generate documentation
-        if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref_name == 'master'
         run: |
           npm run compodoc:build
           mv documentation public/documentation
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
-        if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref_name == 'master'
         with:
           path: ./public
 
@@ -123,7 +123,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: test
-    if: success() && github.ref == 'refs/heads/master'
+    if: success() && github.ref_name == 'master'
 
     steps:
       - name: Deploy to GitHub Pages
