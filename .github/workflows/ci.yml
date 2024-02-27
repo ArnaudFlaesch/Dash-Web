@@ -44,7 +44,7 @@ jobs:
 
       - name: Start mock server
         run: |
-          if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' ]]; then
+          if [[ ${{github.ref_name}} != 'master' ]]; then
             docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:${GITHUB_REF#refs/*/}
           else
             docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:latest
@@ -52,8 +52,8 @@ jobs:
 
       - name: Start backend image
         run: |
-          if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${GITHUB_REF#refs/*/} | wc -l)" == 1 && ${GITHUB_REF#refs/*/} != 'master' ]]; then
-            docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:${GITHUB_REF#refs/*/}
+          if [[ ${{github.ref_name}} != 'master' ]]; then
+            docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:${{github.ref_name}}
           else
             docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:latest
           fi
@@ -100,14 +100,14 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Generate documentation
-        if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref_name == 'master'
         run: |
           npm run compodoc:build
           mv documentation public/documentation
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
-        if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref_name == 'master'
         with:
           path: ./public
 
@@ -123,7 +123,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: test
-    if: success() && github.ref == 'refs/heads/master'
+    if: success() && github.ref_name == 'master'
 
     steps:
       - name: Deploy to GitHub Pages
