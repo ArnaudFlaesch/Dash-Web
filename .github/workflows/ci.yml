@@ -29,6 +29,7 @@ jobs:
           cp public/index.html public/404.html
 
       - name: Test
+        id: application-tests
         run: npm run test
 
       - name: Login to Github Container Registry
@@ -62,7 +63,8 @@ jobs:
           wait-on: 'http://localhost:4200'
 
       - name: Generate test report
-        if: steps.e2e-tests.outcome == 'failure'
+        id: generate-e2e-report
+        if: always() && steps.e2e-tests.outcome == 'failure'
         run: |
           mkdir cypress/screenshots || true
           npx mochawesome-merge ./cypress/results/mochawesome-report/*.json > tests-report.json
@@ -71,18 +73,20 @@ jobs:
 
       - name: Upload Cypress report
         uses: actions/upload-artifact@v4
-        if: steps.e2e-tests.outcome == 'failure'
+        if: always() && steps.generate-e2e-report.outcome == 'success'
         with:
           name: Cypress report
           path: cypress/reports/html
 
       - name: Report coverage for Codecov
         uses: codecov/codecov-action@v4
+        if: always() && steps.application-tests.outcome == 'success'
         with:
           directory: coverage-jest
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Report coverage for Codacy
+        if: always() && steps.application-tests.outcome == 'success'
         run: |
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage-jest/lcov.info
         env:
@@ -90,6 +94,7 @@ jobs:
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
+        if: always() && steps.application-tests.outcome == 'success'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
