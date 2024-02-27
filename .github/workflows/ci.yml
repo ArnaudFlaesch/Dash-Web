@@ -15,6 +15,11 @@ jobs:
           node-version: 20.9.0
           cache: 'npm'
 
+      - name: Start mock server
+        run: |
+          tagName=$(( "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ? ${{github.ref_name}} : latest ))
+          docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:$tagName
+
       - name: Install dependencies
         run: npm ci
 
@@ -41,14 +46,6 @@ jobs:
       - name: Start database image
         run: |
           docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash postgres:13.2-alpine
-
-      - name: Start mock server
-        run: |
-          if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]]; then
-            docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:${{github.ref_name}}
-          else
-            docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:latest
-          fi
 
       - name: Start backend image
         run: |
