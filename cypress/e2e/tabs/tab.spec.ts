@@ -11,7 +11,7 @@ describe('Tab tests', () => {
 
   it('Should create a new tab', () => {
     cy.get('#addNewTabButton').click();
-    cy.get('.tab').should('have.length', 404);
+    cy.get('.tab').should('have.length', 2);
   });
 
   it('Should edit the created tab', () => {
