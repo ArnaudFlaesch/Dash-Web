@@ -17,7 +17,7 @@ jobs:
 
       - name: Start mock server
         run: |
-          [ $(( "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != master)) ] && tagName=${{github.ref_name}} || tagName=latest
+          [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]] && tagName=${{github.ref_name}} || tagName=latest
           docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:$tagName
 
       - name: Install dependencies
