@@ -71,6 +71,7 @@ body {
   .mini-widget {
     background-color: var(--widget-light-mode-background-color);
   }
+
   &.dark-mode {
     @include mat.core-color($dark-theme);
     @include mat.button-color($dark-theme);
