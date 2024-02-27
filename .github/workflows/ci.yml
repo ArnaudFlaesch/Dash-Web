@@ -44,16 +44,16 @@ jobs:
 
       - name: Start mock server
         run: |
-          if [[ ${{github.ref_name}} != 'master' ]]; then
-            docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:${GITHUB_REF#refs/*/}
+          if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]]; then
+            docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:${{github.ref_name}}
           else
             docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:latest
           fi
 
       - name: Start backend image
         run: |
-          if [[ ${{github.ref_name}} != 'master' ]]; then
-            docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:${{github.ref_name}}
+          if [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]]; then
+           docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:${{github.ref_name}}
           else
             docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:latest
           fi
