@@ -24,7 +24,7 @@
         <div class="forecast-selector">
           <button *ngFor="let date of forecastDays" [color]="this.isSelectedDay(date) ? 'primary' : ''"
             mat-raised-button (click)="selectDayForecast(date)" class="selectForecast">
-            {{ formatDate(date) }}
+            {{ formatDate(date) | initialUppercase }}
           </button>
 
           <button [color]="this.isForecastModeWeek() ? 'primary' : ''" mat-raised-button id="toggleWeekForecast"
