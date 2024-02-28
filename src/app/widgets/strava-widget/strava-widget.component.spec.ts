@@ -151,7 +151,7 @@ describe('StravaWidgetComponent', () => {
     const statsFromActivities = spectator.component.getStatsFromActivities();
     expect(statsFromActivities[0].y).toEqual(268);
 
-    spectator.component.getNextActivitiesPage();
+    spectator.component.getPreviousActivitiesPage();
 
     const getNextActivitiesRequest = stravaWidgetService.expectOne(
       `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=2&numberOfActivities=25`,
@@ -160,7 +160,7 @@ describe('StravaWidgetComponent', () => {
     getNextActivitiesRequest.flush([]);
     expect(spectator.component.pageNumber).toEqual(2);
 
-    spectator.component.getPreviousActivitiesPage();
+    spectator.component.getNextActivitiesPage();
     const getPreviousActivitiesRequest = stravaWidgetService.expectOne(
       `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`,
       HttpMethod.GET
