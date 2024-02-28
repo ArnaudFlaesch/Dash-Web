@@ -11,19 +11,6 @@ $header-height: 2.5rem;
     flex-direction: column;
   }
 
-  .widget-edit-mode {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    place-items: center;
-    text-align: center;
-
-    .header-container {
-      width: 100%;
-    }
-  }
-
   .header-container {
     height: $header-height;
     display: flex;
@@ -58,6 +45,19 @@ $header-height: 2.5rem;
       flex-direction: row;
       flex: 1 0 40%;
       justify-content: flex-end;
+    }
+  }
+
+  .widget-edit-mode {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+    text-align: center;
+
+    .header-container {
+      width: 100%;
     }
   }
 
