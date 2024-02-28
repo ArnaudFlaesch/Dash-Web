@@ -41,7 +41,8 @@
 
     .day-data-container {
       display: flex;
-      justify-content: space-between;
+      flex-direction: row;
+      column-gap: 1.5em;
     }
 
     .time-container {

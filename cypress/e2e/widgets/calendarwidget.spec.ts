@@ -32,7 +32,7 @@ describe('Calendar Widget tests', () => {
     cy.get('.validateButton').click();
     cy.wait('@getCalendarDataRequest').then((request: Interception) => {
       expect(request.response.statusCode).to.equal(200);
-      cy.get('h3').should('have.text', `juillet ${lastYearNumber}`);
+      cy.get('h3').should('have.text', `Juillet ${lastYearNumber}`);
       cy.get('.refreshButton').click();
       cy.wait('@getCalendarDataRequest').then(() => {
         cy.get('.cal-future:nth(13)').find('.cal-day-badge').should('have.text', 1);

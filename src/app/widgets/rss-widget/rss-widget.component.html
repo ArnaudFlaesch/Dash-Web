@@ -26,7 +26,7 @@
   </ng-template>
 
   <ng-template #body>
-    <div *ngIf="this.urlFeed">
+    <div class="rss-widget-body" *ngIf="this.urlFeed">
       <div class="rss-widget-description">{{ this.description }}</div>
       <dash-rss-feed [feed]="this.feed" [readArticles]="this.readArticles"
         (markArticleAsReadEvent)="this.markArticleAsRead($event)"></dash-rss-feed>

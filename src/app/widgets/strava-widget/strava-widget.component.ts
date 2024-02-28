@@ -161,14 +161,14 @@ export class StravaWidgetComponent implements OnInit {
     window.open(this.loginToStravaUrl, '_self');
   }
 
-  public getPreviousActivitiesPage(): void {
+  public getNextActivitiesPage(): void {
     if (this.pageNumber > 1) {
       this.pageNumber--;
       this.getActivities();
     }
   }
 
-  public getNextActivitiesPage(): void {
+  public getPreviousActivitiesPage(): void {
     if (this.activities.length === this.paginationActivities) {
       this.pageNumber++;
       this.getActivities();

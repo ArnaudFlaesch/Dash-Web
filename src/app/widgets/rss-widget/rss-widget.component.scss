@@ -1,3 +1,9 @@
-.rss-widget-description {
-  font-weight: 700;
+.rss-widget-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+
+  .rss-widget-description {
+    font-weight: 700;
+  }
 }
