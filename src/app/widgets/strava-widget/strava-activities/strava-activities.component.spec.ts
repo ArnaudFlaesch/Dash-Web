@@ -228,7 +228,7 @@ describe('StravaActivitiesComponent', () => {
   });
 
   it('Should format date', () => {
-    expect(spectator.component.formatDate('2022-10-20T18:34:39Z')).toEqual('20 Oct');
+    expect(spectator.component.formatDate('2022-10-20T18:34:39Z')).toEqual('20 octobre');
   });
 
   it('Should round distance', () => {
@@ -239,6 +239,6 @@ describe('StravaActivitiesComponent', () => {
     const activity = activitiesData[0];
     spectator.component.activities = activitiesData;
     const actual = spectator.component.getTitleToDisplay(activity);
-    expect(actual).toEqual('20 Oct  Evening Run  10.7047 kms');
+    expect(actual).toEqual('20 octobre  Evening Run  10.7047 kms');
   });
 });
