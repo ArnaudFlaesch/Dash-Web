@@ -24,9 +24,8 @@ $header-height: 2.5rem;
     height: $header-height;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
-    width: 100%;
+    padding: 0.1em 0.2em;
 
     .header {
       display: flex;
@@ -38,7 +37,6 @@ $header-height: 2.5rem;
       text-overflow: ellipsis;
       align-items: center;
       flex: 0 1 60%;
-      height: 100%;
 
       ::ng-deep img {
         max-height: 2.25rem;
@@ -47,7 +45,7 @@ $header-height: 2.5rem;
       }
 
       ::ng-deep a {
-        height: 100%;
+        display: flex;
       }
     }
 

@@ -88,6 +88,7 @@ import { WorkoutWidgetComponent } from './widgets/workout-widget/workout-widget.
 import { WorkoutWidgetService } from './widgets/workout-widget/workout.widget.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NotificationsListComponent } from './notifications/notifications-list/notifications-list.component';
+import { InitialUppercasePipe } from './pipes/initial.uppercase.pipe';
 
 registerLocaleData(localeFr);
 
@@ -111,6 +112,7 @@ registerLocaleData(localeFr);
     GameDetailsComponent,
     DateFormatPipe,
     SafePipe,
+    InitialUppercasePipe,
     CreateWidgetModalComponent,
     CreateMiniWidgetModalComponent,
     ImportConfigModalComponent,

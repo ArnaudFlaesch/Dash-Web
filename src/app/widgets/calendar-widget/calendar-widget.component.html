@@ -32,7 +32,7 @@
           <mat-icon aria-hidden="false">arrow_back</mat-icon>
         </button>
         <button mat-raised-button matTooltip="Aujourd'hui" mwlCalendarToday
-          [(viewDate)]="viewDate">{{displayTodaysDate()}}</button>
+          [(viewDate)]="viewDate">{{displayTodaysDate() | initialUppercase}}</button>
         <button mat-raised-button matTooltip="Suivant" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
           color="primary" (viewDateChange)="closeOpenMonthViewDay()">
           <mat-icon aria-hidden="false">arrow_forward</mat-icon>
@@ -40,6 +40,10 @@
       </div>
 
       <div id="calendar-view-switch-container">
+        <button mat-raised-button (click)="setView(calendarView.Day)"
+          [color]="this.isCalendarViewDay() ? 'primary' : ''">
+          Jour
+        </button>
         <button mat-raised-button (click)="setView(calendarView.Month)"
           [color]="this.isCalendarViewMonth() ? 'primary' : ''">
           Mois
@@ -48,15 +52,11 @@
           [color]="this.isCalendarViewWeek() ? 'primary' : ''">
           Semaine
         </button>
-        <button mat-raised-button (click)="setView(calendarView.Day)"
-          [color]="this.isCalendarViewDay() ? 'primary' : ''">
-          Jour
-        </button>
       </div>
     </div>
 
     <div id="calendar-selected-date">
-      <h3>{{ viewDate | calendarDate: view + 'ViewTitle':'fr' }}</h3>
+      <h3>{{ viewDate | calendarDate: view + 'ViewTitle':'fr' | initialUppercase }}</h3>
     </div>
 
     <div [ngSwitch]="view">
@@ -69,7 +69,7 @@
         [locale]="locale" [events]="events" [refresh]="refresh" (eventClicked)="handleEvent('Clicked', $event.event)">
       </mwl-calendar-week-view>
 
-      <mwl-calendar-day-view *ngSwitchCase="calendarView.Day" [viewDate]="viewDate" [locale]="locale" [events]="[]"
+      <mwl-calendar-day-view *ngSwitchCase="calendarView.Day" [viewDate]="viewDate" [locale]="locale" [events]="events"
         [refresh]="refresh"></mwl-calendar-day-view>
     </div>
   </ng-template>

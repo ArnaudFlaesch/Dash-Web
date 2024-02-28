@@ -4,7 +4,7 @@
   <ng-template #headerIcon>
     <ng-template [ngIf]="athlete" [ngIfElse]="noAthleteConnected">
       <a [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader">
-        <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="athlete profile" />
+        <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="Athlete profile" />
       </a>
     </ng-template>
     <ng-template #noAthleteConnected>
@@ -26,10 +26,11 @@
       <div *ngIf="this.activities.length">
         <div id="strava-activities-container">
           <div id="activities-pagination-container">
-            <button (click)="this.getNextActivitiesPage()" mat-icon-button
-              *ngIf="this.activities.length === this.paginationActivities">
+            <button (click)="this.getNextActivitiesPage()" matTooltip="Page suivante" mat-icon-button
+              *ngIf="this.pageNumber > 1">
               <mat-icon>arrow_forward</mat-icon></button>
-            <button (click)="this.getPreviousActivitiesPage()" mat-icon-button *ngIf="this.pageNumber > 1">
+            <button (click)="this.getPreviousActivitiesPage()" matTooltip="Page précédente" mat-icon-button
+              *ngIf="this.activities.length === this.paginationActivities">
               <mat-icon>arrow_back</mat-icon></button>
           </div>
           <dash-strava-activities [activities]="this.activities"></dash-strava-activities>

@@ -6,7 +6,8 @@
       </div>
       <div>
         <img [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')" class="current-weather-icon"
-          [matTooltip]="forecastDay.weather[0].description" [alt]="forecastDay.weather[0].description" />
+          [matTooltip]="forecastDay.weather[0].description | initialUppercase"
+          [alt]="forecastDay.weather[0].description" />
       </div>
     </div>
     <div class="forecast-icons">

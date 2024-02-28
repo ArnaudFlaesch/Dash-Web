@@ -5,8 +5,9 @@
 
 
 <mat-menu #notificationsMenu="matMenu">
-  <button id="mark-all-notifications-as-read-button" *ngIf="this.unreadNotificationsForBadge !== ''"
-    (click)="markAllNotificationsAsRead($event)" mat-icon-button><mat-icon>check</mat-icon></button>
+  <button id="mark-all-notifications-as-read-button" matTooltip="Marquer tout comme lu"
+    *ngIf="this.unreadNotificationsForBadge !== ''" (click)="markAllNotificationsAsRead($event)"
+    mat-icon-button><mat-icon>check</mat-icon></button>
 
   <dash-notifications-list (onNotificationRead)="markNotificationAsRead($event)"
     [notificationsList]="this.notificationsToDisplay"></dash-notifications-list>
