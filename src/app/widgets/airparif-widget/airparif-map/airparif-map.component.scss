@@ -15,21 +15,36 @@
   }
 }
 
-#forecast-select-buttons {
-  margin-bottom: 0.5rem;
-}
-
-#sidepanel-indices {
+#forecast-indices-data {
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  row-gap: 0.4em;
+  max-width: fit-content;
 
-  .airparif-indice {
+  #forecast-select-buttons {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    column-gap: 0.2em;
   }
-}
 
-.indice-label {
-  border-radius: 0.25rem;
+  #sidepanel-indices {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+
+    .airparif-indice {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  #indices-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.1em;
+
+    .indice-label {
+      border-radius: 0.25rem;
+    }
+  }
 }
