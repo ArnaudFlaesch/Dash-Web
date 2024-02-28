@@ -22,12 +22,12 @@ $header-height: 2.5rem;
       display: flex;
       flex-direction: row;
       column-gap: 5px;
-      margin: auto 0;
       font-weight: 600;
       overflow: hidden;
       text-overflow: ellipsis;
       align-items: center;
       flex: 0 1 60%;
+      height: 100%;
 
       ::ng-deep img {
         max-height: 2.25rem;
@@ -37,6 +37,11 @@ $header-height: 2.5rem;
 
       ::ng-deep a {
         display: flex;
+        height: 100%;
+
+        > * {
+          margin: auto 0;
+        }
       }
     }
 
