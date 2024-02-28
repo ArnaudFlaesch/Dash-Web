@@ -18,6 +18,10 @@ $header-height: 2.5rem;
     flex-direction: column;
     place-items: center;
     text-align: center;
+
+    .header-container {
+      width: 100%;
+    }
   }
 
   .header-container {
