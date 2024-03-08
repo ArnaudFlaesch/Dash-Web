@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/c
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, startOfMonth } from 'date-fns';
 import { IWorkoutStatByMonth, IWorkoutType } from '../model/Workout';
+import { fr } from 'date-fns/locale/fr';
 
 @Component({
   selector: 'dash-workout-statistics',
@@ -26,7 +27,7 @@ export class WorkoutStatisticsComponent implements OnChanges {
       )
     ].sort((timeA, timeB) => timeA - timeB);
     this.workoutStatsChartData = {
-      labels: labels.map((label) => format(new Date(label), 'MMM')),
+      labels: labels.map((label) => format(new Date(label), 'MMM', { locale: fr })),
       datasets: this.workoutTypes.map((workoutType) => {
         return {
           label: workoutType.name,

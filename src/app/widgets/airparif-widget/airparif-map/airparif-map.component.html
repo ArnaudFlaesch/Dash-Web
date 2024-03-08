@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <div *ngIf="this.airParifForecast.length > 0">
+      <div id="forecast-indices-data" *ngIf="this.airParifForecast.length > 0">
         <div id="forecast-select-buttons">
           <button mat-raised-button [color]="this.isForecastModeToday() ? 'primary' : ''"
             (click)="this.selectTodayForecast()">Aujourd'hui</button>
@@ -54,11 +54,12 @@
 
         </div>
 
-        <span class="indice-label" [style]="{ 'background-color':indice.color }"
-          *ngFor="let indice of this.airParifCouleursIndices">
-          {{indice.name}}
-        </span>
-
+        <div id="indices-list">
+          <span class="indice-label" [style]="{ 'background-color':indice.color }"
+            *ngFor="let indice of this.airParifCouleursIndices">
+            {{indice.name}}
+          </span>
+        </div>
       </div>
     </div>
   </div>

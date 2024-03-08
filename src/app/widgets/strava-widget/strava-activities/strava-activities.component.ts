@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { format } from 'date-fns';
 import { IActivity } from '../IStrava';
+import { fr } from 'date-fns/locale/fr';
 
 @Component({
   selector: 'dash-strava-activities',
@@ -13,13 +14,13 @@ export class StravaActivitiesComponent {
   public activities: IActivity[] = [];
 
   public getTitleToDisplay(activity: IActivity): string {
-    return `${format(new Date(activity.startDateLocal), 'dd MMM')}  ${activity.name}  ${
+    return `${format(new Date(activity.startDateLocal), 'dd MMMM', { locale: fr })}  ${activity.name}  ${
       Math.round(activity.distance * 1000) / 1000000
     } kms`;
   }
 
   public formatDate(date: string): string {
-    return format(new Date(date), 'dd MMM');
+    return format(new Date(date), 'dd MMMM', { locale: fr });
   }
 
   public roundDistance(distance: number): number {

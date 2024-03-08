@@ -38,7 +38,6 @@ export class WidgetComponent extends AbstractWidgetComponent {
       .subscribe({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         next: (data: unknown) => {
-          // Emit onDataChanged()
           this.toReadMode();
           this.refreshWidget();
         },
