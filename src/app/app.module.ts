@@ -29,7 +29,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from 'date-fns/locale/fr';
-import { NgChartsModule } from 'ng2-charts';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -160,7 +160,6 @@ registerLocaleData(localeFr);
     MatCardModule,
     MatToolbarModule,
     MatPaginatorModule,
-    NgChartsModule,
     MatDateFnsModule,
     ReactiveFormsModule,
     CalendarModule.forRoot({
@@ -192,6 +191,7 @@ registerLocaleData(localeFr);
     NotificationService,
     IncidentWidgetService,
     ThemeService,
+    provideCharts(withDefaultRegisterables()),
     { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: 'fr-FR' }
   ],
