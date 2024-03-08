@@ -52,7 +52,7 @@
     "@angular-devkit/build-angular": "17.2.3",
     "@angular/cli": "17.2.3",
     "@angular/compiler-cli": "17.2.4",
-    "@ngneat/spectator": "16.0.0",
+    "@ngneat/spectator": "17.1.0",
     "@types/jest": "29.5.12",
     "@types/leaflet": "1.9.8",
     "@types/node": "20.11.25",
