@@ -28,7 +28,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from 'date-fns/locale/fr';
-import { NgChartsModule } from 'ng2-charts';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { AppRoutingModule } from './app/app-routing.module';
 import { AppComponent } from './app/app.component';
 import { AuthService } from './app/services/auth.service/auth.service';
@@ -81,7 +81,6 @@ bootstrapApplication(AppComponent, {
       MatCardModule,
       MatToolbarModule,
       MatPaginatorModule,
-      NgChartsModule,
       MatDateFnsModule,
       ReactiveFormsModule,
       CalendarModule.forRoot({
@@ -114,6 +113,7 @@ bootstrapApplication(AppComponent, {
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: 'fr-FR' },
+    provideCharts(withDefaultRegisterables()),
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi())
   ]
