@@ -16,18 +16,27 @@ import { ErrorHandlerService } from '../services/error.handler.service';
 import { NotificationService } from '../services/notification.service/NotificationService';
 import { WidgetService } from '../services/widget.service/widget.service';
 import { NotificationsComponent } from './notifications.component';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 
 describe('NotificationsComponent', () => {
-  let spectator: Spectator<NotificationsComponent>;
-  let notificationsService: SpectatorHttp<NotificationService>;
+  let component: NotificationsComponent;
+  let httpTestingController: HttpTestingController;
 
-  const createComponent = createComponentFactory({
-    component: NotificationsComponent,
-    imports: [MatSnackBarModule, MatMenuModule],
-    providers: [WidgetService, ErrorHandlerService],
-    schemas: []
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, MatMenuModule, HttpClientTestingModule],
+      providers: [WidgetService, ErrorHandlerService, NotificationService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(NotificationsComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
-  const createHttp = createHttpFactory(NotificationService);
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
   const notificationDate = new Date();
   const notificationsData = {
@@ -61,37 +70,32 @@ describe('NotificationsComponent', () => {
     number: 0
   } as IPage<INotification>;
 
-  beforeEach(() => {
-    spectator = createComponent();
-    notificationsService = createHttp();
-  });
-
   it('should create component and get notifications', () => {
-    const notificationsRequest = notificationsService.expectOne(
+    component.ngOnInit();
+    const notificationsRequest = httpTestingController.expectOne(
       environment.backend_url + '/notifications/',
       HttpMethod.GET
     );
     notificationsRequest.flush(notificationsData);
 
-    expect(spectator.component.notificationsFromDatabase).toEqual(notificationsData.content);
-    expect(spectator.component.notificationsToDisplay[0].notificationTypeToDisplay).toEqual(
-      'warning'
-    );
-    expect(spectator.component.notificationsToDisplay[1].notificationTypeToDisplay).toEqual('info');
-    expect(spectator.component.notificationsToDisplay[1].notificationTypeToDisplay).toEqual('info');
-    expect(spectator.component.unreadNotificationsForBadge).toEqual('2');
+    expect(component.notificationsFromDatabase).toEqual(notificationsData.content);
+    expect(component.notificationsToDisplay[0].notificationTypeToDisplay).toEqual('warning');
+    expect(component.notificationsToDisplay[1].notificationTypeToDisplay).toEqual('info');
+    expect(component.notificationsToDisplay[1].notificationTypeToDisplay).toEqual('info');
+    expect(component.unreadNotificationsForBadge).toEqual('2');
   });
 
   it('Should mark all notifications as read', () => {
-    const notificationsRequest = notificationsService.expectOne(
+    component.ngOnInit();
+    const notificationsRequest = httpTestingController.expectOne(
       environment.backend_url + '/notifications/',
       HttpMethod.GET
     );
     notificationsRequest.flush(notificationsData);
 
-    spectator.component.markAllNotificationsAsRead(new Event('click'));
+    component.markAllNotificationsAsRead(new Event('click'));
 
-    const markNotificationAsReadRequest = notificationsService.expectOne(
+    const markNotificationAsReadRequest = httpTestingController.expectOne(
       environment.backend_url + '/notifications/markNotificationAsRead',
       HttpMethod.PUT
     );
@@ -100,6 +104,6 @@ describe('NotificationsComponent', () => {
     });
     markNotificationAsReadRequest.flush(updatedNotificationsData);
 
-    expect(spectator.component.unreadNotificationsForBadge).toEqual('');
+    expect(component.unreadNotificationsForBadge).toEqual('');
   });
 });

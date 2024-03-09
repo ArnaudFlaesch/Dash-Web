@@ -1,21 +1,20 @@
-import { Spectator, createComponentFactory } from '@ngneat/spectator/jest';
+import { TestBed } from '@angular/core/testing';
 import { NotificationsListComponent } from './notifications-list.component';
 
 describe('NotificationsListComponent', () => {
-  let spectator: Spectator<NotificationsListComponent>;
+  let component: NotificationsListComponent;
 
-  const createComponent = createComponentFactory({
-    component: NotificationsListComponent,
-    imports: [],
-    providers: [],
-    schemas: []
-  });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [],
+      providers: []
+    }).compileComponents();
 
-  beforeEach(() => {
-    spectator = createComponent();
+    const fixture = TestBed.createComponent(NotificationsListComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create', () => {
-    expect(spectator.component).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 });

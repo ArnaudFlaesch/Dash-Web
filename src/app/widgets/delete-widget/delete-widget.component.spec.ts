@@ -1,18 +1,20 @@
-import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
+import { TestBed } from '@angular/core/testing';
 import { DeleteWidgetComponent } from './delete-widget.component';
 
 describe('DeleteWidgetComponent', () => {
-  let spectator: Spectator<DeleteWidgetComponent>;
+  let component: DeleteWidgetComponent;
 
-  const createComponent = createComponentFactory({
-    component: DeleteWidgetComponent
-  });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [],
+      providers: []
+    }).compileComponents();
 
-  beforeEach(() => {
-    spectator = createComponent();
+    const fixture = TestBed.createComponent(DeleteWidgetComponent);
+    component = fixture.componentInstance;
   });
 
   it('Should create the component', () => {
-    expect(spectator.component).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 });

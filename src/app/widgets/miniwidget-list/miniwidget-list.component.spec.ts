@@ -1,14 +1,9 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
+import { HttpMethod } from '@ngneat/spectator/jest';
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
 import { ErrorHandlerService } from '../../services/error.handler.service';
@@ -16,25 +11,27 @@ import { MiniWidgetService } from '../../services/widget.service/miniwidget.serv
 import { MiniWidgetListComponent } from './miniwidget-list.component';
 
 describe('MiniWidgetListComponent', () => {
-  let spectator: Spectator<MiniWidgetListComponent>;
-  let miniWidgetService: SpectatorHttp<MiniWidgetService>;
+  let component: MiniWidgetListComponent;
+  let httpTestingController: HttpTestingController;
 
-  const createComponent = createComponentFactory({
-    component: MiniWidgetListComponent,
-    providers: [MiniWidgetService, ErrorHandlerService],
-    imports: [MatDialogModule, MatSnackBarModule],
-    schemas: [NO_ERRORS_SCHEMA]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatDialogModule, MatSnackBarModule, HttpClientTestingModule],
+      providers: [MiniWidgetService, ErrorHandlerService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(MiniWidgetListComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
-  const createHttp = createHttpFactory(MiniWidgetService);
-
-  beforeEach(() => {
-    spectator = createComponent();
-    miniWidgetService = createHttp();
+  afterEach(() => {
+    httpTestingController.verify();
   });
 
   it('should have no widgets', () => {
-    const request = miniWidgetService.expectOne(
+    component.ngOnInit();
+    const request = httpTestingController.expectOne(
       environment.backend_url + '/miniWidget/',
       HttpMethod.GET
     );
@@ -44,6 +41,6 @@ describe('MiniWidgetListComponent', () => {
         type: MiniWidgetTypeEnum.WEATHER
       }
     ]);
-    expect(spectator.component.miniWidgetList.length).toEqual(1);
+    expect(component.miniWidgetList.length).toEqual(1);
   });
 });

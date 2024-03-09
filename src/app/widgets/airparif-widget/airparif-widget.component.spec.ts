@@ -12,10 +12,12 @@ import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { AirParifWidgetComponent } from './airparif-widget.component';
 import { AirParifWidgetService } from './airparif-widget.service';
+import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 
 describe('AirParifWidgetComponent', () => {
-  let spectator: Spectator<AirParifWidgetComponent>;
-  let airParifWidgetService: SpectatorHttp<AirParifWidgetService>;
+  let component: AirParifWidgetComponent;
+  let httpTestingController: HttpTestingController;
 
   const communeInseeCode = '75112';
   const airParifToken = 'AIRPARIFTOKEN';
@@ -68,32 +70,37 @@ describe('AirParifWidgetComponent', () => {
     }
   ];
 
-  const createComponent = createComponentFactory({
-    component: AirParifWidgetComponent,
-    imports: [MatSnackBarModule],
-    providers: [AirParifWidgetService, ErrorHandlerService]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, MatSnackBarModule],
+      providers: [AirParifWidgetService, ErrorHandlerService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(AirParifWidgetComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
-  const createHttpAirParifWidgetService = createHttpFactory(AirParifWidgetService);
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
   it('Should create an AirParif Widget', () => {
-    spectator = createComponent();
-    airParifWidgetService = createHttpAirParifWidgetService();
-
-    expect(spectator.component.airParifApiKey).toEqual(undefined);
-    expect(spectator.component.communeInseeCode).toEqual(undefined);
-    expect(spectator.component.isFormValid()).toEqual(false);
-    expect(spectator.component.getWidgetData()).toEqual(undefined);
-    spectator.component.airParifApiKey = airParifToken;
-    spectator.component.communeInseeCode = communeInseeCode;
-    expect(spectator.component.isFormValid()).toEqual(true);
-    const widgetData = spectator.component.getWidgetData();
+    expect(component.airParifApiKey).toEqual(undefined);
+    expect(component.communeInseeCode).toEqual(undefined);
+    expect(component.isFormValid()).toEqual(false);
+    expect(component.getWidgetData()).toEqual(undefined);
+    component.airParifApiKey = airParifToken;
+    component.communeInseeCode = communeInseeCode;
+    expect(component.isFormValid()).toEqual(true);
+    const widgetData = component.getWidgetData();
     expect(widgetData?.airParifApiKey).toBe(airParifToken);
     expect(widgetData?.communeInseeCode).toBe(communeInseeCode);
-    expect(spectator.component.airParifForecast).toEqual([]);
-    expect(spectator.component.airParifCouleursIndices).toEqual([]);
+    expect(component.airParifForecast).toEqual([]);
+    expect(component.airParifCouleursIndices).toEqual([]);
 
-    spectator.component.refreshWidget();
-    const dataRequests = airParifWidgetService.expectConcurrent([
+    component.refreshWidget();
+    const dataRequests = httpTestingController.expectConcurrent([
       {
         url:
           environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode,
@@ -105,10 +112,10 @@ describe('AirParifWidgetComponent', () => {
       }
     ]);
 
-    airParifWidgetService.flushAll(dataRequests, [forecastData, couleursIndicesData]);
+    httpTestingController.flushAll(dataRequests, [forecastData, couleursIndicesData]);
 
-    expect(spectator.component.airParifForecast).toEqual(forecastData);
-    expect(spectator.component.airParifCouleursIndices).toEqual(couleursIndicesData);
+    expect(component.airParifForecast).toEqual(forecastData);
+    expect(component.airParifCouleursIndices).toEqual(couleursIndicesData);
   });
 
   it('should display error messages', () => {
@@ -117,19 +124,19 @@ describe('AirParifWidgetComponent', () => {
     spectator = createComponent({
       providers: [{ provide: ErrorHandlerService, useValue: errorHandlerService }]
     });
-    airParifWidgetService = createHttpAirParifWidgetService();
 
-    spectator.component.airParifApiKey = airParifToken;
-    spectator.component.communeInseeCode = communeInseeCode;
-    spectator.component.refreshWidget();
+    component.airParifApiKey = airParifToken;
+    component.communeInseeCode = communeInseeCode;
+    component.refreshWidget();
 
-    airParifWidgetService.controller
+    httpTestingController
       .expectOne(
         environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode,
         HttpMethod.GET
       )
       .error(new ProgressEvent('Server error'));
-    airParifWidgetService.controller
+
+    httpTestingController
       .expectOne(environment.backend_url + '/airParifWidget/couleurs', HttpMethod.GET)
       .error(new ProgressEvent('Server error'));
 

@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
@@ -12,6 +11,7 @@ import {
 import { IPage } from '../../../app/model/IPage';
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
+import { WidgetService } from '../../services/widget.service/widget.service';
 import { IGameInfoResponse, IPlayerDataResponse } from './ISteam';
 import { SteamWidgetComponent } from './steam-widget.component';
 import { SteamWidgetService } from './steam.widget.service';
@@ -23,8 +23,8 @@ describe('SteamWidgetComponent', () => {
   const createComponent = createComponentFactory({
     component: SteamWidgetComponent,
     imports: [MatSnackBarModule],
-    providers: [SteamWidgetService, ErrorHandlerService],
-    schemas: [NO_ERRORS_SCHEMA]
+    providers: [SteamWidgetService, WidgetService, ErrorHandlerService],
+    schemas: []
   });
   const createHttp = createHttpFactory(SteamWidgetService);
 

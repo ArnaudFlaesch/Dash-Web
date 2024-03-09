@@ -8,11 +8,11 @@ import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'dash-tab',
-    templateUrl: './tab.component.html',
-    styleUrls: ['./tab.component.scss'],
-    standalone: true,
-    imports: [NgIf, FormsModule, MatIcon]
+  selector: 'dash-tab',
+  templateUrl: './tab.component.html',
+  styleUrls: ['./tab.component.scss'],
+  standalone: true,
+  imports: [NgIf, FormsModule, MatIcon]
 })
 export class TabComponent {
   @Input()
@@ -25,7 +25,7 @@ export class TabComponent {
 
   constructor(
     private tabService: TabService,
-    private errorHandlerService: ErrorHandlerService
+    public errorHandlerService: ErrorHandlerService
   ) {}
 
   public deleteTabFromDash(): void {

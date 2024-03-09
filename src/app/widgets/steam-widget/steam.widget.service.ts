@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
-import { IPage } from 'src/app/model/IPage';
+import { IPage } from '../../model/IPage';
 
 @Injectable()
 export class SteamWidgetService {

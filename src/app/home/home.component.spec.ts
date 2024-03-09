@@ -1,16 +1,10 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
+import { HttpMethod } from '@ngneat/spectator/jest';
 
+import { TestBed } from '@angular/core/testing';
 import { environment } from '../../environments/environment';
 import { WidgetTypeEnum } from './../enums/WidgetTypeEnum';
 import { IWidgetConfig } from './../model/IWidgetConfig';
@@ -23,27 +17,10 @@ import { WidgetService } from './../services/widget.service/widget.service';
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
-  let spectator: Spectator<HomeComponent>;
-  let tabService: SpectatorHttp<TabService>;
-  let widgetService: SpectatorHttp<WidgetService>;
+  let component: HomeComponent;
+  let httpTestingController: HttpTestingController;
 
   const tabPath = '/tab/';
-
-  const createComponent = createComponentFactory({
-    component: HomeComponent,
-    imports: [HttpClientTestingModule, RouterTestingModule, MatDialogModule, MatSnackBarModule],
-    providers: [
-      AuthService,
-      TabService,
-      WidgetService,
-      ConfigService,
-      ErrorHandlerService,
-      ThemeService
-    ],
-    schemas: [NO_ERRORS_SCHEMA]
-  });
-  const createTabHttp = createHttpFactory(TabService);
-  const createWidgetHttp = createHttpFactory(WidgetService);
 
   const tabData = [
     { id: 1, label: 'Flux RSS', tabOrder: 1 },
@@ -67,67 +44,89 @@ describe('HomeComponent', () => {
     }
   ] as IWidgetConfig[];
 
-  beforeEach(() => {
-    spectator = createComponent();
-    tabService = createTabHttp();
-    widgetService = createWidgetHttp();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterTestingModule, MatDialogModule, MatSnackBarModule],
+      providers: [
+        AuthService,
+        TabService,
+        WidgetService,
+        ConfigService,
+        ErrorHandlerService,
+        ThemeService
+      ]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
   });
 
   it('Should display two tabs with two widgets on the first one', () => {
-    expect(spectator.component.tabs).toEqual([]);
-    const request = tabService.expectOne(environment.backend_url + tabPath, HttpMethod.GET);
+    expect(component.tabs).toEqual([]);
+    const request = httpTestingController.expectOne(
+      environment.backend_url + tabPath,
+      HttpMethod.GET
+    );
     request.flush(tabData);
-    expect(spectator.component.tabs).toEqual(tabData);
-    const getWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    expect(component.tabs).toEqual(tabData);
+    const getWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getWidgetsRequest.flush(firstTabWidgetData);
-    expect(spectator.component.tabs.length).toEqual(2);
-    expect(spectator.component.activeWidgets.length).toEqual(2);
-    expect(spectator.component.activeTab).toEqual(tabData[0].id);
+    expect(component.tabs.length).toEqual(2);
+    expect(component.activeWidgets.length).toEqual(2);
+    expect(component.activeTab).toEqual(tabData[0].id);
 
     // Select second tab
-    spectator.component.selectTab(tabData[1].id);
-    expect(spectator.component.activeTab).toEqual(tabData[1].id);
-    const getSecondTabWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    component.selectTab(tabData[1].id);
+    expect(component.activeTab).toEqual(tabData[1].id);
+    const getSecondTabWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getSecondTabWidgetsRequest.flush([]);
   });
 
   it('Should display two tabs then delete a widget and the second tab', () => {
-    const request = tabService.expectOne(environment.backend_url + tabPath, HttpMethod.GET);
+    const request = httpTestingController.expectOne(
+      environment.backend_url + tabPath,
+      HttpMethod.GET
+    );
     request.flush(tabData);
-    expect(spectator.component.tabs).toEqual(tabData);
-    const getWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    expect(component.tabs).toEqual(tabData);
+    const getWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getWidgetsRequest.flush(firstTabWidgetData);
-    expect(spectator.component.tabs.length).toEqual(2);
-    expect(spectator.component.activeWidgets.length).toEqual(2);
+    expect(component.tabs.length).toEqual(2);
+    expect(component.activeWidgets.length).toEqual(2);
 
     // Delete second widget
-    const widgetIdToDelete = spectator.component.activeWidgets[1].id;
-    spectator.component.deleteWidgetFromDashboard(widgetIdToDelete);
-    const deleteWidgetRequest = widgetService.expectOne(
+    const widgetIdToDelete = component.activeWidgets[1].id;
+    component.deleteWidgetFromDashboard(widgetIdToDelete);
+    const deleteWidgetRequest = httpTestingController.expectOne(
       environment.backend_url + '/widget/deleteWidget?id=' + widgetIdToDelete,
       HttpMethod.DELETE
     );
     deleteWidgetRequest.flush(null, { status: 200, statusText: 'OK' });
-    expect(spectator.component.activeWidgets.length).toEqual(1);
+    expect(component.activeWidgets.length).toEqual(1);
 
     // Delete second tab
-    const tabIdToDelete = spectator.component.tabs[1].id;
-    spectator.component.deleteTabFromDash(tabIdToDelete);
-    const deleteTabRequest = widgetService.expectOne(
+    const tabIdToDelete = component.tabs[1].id;
+    component.deleteTabFromDash(tabIdToDelete);
+    const deleteTabRequest = httpTestingController.expectOne(
       environment.backend_url + '/tab/deleteTab?id=' + tabIdToDelete,
       HttpMethod.DELETE
     );
     deleteTabRequest.flush(null, { status: 200, statusText: 'OK' });
-    expect(spectator.component.tabs.length).toEqual(1);
+    expect(component.tabs.length).toEqual(1);
   });
 
   it('Should delete the last tab and select the first after', () => {
@@ -137,15 +136,18 @@ describe('HomeComponent', () => {
       { id: 3, label: 'Weather', tabOrder: 3 }
     ];
 
-    const getTabsRequest = tabService.expectOne(environment.backend_url + '/tab/', HttpMethod.GET);
+    const getTabsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
     getTabsRequest.flush(tabsFromDatabase);
 
-    const getWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    const getWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getWidgetsRequest.flush([]);
-    expect(spectator.component.activeTab).toEqual(tabsFromDatabase[0].id);
+    expect(component.activeTab).toEqual(tabsFromDatabase[0].id);
   });
 
   it('Should delete the first tab and select the second after', () => {
@@ -155,30 +157,33 @@ describe('HomeComponent', () => {
       { id: 3, label: 'Weather', tabOrder: 3 }
     ];
 
-    const getTabsRequest = tabService.expectOne(environment.backend_url + '/tab/', HttpMethod.GET);
+    const getTabsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
     getTabsRequest.flush(tabsFromDatabase);
 
-    const getWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    const getWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getWidgetsRequest.flush([]);
 
-    const tabIdToDelete = spectator.component.tabs[0].id;
-    spectator.component.deleteTabFromDash(tabIdToDelete);
-    const deleteTabRequest = widgetService.expectOne(
+    const tabIdToDelete = component.tabs[0].id;
+    component.deleteTabFromDash(tabIdToDelete);
+    const deleteTabRequest = httpTestingController.expectOne(
       environment.backend_url + '/tab/deleteTab?id=' + tabIdToDelete,
       HttpMethod.DELETE
     );
     deleteTabRequest.flush(null);
 
-    const getTabWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    const getTabWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getTabWidgetsRequest.flush([]);
 
-    expect(spectator.component.activeTab).toEqual(spectator.component.tabs[0].id);
+    expect(component.activeTab).toEqual(component.tabs[0].id);
   });
 
   it('Should delete the active tab and select the first one after', () => {
@@ -188,55 +193,61 @@ describe('HomeComponent', () => {
       { id: 3, label: 'Weather', tabOrder: 3 }
     ];
 
-    const getTabsRequest = tabService.expectOne(environment.backend_url + '/tab/', HttpMethod.GET);
+    const getTabsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
     getTabsRequest.flush(tabsFromDatabase);
 
-    const getWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    const getWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getWidgetsRequest.flush([]);
 
-    spectator.component.selectTab(spectator.component.tabs[1].id);
+    component.selectTab(component.tabs[1].id);
 
-    const getSecondTabWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.tabs[1].id,
+    const getSecondTabWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.tabs[1].id,
       HttpMethod.GET
     );
     getSecondTabWidgetsRequest.flush([]);
 
-    const tabIdToDelete = spectator.component.activeTab;
+    const tabIdToDelete = component.activeTab;
 
-    spectator.component.deleteTabFromDash(tabIdToDelete);
-    const deleteTabRequest = widgetService.expectOne(
+    component.deleteTabFromDash(tabIdToDelete);
+    const deleteTabRequest = httpTestingController.expectOne(
       environment.backend_url + '/tab/deleteTab?id=' + tabIdToDelete,
       HttpMethod.DELETE
     );
     deleteTabRequest.flush(null);
 
-    const getTabWidgetRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    const getTabWidgetRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getTabWidgetRequest.flush([]);
-    expect(spectator.component.activeTab).toEqual(tabsFromDatabase[0].id);
+    expect(component.activeTab).toEqual(tabsFromDatabase[0].id);
   });
 
   it('Should delete a tab', () => {
     const tabsFromDatabase = [{ id: 1, label: 'Home', tabOrder: 1 }];
 
-    const getTabsRequest = tabService.expectOne(environment.backend_url + '/tab/', HttpMethod.GET);
+    const getTabsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
     getTabsRequest.flush(tabsFromDatabase);
 
-    const getWidgetsRequest = widgetService.expectOne(
-      environment.backend_url + '/widget/?tabId=' + spectator.component.activeTab,
+    const getWidgetsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/widget/?tabId=' + component.activeTab,
       HttpMethod.GET
     );
     getWidgetsRequest.flush([]);
 
-    const lastTabToDelete = spectator.component.activeTab;
-    spectator.component.deleteTabFromDash(lastTabToDelete);
-    const deleteLastTabRequest = tabService.expectOne(
+    const lastTabToDelete = component.activeTab;
+    component.deleteTabFromDash(lastTabToDelete);
+    const deleteLastTabRequest = httpTestingController.expectOne(
       environment.backend_url + '/tab/deleteTab?id=' + lastTabToDelete,
       HttpMethod.DELETE
     );
@@ -244,13 +255,16 @@ describe('HomeComponent', () => {
   });
 
   it('Should switch between light and dark mode', () => {
-    const getTabsRequest = tabService.expectOne(environment.backend_url + '/tab/', HttpMethod.GET);
+    const getTabsRequest = httpTestingController.expectOne(
+      environment.backend_url + '/tab/',
+      HttpMethod.GET
+    );
     getTabsRequest.flush([]);
-    spectator.component.toggleTheme(true);
+    component.toggleTheme(true);
     expect(localStorage.getItem('preferredTheme')).toEqual('dark');
-    spectator.component.toggleTheme(true);
+    component.toggleTheme(true);
     expect(localStorage.getItem('preferredTheme')).toEqual('dark');
-    spectator.component.toggleTheme(false);
+    component.toggleTheme(false);
     expect(localStorage.getItem('preferredTheme')).toEqual('light');
   });
 });
