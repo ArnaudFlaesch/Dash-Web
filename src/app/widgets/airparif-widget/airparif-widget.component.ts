@@ -3,11 +3,20 @@ import { Component } from '@angular/core';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { AirParifWidgetService } from './airparif-widget.service';
 import { IAirParifCouleur, IForecast } from './model/IAirParif';
+import { SafePipe } from '../../pipes/safe.pipe';
+import { AirParifMapComponent } from './airparif-map/airparif-map.component';
+import { FormsModule } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-  selector: 'dash-airparif-widget',
-  templateUrl: './airparif-widget.component.html',
-  styleUrls: ['./airparif-widget.component.scss']
+    selector: 'dash-airparif-widget',
+    templateUrl: './airparif-widget.component.html',
+    styleUrls: ['./airparif-widget.component.scss'],
+    standalone: true,
+    imports: [WidgetComponent, MatIcon, MatFormField, MatLabel, MatInput, FormsModule, AirParifMapComponent, SafePipe]
 })
 export class AirParifWidgetComponent {
   public airParifApiKey: string | undefined;

@@ -1,11 +1,17 @@
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogClose, MatDialogActions } from '@angular/material/dialog';
 import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'dash-create-mini-widget-modal',
-  templateUrl: './create-mini-widget-modal.component.html',
-  styleUrls: ['./create-mini-widget-modal.component.scss']
+    selector: 'dash-create-mini-widget-modal',
+    templateUrl: './create-mini-widget-modal.component.html',
+    styleUrls: ['./create-mini-widget-modal.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, MatDialogContent, NgFor, MatCard, MatCardContent, MatIcon, MatCardActions, MatButton, MatDialogClose, MatDialogActions]
 })
 export class CreateMiniWidgetModalComponent {
   public miniWidgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(MiniWidgetTypeEnum)

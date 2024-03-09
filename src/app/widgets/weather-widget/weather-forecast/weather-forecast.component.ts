@@ -2,12 +2,18 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { ForecastMode, IForecast } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
+import { InitialUppercasePipe } from '../../../pipes/initial.uppercase.pipe';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'dash-weather-forecast',
-  templateUrl: './weather-forecast.component.html',
-  styleUrls: ['./weather-forecast.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dash-weather-forecast',
+    templateUrl: './weather-forecast.component.html',
+    styleUrls: ['./weather-forecast.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgFor, NgIf, MatTooltip, MatIcon, InitialUppercasePipe]
 })
 export class WeatherForecastComponent {
   @Input()

@@ -13,10 +13,11 @@ import { ModeEnum } from '../../enums/ModeEnum';
 import { WidgetService } from '../../services/widget.service/widget.service';
 
 @Component({
-  selector: 'dash-abstract-widget',
-  templateUrl: './abstract-widget.component.html',
-  styleUrls: ['./abstract-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dash-abstract-widget',
+    templateUrl: './abstract-widget.component.html',
+    styleUrls: ['./abstract-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class AbstractWidgetComponent {
   @ContentChild('body', { static: false })

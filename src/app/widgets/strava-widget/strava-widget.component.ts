@@ -9,11 +9,19 @@ import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStr
 import { StravaWidgetService } from './strava.widget.service';
 import { firstValueFrom } from 'rxjs';
 import { fr } from 'date-fns/locale';
+import { StravaActivitiesComponent } from './strava-activities/strava-activities.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { NgIf } from '@angular/common';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-  selector: 'dash-strava-widget',
-  templateUrl: './strava-widget.component.html',
-  styleUrls: ['./strava-widget.component.scss']
+    selector: 'dash-strava-widget',
+    templateUrl: './strava-widget.component.html',
+    styleUrls: ['./strava-widget.component.scss'],
+    standalone: true,
+    imports: [WidgetComponent, NgIf, MatIcon, MatIconButton, MatTooltip, StravaActivitiesComponent, MatButton]
 })
 export class StravaWidgetComponent implements OnInit {
   public activities: IActivity[] = [];

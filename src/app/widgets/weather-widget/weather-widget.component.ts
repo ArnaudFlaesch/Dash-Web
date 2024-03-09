@@ -12,11 +12,24 @@ import {
 } from './IWeather';
 import { WeatherWidgetService } from './weather.widget.service';
 import { fr } from 'date-fns/locale';
+import { InitialUppercasePipe } from '../../pipes/initial.uppercase.pipe';
+import { WeatherForecastComponent } from './weather-forecast/weather-forecast.component';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatButton } from '@angular/material/button';
+import { WeatherTodayComponent } from './weather-today/weather-today.component';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-  selector: 'dash-weather-widget',
-  templateUrl: './weather-widget.component.html',
-  styleUrls: ['./weather-widget.component.scss']
+    selector: 'dash-weather-widget',
+    templateUrl: './weather-widget.component.html',
+    styleUrls: ['./weather-widget.component.scss'],
+    standalone: true,
+    imports: [WidgetComponent, MatIcon, MatFormField, MatLabel, MatInput, FormsModule, NgIf, WeatherTodayComponent, NgFor, MatButton, MatSlideToggle, WeatherForecastComponent, InitialUppercasePipe]
 })
 export class WeatherWidgetComponent {
   public city: string | null = null;

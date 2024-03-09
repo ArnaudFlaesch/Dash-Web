@@ -9,11 +9,20 @@ import { NotificationService } from '../services/notification.service/Notificati
 import { ErrorHandlerService } from '../services/error.handler.service';
 import { Subject, takeUntil } from 'rxjs';
 import { WidgetService } from '../services/widget.service/widget.service';
+import { NotificationsListComponent } from './notifications-list/notifications-list.component';
+import { NgIf } from '@angular/common';
+import { MatBadge } from '@angular/material/badge';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatMiniFabButton, MatIconButton } from '@angular/material/button';
 
 @Component({
-  selector: 'dash-notifications',
-  templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.scss']
+    selector: 'dash-notifications',
+    templateUrl: './notifications.component.html',
+    styleUrls: ['./notifications.component.scss'],
+    standalone: true,
+    imports: [MatMiniFabButton, MatTooltip, MatMenuTrigger, MatIcon, MatBadge, MatMenu, NgIf, MatIconButton, NotificationsListComponent]
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
   public notificationsFromDatabase: INotification[] = [];

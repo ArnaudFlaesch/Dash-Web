@@ -3,11 +3,16 @@ import { TabService } from './../services/tab.service/tab.service';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ITab } from '../model/Tab';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatIcon } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'dash-tab',
-  templateUrl: './tab.component.html',
-  styleUrls: ['./tab.component.scss']
+    selector: 'dash-tab',
+    templateUrl: './tab.component.html',
+    styleUrls: ['./tab.component.scss'],
+    standalone: true,
+    imports: [NgIf, FormsModule, MatIcon]
 })
 export class TabComponent {
   @Input()

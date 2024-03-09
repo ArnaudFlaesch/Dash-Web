@@ -5,10 +5,11 @@ import { IWorkoutStatByMonth, IWorkoutType } from '../model/Workout';
 import { fr } from 'date-fns/locale/fr';
 
 @Component({
-  selector: 'dash-workout-statistics',
-  templateUrl: './workout-statistics.component.html',
-  styleUrls: ['./workout-statistics.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dash-workout-statistics',
+    templateUrl: './workout-statistics.component.html',
+    styleUrls: ['./workout-statistics.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class WorkoutStatisticsComponent implements OnChanges {
   @Input()

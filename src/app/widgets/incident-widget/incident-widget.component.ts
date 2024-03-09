@@ -6,11 +6,21 @@ import { IncidentWidgetService } from './incident.widget.service';
 import { differenceInDays } from 'date-fns';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmModalComponent } from '../../modals/confirm-modal/confirm-modal.component';
+import { DateFormatPipe } from '../../pipes/date-format.pipe';
+import { MatButton } from '@angular/material/button';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-  selector: 'dash-incident-widget',
-  templateUrl: './incident-widget.component.html',
-  styleUrls: ['./incident-widget.component.scss']
+    selector: 'dash-incident-widget',
+    templateUrl: './incident-widget.component.html',
+    styleUrls: ['./incident-widget.component.scss'],
+    standalone: true,
+    imports: [WidgetComponent, MatIcon, MatFormField, MatLabel, MatInput, FormsModule, NgIf, MatButton, NgFor, DateFormatPipe]
 })
 export class IncidentWidgetComponent {
   public incidentId?: number;
