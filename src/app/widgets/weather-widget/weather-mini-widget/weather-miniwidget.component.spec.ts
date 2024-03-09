@@ -1,60 +1,67 @@
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
+import { HttpMethod } from '@ngneat/spectator/jest';
 import { environment } from './../../../../environments/environment';
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
+import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { WeatherWidgetService } from '../weather.widget.service';
 import { WeatherMiniWidgetComponent } from './weather-miniwidget.component';
-import { ErrorHandlerService } from '../../../services/error.handler.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { WidgetService } from '../../../services/widget.service/widget.service';
+import { MiniWidgetService } from '../../../services/widget.service/miniwidget.service';
 
 describe('WeatherMiniWidgetComponent', () => {
-  let spectator: Spectator<WeatherMiniWidgetComponent>;
-  let weatherWidgetService: SpectatorHttp<WeatherWidgetService>;
-  const createHttp = createHttpFactory(WeatherWidgetService);
+  let component: WeatherMiniWidgetComponent;
+  let httpTestingController: HttpTestingController;
 
-  const createComponent = createComponentFactory({
-    component: WeatherMiniWidgetComponent,
-    imports: [MatSnackBarModule],
-    providers: [WeatherWidgetService, DateUtilsService, ErrorHandlerService]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, HttpClientTestingModule],
+      providers: [
+        WeatherWidgetService,
+        DateUtilsService,
+        ErrorHandlerService,
+        WidgetService,
+        MiniWidgetService
+      ]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(WeatherMiniWidgetComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
-  beforeEach(() => {
-    spectator = createComponent();
-    weatherWidgetService = createHttp();
+  afterEach(() => {
+    httpTestingController.verify();
   });
 
   it('Should create widget', () => {
-    expect(spectator.component.getWidgetData()).toEqual(undefined);
-    expect(spectator.component.isFormValid()).toEqual(false);
-    expect(spectator.component.isWidgetLoaded()).toEqual(false);
+    expect(component.getWidgetData()).toEqual(undefined);
+    expect(component.isFormValid()).toEqual(false);
+    expect(component.isWidgetLoaded()).toEqual(false);
 
     const city = 'Paris';
-    spectator.component.city = city;
+    component.city = city;
 
-    expect(spectator.component.getWidgetData()).toEqual({ city: city });
-    expect(spectator.component.isFormValid()).toEqual(true);
+    expect(component.getWidgetData()).toEqual({ city: city });
+    expect(component.isFormValid()).toEqual(true);
 
-    spectator.component.refreshWidget();
+    component.refreshWidget();
 
-    const request = weatherWidgetService.expectOne(
+    const request = httpTestingController.expectOne(
       environment.backend_url + '/weatherWidget/weather?city=' + city,
       HttpMethod.GET
     );
 
     request.flush({});
 
-    expect(spectator.component.isWidgetLoaded()).toEqual(true);
+    expect(component.isWidgetLoaded()).toEqual(true);
   });
 
   it('Should get weather icons', () => {
     const icon = 'sunny';
-    expect(spectator.component.getIconFromWeatherApi(icon)).toEqual(
+    expect(component.getIconFromWeatherApi(icon)).toEqual(
       `https://openweathermap.org/img/wn/${icon}@2x.png`
     );
   });

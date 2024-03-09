@@ -1,34 +1,38 @@
-import { environment } from './../../../environments/environment';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  createSpyObject,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
-import { WeatherWidgetComponent } from './weather-widget.component';
-import { WeatherWidgetService } from './weather.widget.service';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { createSpyObject, HttpMethod, Spectator } from '@ngneat/spectator/jest';
 import { format } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
+import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { environment } from './../../../environments/environment';
+import { ErrorHandlerService } from './../../services/error.handler.service';
 import { IForecastAPIResponse } from './IWeather';
+import { WeatherWidgetComponent } from './weather-widget.component';
+import { WeatherWidgetService } from './weather.widget.service';
 
 describe('WeatherWidgetComponent', () => {
   let spectator: Spectator<WeatherWidgetComponent>;
-  let weatherWidgetService: SpectatorHttp<WeatherWidgetService>;
-  advanceTo(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
-  const createComponent = createComponentFactory({
-    component: WeatherWidgetComponent,
-    imports: [MatSnackBarModule],
-    providers: [WeatherWidgetService, DateUtilsService, ErrorHandlerService],
-    schemas: [NO_ERRORS_SCHEMA]
+  let component: WeatherWidgetComponent;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, HttpClientTestingModule],
+      providers: [WeatherWidgetService, DateUtilsService, ErrorHandlerService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(WeatherWidgetComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
-  const createHttp = createHttpFactory(WeatherWidgetService);
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  advanceTo(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
   const weatherData = {
     coord: { lon: 2.3488, lat: 48.8534 },
@@ -154,24 +158,19 @@ describe('WeatherWidgetComponent', () => {
   };
 
   describe('Normal cases', () => {
-    beforeEach(() => {
-      spectator = createComponent();
-      weatherWidgetService = createHttp();
-    });
-
     it('should create', () => {
-      expect(spectator.component.getWidgetData()).toEqual(undefined);
-      expect(spectator.component.isFormValid()).toEqual(false);
+      expect(component.getWidgetData()).toEqual(undefined);
+      expect(component.isFormValid()).toEqual(false);
       const cityName = 'Paris';
-      expect(spectator.component.cityData).toEqual(undefined);
-      expect(spectator.component.forecastResponse).toEqual([]);
-      expect(spectator.component.isWidgetLoaded()).toEqual(false);
-      spectator.component.city = cityName;
-      expect(spectator.component.isFormValid()).toEqual(true);
-      expect(spectator.component.getWidgetData()).toEqual({ city: cityName });
-      spectator.component.refreshWidget();
+      expect(component.cityData).toEqual(undefined);
+      expect(component.forecastResponse).toEqual([]);
+      expect(component.isWidgetLoaded()).toEqual(false);
+      component.city = cityName;
+      expect(component.isFormValid()).toEqual(true);
+      expect(component.getWidgetData()).toEqual({ city: cityName });
+      component.refreshWidget();
 
-      const dataRequests = weatherWidgetService.expectConcurrent([
+      const dataRequests = httpTestingController.expectConcurrent([
         {
           url: environment.backend_url + '/weatherWidget/weather?city=' + cityName,
           method: HttpMethod.GET
@@ -182,35 +181,35 @@ describe('WeatherWidgetComponent', () => {
         }
       ]);
 
-      weatherWidgetService.flushAll(dataRequests, [weatherData, forecastData]);
+      httpTestingController.flushAll(dataRequests, [weatherData, forecastData]);
 
-      expect(spectator.component.cityData?.name).toEqual(cityName);
-      expect(spectator.component.forecastResponse.length).toEqual(forecastData.list.length);
-      expect(spectator.component.isWidgetLoaded()).toEqual(true);
+      expect(component.cityData?.name).toEqual(cityName);
+      expect(component.forecastResponse.length).toEqual(forecastData.list.length);
+      expect(component.isWidgetLoaded()).toEqual(true);
 
-      if (spectator.component.cityData) {
-        expect(spectator.component.isForecastModeWeek()).toEqual(false);
-        spectator.component.selectDayForecast(new Date(spectator.component.forecastDays[0]));
-        const dateToSelect = new Date(spectator.component.forecastDays[1]);
-        spectator.component.selectDayForecast(dateToSelect);
-        expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(true);
+      if (component.cityData) {
+        expect(component.isForecastModeWeek()).toEqual(false);
+        component.selectDayForecast(new Date(component.forecastDays[0]));
+        const dateToSelect = new Date(component.forecastDays[1]);
+        component.selectDayForecast(dateToSelect);
+        expect(component.isSelectedDay(dateToSelect)).toEqual(true);
         // Select the same date a second time to check that nothing changes and to cover all possible cases
-        spectator.component.selectDayForecast(dateToSelect);
-        expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(true);
+        component.selectDayForecast(dateToSelect);
+        expect(component.isSelectedDay(dateToSelect)).toEqual(true);
         expect(
-          spectator.component.forecastToDisplay.map((forecast) =>
+          component.forecastToDisplay.map((forecast) =>
             format(new Date(forecast.dt * 1000), 'dd-MM-yyyy')
           )
         ).toEqual(['07-03-2022']);
-        spectator.component.selectWeekForecast();
-        expect(spectator.component.isSelectedDay(dateToSelect)).toEqual(false);
-        spectator.component.selectWeekForecast();
+        component.selectWeekForecast();
+        expect(component.isSelectedDay(dateToSelect)).toEqual(false);
+        component.selectWeekForecast();
       }
     });
 
     it('Should format date', () => {
       const date = new Date(2022, 5, 1);
-      expect(spectator.component.formatDate(date)).toEqual('mer. 01');
+      expect(component.formatDate(date)).toEqual('mer. 01');
     });
   });
 
@@ -221,27 +220,26 @@ describe('WeatherWidgetComponent', () => {
       spectator = createComponent({
         providers: [{ provide: ErrorHandlerService, useValue: errorHandlerService }]
       });
-      weatherWidgetService = createHttp();
 
       const cityName = 'Paris';
-      spectator.component.city = cityName;
-      spectator.component.refreshWidget();
+      component.city = cityName;
+      component.refreshWidget();
 
-      weatherWidgetService.controller
+      httpTestingController
         .expectOne(
           environment.backend_url + '/weatherWidget/weather?city=' + cityName,
           HttpMethod.GET
         )
         .error(new ProgressEvent('Server error'));
-      weatherWidgetService.controller
+      httpTestingController
         .expectOne(
           environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
           HttpMethod.GET
         )
         .error(new ProgressEvent('Server error'));
 
-      expect(spectator.component.weather).toEqual(undefined);
-      expect(spectator.component.forecastResponse).toEqual([]);
+      expect(component.weather).toEqual(undefined);
+      expect(component.forecastResponse).toEqual([]);
       expect(errorHandlerService.handleError).toHaveBeenCalledTimes(2);
     });
   });

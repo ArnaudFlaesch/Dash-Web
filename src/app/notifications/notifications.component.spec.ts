@@ -1,14 +1,10 @@
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
+import { HttpMethod } from '@ngneat/spectator/jest';
 import { startOfYesterday } from 'date-fns';
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { IPage } from '../../app/model/IPage';
 import { environment } from '../../environments/environment';
 import { INotification, NotificationTypeEnum } from '../model/INotification';
@@ -16,8 +12,6 @@ import { ErrorHandlerService } from '../services/error.handler.service';
 import { NotificationService } from '../services/notification.service/NotificationService';
 import { WidgetService } from '../services/widget.service/widget.service';
 import { NotificationsComponent } from './notifications.component';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
 
 describe('NotificationsComponent', () => {
   let component: NotificationsComponent;

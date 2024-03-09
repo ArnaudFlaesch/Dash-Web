@@ -1,10 +1,10 @@
-import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
 import { IActivity } from '../IStrava';
 
+import { TestBed } from '@angular/core/testing';
 import { StravaActivitiesComponent } from './strava-activities.component';
 
 describe('StravaActivitiesComponent', () => {
-  let spectator: Spectator<StravaActivitiesComponent>;
+  let component: StravaActivitiesComponent;
 
   const activitiesData: IActivity[] = [
     {
@@ -209,36 +209,36 @@ describe('StravaActivitiesComponent', () => {
     }
   ];
 
-  const createComponent = createComponentFactory({
-    component: StravaActivitiesComponent,
-    imports: [],
-    providers: []
-  });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [],
+      providers: []
+    }).compileComponents();
 
-  beforeEach(() => {
-    spectator = createComponent();
+    const fixture = TestBed.createComponent(StravaActivitiesComponent);
+    component = fixture.componentInstance;
   });
 
   it('Should convert a time', () => {
-    spectator.component.activities = activitiesData;
-    expect(spectator.component.convertDecimalTimeToTime(60000)).toEqual(1000);
-    expect(spectator.component.convertDecimalTimeToTime(620.4)).toEqual(10.2);
-    expect(spectator.component.convertDecimalTimeToTime(108)).toEqual(1.5);
-    expect(spectator.component.convertDecimalTimeToTime(111)).toEqual(1.5);
+    component.activities = activitiesData;
+    expect(component.convertDecimalTimeToTime(60000)).toEqual(1000);
+    expect(component.convertDecimalTimeToTime(620.4)).toEqual(10.2);
+    expect(component.convertDecimalTimeToTime(108)).toEqual(1.5);
+    expect(component.convertDecimalTimeToTime(111)).toEqual(1.5);
   });
 
   it('Should format date', () => {
-    expect(spectator.component.formatDate('2022-10-20T18:34:39Z')).toEqual('20 octobre');
+    expect(component.formatDate('2022-10-20T18:34:39Z')).toEqual('20 octobre');
   });
 
   it('Should round distance', () => {
-    expect(spectator.component.roundDistance(10529.8)).toEqual(10.5298);
+    expect(component.roundDistance(10529.8)).toEqual(10.5298);
   });
 
   it('Should display activity title', () => {
     const activity = activitiesData[0];
-    spectator.component.activities = activitiesData;
-    const actual = spectator.component.getTitleToDisplay(activity);
+    component.activities = activitiesData;
+    const actual = component.getTitleToDisplay(activity);
     expect(actual).toEqual('20 octobre  Evening Run  10.7047 kms');
   });
 });

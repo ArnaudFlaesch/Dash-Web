@@ -1,14 +1,8 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  createSpyObject,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
+import { HttpMethod, createSpyObject } from '@ngneat/spectator/jest';
 
+import { HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { IGameInfoDisplay } from '../ISteam';
 import { SteamWidgetService } from '../steam.widget.service';
@@ -16,23 +10,25 @@ import { environment } from './../../../../environments/environment';
 import { GameDetailsComponent } from './game-details.component';
 
 describe('GameDetailsComponent', () => {
-  let spectator: Spectator<GameDetailsComponent>;
-  let steamWidgetService: SpectatorHttp<SteamWidgetService>;
+  let component: GameDetailsComponent;
+  let httpTestingController: HttpTestingController;
 
-  const createComponent = createComponentFactory({
-    component: GameDetailsComponent,
-    imports: [MatSnackBarModule],
-    providers: [SteamWidgetService, ErrorHandlerService],
-    schemas: [NO_ERRORS_SCHEMA]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule],
+      providers: [SteamWidgetService, ErrorHandlerService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(GameDetailsComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
-  const createHttp = createHttpFactory(SteamWidgetService);
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
   describe('Normal cases', () => {
-    beforeEach(() => {
-      spectator = createComponent();
-      steamWidgetService = createHttp();
-    });
-
     it('should create', () => {
       const steamUserId = '1237';
       const appId = '1337';
@@ -70,15 +66,15 @@ describe('GameDetailsComponent', () => {
           success: true
         }
       };
-      expect(spectator.component.achievements).toEqual([]);
-      expect(spectator.component.completedAchievements).toEqual([]);
-      spectator.component.gameInfo = {
+      expect(component.achievements).toEqual([]);
+      expect(component.completedAchievements).toEqual([]);
+      component.gameInfo = {
         appid: appId,
         name: 'Super Game'
       } as IGameInfoDisplay;
 
-      spectator.component.loadAchievementsData(steamUserId, spectator.component.gameInfo);
-      const getAchievementsRequest = steamWidgetService.expectOne(
+      component.loadAchievementsData(steamUserId, component.gameInfo);
+      const getAchievementsRequest = httpTestingController.expectOne(
         environment.backend_url +
           '/steamWidget/achievementList?steamUserId=' +
           steamUserId +
@@ -87,9 +83,9 @@ describe('GameDetailsComponent', () => {
         HttpMethod.GET
       );
       getAchievementsRequest.flush(achievementsData);
-      expect(spectator.component.achievements.length).toEqual(5);
-      expect(spectator.component.completedAchievements.length).toEqual(4);
-      expect(spectator.component.completionStatus).toEqual(80);
+      expect(component.achievements.length).toEqual(5);
+      expect(component.completedAchievements.length).toEqual(4);
+      expect(component.completionStatus).toEqual(80);
     });
   });
 
@@ -97,19 +93,14 @@ describe('GameDetailsComponent', () => {
     it('should display error messages', () => {
       const errorHandlerService = createSpyObject(ErrorHandlerService);
 
-      spectator = createComponent({
-        providers: [{ provide: ErrorHandlerService, useValue: errorHandlerService }]
-      });
-      steamWidgetService = createHttp();
-
       const steamUserId = '1237';
       const appId = '1337';
-      spectator.component.gameInfo = {
+      component.gameInfo = {
         appid: appId,
         name: 'Super Game'
       } as IGameInfoDisplay;
-      spectator.component.loadAchievementsData(steamUserId, spectator.component.gameInfo);
-      steamWidgetService
+      component.loadAchievementsData(steamUserId, component.gameInfo);
+      httpTestingController
         .expectOne(
           environment.backend_url +
             '/steamWidget/achievementList?steamUserId=' +
