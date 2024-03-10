@@ -38,6 +38,10 @@ describe('WorkoutStatisticsComponent', () => {
   ];
 
   it('should create', () => {
-    expect(component.workoutStatsByMonth).toEqual(workoutStatsByMonth);
+    component.ngOnChanges();
+    expect(component.workoutStatsChartData).toEqual({
+      datasets: [{ data: [6, 4], label: 'Abdos' }],
+      labels: ['janv.', 'févr.']
+    });
   });
 });
