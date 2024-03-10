@@ -27,11 +27,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { ROUTES } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from 'date-fns/locale/fr';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { AppRoutingModule } from './app/app-routing.module';
 import { AppComponent } from './app/app.component';
 import { AuthService } from './app/services/auth.service/auth.service';
 import { ConfigService } from './app/services/config.service/config.service';
@@ -55,11 +57,13 @@ import { environment } from './environments/environment';
 if (environment.production) {
   enableProdMode();
 }
+
 registerLocaleData(localeFr);
 
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(
+      AppRoutingModule,
       BrowserModule,
       DragDropModule,
       MatProgressSpinnerModule,
