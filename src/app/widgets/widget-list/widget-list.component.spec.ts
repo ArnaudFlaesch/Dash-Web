@@ -4,7 +4,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { TestBed } from '@angular/core/testing';
-import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { ThemeService } from '../../services/theme.service/theme.service';
@@ -21,63 +20,6 @@ import { WidgetListComponent } from './widget-list.component';
 
 describe('WidgetListComponent', () => {
   let component: WidgetListComponent;
-
-  const widgetListConfig = [
-    {
-      id: 43,
-      type: WidgetTypeEnum.WEATHER,
-      widgetOrder: 1,
-      tabId: 1
-    },
-    {
-      id: 44,
-      type: WidgetTypeEnum.RSS,
-      widgetOrder: 2,
-      tabId: 1
-    },
-    {
-      id: 45,
-      type: 3,
-      widgetOrder: WidgetTypeEnum.CALENDAR,
-      tabId: 1
-    },
-    {
-      id: 46,
-      type: WidgetTypeEnum.STRAVA,
-      widgetOrder: 4,
-      tabId: 1
-    },
-    {
-      id: 47,
-      type: WidgetTypeEnum.STEAM,
-      widgetOrder: 5,
-      tabId: 1
-    },
-    {
-      id: 48,
-      type: WidgetTypeEnum.WORKOUT,
-      widgetOrder: 6,
-      tabId: 1
-    },
-    {
-      id: 49,
-      type: WidgetTypeEnum.AIRPARIF,
-      widgetOrder: 7,
-      tabId: 1
-    },
-    {
-      id: 51,
-      type: WidgetTypeEnum.ECOWATT,
-      widgetOrder: 9,
-      tabId: 1
-    },
-    {
-      id: 52,
-      type: WidgetTypeEnum.INCIDENT,
-      widgetOrder: 10,
-      tabId: 1
-    }
-  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
