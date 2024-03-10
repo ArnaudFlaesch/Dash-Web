@@ -1,4 +1,4 @@
-import { LOCALE_ID, enableProdMode, importProvidersFrom, isDevMode } from '@angular/core';
+import { LOCALE_ID, enableProdMode, importProvidersFrom, inject, isDevMode } from '@angular/core';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { registerLocaleData } from '@angular/common';
@@ -27,14 +27,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { ROUTES } from '@angular/router';
+import { Routes, provideRouter } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from 'date-fns/locale/fr';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { AppRoutingModule } from './app/app-routing.module';
 import { AppComponent } from './app/app.component';
+import { HomeComponent } from './app/home/home.component';
+import { LoginComponent } from './app/login/login.component';
 import { AuthService } from './app/services/auth.service/auth.service';
 import { ConfigService } from './app/services/config.service/config.service';
 import { DateUtilsService } from './app/services/date.utils.service/date.utils.service';
@@ -60,10 +61,19 @@ if (environment.production) {
 
 registerLocaleData(localeFr);
 
+const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [() => inject(AuthService).userHasValidToken()]
+  },
+  { path: '**', redirectTo: 'home' }
+];
+
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(
-      AppRoutingModule,
       BrowserModule,
       DragDropModule,
       MatProgressSpinnerModule,
@@ -119,6 +129,7 @@ bootstrapApplication(AppComponent, {
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: 'fr-FR' },
+    provideRouter(routes),
     provideCharts(withDefaultRegisterables()),
     provideDateFnsAdapter(),
     provideAnimations(),
