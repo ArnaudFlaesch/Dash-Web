@@ -1,4 +1,4 @@
-import { LOCALE_ID, enableProdMode, importProvidersFrom, isDevMode } from '@angular/core';
+import { LOCALE_ID, enableProdMode, importProvidersFrom, inject, isDevMode } from '@angular/core';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -50,10 +50,23 @@ import { StravaWidgetService } from './app/widgets/strava-widget/strava.widget.s
 import { WeatherWidgetService } from './app/widgets/weather-widget/weather.widget.service';
 import { WorkoutWidgetService } from './app/widgets/workout-widget/workout.widget.service';
 import { environment } from './environments/environment';
+import { ROUTES, Routes, provideRoutes } from '@angular/router';
+import { HomeComponent } from './app/home/home.component';
+import { LoginComponent } from './app/login/login.component';
 
 if (environment.production) {
   enableProdMode();
 }
+
+const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [() => inject(AuthService).userHasValidToken()]
+  },
+  { path: '**', redirectTo: 'home' }
+];
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -114,6 +127,7 @@ bootstrapApplication(AppComponent, {
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: 'fr-FR' },
+    { provide: ROUTES, useValue: routes },
     provideCharts(withDefaultRegisterables()),
     provideDateFnsAdapter(),
     provideAnimations(),
