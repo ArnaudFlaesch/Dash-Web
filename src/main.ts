@@ -1,7 +1,9 @@
-import { LOCALE_ID, enableProdMode, importProvidersFrom, inject, isDevMode } from '@angular/core';
+import { LOCALE_ID, enableProdMode, importProvidersFrom, isDevMode } from '@angular/core';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import localeFr from '@angular/common/locales/fr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDateFnsModule, provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -25,15 +27,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { ROUTES, Routes } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from 'date-fns/locale/fr';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { AppComponent } from './app/app.component';
-import { HomeComponent } from './app/home/home.component';
-import { LoginComponent } from './app/login/login.component';
 import { AuthService } from './app/services/auth.service/auth.service';
 import { ConfigService } from './app/services/config.service/config.service';
 import { DateUtilsService } from './app/services/date.utils.service/date.utils.service';
@@ -56,21 +55,13 @@ import { environment } from './environments/environment';
 if (environment.production) {
   enableProdMode();
 }
-
-const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  {
-    path: 'home',
-    component: HomeComponent,
-    canActivate: [() => inject(AuthService).userHasValidToken()]
-  },
-  { path: '**', redirectTo: 'home' }
-];
+registerLocaleData(localeFr);
 
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(
       BrowserModule,
+      AppRoutingModule,
       DragDropModule,
       MatProgressSpinnerModule,
       MatSnackBarModule,
@@ -125,7 +116,6 @@ bootstrapApplication(AppComponent, {
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: 'fr-FR' },
-    { provide: ROUTES, useValue: routes },
     provideCharts(withDefaultRegisterables()),
     provideDateFnsAdapter(),
     provideAnimations(),
