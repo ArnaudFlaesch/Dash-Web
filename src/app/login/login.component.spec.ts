@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from '../../environments/environment';
 import { AuthService } from './../services/auth.service/auth.service';
@@ -19,7 +20,8 @@ describe('LoginComponent', () => {
         FormsModule,
         MatProgressSpinnerModule,
         RouterTestingModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        NoopAnimationsModule
       ],
       providers: [AuthService, ErrorHandlerService]
     }).compileComponents();

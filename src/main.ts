@@ -31,7 +31,6 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from 'date-fns/locale/fr';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { AppRoutingModule } from './app/app-routing.module';
 import { AppComponent } from './app/app.component';
 import { HomeComponent } from './app/home/home.component';
 import { LoginComponent } from './app/login/login.component';
@@ -73,7 +72,6 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       BrowserModule,
       DragDropModule,
-      AppRoutingModule,
       MatProgressSpinnerModule,
       MatSnackBarModule,
       FormsModule,
