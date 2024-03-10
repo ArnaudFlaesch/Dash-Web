@@ -1,7 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { createSpyObject, HttpMethod, Spectator } from '@ngneat/spectator/jest';
+import { HttpMethod, Spectator, createSpyObject } from '@ngneat/spectator/jest';
 import { format } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';

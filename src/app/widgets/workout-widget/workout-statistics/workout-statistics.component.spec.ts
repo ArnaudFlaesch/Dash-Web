@@ -1,9 +1,22 @@
-import { createHostFactory, Spectator } from '@ngneat/spectator/jest';
+import { createHostFactory } from '@ngneat/spectator/jest';
 
-import { WorkoutStatisticsComponent } from './workout-statistics.component';
 import { IWorkoutType } from '../model/Workout';
+import { WorkoutStatisticsComponent } from './workout-statistics.component';
 
 describe('WorkoutStatisticsComponent', () => {
+  let component: WorkoutStatisticsComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, DateFormatPipe],
+      providers: [WorkoutWidgetService, ErrorHandlerService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(WorkoutStatisticsComponent);
+    component = fixture.componentInstance;
+    component.workoutTypes = workoutTypes;
+  });
+
   const workoutTypes = [{ id: 1, name: 'Abdos' } as IWorkoutType];
   const workoutStatsByMonth = [
     {
@@ -19,8 +32,6 @@ describe('WorkoutStatisticsComponent', () => {
       workoutTypeName: workoutTypes[0].name
     }
   ];
-
-  let spectator: Spectator<WorkoutStatisticsComponent>;
 
   const createHost = createHostFactory({
     component: WorkoutStatisticsComponent
@@ -39,6 +50,6 @@ describe('WorkoutStatisticsComponent', () => {
   });
 
   it('should create', () => {
-    expect(spectator.component.workoutStatsByMonth).toEqual(workoutStatsByMonth);
+    expect(component.workoutStatsByMonth).toEqual(workoutStatsByMonth);
   });
 });

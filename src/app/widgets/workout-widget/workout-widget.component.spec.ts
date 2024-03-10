@@ -1,51 +1,50 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpMethod } from '@ngneat/spectator/jest';
 import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IWorkoutSession, IWorkoutType } from './model/Workout';
-import {
-  format,
-  startOfMonth,
   endOfMonth,
-  startOfYear,
-  endOfYear,
-  startOfISOWeek,
   endOfWeek,
+  endOfYear,
+  format,
+  startOfISOWeek,
+  startOfMonth,
+  startOfYear,
   subMonths,
   subYears
 } from 'date-fns';
+import { ErrorHandlerService } from '../../services/error.handler.service';
+import { IWorkoutSession, IWorkoutType } from './model/Workout';
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../services/auth.service/auth.service';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { WorkoutWidgetComponent } from './workout-widget.component';
 import { WorkoutWidgetService } from './workout.widget.service';
-import { AuthService } from '../../services/auth.service/auth.service';
 
 describe('WorkoutWidgetComponent', () => {
-  let spectator: Spectator<WorkoutWidgetComponent>;
-  let workoutWidgetService: SpectatorHttp<WorkoutWidgetService>;
-
+  let component: WorkoutWidgetComponent;
+  let httpTestingController: HttpTestingController;
   const userId = 2;
-
   const dateFormat = 'yyyy-MM-dd';
 
-  const createComponent = createComponentFactory({
-    component: WorkoutWidgetComponent,
-    imports: [MatSnackBarModule],
-    providers: [DateUtilsService, WorkoutWidgetService, AuthService, ErrorHandlerService],
-    schemas: [NO_ERRORS_SCHEMA]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, HttpClientTestingModule],
+      providers: [DateUtilsService, WorkoutWidgetService, AuthService, ErrorHandlerService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(WorkoutWidgetComponent);
+    component = fixture.componentInstance;
+
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
-  const createHttp = createHttpFactory(WorkoutWidgetService);
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
   beforeEach(() => {
-    spectator = createComponent();
-    workoutWidgetService = createHttp();
     const userData = {
       accessToken: 'accessToken',
       id: userId,
@@ -58,15 +57,15 @@ describe('WorkoutWidgetComponent', () => {
   });
 
   it('should create', () => {
-    expect(spectator.component.workoutTypes).toEqual([]);
-    expect(spectator.component.workoutSessions).toEqual([]);
-    expect(spectator.component.isWidgetLoaded).toEqual(false);
+    expect(component.workoutTypes).toEqual([]);
+    expect(component.workoutSessions).toEqual([]);
+    expect(component.isWidgetLoaded).toEqual(false);
 
     const workoutTypesFromDB = [{ id: 1, name: 'Abdos' }];
 
-    spectator.component.refreshWidget();
+    component.refreshWidget();
 
-    const dataRequest = workoutWidgetService.expectConcurrent([
+    const dataRequest = httpTestingController.expectConcurrent([
       {
         url: environment.backend_url + `/workoutWidget/workoutTypes`,
         method: HttpMethod.GET
@@ -100,20 +99,20 @@ describe('WorkoutWidgetComponent', () => {
       }
     ]);
 
-    workoutWidgetService.flushAll(dataRequest, [workoutTypesFromDB, [], [], []]);
+    httpTestingController.flushAll(dataRequest, [workoutTypesFromDB, [], [], []]);
 
-    expect(spectator.component.isWidgetLoaded).toEqual(true);
-    expect(spectator.component.workoutTypes).toEqual(workoutTypesFromDB);
-    expect(spectator.component.workoutSessions.length).toEqual(0);
+    expect(component.isWidgetLoaded).toEqual(true);
+    expect(component.workoutTypes).toEqual(workoutTypesFromDB);
+    expect(component.workoutSessions.length).toEqual(0);
   });
 
   it('should add a new workout type', () => {
-    expect(spectator.component.workoutTypes).toEqual([]);
-    expect(spectator.component.workoutSessions).toEqual([]);
+    expect(component.workoutTypes).toEqual([]);
+    expect(component.workoutSessions).toEqual([]);
 
-    spectator.component.refreshWidget();
+    component.refreshWidget();
 
-    const dataRequest = workoutWidgetService.expectConcurrent([
+    const dataRequest = httpTestingController.expectConcurrent([
       {
         url: environment.backend_url + `/workoutWidget/workoutTypes`,
         method: HttpMethod.GET
@@ -147,13 +146,13 @@ describe('WorkoutWidgetComponent', () => {
       }
     ]);
 
-    workoutWidgetService.flushAll(dataRequest, [[], [], [], []]);
+    httpTestingController.flushAll(dataRequest, [[], [], [], []]);
 
     const newWorkoutTypeName = 'Haltères';
-    spectator.component.workoutNameInput = newWorkoutTypeName;
-    spectator.component.addWorkoutType();
+    component.workoutNameInput = newWorkoutTypeName;
+    component.addWorkoutType();
 
-    const addWorkoutTypeRequest = workoutWidgetService.expectOne(
+    const addWorkoutTypeRequest = httpTestingController.expectOne(
       environment.backend_url + '/workoutWidget/addWorkoutType',
       HttpMethod.POST
     );
@@ -163,17 +162,17 @@ describe('WorkoutWidgetComponent', () => {
       name: newWorkoutTypeName
     } as IWorkoutType;
     addWorkoutTypeRequest.flush(addWorkoutTypeResponse);
-    expect(spectator.component.workoutTypes).toEqual([addWorkoutTypeResponse]);
+    expect(component.workoutTypes).toEqual([addWorkoutTypeResponse]);
   });
 
   it('Should create a new workout session', () => {
     const alreadyExistingWorkoutType = { id: 1, name: 'Abdos' } as IWorkoutType;
-    spectator.component.workoutTypes = [alreadyExistingWorkoutType];
+    component.workoutTypes = [alreadyExistingWorkoutType];
     const newWorkoutSessionDate = new Date(2022, 8, 1, 0, 0, 0).toString();
-    spectator.component.workoutDateFormControl.setValue(newWorkoutSessionDate);
-    spectator.component.createWorkoutSession();
+    component.workoutDateFormControl.setValue(newWorkoutSessionDate);
+    component.createWorkoutSession();
 
-    const addNewWorkoutSessionRequest = workoutWidgetService.expectOne(
+    const addNewWorkoutSessionRequest = httpTestingController.expectOne(
       environment.backend_url + '/workoutWidget/createWorkoutSession',
       HttpMethod.POST
     );
@@ -184,21 +183,19 @@ describe('WorkoutWidgetComponent', () => {
     } as IWorkoutSession;
 
     addNewWorkoutSessionRequest.flush(mockedAddNewWorkoutSessionResponse);
-    expect(spectator.component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
+    expect(component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
 
-    spectator.component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
-    expect(spectator.component.currentWorkoutSessionToEdit).toEqual(
-      mockedAddNewWorkoutSessionResponse
-    );
-    spectator.component.backToWorkoutSessionsList();
-    expect(spectator.component.currentWorkoutSessionToEdit).toEqual(undefined);
+    component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
+    expect(component.currentWorkoutSessionToEdit).toEqual(mockedAddNewWorkoutSessionResponse);
+    component.backToWorkoutSessionsList();
+    expect(component.currentWorkoutSessionToEdit).toEqual(undefined);
   });
 
   it('Should check month selected', () => {
     const selectedMonth = new Date(2022, 10, 20);
-    spectator.component.selectMonth(selectedMonth);
+    component.selectMonth(selectedMonth);
 
-    const dataRequest = workoutWidgetService.expectConcurrent([
+    const dataRequest = httpTestingController.expectConcurrent([
       {
         url:
           environment.backend_url +
@@ -219,15 +216,15 @@ describe('WorkoutWidgetComponent', () => {
       }
     ]);
 
-    workoutWidgetService.flushAll(dataRequest, [[], []]);
+    httpTestingController.flushAll(dataRequest, [[], []]);
 
-    expect(spectator.component.selectedMonthFormControl.value).toEqual(selectedMonth);
+    expect(component.selectedMonthFormControl.value).toEqual(selectedMonth);
   });
 
   it('Should switch between statistics views', () => {
-    spectator.component.goToStatisticsView();
+    component.goToStatisticsView();
     const today = startOfMonth(new Date());
-    const lastThreeMonthsStatsRequest = workoutWidgetService.expectOne(
+    const lastThreeMonthsStatsRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
           subMonths(today, 2),
@@ -237,10 +234,10 @@ describe('WorkoutWidgetComponent', () => {
     );
 
     lastThreeMonthsStatsRequest.flush([]);
-    expect(spectator.component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(true);
+    expect(component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(true);
 
-    spectator.component.getWorkoutsStatsOfCurrentYear();
-    const currentYearStatsRequest = workoutWidgetService.expectOne(
+    component.getWorkoutsStatsOfCurrentYear();
+    const currentYearStatsRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
           startOfYear(today),
@@ -249,11 +246,11 @@ describe('WorkoutWidgetComponent', () => {
       HttpMethod.GET
     );
     currentYearStatsRequest.flush([]);
-    expect(spectator.component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(false);
-    expect(spectator.component.isCurrentYearWorkoutStatisticsSelected()).toEqual(true);
+    expect(component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(false);
+    expect(component.isCurrentYearWorkoutStatisticsSelected()).toEqual(true);
 
-    spectator.component.getWorkoutsStatsOfLastSixMonths();
-    const lastSixMonthsStatsRequest = workoutWidgetService.expectOne(
+    component.getWorkoutsStatsOfLastSixMonths();
+    const lastSixMonthsStatsRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
           subMonths(today, 5),
@@ -263,12 +260,12 @@ describe('WorkoutWidgetComponent', () => {
     );
 
     lastSixMonthsStatsRequest.flush([]);
-    expect(spectator.component.isCurrentYearWorkoutStatisticsSelected()).toEqual(false);
-    expect(spectator.component.isLastSixMonthsWorkoutStatisticsSelected()).toEqual(true);
+    expect(component.isCurrentYearWorkoutStatisticsSelected()).toEqual(false);
+    expect(component.isLastSixMonthsWorkoutStatisticsSelected()).toEqual(true);
 
-    spectator.component.getWorkoutsStatsOfPastYear();
+    component.getWorkoutsStatsOfPastYear();
     const lastYear = subYears(today, 1);
-    const lastYearStatsRequest = workoutWidgetService.expectOne(
+    const lastYearStatsRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
           startOfYear(lastYear),
@@ -278,6 +275,6 @@ describe('WorkoutWidgetComponent', () => {
     );
 
     lastYearStatsRequest.flush([]);
-    expect(spectator.component.isLastYearWorkoutStatisticsSelected()).toEqual(true);
+    expect(component.isLastYearWorkoutStatisticsSelected()).toEqual(true);
   });
 });

@@ -1,6 +1,3 @@
-import { Spectator } from '@ngneat/spectator/jest';
-
-import { HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { WeatherWidgetService } from '../weather.widget.service';
