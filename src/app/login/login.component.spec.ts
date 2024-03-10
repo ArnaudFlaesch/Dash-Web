@@ -1,15 +1,13 @@
-import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from '../../environments/environment';
 import { AuthService } from './../services/auth.service/auth.service';
 import { ErrorHandlerService } from './../services/error.handler.service';
 import { LoginComponent } from './login.component';
-import { ThemeService } from '../services/theme.service/theme.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -18,13 +16,12 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        HttpClientModule,
         FormsModule,
-        MatSnackBarModule,
+        MatProgressSpinnerModule,
         RouterTestingModule,
         HttpClientTestingModule
       ],
-      providers: [AuthService, ThemeService, ErrorHandlerService]
+      providers: [AuthService, ErrorHandlerService]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(LoginComponent);
