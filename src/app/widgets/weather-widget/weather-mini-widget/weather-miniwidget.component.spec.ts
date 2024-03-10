@@ -48,14 +48,22 @@ describe('WeatherMiniWidgetComponent', () => {
     expect(component.isFormValid()).toEqual(true);
 
     component.refreshWidget();
-
     const request = httpTestingController.expectOne(
       environment.backend_url + '/weatherWidget/weather?city=' + city
     );
-
     request.flush({});
-
     expect(component.isWidgetLoaded()).toEqual(true);
+  });
+
+  it('Should not refresh widget because of error', () => {
+    const city = 'Paris';
+    component.city = city;
+
+    component.refreshWidget();
+    httpTestingController
+      .expectOne(environment.backend_url + '/weatherWidget/weather?city=' + city)
+      .error(new ProgressEvent('Server error'));
+    expect(component.cityData).toBeUndefined();
   });
 
   it('Should get weather icons', () => {

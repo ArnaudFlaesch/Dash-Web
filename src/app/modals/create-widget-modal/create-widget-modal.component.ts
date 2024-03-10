@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogClose, MatDialogActions } from '@angular/material/dialog';
+import {
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogClose,
+  MatDialogActions
+} from '@angular/material/dialog';
 import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -7,11 +13,22 @@ import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card'
 import { NgFor } from '@angular/common';
 
 @Component({
-    selector: 'dash-create-widget-modal',
-    templateUrl: './create-widget-modal.component.html',
-    styleUrls: ['./create-widget-modal.component.scss'],
-    standalone: true,
-    imports: [MatDialogTitle, MatDialogContent, NgFor, MatCard, MatCardContent, MatIcon, MatCardActions, MatButton, MatDialogClose, MatDialogActions]
+  selector: 'dash-create-widget-modal',
+  templateUrl: './create-widget-modal.component.html',
+  styleUrls: ['./create-widget-modal.component.scss'],
+  standalone: true,
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    NgFor,
+    MatCard,
+    MatCardContent,
+    MatIcon,
+    MatCardActions,
+    MatButton,
+    MatDialogClose,
+    MatDialogActions
+  ]
 })
 export class CreateWidgetModalComponent {
   public widgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(WidgetTypeEnum)
@@ -23,37 +40,34 @@ export class CreateWidgetModalComponent {
   constructor(public dialogRef: MatDialogRef<CreateWidgetModalComponent>) {}
 
   public getWidgetTypeEnumIconToDisplay(widgetType: unknown): string {
-    const WidgetTypeEnumKey = WidgetTypeEnum[widgetType as WidgetTypeEnum].toString();
-    switch (WidgetTypeEnumKey) {
-      case WidgetTypeEnum.RSS.toString(): {
+    const widgetTypeEnumKey = WidgetTypeEnum[widgetType as WidgetTypeEnum];
+    switch (widgetTypeEnumKey as unknown as WidgetTypeEnum) {
+      case WidgetTypeEnum.RSS: {
         return 'feed';
       }
-      case WidgetTypeEnum.WEATHER.toString(): {
+      case WidgetTypeEnum.WEATHER: {
         return 'sunny';
       }
-      case WidgetTypeEnum.STRAVA.toString(): {
+      case WidgetTypeEnum.STRAVA: {
         return 'directions_run';
       }
-      case WidgetTypeEnum.CALENDAR.toString(): {
+      case WidgetTypeEnum.CALENDAR: {
         return 'calendar_month';
       }
-      case WidgetTypeEnum.STEAM.toString(): {
+      case WidgetTypeEnum.STEAM: {
         return 'sports_esports';
       }
-      case WidgetTypeEnum.WORKOUT.toString(): {
+      case WidgetTypeEnum.WORKOUT: {
         return 'fitness_center';
       }
-      case WidgetTypeEnum.AIRPARIF.toString(): {
+      case WidgetTypeEnum.AIRPARIF: {
         return 'air';
       }
-      case WidgetTypeEnum.ECOWATT.toString(): {
+      case WidgetTypeEnum.ECOWATT: {
         return 'electric_bolt';
       }
-      case WidgetTypeEnum.INCIDENT.toString(): {
+      case WidgetTypeEnum.INCIDENT: {
         return 'priority_high';
-      }
-      default: {
-        return '';
       }
     }
   }

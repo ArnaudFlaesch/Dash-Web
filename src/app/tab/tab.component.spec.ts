@@ -52,6 +52,19 @@ describe('TabComponent', () => {
       expect(component.editMode).toEqual(false);
     });
 
+    it('Should not update a tab because of server error', () => {
+      component.tab = tabData;
+      expect(component.editMode).toEqual(false);
+      component.toggleEditMode();
+      expect(component.editMode).toEqual(true);
+      component.enterSaveTabName(new KeyboardEvent('keydown', { key: 'Enter' }));
+
+      httpTestingController
+        .expectOne(environment.backend_url + '/tab/updateTab')
+        .error(new ProgressEvent('Server error'));
+      expect(component.editMode).toEqual(true);
+    });
+
     it('Should delete a tab when it exists', () => {
       const deletedEventSpy = jest.spyOn(component.tabDeletedEvent, 'emit');
       component.deleteTabFromDash();
