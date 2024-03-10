@@ -111,4 +111,24 @@ describe('AirParifWidgetComponent', () => {
     expect(component.airParifForecast).toEqual(forecastData);
     expect(component.airParifCouleursIndices).toEqual(couleursIndicesData);
   });
+
+  it('Should get errors from API', () => {
+    component.airParifApiKey = airParifToken;
+    component.communeInseeCode = communeInseeCode;
+    expect(component.airParifForecast).toEqual([]);
+    expect(component.airParifCouleursIndices).toEqual([]);
+    component.refreshWidget();
+
+    httpTestingController
+      .expectOne(
+        environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode
+      )
+      .error(new ProgressEvent('Server error'));
+    httpTestingController
+      .expectOne(environment.backend_url + '/airParifWidget/couleurs')
+      .error(new ProgressEvent('Server error'));
+
+    expect(component.airParifForecast).toEqual([]);
+    expect(component.airParifCouleursIndices).toEqual([]);
+  });
 });

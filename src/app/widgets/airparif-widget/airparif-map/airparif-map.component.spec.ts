@@ -68,6 +68,7 @@ describe('AirParifMapComponent', () => {
 
     component.airParifForecast = forecastData;
     component.airParifCouleursIndices = couleursIndicesData;
+    component.ngAfterViewInit();
 
     expect(component.getColorFromIndice('BON' as AirParifIndiceEnum)).toEqual('#50f0e6');
     expect(component.getColorFromIndice('null' as AirParifIndiceEnum)).toEqual('');
