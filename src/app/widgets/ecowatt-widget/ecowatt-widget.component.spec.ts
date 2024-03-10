@@ -19,6 +19,7 @@ describe('EcowattWidgetComponent', () => {
 
   it('should create', () => {
     component.refreshWidget();
+    component.ngAfterViewInit();
     expect(component.getWidgetData()).toEqual({});
   });
 });

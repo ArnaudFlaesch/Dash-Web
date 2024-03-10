@@ -131,4 +131,22 @@ describe('RssWidgetComponent', () => {
     expect(component.getWidgetData()).toEqual({ url: url });
     expect(component.isFormValid()).toEqual(true);
   });
+
+  it('Should fail to mark all articles as read', () => {
+    component.urlFeed = urlFeed;
+    component.refreshWidget();
+
+    const request = httpTestingController.expectOne(
+      environment.backend_url + '/rssWidget/?url=' + urlFeed
+    );
+    request.flush(rssFeedData);
+
+    component.markAllFeedAsRead();
+    httpTestingController
+      .expectOne(environment.backend_url + `/widget/updateWidgetData/${widgetId}`)
+      .error(new ProgressEvent('Server error'));
+
+    expect(component.isWidgetLoaded).toEqual(true);
+    expect(component.readArticles.length).toEqual(0);
+  });
 });

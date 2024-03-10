@@ -4,15 +4,31 @@ import { IArticle } from '../IArticle';
 import { SafePipe } from '../../../pipes/safe.pipe';
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
 import { NgFor, NgClass } from '@angular/common';
-import { MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelContent } from '@angular/material/expansion';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+  MatExpansionPanelContent
+} from '@angular/material/expansion';
 
 @Component({
-    selector: 'dash-rss-feed',
-    templateUrl: './rss-feed.component.html',
-    styleUrls: ['./rss-feed.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatAccordion, NgFor, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, NgClass, MatExpansionPanelContent, DateFormatPipe, SafePipe]
+  selector: 'dash-rss-feed',
+  templateUrl: './rss-feed.component.html',
+  styleUrls: ['./rss-feed.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatAccordion,
+    NgFor,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    NgClass,
+    MatExpansionPanelContent,
+    DateFormatPipe,
+    SafePipe
+  ]
 })
 export class RssFeedComponent {
   @Input()

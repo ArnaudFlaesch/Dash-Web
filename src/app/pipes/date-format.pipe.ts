@@ -1,14 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'dateFormat',
-    standalone: true
+  name: 'dateFormat',
+  standalone: true
 })
 export class DateFormatPipe implements PipeTransform {
   public transform(value: string | Date, arg = 'full'): string {
     if (typeof value === 'string') {
       value = new Date(value);
     }
-    return arg === 'short' ? value.toLocaleDateString('fr') : value.toLocaleString();
+    return arg === 'short' ? value.toLocaleDateString('fr') : value.toLocaleString('fr');
   }
 }

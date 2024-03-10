@@ -48,9 +48,12 @@ describe('RssFeedComponent', () => {
   });
 
   it('Should remove html from article content', () => {
+    expect(component.stripHtmlFromContent(`<div>${''}</div>`)).toEqual('');
+    expect(component.stripHtmlFromContent(`<div></div>`)).toEqual('');
     const expectedContent = 'RSS content';
-    const rssContent = `<div>${expectedContent}</div>`;
-    expect(component.stripHtmlFromContent(rssContent)).toEqual(expectedContent);
+    expect(component.stripHtmlFromContent(`<div>${expectedContent}</div>`)).toEqual(
+      expectedContent
+    );
   });
 
   it('Should check if an article is already read', () => {
