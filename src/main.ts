@@ -61,7 +61,6 @@ bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(
       BrowserModule,
-      AppRoutingModule,
       DragDropModule,
       MatProgressSpinnerModule,
       MatSnackBarModule,
