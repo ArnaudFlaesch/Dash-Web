@@ -15,13 +15,23 @@ import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { NgIf } from '@angular/common';
 import { WidgetComponent } from '../widget/widget.component';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
-    selector: 'dash-strava-widget',
-    templateUrl: './strava-widget.component.html',
-    styleUrls: ['./strava-widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, NgIf, MatIcon, MatIconButton, MatTooltip, StravaActivitiesComponent, MatButton]
+  selector: 'dash-strava-widget',
+  templateUrl: './strava-widget.component.html',
+  styleUrls: ['./strava-widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    BaseChartDirective,
+    NgIf,
+    MatIcon,
+    MatIconButton,
+    MatTooltip,
+    StravaActivitiesComponent,
+    MatButton
+  ]
 })
 export class StravaWidgetComponent implements OnInit {
   public activities: IActivity[] = [];
