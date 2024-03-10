@@ -1,32 +1,39 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { IPage } from '../../../app/model/IPage';
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
+import { WidgetService } from '../../services/widget.service/widget.service';
 import { IGameInfoResponse, IPlayerDataResponse } from './ISteam';
 import { SteamWidgetComponent } from './steam-widget.component';
 import { SteamWidgetService } from './steam.widget.service';
 
 describe('SteamWidgetComponent', () => {
-  let spectator: Spectator<SteamWidgetComponent>;
-  let steamWidgetService: SpectatorHttp<SteamWidgetService>;
+  let component: SteamWidgetComponent;
+  let httpTestingController: HttpTestingController;
 
-  const createComponent = createComponentFactory({
-    component: SteamWidgetComponent,
-    imports: [MatSnackBarModule],
-    providers: [SteamWidgetService, ErrorHandlerService],
-    schemas: [NO_ERRORS_SCHEMA]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, HttpClientTestingModule],
+      providers: [
+        SteamWidgetService,
+        WidgetService,
+        ErrorHandlerService,
+        { provide: 'widgetId', useValue: 1 }
+      ]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(SteamWidgetComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
-  const createHttp = createHttpFactory(SteamWidgetService);
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
   const playerData: IPlayerDataResponse[] = [
     {
@@ -64,73 +71,63 @@ describe('SteamWidgetComponent', () => {
     number: 0
   };
 
-  beforeEach(() => {
-    spectator = createComponent();
-    steamWidgetService = createHttp();
-  });
-
   it('should create', () => {
-    expect(spectator.component.playerData).toEqual(undefined);
-    expect(spectator.component.ownedGamesDisplay).toEqual([]);
+    expect(component.playerData).toEqual(undefined);
+    expect(component.ownedGamesDisplay).toEqual([]);
     const steamUserId = '1337';
-    expect(spectator.component.isFormValid()).toEqual(false);
-    spectator.component.steamUserId = steamUserId;
-    expect(spectator.component.isFormValid()).toEqual(true);
-    spectator.component.refreshWidget();
+    expect(component.isFormValid()).toEqual(false);
+    component.steamUserId = steamUserId;
+    expect(component.isFormValid()).toEqual(true);
+    component.refreshWidget();
 
-    const dataRequests = steamWidgetService.expectConcurrent([
-      {
-        url: `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`,
-        method: HttpMethod.GET
-      },
-      {
-        url: `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`,
-        method: HttpMethod.GET
-      }
-    ]);
+    const playerDataRequest = httpTestingController.expectOne(
+      `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`
+    );
+    playerDataRequest.flush(playerData);
+    const getOwnedGamesRequest = httpTestingController.expectOne(
+      `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`
+    );
+    getOwnedGamesRequest.flush(ownedGamesData);
 
-    steamWidgetService.flushAll(dataRequests, [playerData, ownedGamesData]);
-
-    expect(spectator.component.playerData?.personaname).toEqual(playerData[0].personaname);
-    expect(spectator.component.ownedGamesDisplay.length).toEqual(3);
+    expect(component.playerData?.personaname).toEqual(playerData[0].personaname);
+    expect(component.ownedGamesDisplay.length).toEqual(3);
   });
 
   it('Should load new data on page navigation', () => {
-    expect(spectator.component.ownedGamesDisplay).toEqual([]);
-    expect(spectator.component.pageNumber).toEqual(0);
+    expect(component.ownedGamesDisplay).toEqual([]);
+    expect(component.pageNumber).toEqual(0);
     const pageIndex = 2;
     const pageEvent = {
       pageIndex: pageIndex,
       pageSize: 25,
       length: 150
     } as PageEvent;
-    spectator.component.onPageChanged(pageEvent);
-    expect(spectator.component.pageNumber).toEqual(0);
+    component.onPageChanged(pageEvent);
+    expect(component.pageNumber).toEqual(0);
     const steamUserId = '1337';
-    spectator.component.steamUserId = steamUserId;
+    component.steamUserId = steamUserId;
     const searchValue = 'Mario';
-    spectator.component.searchFormControl.setValue(searchValue);
-    spectator.component.onPageChanged(pageEvent);
-    expect(spectator.component.pageNumber).toEqual(pageIndex);
+    component.searchFormControl.setValue(searchValue);
+    component.onPageChanged(pageEvent);
+    expect(component.pageNumber).toEqual(pageIndex);
 
-    steamWidgetService.expectOne(
+    httpTestingController.expectOne(
       environment.backend_url +
-        `/steamWidget/ownedGames?steamUserId=${steamUserId}&search=${searchValue}&pageNumber=${pageIndex}`,
-      HttpMethod.GET
+        `/steamWidget/ownedGames?steamUserId=${steamUserId}&search=${searchValue}&pageNumber=${pageIndex}`
     );
 
-    spectator.component.resetForm();
-    expect(spectator.component.searchFormControl.value).toEqual(null);
+    component.resetForm();
+    expect(component.searchFormControl.value).toEqual(null);
   });
 
   it('Should get widget data and check form', () => {
-    expect(spectator.component.getWidgetData()).toEqual(undefined);
-    expect(spectator.component.isFormValid()).toEqual(false);
+    expect(component.getWidgetData()).toEqual(undefined);
+    expect(component.isFormValid()).toEqual(false);
     const steamUserId = '1337';
-    spectator.component.steamUserId = steamUserId;
-    expect(spectator.component.getWidgetData()).toEqual({
+    component.steamUserId = steamUserId;
+    expect(component.getWidgetData()).toEqual({
       steamUserId: steamUserId
     });
-    expect(spectator.component.isFormValid()).toEqual(true);
+    expect(component.isFormValid()).toEqual(true);
   });
 });

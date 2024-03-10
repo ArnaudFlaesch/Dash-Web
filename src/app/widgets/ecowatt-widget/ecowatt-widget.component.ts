@@ -6,11 +6,16 @@ import {
   HostListener,
   ViewChild
 } from '@angular/core';
+import { SafePipe } from '../../pipes/safe.pipe';
+import { MatIcon } from '@angular/material/icon';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-  selector: 'dash-ecowatt-widget',
-  templateUrl: './ecowatt-widget.component.html',
-  styleUrls: ['./ecowatt-widget.component.scss']
+    selector: 'dash-ecowatt-widget',
+    templateUrl: './ecowatt-widget.component.html',
+    styleUrls: ['./ecowatt-widget.component.scss'],
+    standalone: true,
+    imports: [WidgetComponent, MatIcon, SafePipe]
 })
 export class EcowattWidgetComponent implements AfterViewInit {
   @ViewChild('iframeContainer')

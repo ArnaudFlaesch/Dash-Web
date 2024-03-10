@@ -5,11 +5,18 @@ import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
 import { AbstractWidgetComponent } from '../abstract-widget/abstract-widget.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { NgIf, NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  selector: 'dash-mini-widget',
-  templateUrl: './mini-widget.component.html',
-  styleUrls: ['./mini-widget.component.scss']
+    selector: 'dash-mini-widget',
+    templateUrl: './mini-widget.component.html',
+    styleUrls: ['./mini-widget.component.scss'],
+    standalone: true,
+    imports: [NgIf, NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })
 export class MiniWidgetComponent extends AbstractWidgetComponent {
   private ERROR_UPDATING_WIDGET_DATA =

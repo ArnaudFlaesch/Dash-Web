@@ -1,23 +1,23 @@
-import { createComponentFactory, createHttpFactory, Spectator } from '@ngneat/spectator/jest';
-
+import { TestBed } from '@angular/core/testing';
 import { AirParifWidgetService } from '../airparif-widget.service';
-import { AirParifIndiceEnum, IForecast, IAirParifCouleur } from '../model/IAirParif';
+import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from '../model/IAirParif';
 import { AirParifMapComponent } from './airparif-map.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AirParifMapComponent', () => {
-  let spectator: Spectator<AirParifMapComponent>;
+  let component: AirParifMapComponent;
 
-  const createComponent = createComponentFactory({
-    component: AirParifMapComponent,
-    imports: [],
-    providers: [AirParifWidgetService]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [AirParifWidgetService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(AirParifMapComponent);
+    component = fixture.componentInstance;
   });
-  const createHttpAirParifWidgetService = createHttpFactory(AirParifWidgetService);
 
   it('Should create an AirParif map', () => {
-    spectator = createComponent();
-    createHttpAirParifWidgetService();
-
     const couleursIndicesData = [
       {
         name: 'BON',
@@ -66,16 +66,16 @@ describe('AirParifMapComponent', () => {
       }
     ] as unknown as IForecast[];
 
-    spectator.component.airParifForecast = forecastData;
-    spectator.component.airParifCouleursIndices = couleursIndicesData;
+    component.airParifForecast = forecastData;
+    component.airParifCouleursIndices = couleursIndicesData;
 
-    expect(spectator.component.getColorFromIndice('BON' as AirParifIndiceEnum)).toEqual('#50f0e6');
-    expect(spectator.component.getColorFromIndice('null' as AirParifIndiceEnum)).toEqual('');
+    expect(component.getColorFromIndice('BON' as AirParifIndiceEnum)).toEqual('#50f0e6');
+    expect(component.getColorFromIndice('null' as AirParifIndiceEnum)).toEqual('');
 
-    expect(spectator.component.isForecastModeToday()).toEqual(true);
-    spectator.component.selectTomorrowForecast();
-    expect(spectator.component.isForecastModeTomorrow()).toEqual(true);
-    spectator.component.selectTodayForecast();
-    expect(spectator.component.forecastToDisplay?.no2).toEqual('MOYEN');
+    expect(component.isForecastModeToday()).toEqual(true);
+    component.selectTomorrowForecast();
+    expect(component.isForecastModeTomorrow()).toEqual(true);
+    component.selectTodayForecast();
+    expect(component.forecastToDisplay?.no2).toEqual('MOYEN');
   });
 });

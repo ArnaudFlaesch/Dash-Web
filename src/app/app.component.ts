@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service/auth.service';
 import { ThemeService } from './services/theme.service/theme.service';
 
@@ -9,9 +9,11 @@ export interface IMenu {
 }
 
 @Component({
-  selector: 'dash-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'dash-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
   title = 'Dash';

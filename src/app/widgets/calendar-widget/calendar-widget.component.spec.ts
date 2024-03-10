@@ -1,46 +1,51 @@
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
 import { CalendarView, DateAdapter } from 'angular-calendar';
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { WidgetService } from '../../services/widget.service/widget.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { CalendarWidgetComponent } from './calendar-widget.component';
 import { CalendarWidgetService } from './calendar-widget.service';
 
 describe('CalendarWidgetComponent', () => {
-  let spectator: Spectator<CalendarWidgetComponent>;
-  let calendarWidgetService: SpectatorHttp<CalendarWidgetService>;
+  let component: CalendarWidgetComponent;
+  let httpTestingController: HttpTestingController;
 
-  const createComponent = createComponentFactory({
-    component: CalendarWidgetComponent,
-    imports: [MatDialogModule, MatSnackBarModule],
-    providers: [CalendarWidgetService, DateAdapter, DateUtilsService, ErrorHandlerService]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatDialogModule, MatSnackBarModule, HttpClientTestingModule],
+      providers: [
+        CalendarWidgetService,
+        DateAdapter,
+        DateUtilsService,
+        ErrorHandlerService,
+        WidgetService,
+        { provide: 'widgetId', useValue: 1 }
+      ]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(CalendarWidgetComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
-  const createHttpCalendarWidgetService = createHttpFactory(CalendarWidgetService);
 
-  beforeEach(() => {
-    spectator = createComponent();
-    calendarWidgetService = createHttpCalendarWidgetService();
+  afterEach(() => {
+    httpTestingController.verify();
   });
 
   it('should create', () => {
-    expect(spectator.component.calendarUrls).toEqual([]);
-    spectator.component.refreshWidget();
-    expect(spectator.component.events).toEqual([]);
-    expect(spectator.component.isCalendarViewMonth()).toEqual(true);
-    spectator.component.calendarUrls.push('https://calendar.ical');
-    spectator.component.refreshWidget();
-    const getCalendarDataRequest = calendarWidgetService.expectOne(
-      environment.backend_url + `/calendarWidget/`,
-      HttpMethod.POST
+    expect(component.calendarUrls).toEqual([]);
+    component.refreshWidget();
+    expect(component.events).toEqual([]);
+    expect(component.isCalendarViewMonth()).toEqual(true);
+    component.calendarUrls.push('https://calendar.ical');
+    component.refreshWidget();
+    const getCalendarDataRequest = httpTestingController.expectOne(
+      environment.backend_url + `/calendarWidget/`
     );
     const getCalendarData = [
       {
@@ -75,25 +80,25 @@ describe('CalendarWidgetComponent', () => {
       }
     ];
     getCalendarDataRequest.flush(getCalendarData);
-    expect(spectator.component.events.length).toEqual(6);
-    const calendarEvent = spectator.component.events[0];
+    expect(component.events.length).toEqual(6);
+    const calendarEvent = component.events[0];
     expect(calendarEvent.title).toEqual('La Toussaint');
   });
 
   it('Should check actual view', () => {
-    spectator.component.setView(CalendarView.Day);
-    expect(spectator.component.isCalendarViewMonth()).toEqual(false);
-    expect(spectator.component.isCalendarViewWeek()).toEqual(false);
-    expect(spectator.component.isCalendarViewDay()).toEqual(true);
+    component.setView(CalendarView.Day);
+    expect(component.isCalendarViewMonth()).toEqual(false);
+    expect(component.isCalendarViewWeek()).toEqual(false);
+    expect(component.isCalendarViewDay()).toEqual(true);
   });
 
   it('Should update the calendar urls', () => {
-    expect(spectator.component.calendarUrls).toEqual([]);
-    expect(spectator.component.getWidgetConfig()).toEqual(undefined);
-    spectator.component.onCalendarUrlAdded();
-    expect(spectator.component.calendarUrls).toEqual(['']);
-    expect(spectator.component.getWidgetConfig()).toEqual({ calendarUrls: [''] });
-    spectator.component.removeCalendarUrl('');
-    expect(spectator.component.getWidgetConfig()).toEqual(undefined);
+    expect(component.calendarUrls).toEqual([]);
+    expect(component.getWidgetConfig()).toEqual(undefined);
+    component.onCalendarUrlAdded();
+    expect(component.calendarUrls).toEqual(['']);
+    expect(component.getWidgetConfig()).toEqual({ calendarUrls: [''] });
+    component.removeCalendarUrl('');
+    expect(component.getWidgetConfig()).toEqual(undefined);
   });
 });

@@ -1,24 +1,24 @@
 import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SpectatorRouting, createRoutingFactory } from '@ngneat/spectator/jest';
-
 import { AppComponent } from './app.component';
 import { AuthService } from './services/auth.service/auth.service';
 import { ThemeService } from './services/theme.service/theme.service';
 
 describe('AppComponent', () => {
-  let spectator: SpectatorRouting<AppComponent>;
+  let component: AppComponent;
 
-  const createComponent = createRoutingFactory({
-    component: AppComponent,
-    imports: [HttpClientModule, RouterTestingModule],
-    providers: [AuthService, ThemeService]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HttpClientModule, RouterTestingModule],
+      providers: [AuthService, ThemeService]
+    }).compileComponents();
+    const fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
   });
 
-  beforeEach(() => (spectator = createComponent()));
-
   it('should create the app', () => {
-    expect(spectator.component).toBeTruthy();
-    expect(spectator.component.title).toEqual('Dash');
+    expect(component).toBeTruthy();
+    expect(component.title).toEqual('Dash');
   });
 });

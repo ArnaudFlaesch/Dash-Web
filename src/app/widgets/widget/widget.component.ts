@@ -3,11 +3,19 @@ import { Component, ContentChild, Inject, TemplateRef } from '@angular/core';
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
 import { WidgetService } from '../../../app/services/widget.service/widget.service';
 import { AbstractWidgetComponent } from '../abstract-widget/abstract-widget.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { DeleteWidgetComponent } from '../delete-widget/delete-widget.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { NgIf, NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  selector: 'dash-widget',
-  templateUrl: './widget.component.html',
-  styleUrls: ['./widget.component.scss']
+    selector: 'dash-widget',
+    templateUrl: './widget.component.html',
+    styleUrls: ['./widget.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatIconButton, MatTooltip, MatIcon, NgTemplateOutlet, MatButton, DeleteWidgetComponent, MatProgressSpinner]
 })
 export class WidgetComponent extends AbstractWidgetComponent {
   @ContentChild('headerIcon', { static: false })

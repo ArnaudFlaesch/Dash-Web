@@ -3,12 +3,15 @@ import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, startOfMonth } from 'date-fns';
 import { IWorkoutStatByMonth, IWorkoutType } from '../model/Workout';
 import { fr } from 'date-fns/locale/fr';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'dash-workout-statistics',
   templateUrl: './workout-statistics.component.html',
   styleUrls: ['./workout-statistics.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [BaseChartDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true
 })
 export class WorkoutStatisticsComponent implements OnChanges {
   @Input()

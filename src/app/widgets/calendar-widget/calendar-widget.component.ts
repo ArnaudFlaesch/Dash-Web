@@ -1,6 +1,6 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { CalendarEvent, CalendarView } from 'angular-calendar';
+import { CalendarEvent, CalendarView, CalendarCommonModule, CalendarMonthModule, CalendarWeekModule, CalendarDayModule } from 'angular-calendar';
 import { addMonths, endOfDay, format, startOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
 
@@ -9,11 +9,19 @@ import { CalendarWidgetService } from './calendar-widget.service';
 import { EventDetailModalComponent } from './event-detail-modal/event-detail-modal.component';
 import { ICalendarData } from './ICalendarData';
 import { fr } from 'date-fns/locale';
+import { InitialUppercasePipe } from '../../pipes/initial.uppercase.pipe';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatButton } from '@angular/material/button';
+import { NgFor, NgSwitch, NgSwitchCase } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-  selector: 'dash-calendar-widget',
-  templateUrl: './calendar-widget.component.html',
-  styleUrls: ['./calendar-widget.component.scss']
+    selector: 'dash-calendar-widget',
+    templateUrl: './calendar-widget.component.html',
+    styleUrls: ['./calendar-widget.component.scss'],
+    standalone: true,
+    imports: [WidgetComponent, MatIcon, NgFor, MatButton, MatTooltip, CalendarCommonModule, NgSwitch, NgSwitchCase, CalendarMonthModule, CalendarWeekModule, CalendarDayModule, InitialUppercasePipe]
 })
 export class CalendarWidgetComponent {
   public calendarUrls: string[] = [];

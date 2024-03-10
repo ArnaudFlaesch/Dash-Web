@@ -6,11 +6,23 @@ import { IArticle, ImageContent, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { SafePipe } from '../../pipes/safe.pipe';
+import { RssFeedComponent } from './rss-feed/rss-feed.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIconButton } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { NgIf } from '@angular/common';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-  selector: 'dash-rss-widget',
-  templateUrl: './rss-widget.component.html',
-  styleUrls: ['./rss-widget.component.scss', '../widget/widget.component.scss']
+    selector: 'dash-rss-widget',
+    templateUrl: './rss-widget.component.html',
+    styleUrls: ['./rss-widget.component.scss', '../widget/widget.component.scss'],
+    standalone: true,
+    imports: [WidgetComponent, NgIf, MatFormField, MatLabel, MatInput, FormsModule, MatIconButton, MatTooltip, MatIcon, RssFeedComponent, SafePipe]
 })
 export class RssWidgetComponent {
   public feed: IArticle[] = [];

@@ -20,14 +20,17 @@ import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { StravaWidgetComponent } from '../strava-widget/strava-widget.component';
 import { WorkoutWidgetComponent } from '../workout-widget/workout-widget.component';
 import { AirParifWidgetComponent } from '../airparif-widget/airparif-widget.component';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { EcowattWidgetComponent } from '../ecowatt-widget/ecowatt-widget.component';
 import { IncidentWidgetComponent } from '../incident-widget/incident-widget.component';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'dash-widget-list',
-  templateUrl: './widget-list.component.html',
-  styleUrls: ['./widget-list.component.scss']
+    selector: 'dash-widget-list',
+    templateUrl: './widget-list.component.html',
+    styleUrls: ['./widget-list.component.scss'],
+    standalone: true,
+    imports: [CdkDropList, NgFor, CdkDrag]
 })
 export class WidgetListComponent implements OnChanges {
   @Input() widgetList: IWidgetConfig[] = [];

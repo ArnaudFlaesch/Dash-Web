@@ -1,12 +1,7 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
@@ -15,27 +10,32 @@ import { RssWidgetComponent } from './rss-widget.component';
 import { RssWidgetService } from './rss.widget.service';
 
 describe('RssWidgetComponent', () => {
-  let spectator: Spectator<RssWidgetComponent>;
-  let rssWidgetService: SpectatorHttp<RssWidgetService>;
-  let widgetService: SpectatorHttp<WidgetService>;
+  let component: RssWidgetComponent;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, HttpClientTestingModule],
+      providers: [
+        RssWidgetService,
+        DateUtilsService,
+        WidgetService,
+        ErrorHandlerService,
+        { provide: 'widgetId', useValue: widgetId }
+      ]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(RssWidgetComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
   const urlFeed = 'https://www.jeuxvideo.com/rss/rss-pc.xml';
-
   const widgetId = '37';
-
-  const createComponent = createComponentFactory({
-    component: RssWidgetComponent,
-    imports: [MatSnackBarModule],
-    providers: [
-      RssWidgetService,
-      DateUtilsService,
-      WidgetService,
-      ErrorHandlerService,
-      { provide: 'widgetId', useValue: widgetId }
-    ]
-  });
-  const createHttpRssWidgetService = createHttpFactory(RssWidgetService);
-  const createHttpWidgetService = createHttpFactory(WidgetService);
 
   const rssFeedData = {
     version: '2.0',
@@ -95,48 +95,40 @@ describe('RssWidgetComponent', () => {
     }
   };
 
-  beforeEach(() => {
-    spectator = createComponent();
-    rssWidgetService = createHttpRssWidgetService();
-    widgetService = createHttpWidgetService();
-  });
-
   it('Should read all articles', () => {
-    expect(spectator.component.feed).toEqual([]);
-    spectator.component.urlFeed = urlFeed;
-    spectator.component.refreshWidget();
+    expect(component.feed).toEqual([]);
+    component.urlFeed = urlFeed;
+    component.refreshWidget();
 
-    expect(spectator.component.isWidgetLoaded).toEqual(false);
-    const request = rssWidgetService.expectOne(
-      environment.backend_url + '/rssWidget/?url=' + urlFeed,
-      HttpMethod.GET
+    expect(component.isWidgetLoaded).toEqual(false);
+    const request = httpTestingController.expectOne(
+      environment.backend_url + '/rssWidget/?url=' + urlFeed
     );
     request.flush(rssFeedData);
     const feedLength = rssFeedData.channel.item.length;
-    expect(spectator.component.feed.length).toEqual(feedLength);
+    expect(component.feed.length).toEqual(feedLength);
     const allArticlesGuids = rssFeedData.channel.item.map((item) => item.guid);
 
-    spectator.component.markAllFeedAsRead();
+    component.markAllFeedAsRead();
 
-    const markAllFeedAsReadRequest = widgetService.expectOne(
-      environment.backend_url + `/widget/updateWidgetData/${widgetId}`,
-      HttpMethod.PATCH
+    const markAllFeedAsReadRequest = httpTestingController.expectOne(
+      environment.backend_url + `/widget/updateWidgetData/${widgetId}`
     );
     const updatedWidgetData = {
       data: { readArticlesGuids: allArticlesGuids }
     };
     markAllFeedAsReadRequest.flush(updatedWidgetData);
 
-    expect(spectator.component.isWidgetLoaded).toEqual(true);
-    expect(spectator.component.readArticles.length).toEqual(feedLength);
+    expect(component.isWidgetLoaded).toEqual(true);
+    expect(component.readArticles.length).toEqual(feedLength);
   });
 
   it('Should get widget data and check form', () => {
-    expect(spectator.component.getWidgetData()).toEqual(undefined);
-    expect(spectator.component.isFormValid()).toEqual(false);
+    expect(component.getWidgetData()).toEqual(undefined);
+    expect(component.isFormValid()).toEqual(false);
     const url = 'localhost';
-    spectator.component.urlFeed = url;
-    expect(spectator.component.getWidgetData()).toEqual({ url: url });
-    expect(spectator.component.isFormValid()).toEqual(true);
+    component.urlFeed = url;
+    expect(component.getWidgetData()).toEqual({ url: url });
+    expect(component.isFormValid()).toEqual(true);
   });
 });

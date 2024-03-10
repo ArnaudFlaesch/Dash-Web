@@ -1,20 +1,20 @@
-import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
 import { advanceTo } from 'jest-date-mock';
 import { IArticle } from '../IArticle';
 
+import { TestBed } from '@angular/core/testing';
 import { RssFeedComponent } from './rss-feed.component';
 
 describe('RssFeedComponent', () => {
-  let spectator: Spectator<RssFeedComponent>;
+  let component: RssFeedComponent;
 
-  const createComponent = createComponentFactory({
-    component: RssFeedComponent,
-    imports: [],
-    providers: []
-  });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [],
+      providers: []
+    }).compileComponents();
 
-  beforeEach(() => {
-    spectator = createComponent();
+    const fixture = TestBed.createComponent(RssFeedComponent);
+    component = fixture.componentInstance;
   });
 
   it('Should get date to display', () => {
@@ -29,49 +29,43 @@ describe('RssFeedComponent', () => {
       guid: 'https://www.jeuxvideo.com/news/1545197/fortnite-combien-d-argent-avez-vous-depense-dans-les-skins-et-les-v-bucks-voici-comment-savoir.htm'
     };
 
-    expect(spectator.component.formatTitleForArticle(article)).toEqual(`19:00 ${article.title}`);
+    expect(component.formatTitleForArticle(article)).toEqual(`19:00 ${article.title}`);
 
     advanceTo(Date.parse('2022-02-15'));
-    expect(spectator.component.formatTitleForArticle(article)).toEqual(
-      `15/03 19:00:02 ${article.title}`
-    );
+    expect(component.formatTitleForArticle(article)).toEqual(`15/03 19:00:02 ${article.title}`);
 
     advanceTo(Date.parse('2021-02-05'));
-    expect(spectator.component.formatTitleForArticle(article)).toEqual(
+    expect(component.formatTitleForArticle(article)).toEqual(
       `15/03/2022 19:00:02 ${article.title}`
     );
     article.updated = article.pubDate;
     article.pubDate = '';
-    expect(spectator.component.formatTitleForArticle(article)).toEqual(
+    expect(component.formatTitleForArticle(article)).toEqual(
       `15/03/2022 19:00:02 ${article.title}`
     );
     article.title = '';
-    expect(spectator.component.formatTitleForArticle(article)).toEqual(`15/03/2022 19:00:02 `);
+    expect(component.formatTitleForArticle(article)).toEqual(`15/03/2022 19:00:02 `);
   });
 
   it('Should remove html from article content', () => {
     const expectedContent = 'RSS content';
     const rssContent = `<div>${expectedContent}</div>`;
-    expect(spectator.component.stripHtmlFromContent(rssContent)).toEqual(expectedContent);
+    expect(component.stripHtmlFromContent(rssContent)).toEqual(expectedContent);
   });
 
   it('Should check if an article is already read', () => {
-    spectator.component.readArticles = ['1', '2'];
-    expect(spectator.component.isArticleRead('3')).toEqual(false);
-    expect(spectator.component.isArticleOpened('3')).toEqual(false);
+    component.readArticles = ['1', '2'];
+    expect(component.isArticleRead('3')).toEqual(false);
+    expect(component.isArticleOpened('3')).toEqual(false);
   });
 
   it('Should mark article as read', () => {
-    const markArticleAsReadEventSpy = jest.spyOn(
-      spectator.component.markArticleAsReadEvent,
-      'emit'
-    );
-    spectator.component.readArticles = ['1', '2'];
-    spectator.detectChanges();
-    spectator.component.onOpenDetail('3');
-    expect(spectator.component.isArticleOpened('3')).toEqual(true);
+    const markArticleAsReadEventSpy = jest.spyOn(component.markArticleAsReadEvent, 'emit');
+    component.readArticles = ['1', '2'];
+    component.onOpenDetail('3');
+    expect(component.isArticleOpened('3')).toEqual(true);
     expect(markArticleAsReadEventSpy).toHaveBeenCalledTimes(1);
-    spectator.component.onClosePanel();
-    expect(spectator.component.isArticleOpened('3')).toEqual(false);
+    component.onClosePanel();
+    expect(component.isArticleOpened('3')).toEqual(false);
   });
 });

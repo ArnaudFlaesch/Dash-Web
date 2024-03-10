@@ -1,82 +1,82 @@
-import {
-  createComponentFactory,
-  createHttpFactory,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
-
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { startOfYesterday } from 'date-fns';
+import { environment } from '../../../environments/environment';
+import { ErrorHandlerService } from '../../services/error.handler.service';
+import { WidgetService } from '../../services/widget.service/widget.service';
+import { IIncident, IIncidentStreak } from './IIncident';
 import { IncidentWidgetComponent } from './incident-widget.component';
 import { IncidentWidgetService } from './incident.widget.service';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { environment } from '../../../environments/environment';
-import { IIncident, IIncidentStreak } from './IIncident';
-import { MatDialogModule } from '@angular/material/dialog';
-import { startOfYesterday } from 'date-fns';
 
 describe('IncidentWidgetComponent', () => {
-  let spectator: Spectator<IncidentWidgetComponent>;
-  let incidentWidgetService: SpectatorHttp<IncidentWidgetService>;
+  let component: IncidentWidgetComponent;
+  let httpTestingController: HttpTestingController;
 
-  const createHttpIncidentWidgetService = createHttpFactory(IncidentWidgetService);
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatDialogModule, MatSnackBarModule, HttpClientTestingModule],
+      providers: [
+        ErrorHandlerService,
+        IncidentWidgetService,
+        WidgetService,
+        { provide: 'widgetId', useValue: widgetId }
+      ]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(IncidentWidgetComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
   const widgetId = '37';
 
-  const createComponent = createComponentFactory({
-    component: IncidentWidgetComponent,
-    imports: [MatDialogModule, MatSnackBarModule],
-    providers: [ErrorHandlerService, { provide: 'widgetId', useValue: widgetId }]
-  });
-
-  beforeEach(() => {
-    spectator = createComponent();
-    incidentWidgetService = createHttpIncidentWidgetService();
-  });
-
   it('should create', () => {
-    expect(spectator.component.getDaysSinceLastIncident()).toEqual(0);
+    expect(component.getDaysSinceLastIncident()).toEqual(0);
 
     const incidentWidgetConfig = {
       id: 1,
       lastIncidentDate: startOfYesterday().toString()
     } as IIncident;
 
-    expect(spectator.component.getWidgetConfig()).toEqual(undefined);
-    spectator.component.refreshWidget();
+    expect(component.getWidgetConfig()).toEqual(undefined);
+    component.refreshWidget();
 
-    expect(spectator.component.isWidgetLoaded).toEqual(false);
-    const request = incidentWidgetService.expectOne(
-      environment.backend_url + '/incidentWidget/incidentWidgetConfig?widgetId=' + widgetId,
-      HttpMethod.GET
+    expect(component.isWidgetLoaded).toEqual(false);
+    const request = httpTestingController.expectOne(
+      environment.backend_url + '/incidentWidget/incidentWidgetConfig?widgetId=' + widgetId
     );
     request.flush(incidentWidgetConfig);
 
-    const getStreaksRequest = incidentWidgetService.expectOne(
-      environment.backend_url + '/incidentWidget/streaks?incidentId=' + incidentWidgetConfig.id,
-      HttpMethod.GET
+    const getStreaksRequest = httpTestingController.expectOne(
+      environment.backend_url + '/incidentWidget/streaks?incidentId=' + incidentWidgetConfig.id
     );
     getStreaksRequest.flush([]);
 
-    spectator.component.startNewStreak();
-    const startStreakRequest = incidentWidgetService.expectOne(
-      environment.backend_url + '/incidentWidget/startFirstStreak',
-      HttpMethod.POST
+    component.startNewStreak();
+    const startStreakRequest = httpTestingController.expectOne(
+      environment.backend_url + '/incidentWidget/startFirstStreak'
     );
     startStreakRequest.flush(incidentWidgetConfig);
 
-    spectator.component.incidentName = 'Incident test';
+    component.incidentName = 'Incident test';
 
-    expect(spectator.component.isFormValid()).toEqual(true);
+    expect(component.isFormValid()).toEqual(true);
 
-    spectator.component.goToPastStreaksView();
-    expect(spectator.component.isWidgetViewCurrentStreak()).toEqual(false);
-    expect(spectator.component.isWidgetViewPastStreaks()).toEqual(true);
+    component.goToPastStreaksView();
+    expect(component.isWidgetViewCurrentStreak()).toEqual(false);
+    expect(component.isWidgetViewPastStreaks()).toEqual(true);
 
-    spectator.component.goToCurrentStreakView();
-    expect(spectator.component.isWidgetViewPastStreaks()).toEqual(false);
-    expect(spectator.component.isWidgetViewCurrentStreak()).toEqual(true);
+    component.goToCurrentStreakView();
+    expect(component.isWidgetViewPastStreaks()).toEqual(false);
+    expect(component.isWidgetViewCurrentStreak()).toEqual(true);
 
-    expect(spectator.component.getDaysSinceLastIncident()).toEqual(1);
+    expect(component.getDaysSinceLastIncident()).toEqual(1);
   });
 
   it('Should calculate number of days of streak', () => {
@@ -86,7 +86,7 @@ describe('IncidentWidgetComponent', () => {
     } as IIncidentStreak;
 
     expect(
-      spectator.component.getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate)
+      component.getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate)
     ).toEqual(31);
   });
 });

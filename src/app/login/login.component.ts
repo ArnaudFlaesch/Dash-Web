@@ -1,13 +1,19 @@
+import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { Router, RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../services/auth.service/auth.service';
 import { ErrorHandlerService } from './../services/error.handler.service';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'dash-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [RouterLink, FormsModule, MatButton, NgIf, MatProgressSpinner]
 })
 export class LoginComponent {
   public isLoading = false;
@@ -16,7 +22,7 @@ export class LoginComponent {
   public inputPassword = '';
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
     private router: Router
   ) {}

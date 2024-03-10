@@ -1,9 +1,26 @@
-import { createHostFactory, Spectator } from '@ngneat/spectator/jest';
-
-import { WorkoutStatisticsComponent } from './workout-statistics.component';
+import { TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { DateFormatPipe } from '../../../pipes/date-format.pipe';
+import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { IWorkoutType } from '../model/Workout';
+import { WorkoutWidgetService } from '../workout.widget.service';
+import { WorkoutStatisticsComponent } from './workout-statistics.component';
 
 describe('WorkoutStatisticsComponent', () => {
+  let component: WorkoutStatisticsComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, DateFormatPipe],
+      providers: [WorkoutWidgetService, ErrorHandlerService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(WorkoutStatisticsComponent);
+    component = fixture.componentInstance;
+    component.workoutTypes = workoutTypes;
+    component.workoutStatsByMonth = workoutStatsByMonth;
+  });
+
   const workoutTypes = [{ id: 1, name: 'Abdos' } as IWorkoutType];
   const workoutStatsByMonth = [
     {
@@ -20,25 +37,7 @@ describe('WorkoutStatisticsComponent', () => {
     }
   ];
 
-  let spectator: Spectator<WorkoutStatisticsComponent>;
-
-  const createHost = createHostFactory({
-    component: WorkoutStatisticsComponent
-  });
-
-  beforeEach(() => {
-    spectator = createHost(
-      `<dash-workout-statistics [workoutStatsByMonth]="workoutStatsByMonth" [workoutTypes]="workoutTypes"></dash-workout-statistics>`,
-      {
-        hostProps: {
-          workoutTypes: workoutTypes,
-          workoutStatsByMonth: workoutStatsByMonth
-        }
-      }
-    );
-  });
-
   it('should create', () => {
-    expect(spectator.component.workoutStatsByMonth).toEqual(workoutStatsByMonth);
+    expect(component.workoutStatsByMonth).toEqual(workoutStatsByMonth);
   });
 });

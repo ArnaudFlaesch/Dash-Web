@@ -1,8 +1,8 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Location } from '@angular/common';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import { Location, NgIf, NgFor, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -18,11 +18,24 @@ import { IWidgetConfig } from './../model/IWidgetConfig';
 import { ITab } from './../model/Tab';
 import { AuthService } from './../services/auth.service/auth.service';
 import { ConfigService } from './../services/config.service/config.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { WidgetListComponent } from '../widgets/widget-list/widget-list.component';
+import { MiniWidgetListComponent } from '../widgets/miniwidget-list/miniwidget-list.component';
+import { MatDivider } from '@angular/material/divider';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { NotificationsComponent } from '../notifications/notifications.component';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatMiniFabButton } from '@angular/material/button';
+import { TabComponent } from '../tab/tab.component';
 
 @Component({
-  selector: 'dash-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+    selector: 'dash-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: true,
+    imports: [NgIf, CdkDropList, NgFor, TabComponent, CdkDrag, NgClass, MatMiniFabButton, MatTooltip, MatIcon, MatMenuTrigger, NotificationsComponent, MatMenu, MatMenuItem, MatSlideToggle, FormsModule, ReactiveFormsModule, MatDivider, MiniWidgetListComponent, WidgetListComponent, MatProgressSpinner]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public tabs: ITab[] = [];

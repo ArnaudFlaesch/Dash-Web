@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { PageEvent } from '@angular/material/paginator';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
@@ -9,11 +9,21 @@ import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from './ISte
 import { SteamWidgetService } from './steam.widget.service';
 import { Subject } from 'rxjs';
 import { IPage } from '../../../app/model/IPage';
+import { GameDetailsComponent } from './game-details/game-details.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIconButton } from '@angular/material/button';
+import { NgIf, NgFor } from '@angular/common';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-  selector: 'dash-steam-widget',
-  templateUrl: './steam-widget.component.html',
-  styleUrls: ['./steam-widget.component.scss', '../widget/widget.component.scss']
+    selector: 'dash-steam-widget',
+    templateUrl: './steam-widget.component.html',
+    styleUrls: ['./steam-widget.component.scss', '../widget/widget.component.scss'],
+    standalone: true,
+    imports: [WidgetComponent, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, NgIf, MatIconButton, MatTooltip, MatIcon, NgFor, GameDetailsComponent, MatPaginator]
 })
 export class SteamWidgetComponent implements OnInit, OnDestroy {
   public playerData: IPlayerDataResponse | undefined;

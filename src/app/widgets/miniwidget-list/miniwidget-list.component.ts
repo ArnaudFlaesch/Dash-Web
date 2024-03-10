@@ -18,11 +18,17 @@ import { IMiniWidgetConfig } from '../../model/IMiniWidgetConfig';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
 import { WeatherMiniWidgetComponent } from '../weather-widget/weather-mini-widget/weather-miniwidget.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatMiniFabButton } from '@angular/material/button';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'dash-miniwidget-list',
-  templateUrl: './miniwidget-list.component.html',
-  styleUrls: ['./miniwidget-list.component.scss']
+    selector: 'dash-miniwidget-list',
+    templateUrl: './miniwidget-list.component.html',
+    styleUrls: ['./miniwidget-list.component.scss'],
+    standalone: true,
+    imports: [NgFor, MatMiniFabButton, MatTooltip, MatIcon]
 })
 export class MiniWidgetListComponent implements OnInit, OnDestroy {
   @ViewChildren('dynamic', { read: ViewContainerRef })

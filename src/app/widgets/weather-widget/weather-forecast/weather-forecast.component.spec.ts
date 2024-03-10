@@ -1,28 +1,25 @@
-import { createComponentFactory, createHttpFactory, Spectator } from '@ngneat/spectator/jest';
-
+import { TestBed } from '@angular/core/testing';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { WeatherWidgetService } from '../weather.widget.service';
 import { WeatherForecastComponent } from './weather-forecast.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('WeatherForecastComponent', () => {
-  let spectator: Spectator<WeatherForecastComponent>;
+  let component: WeatherForecastComponent;
 
-  const createHttp = createHttpFactory(WeatherWidgetService);
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [WeatherWidgetService, DateUtilsService]
+    }).compileComponents();
 
-  const createComponent = createComponentFactory({
-    component: WeatherForecastComponent,
-    imports: [],
-    providers: [WeatherWidgetService, DateUtilsService]
-  });
-
-  beforeEach(() => {
-    spectator = createComponent();
-    createHttp();
+    const fixture = TestBed.createComponent(WeatherForecastComponent);
+    component = fixture.componentInstance;
   });
 
   it('Should get weather icons', () => {
     const icon = 'sunny';
-    expect(spectator.component.getIconFromWeatherApi(icon)).toEqual(
+    expect(component.getIconFromWeatherApi(icon)).toEqual(
       `https://openweathermap.org/img/wn/${icon}@2x.png`
     );
   });

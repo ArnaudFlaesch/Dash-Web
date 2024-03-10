@@ -1,20 +1,21 @@
+import { TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
-import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
 import { CreateWidgetModalComponent } from './create-widget-modal.component';
 
 describe('CreateWidgetModalComponent', () => {
-  let spectator: Spectator<CreateWidgetModalComponent>;
+  let component: CreateWidgetModalComponent;
 
-  const createComponent = createComponentFactory({
-    component: CreateWidgetModalComponent,
-    providers: [{ provide: MatDialogRef, useValue: {} }]
-  });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [],
+      providers: [{ provide: MatDialogRef, useValue: {} }]
+    }).compileComponents();
 
-  beforeEach(() => {
-    spectator = createComponent();
+    const fixture = TestBed.createComponent(CreateWidgetModalComponent);
+    component = fixture.componentInstance;
   });
 
   it('Should create the component', () => {
-    expect(spectator.component).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 });

@@ -1,11 +1,17 @@
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogClose, MatDialogActions } from '@angular/material/dialog';
 import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'dash-create-widget-modal',
-  templateUrl: './create-widget-modal.component.html',
-  styleUrls: ['./create-widget-modal.component.scss']
+    selector: 'dash-create-widget-modal',
+    templateUrl: './create-widget-modal.component.html',
+    styleUrls: ['./create-widget-modal.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, MatDialogContent, NgFor, MatCard, MatCardContent, MatIcon, MatCardActions, MatButton, MatDialogClose, MatDialogActions]
 })
 export class CreateWidgetModalComponent {
   public widgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(WidgetTypeEnum)

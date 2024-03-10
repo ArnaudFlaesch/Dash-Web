@@ -3,11 +3,18 @@ import { Component, Input, SimpleChanges } from '@angular/core';
 import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { WorkoutWidgetService } from '../workout.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DateFormatPipe } from '../../../pipes/date-format.pipe';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
   selector: 'dash-workout-session-edit',
   templateUrl: './workout-session-edit.component.html',
-  styleUrls: ['./workout-session-edit.component.scss']
+  styleUrls: ['./workout-session-edit.component.scss'],
+  standalone: true,
+  imports: [NgIf, MatIconButton, MatIcon, NgFor, NgClass, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
   @Input() public workoutTypes: IWorkoutType[] = [];

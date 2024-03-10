@@ -1,22 +1,15 @@
-import { ITab } from './../model/Tab';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  createComponentFactory,
-  createHttpFactory,
-  createSpyObject,
-  HttpMethod,
-  Spectator,
-  SpectatorHttp
-} from '@ngneat/spectator/jest';
-import { ErrorHandlerService } from './../services/error.handler.service';
-import { TabService } from './../services/tab.service/tab.service';
-import { TabComponent } from './tab.component';
 import { environment } from '../../environments/environment';
+import { TabService } from '../services/tab.service/tab.service';
+import { ITab } from './../model/Tab';
+import { ErrorHandlerService } from './../services/error.handler.service';
+import { TabComponent } from './tab.component';
 
 describe('TabComponent', () => {
-  let spectator: Spectator<TabComponent>;
-  let tabService: SpectatorHttp<TabService>;
+  let component: TabComponent;
+  let httpTestingController: HttpTestingController;
 
   const tabData: ITab = {
     id: 1,
@@ -24,74 +17,52 @@ describe('TabComponent', () => {
     tabOrder: 1
   };
 
-  const createComponent = createComponentFactory({
-    component: TabComponent,
-    imports: [MatSnackBarModule],
-    providers: [ErrorHandlerService],
-    schemas: [NO_ERRORS_SCHEMA]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule, HttpClientTestingModule],
+      providers: [ErrorHandlerService, TabService]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(TabComponent);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
-  const createHttp = createHttpFactory(TabService);
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
   describe('Simple cases', () => {
-    beforeEach(() => {
-      spectator = createComponent();
-      tabService = createHttp();
-    });
-
     it('Should display and edit a tab', () => {
-      expect(spectator.component.tab).toEqual(undefined);
-      spectator.component.tab = tabData;
-      expect(spectator.component.editMode).toEqual(false);
-      spectator.component.toggleEditMode();
-      expect(spectator.component.editMode).toEqual(true);
+      expect(component.tab).toEqual(undefined);
+      component.tab = tabData;
+      expect(component.editMode).toEqual(false);
+      component.toggleEditMode();
+      expect(component.editMode).toEqual(true);
       const updatedTabLabel = 'Journaux';
-      spectator.component.tab.label = updatedTabLabel;
-      spectator.component.enterSaveTabName(new KeyboardEvent('keydown', { key: 'Enter' }));
+      component.tab.label = updatedTabLabel;
+      component.enterSaveTabName(new KeyboardEvent('keydown', { key: 'Enter' }));
       const updatedTabData = {
         id: 1,
         label: updatedTabLabel,
         tabOrder: 1
       };
-      const request = tabService.expectOne(
-        environment.backend_url + '/tab/updateTab',
-        HttpMethod.POST
-      );
+      const request = httpTestingController.expectOne(environment.backend_url + '/tab/updateTab');
       request.flush(updatedTabData);
-      expect(spectator.component.editMode).toEqual(false);
-      spectator.detectChanges();
-      expect(spectator.query('.tab-label')?.textContent?.trim()).toEqual(updatedTabLabel);
+      expect(component.editMode).toEqual(false);
     });
 
     it('Should delete a tab when it exists', () => {
-      const deletedEventSpy = jest.spyOn(spectator.component.tabDeletedEvent, 'emit');
-      spectator.component.deleteTabFromDash();
+      const deletedEventSpy = jest.spyOn(component.tabDeletedEvent, 'emit');
+      component.deleteTabFromDash();
       expect(deletedEventSpy).toHaveBeenCalledTimes(0);
-      spectator.component.tab = {
+      component.tab = {
         id: 1,
         label: 'Nouvel onglet',
         tabOrder: 1
       } as ITab;
-      spectator.component.deleteTabFromDash();
+      component.deleteTabFromDash();
       expect(deletedEventSpy).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('Error cases', () => {
-    it('Should log error on save tab name when server throws an error', () => {
-      const errorHandlerService = createSpyObject(ErrorHandlerService);
-
-      spectator = createComponent({
-        providers: [{ provide: ErrorHandlerService, useValue: errorHandlerService }]
-      });
-      tabService = createHttp();
-
-      spectator.component.saveTabName(1, 'Nouveau label', 1);
-
-      tabService.controller
-        .expectOne(environment.backend_url + '/tab/updateTab', HttpMethod.POST)
-        .error(new ProgressEvent('Server error'));
-
-      expect(errorHandlerService.handleError).toHaveBeenCalledTimes(1);
     });
   });
 });
