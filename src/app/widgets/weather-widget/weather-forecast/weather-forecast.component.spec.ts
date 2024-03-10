@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { WeatherWidgetService } from '../weather.widget.service';
 import { WeatherForecastComponent } from './weather-forecast.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('WeatherForecastComponent', () => {
   let component: WeatherForecastComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [],
+      imports: [HttpClientTestingModule],
       providers: [WeatherWidgetService, DateUtilsService]
     }).compileComponents();
 

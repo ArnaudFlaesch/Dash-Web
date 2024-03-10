@@ -1,9 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ThemeService } from 'ng2-charts';
 import { AppComponent } from './app.component';
 import { AuthService } from './services/auth.service/auth.service';
+import { ThemeService } from './services/theme.service/theme.service';
 
 describe('AppComponent', () => {
   let component: AppComponent;

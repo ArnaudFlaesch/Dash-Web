@@ -1,6 +1,9 @@
-import { createHostFactory } from '@ngneat/spectator/jest';
-
+import { TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { DateFormatPipe } from '../../../pipes/date-format.pipe';
+import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { IWorkoutType } from '../model/Workout';
+import { WorkoutWidgetService } from '../workout.widget.service';
 import { WorkoutStatisticsComponent } from './workout-statistics.component';
 
 describe('WorkoutStatisticsComponent', () => {
@@ -15,6 +18,7 @@ describe('WorkoutStatisticsComponent', () => {
     const fixture = TestBed.createComponent(WorkoutStatisticsComponent);
     component = fixture.componentInstance;
     component.workoutTypes = workoutTypes;
+    component.workoutStatsByMonth = workoutStatsByMonth;
   });
 
   const workoutTypes = [{ id: 1, name: 'Abdos' } as IWorkoutType];
@@ -32,22 +36,6 @@ describe('WorkoutStatisticsComponent', () => {
       workoutTypeName: workoutTypes[0].name
     }
   ];
-
-  const createHost = createHostFactory({
-    component: WorkoutStatisticsComponent
-  });
-
-  beforeEach(() => {
-    spectator = createHost(
-      `<dash-workout-statistics [workoutStatsByMonth]="workoutStatsByMonth" [workoutTypes]="workoutTypes"></dash-workout-statistics>`,
-      {
-        hostProps: {
-          workoutTypes: workoutTypes,
-          workoutStatsByMonth: workoutStatsByMonth
-        }
-      }
-    );
-  });
 
   it('should create', () => {
     expect(component.workoutStatsByMonth).toEqual(workoutStatsByMonth);

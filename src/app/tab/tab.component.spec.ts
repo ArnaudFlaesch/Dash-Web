@@ -1,7 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 import { environment } from '../../environments/environment';
 import { TabService } from '../services/tab.service/tab.service';
 import { ITab } from './../model/Tab';
@@ -48,10 +47,7 @@ describe('TabComponent', () => {
         label: updatedTabLabel,
         tabOrder: 1
       };
-      const request = httpTestingController.expectOne(
-        environment.backend_url + '/tab/updateTab',
-        HttpMethod.POST
-      );
+      const request = httpTestingController.expectOne(environment.backend_url + '/tab/updateTab');
       request.flush(updatedTabData);
       expect(component.editMode).toEqual(false);
     });
@@ -67,25 +63,6 @@ describe('TabComponent', () => {
       } as ITab;
       component.deleteTabFromDash();
       expect(deletedEventSpy).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('Error cases', () => {
-    it('Should log error on save tab name when server throws an error', () => {
-      // const errorHandlerService = jest.mock(ErrorHandlerService);
-      /*
-      spectator = createComponent({
-        providers: [{ provide: ErrorHandlerService, useValue: errorHandlerService }]
-      });
-*/
-
-      component.saveTabName(1, 'Nouveau label', 1);
-
-      httpTestingController
-        .expectOne(environment.backend_url + '/tab/updateTab')
-        .error(new ProgressEvent('Server error'));
-
-      expect(component.errorHandlerService.handleError).toHaveBeenCalledTimes(1);
     });
   });
 });

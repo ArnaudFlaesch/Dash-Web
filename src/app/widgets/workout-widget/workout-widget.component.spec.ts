@@ -1,5 +1,4 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 import {
   endOfMonth,
   endOfWeek,
@@ -19,6 +18,7 @@ import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service/auth.service';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { WidgetService } from '../../services/widget.service/widget.service';
 import { WorkoutWidgetComponent } from './workout-widget.component';
 import { WorkoutWidgetService } from './workout.widget.service';
 
@@ -31,7 +31,14 @@ describe('WorkoutWidgetComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MatSnackBarModule, HttpClientTestingModule],
-      providers: [DateUtilsService, WorkoutWidgetService, AuthService, ErrorHandlerService]
+      providers: [
+        DateUtilsService,
+        WorkoutWidgetService,
+        AuthService,
+        ErrorHandlerService,
+        WidgetService,
+        { provide: 'widgetId', useValue: 1 }
+      ]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(WorkoutWidgetComponent);
@@ -65,41 +72,34 @@ describe('WorkoutWidgetComponent', () => {
 
     component.refreshWidget();
 
-    const dataRequest = httpTestingController.expectConcurrent([
-      {
-        url: environment.backend_url + `/workoutWidget/workoutTypes`,
-        method: HttpMethod.GET
-      },
-      {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutSessions?dateIntervalStart=${format(
-            startOfMonth(new Date()),
-            dateFormat
-          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`,
-        method: HttpMethod.GET
-      },
-      {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-            startOfISOWeek(new Date()),
-            dateFormat
-          )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`,
-        method: HttpMethod.GET
-      },
-      {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-            startOfMonth(new Date()),
-            dateFormat
-          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`,
-        method: HttpMethod.GET
-      }
-    ]);
-
-    httpTestingController.flushAll(dataRequest, [workoutTypesFromDB, [], [], []]);
+    const workoutTypesRequest = httpTestingController.expectOne(
+      environment.backend_url + `/workoutWidget/workoutTypes`
+    );
+    workoutTypesRequest.flush(workoutTypesFromDB);
+    const workoutSessionsRequest = httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutSessions?dateIntervalStart=${format(
+          startOfMonth(new Date()),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
+    );
+    workoutSessionsRequest.flush([]);
+    const workoutStatsWeekRequest = httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+          startOfISOWeek(new Date()),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`
+    );
+    workoutStatsWeekRequest.flush([]);
+    const workoutStatsMonthRequest = httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+          startOfMonth(new Date()),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
+    );
+    workoutStatsMonthRequest.flush([]);
 
     expect(component.isWidgetLoaded).toEqual(true);
     expect(component.workoutTypes).toEqual(workoutTypesFromDB);
@@ -112,49 +112,41 @@ describe('WorkoutWidgetComponent', () => {
 
     component.refreshWidget();
 
-    const dataRequest = httpTestingController.expectConcurrent([
-      {
-        url: environment.backend_url + `/workoutWidget/workoutTypes`,
-        method: HttpMethod.GET
-      },
-      {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutSessions?dateIntervalStart=${format(
-            startOfMonth(new Date()),
-            dateFormat
-          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`,
-        method: HttpMethod.GET
-      },
-      {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-            startOfMonth(new Date()),
-            dateFormat
-          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`,
-        method: HttpMethod.GET
-      },
-      {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-            startOfISOWeek(new Date()),
-            dateFormat
-          )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`,
-        method: HttpMethod.GET
-      }
-    ]);
-
-    httpTestingController.flushAll(dataRequest, [[], [], [], []]);
+    const workoutTypesRequest = httpTestingController.expectOne(
+      environment.backend_url + `/workoutWidget/workoutTypes`
+    );
+    workoutTypesRequest.flush([]);
+    const workoutSessionsRequest = httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutSessions?dateIntervalStart=${format(
+          startOfMonth(new Date()),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
+    );
+    workoutSessionsRequest.flush([]);
+    const workoutStatsWeekRequest = httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+          startOfISOWeek(new Date()),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`
+    );
+    workoutStatsWeekRequest.flush([]);
+    const workoutStatsMonthRequest = httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+          startOfMonth(new Date()),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
+    );
+    workoutStatsMonthRequest.flush([]);
 
     const newWorkoutTypeName = 'Haltères';
     component.workoutNameInput = newWorkoutTypeName;
     component.addWorkoutType();
 
     const addWorkoutTypeRequest = httpTestingController.expectOne(
-      environment.backend_url + '/workoutWidget/addWorkoutType',
-      HttpMethod.POST
+      environment.backend_url + '/workoutWidget/addWorkoutType'
     );
 
     const addWorkoutTypeResponse = {
@@ -173,8 +165,7 @@ describe('WorkoutWidgetComponent', () => {
     component.createWorkoutSession();
 
     const addNewWorkoutSessionRequest = httpTestingController.expectOne(
-      environment.backend_url + '/workoutWidget/createWorkoutSession',
-      HttpMethod.POST
+      environment.backend_url + '/workoutWidget/createWorkoutSession'
     );
 
     const mockedAddNewWorkoutSessionResponse = {
@@ -195,28 +186,22 @@ describe('WorkoutWidgetComponent', () => {
     const selectedMonth = new Date(2022, 10, 20);
     component.selectMonth(selectedMonth);
 
-    const dataRequest = httpTestingController.expectConcurrent([
-      {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutSessions?dateIntervalStart=${format(
-            startOfMonth(selectedMonth),
-            dateFormat
-          )}&dateIntervalEnd=${format(endOfMonth(selectedMonth), dateFormat)}`,
-        method: HttpMethod.GET
-      },
-      {
-        url:
-          environment.backend_url +
-          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-            startOfMonth(selectedMonth),
-            dateFormat
-          )}&dateIntervalEnd=${format(endOfMonth(selectedMonth), dateFormat)}`,
-        method: HttpMethod.GET
-      }
-    ]);
-
-    httpTestingController.flushAll(dataRequest, [[], []]);
+    const workoutStatsWeekRequest = httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutSessions?dateIntervalStart=${format(
+          startOfMonth(selectedMonth),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfMonth(selectedMonth), dateFormat)}`
+    );
+    workoutStatsWeekRequest.flush([]);
+    const workoutStatsMonthRequest = httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+          startOfMonth(selectedMonth),
+          dateFormat
+        )}&dateIntervalEnd=${format(endOfMonth(selectedMonth), dateFormat)}`
+    );
+    workoutStatsMonthRequest.flush([]);
 
     expect(component.selectedMonthFormControl.value).toEqual(selectedMonth);
   });
@@ -229,8 +214,7 @@ describe('WorkoutWidgetComponent', () => {
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
           subMonths(today, 2),
           dateFormat
-        )}&dateIntervalEnd=${format(endOfMonth(today), dateFormat)}`,
-      HttpMethod.GET
+        )}&dateIntervalEnd=${format(endOfMonth(today), dateFormat)}`
     );
 
     lastThreeMonthsStatsRequest.flush([]);
@@ -242,8 +226,7 @@ describe('WorkoutWidgetComponent', () => {
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
           startOfYear(today),
           dateFormat
-        )}&dateIntervalEnd=${format(endOfYear(today), dateFormat)}`,
-      HttpMethod.GET
+        )}&dateIntervalEnd=${format(endOfYear(today), dateFormat)}`
     );
     currentYearStatsRequest.flush([]);
     expect(component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(false);
@@ -255,8 +238,7 @@ describe('WorkoutWidgetComponent', () => {
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
           subMonths(today, 5),
           dateFormat
-        )}&dateIntervalEnd=${format(endOfMonth(today), dateFormat)}`,
-      HttpMethod.GET
+        )}&dateIntervalEnd=${format(endOfMonth(today), dateFormat)}`
     );
 
     lastSixMonthsStatsRequest.flush([]);
@@ -270,8 +252,7 @@ describe('WorkoutWidgetComponent', () => {
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
           startOfYear(lastYear),
           dateFormat
-        )}&dateIntervalEnd=${format(endOfYear(lastYear), dateFormat)}`,
-      HttpMethod.GET
+        )}&dateIntervalEnd=${format(endOfYear(lastYear), dateFormat)}`
     );
 
     lastYearStatsRequest.flush([]);

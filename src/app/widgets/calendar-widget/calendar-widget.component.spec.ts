@@ -1,6 +1,5 @@
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 import { CalendarView, DateAdapter } from 'angular-calendar';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -46,8 +45,7 @@ describe('CalendarWidgetComponent', () => {
     component.calendarUrls.push('https://calendar.ical');
     component.refreshWidget();
     const getCalendarDataRequest = httpTestingController.expectOne(
-      environment.backend_url + `/calendarWidget/`,
-      HttpMethod.POST
+      environment.backend_url + `/calendarWidget/`
     );
     const getCalendarData = [
       {

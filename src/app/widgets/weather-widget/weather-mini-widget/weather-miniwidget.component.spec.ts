@@ -1,4 +1,3 @@
-import { HttpMethod } from '@ngneat/spectator/jest';
 import { environment } from './../../../../environments/environment';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -23,7 +22,8 @@ describe('WeatherMiniWidgetComponent', () => {
         DateUtilsService,
         ErrorHandlerService,
         WidgetService,
-        MiniWidgetService
+        MiniWidgetService,
+        { provide: 'widgetId', useValue: 1 }
       ]
     }).compileComponents();
 
@@ -50,8 +50,7 @@ describe('WeatherMiniWidgetComponent', () => {
     component.refreshWidget();
 
     const request = httpTestingController.expectOne(
-      environment.backend_url + '/weatherWidget/weather?city=' + city,
-      HttpMethod.GET
+      environment.backend_url + '/weatherWidget/weather?city=' + city
     );
 
     request.flush({});

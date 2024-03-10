@@ -1,15 +1,16 @@
+import { RouterTestingModule } from '@angular/router/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 import { addDays, getTime } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
 
-import { HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetComponent } from './strava-widget.component';
 import { StravaWidgetService } from './strava.widget.service';
+import { WidgetService } from '../../services/widget.service/widget.service';
 
 describe('StravaWidgetComponent', () => {
   let component: StravaWidgetComponent;
@@ -17,8 +18,13 @@ describe('StravaWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
-      providers: [StravaWidgetService, ErrorHandlerService]
+      imports: [MatSnackBarModule, HttpClientTestingModule, RouterTestingModule],
+      providers: [
+        StravaWidgetService,
+        ErrorHandlerService,
+        WidgetService,
+        { provide: 'widgetId', useValue: 1 }
+      ]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(StravaWidgetComponent);
@@ -123,14 +129,12 @@ describe('StravaWidgetComponent', () => {
     expect(component.activities).toEqual([]);
     component.refreshWidget();
     const getAthleteDataRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`,
-      HttpMethod.GET
+      `${environment.backend_url}/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`
     );
     getAthleteDataRequest.flush(athleteData);
 
     const getActivitiesRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`,
-      HttpMethod.GET
+      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`
     );
     getActivitiesRequest.flush(activitiesData);
 
@@ -149,16 +153,14 @@ describe('StravaWidgetComponent', () => {
     component.getPreviousActivitiesPage();
 
     const getNextActivitiesRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=2&numberOfActivities=25`,
-      HttpMethod.GET
+      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=2&numberOfActivities=25`
     );
     getNextActivitiesRequest.flush([]);
     expect(component.pageNumber).toEqual(2);
 
     component.getNextActivitiesPage();
     const getPreviousActivitiesRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`,
-      HttpMethod.GET
+      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`
     );
     getPreviousActivitiesRequest.flush([]);
     expect(component.pageNumber).toEqual(1);
@@ -190,8 +192,7 @@ describe('StravaWidgetComponent', () => {
     } as unknown as ITokenData;
 
     const getRefreshTokenDataRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/stravaWidget/getRefreshToken`,
-      HttpMethod.POST
+      `${environment.backend_url}/stravaWidget/getRefreshToken`
     );
     getRefreshTokenDataRequest.flush(response);
     expect(component.isUserLoggedIn()).toEqual(true);

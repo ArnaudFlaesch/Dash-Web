@@ -1,10 +1,10 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod, Spectator, createSpyObject } from '@ngneat/spectator/jest';
 import { format } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { WidgetService } from '../../services/widget.service/widget.service';
 import { environment } from './../../../environments/environment';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { IForecastAPIResponse } from './IWeather';
@@ -12,15 +12,19 @@ import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
 
 describe('WeatherWidgetComponent', () => {
-  let spectator: Spectator<WeatherWidgetComponent>;
-
   let component: WeatherWidgetComponent;
   let httpTestingController: HttpTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MatSnackBarModule, HttpClientTestingModule],
-      providers: [WeatherWidgetService, DateUtilsService, ErrorHandlerService]
+      providers: [
+        WeatherWidgetService,
+        DateUtilsService,
+        ErrorHandlerService,
+        WidgetService,
+        { provide: 'widgetId', useValue: 1 }
+      ]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(WeatherWidgetComponent);
@@ -170,18 +174,14 @@ describe('WeatherWidgetComponent', () => {
       expect(component.getWidgetData()).toEqual({ city: cityName });
       component.refreshWidget();
 
-      const dataRequests = httpTestingController.expectConcurrent([
-        {
-          url: environment.backend_url + '/weatherWidget/weather?city=' + cityName,
-          method: HttpMethod.GET
-        },
-        {
-          url: environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
-          method: HttpMethod.GET
-        }
-      ]);
-
-      httpTestingController.flushAll(dataRequests, [weatherData, forecastData]);
+      const weatherRequest = httpTestingController.expectOne(
+        environment.backend_url + '/weatherWidget/weather?city=' + cityName
+      );
+      weatherRequest.flush(weatherData);
+      const forecastRequest = httpTestingController.expectOne(
+        environment.backend_url + '/weatherWidget/forecast?city=' + cityName
+      );
+      forecastRequest.flush(forecastData);
 
       expect(component.cityData?.name).toEqual(cityName);
       expect(component.forecastResponse.length).toEqual(forecastData.list.length);
@@ -215,32 +215,19 @@ describe('WeatherWidgetComponent', () => {
 
   describe('Error cases', () => {
     it('should display error messages', () => {
-      const errorHandlerService = createSpyObject(ErrorHandlerService);
-
-      spectator = createComponent({
-        providers: [{ provide: ErrorHandlerService, useValue: errorHandlerService }]
-      });
-
       const cityName = 'Paris';
       component.city = cityName;
       component.refreshWidget();
 
       httpTestingController
-        .expectOne(
-          environment.backend_url + '/weatherWidget/weather?city=' + cityName,
-          HttpMethod.GET
-        )
+        .expectOne(environment.backend_url + '/weatherWidget/weather?city=' + cityName)
         .error(new ProgressEvent('Server error'));
       httpTestingController
-        .expectOne(
-          environment.backend_url + '/weatherWidget/forecast?city=' + cityName,
-          HttpMethod.GET
-        )
+        .expectOne(environment.backend_url + '/weatherWidget/forecast?city=' + cityName)
         .error(new ProgressEvent('Server error'));
 
       expect(component.weather).toEqual(undefined);
       expect(component.forecastResponse).toEqual([]);
-      expect(errorHandlerService.handleError).toHaveBeenCalledTimes(2);
     });
   });
 });

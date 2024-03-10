@@ -1,6 +1,5 @@
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -31,10 +30,7 @@ describe('MiniWidgetListComponent', () => {
 
   it('should have no widgets', () => {
     component.ngOnInit();
-    const request = httpTestingController.expectOne(
-      environment.backend_url + '/miniWidget/',
-      HttpMethod.GET
-    );
+    const request = httpTestingController.expectOne(environment.backend_url + '/miniWidget/');
     request.flush([
       {
         id: 70,

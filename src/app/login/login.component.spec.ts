@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -56,10 +55,7 @@ describe('LoginComponent', () => {
     };
     const loginSpy = jest.spyOn(component.authService, 'login');
     component.loginAsDemoAccount();
-    const request = httpTestingController.expectOne(
-      environment.backend_url + '/auth/login',
-      HttpMethod.POST
-    );
+    const request = httpTestingController.expectOne(environment.backend_url + '/auth/login');
     request.flush(userData);
     expect(loginSpy).toHaveBeenCalledWith('demo', 'demo');
   });
@@ -70,10 +66,7 @@ describe('LoginComponent', () => {
     component.inputUsername = userName;
     component.inputPassword = 'password';
     component.handleLogin();
-    const request = httpTestingController.expectOne(
-      environment.backend_url + '/auth/login',
-      HttpMethod.POST
-    );
+    const request = httpTestingController.expectOne(environment.backend_url + '/auth/login');
     request.flush('Bad credentials', {
       status: 400,
       statusText: 'Bad Request'

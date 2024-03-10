@@ -1,7 +1,6 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 
-import { HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -16,7 +15,7 @@ describe('RssWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
+      imports: [MatSnackBarModule, HttpClientTestingModule],
       providers: [
         RssWidgetService,
         DateUtilsService,
@@ -103,8 +102,7 @@ describe('RssWidgetComponent', () => {
 
     expect(component.isWidgetLoaded).toEqual(false);
     const request = httpTestingController.expectOne(
-      environment.backend_url + '/rssWidget/?url=' + urlFeed,
-      HttpMethod.GET
+      environment.backend_url + '/rssWidget/?url=' + urlFeed
     );
     request.flush(rssFeedData);
     const feedLength = rssFeedData.channel.item.length;
@@ -114,8 +112,7 @@ describe('RssWidgetComponent', () => {
     component.markAllFeedAsRead();
 
     const markAllFeedAsReadRequest = httpTestingController.expectOne(
-      environment.backend_url + `/widget/updateWidgetData/${widgetId}`,
-      HttpMethod.PATCH
+      environment.backend_url + `/widget/updateWidgetData/${widgetId}`
     );
     const updatedWidgetData = {
       data: { readArticlesGuids: allArticlesGuids }

@@ -1,5 +1,3 @@
-import { HttpMethod } from '@ngneat/spectator/jest';
-
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -51,21 +49,18 @@ describe('IncidentWidgetComponent', () => {
 
     expect(component.isWidgetLoaded).toEqual(false);
     const request = httpTestingController.expectOne(
-      environment.backend_url + '/incidentWidget/incidentWidgetConfig?widgetId=' + widgetId,
-      HttpMethod.GET
+      environment.backend_url + '/incidentWidget/incidentWidgetConfig?widgetId=' + widgetId
     );
     request.flush(incidentWidgetConfig);
 
     const getStreaksRequest = httpTestingController.expectOne(
-      environment.backend_url + '/incidentWidget/streaks?incidentId=' + incidentWidgetConfig.id,
-      HttpMethod.GET
+      environment.backend_url + '/incidentWidget/streaks?incidentId=' + incidentWidgetConfig.id
     );
     getStreaksRequest.flush([]);
 
     component.startNewStreak();
     const startStreakRequest = httpTestingController.expectOne(
-      environment.backend_url + '/incidentWidget/startFirstStreak',
-      HttpMethod.POST
+      environment.backend_url + '/incidentWidget/startFirstStreak'
     );
     startStreakRequest.flush(incidentWidgetConfig);
 

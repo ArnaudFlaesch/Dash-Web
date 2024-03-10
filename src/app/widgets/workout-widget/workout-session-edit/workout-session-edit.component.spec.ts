@@ -1,7 +1,7 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { environment } from '../../../../environments/environment';
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
@@ -30,7 +30,6 @@ describe('WorkoutSessionEditComponent', () => {
 
     fixture = TestBed.createComponent(WorkoutSessionEditComponent);
     component = fixture.componentInstance;
-    component.currentWorkoutSessionToEdit = currentWorkoutSessionToEdit;
     component.workoutTypes = workoutTypes;
     httpTestingController = TestBed.inject(HttpTestingController);
   });
@@ -40,11 +39,14 @@ describe('WorkoutSessionEditComponent', () => {
   });
 
   it('should add a rep to an exercise', () => {
+    component.currentWorkoutSessionToEdit = currentWorkoutSessionToEdit;
+    component.ngOnChanges({
+      currentWorkoutSessionToEdit: new SimpleChange(null, currentWorkoutSessionToEdit, true)
+    });
     fixture.detectChanges();
     const getWorkoutExercisesRequest = httpTestingController.expectOne(
       environment.backend_url +
-        `/workoutWidget/workoutExercises?workoutSessionId=${currentWorkoutSessionToEdit.id}`,
-      HttpMethod.GET
+        `/workoutWidget/workoutExercises?workoutSessionId=${currentWorkoutSessionToEdit.id}`
     );
     getWorkoutExercisesRequest.flush([]);
     const workoutTypeIdToEdit = workoutTypes[0].id;
@@ -53,8 +55,7 @@ describe('WorkoutSessionEditComponent', () => {
     expect(component.getExerciceNumberOfReps(workoutTypeIdToEdit)).toEqual(0);
     component.incrementExerciceNumberOfReps(workoutTypeIdToEdit);
     const incrementWorkoutExerciseRequest = httpTestingController.expectOne(
-      environment.backend_url + `/workoutWidget/updateWorkoutExercise`,
-      HttpMethod.POST
+      environment.backend_url + `/workoutWidget/updateWorkoutExercise`
     );
     incrementWorkoutExerciseRequest.flush({
       workoutSessionId: currentWorkoutSessionToEdit.id,
@@ -66,8 +67,7 @@ describe('WorkoutSessionEditComponent', () => {
 
     component.decrementExerciceNumberOfReps(workoutTypeIdToEdit);
     const decrementWorkoutExerciseRequest = httpTestingController.expectOne(
-      environment.backend_url + `/workoutWidget/updateWorkoutExercise`,
-      HttpMethod.POST
+      environment.backend_url + `/workoutWidget/updateWorkoutExercise`
     );
     decrementWorkoutExerciseRequest.flush({
       workoutSessionId: currentWorkoutSessionToEdit.id,

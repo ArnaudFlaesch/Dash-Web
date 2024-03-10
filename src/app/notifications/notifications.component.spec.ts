@@ -1,6 +1,5 @@
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 import { startOfYesterday } from 'date-fns';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -67,8 +66,7 @@ describe('NotificationsComponent', () => {
   it('should create component and get notifications', () => {
     component.ngOnInit();
     const notificationsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/notifications/',
-      HttpMethod.GET
+      environment.backend_url + '/notifications/'
     );
     notificationsRequest.flush(notificationsData);
 
@@ -82,16 +80,14 @@ describe('NotificationsComponent', () => {
   it('Should mark all notifications as read', () => {
     component.ngOnInit();
     const notificationsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/notifications/',
-      HttpMethod.GET
+      environment.backend_url + '/notifications/'
     );
     notificationsRequest.flush(notificationsData);
 
     component.markAllNotificationsAsRead(new Event('click'));
 
     const markNotificationAsReadRequest = httpTestingController.expectOne(
-      environment.backend_url + '/notifications/markNotificationAsRead',
-      HttpMethod.PUT
+      environment.backend_url + '/notifications/markNotificationAsRead'
     );
     const updatedNotificationsData = notificationsData.content.map((notif) => {
       return { ...notif, ...{ isRead: true } };

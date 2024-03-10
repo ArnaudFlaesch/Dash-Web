@@ -1,8 +1,7 @@
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpMethod } from '@ngneat/spectator/jest';
 
-import { HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { IPage } from '../../../app/model/IPage';
 import { environment } from '../../../environments/environment';
@@ -18,8 +17,13 @@ describe('SteamWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
-      providers: [SteamWidgetService, WidgetService, ErrorHandlerService]
+      imports: [MatSnackBarModule, HttpClientTestingModule],
+      providers: [
+        SteamWidgetService,
+        WidgetService,
+        ErrorHandlerService,
+        { provide: 'widgetId', useValue: 1 }
+      ]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(SteamWidgetComponent);
@@ -76,18 +80,14 @@ describe('SteamWidgetComponent', () => {
     expect(component.isFormValid()).toEqual(true);
     component.refreshWidget();
 
-    const dataRequests = httpTestingController.expectConcurrent([
-      {
-        url: `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`,
-        method: HttpMethod.GET
-      },
-      {
-        url: `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`,
-        method: HttpMethod.GET
-      }
-    ]);
-
-    httpTestingController.flushAll(dataRequests, [playerData, ownedGamesData]);
+    const playerDataRequest = httpTestingController.expectOne(
+      `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`
+    );
+    playerDataRequest.flush(playerData);
+    const getOwnedGamesRequest = httpTestingController.expectOne(
+      `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`
+    );
+    getOwnedGamesRequest.flush(ownedGamesData);
 
     expect(component.playerData?.personaname).toEqual(playerData[0].personaname);
     expect(component.ownedGamesDisplay.length).toEqual(3);
@@ -113,8 +113,7 @@ describe('SteamWidgetComponent', () => {
 
     httpTestingController.expectOne(
       environment.backend_url +
-        `/steamWidget/ownedGames?steamUserId=${steamUserId}&search=${searchValue}&pageNumber=${pageIndex}`,
-      HttpMethod.GET
+        `/steamWidget/ownedGames?steamUserId=${steamUserId}&search=${searchValue}&pageNumber=${pageIndex}`
     );
 
     component.resetForm();
