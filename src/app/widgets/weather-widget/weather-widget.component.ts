@@ -25,14 +25,28 @@ import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-    selector: 'dash-weather-widget',
-    templateUrl: './weather-widget.component.html',
-    styleUrls: ['./weather-widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, MatIcon, MatFormField, MatLabel, MatInput, FormsModule, NgIf, WeatherTodayComponent, NgFor, MatButton, MatSlideToggle, WeatherForecastComponent, InitialUppercasePipe]
+  selector: 'dash-weather-widget',
+  templateUrl: './weather-widget.component.html',
+  styleUrls: ['./weather-widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    MatIcon,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    NgIf,
+    WeatherTodayComponent,
+    NgFor,
+    MatButton,
+    MatSlideToggle,
+    WeatherForecastComponent,
+    InitialUppercasePipe
+  ]
 })
 export class WeatherWidgetComponent {
-  public city: string | null = null;
+  public city?: string;
   public displayAllForecast = false;
 
   public weather: IWeatherAPIResponse | undefined;
@@ -128,7 +142,7 @@ export class WeatherWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return this.city !== null && this.city.length > 0;
+    return (this.city ?? '').length > 0;
   }
 
   private filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {

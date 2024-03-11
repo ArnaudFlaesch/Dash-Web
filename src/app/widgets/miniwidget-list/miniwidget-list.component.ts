@@ -118,7 +118,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
             component = target.createComponent(WeatherMiniWidgetComponent, {
               injector: injector
             });
-            component.instance.city = (widgetData?.['city'] as string) ?? null;
+            component.instance.city = widgetData?.['city'] as string;
             break;
           }
         }

@@ -12,15 +12,24 @@ import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-    selector: 'dash-airparif-widget',
-    templateUrl: './airparif-widget.component.html',
-    styleUrls: ['./airparif-widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, MatIcon, MatFormField, MatLabel, MatInput, FormsModule, AirParifMapComponent, SafePipe]
+  selector: 'dash-airparif-widget',
+  templateUrl: './airparif-widget.component.html',
+  styleUrls: ['./airparif-widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    MatIcon,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    AirParifMapComponent,
+    SafePipe
+  ]
 })
 export class AirParifWidgetComponent {
-  public airParifApiKey: string | undefined;
-  public communeInseeCode: string | undefined;
+  public airParifApiKey?: string;
+  public communeInseeCode?: string;
 
   public airParifCouleursIndices: IAirParifCouleur[] = [];
   public airParifForecast: IForecast[] = [];
@@ -62,12 +71,7 @@ export class AirParifWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return (
-      this.airParifApiKey !== undefined &&
-      this.airParifApiKey.length > 0 &&
-      this.communeInseeCode !== undefined &&
-      this.communeInseeCode.length > 0
-    );
+    return (this.airParifApiKey ?? '').length > 0 && (this.communeInseeCode ?? '').length > 0;
   }
 
   public getWidgetData():

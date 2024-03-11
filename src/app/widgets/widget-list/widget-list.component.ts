@@ -77,14 +77,14 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector
             });
-            component.instance.city = (widgetData?.['city'] as string) ?? null;
+            component.instance.city = widgetData?.['city'] as string;
             break;
           }
           case WidgetTypeEnum.RSS: {
             component = target.createComponent(RssWidgetComponent, {
               injector: injector
             });
-            component.instance.urlFeed = (widgetData?.['url'] as string) ?? null;
+            component.instance.urlFeed = widgetData?.['url'] as string;
             component.instance.readArticles = (widgetData?.['readArticlesGuids'] as string[]) ?? [];
             break;
           }
@@ -105,7 +105,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(SteamWidgetComponent, {
               injector: injector
             });
-            component.instance.steamUserId = (widgetData?.['steamUserId'] as string) ?? undefined;
+            component.instance.steamUserId = widgetData?.['steamUserId'] as string;
             break;
           }
           case WidgetTypeEnum.WORKOUT: {
@@ -118,10 +118,8 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(AirParifWidgetComponent, {
               injector: injector
             });
-            component.instance.airParifApiKey =
-              (widgetData?.['airParifApiKey'] as string) ?? undefined;
-            component.instance.communeInseeCode =
-              (widgetData?.['communeInseeCode'] as string) ?? undefined;
+            component.instance.airParifApiKey = widgetData?.['airParifApiKey'] as string;
+            component.instance.communeInseeCode = widgetData?.['communeInseeCode'] as string;
             break;
           }
           case WidgetTypeEnum.ECOWATT: {
@@ -134,7 +132,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(IncidentWidgetComponent, {
               injector: injector
             });
-            component.instance.incidentName = (widgetData?.['incidentName'] as string) ?? undefined;
+            component.instance.incidentName = widgetData?.['incidentName'] as string;
             break;
           }
         }

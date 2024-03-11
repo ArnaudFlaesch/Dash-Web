@@ -1,6 +1,13 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { CalendarEvent, CalendarView, CalendarCommonModule, CalendarMonthModule, CalendarWeekModule, CalendarDayModule } from 'angular-calendar';
+import {
+  CalendarEvent,
+  CalendarView,
+  CalendarCommonModule,
+  CalendarMonthModule,
+  CalendarWeekModule,
+  CalendarDayModule
+} from 'angular-calendar';
 import { addMonths, endOfDay, format, startOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
 
@@ -17,11 +24,24 @@ import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-    selector: 'dash-calendar-widget',
-    templateUrl: './calendar-widget.component.html',
-    styleUrls: ['./calendar-widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, MatIcon, NgFor, MatButton, MatTooltip, CalendarCommonModule, NgSwitch, NgSwitchCase, CalendarMonthModule, CalendarWeekModule, CalendarDayModule, InitialUppercasePipe]
+  selector: 'dash-calendar-widget',
+  templateUrl: './calendar-widget.component.html',
+  styleUrls: ['./calendar-widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    MatIcon,
+    NgFor,
+    MatButton,
+    MatTooltip,
+    CalendarCommonModule,
+    NgSwitch,
+    NgSwitchCase,
+    CalendarMonthModule,
+    CalendarWeekModule,
+    CalendarDayModule,
+    InitialUppercasePipe
+  ]
 })
 export class CalendarWidgetComponent {
   public calendarUrls: string[] = [];
@@ -63,7 +83,7 @@ export class CalendarWidgetComponent {
 
   public refreshWidget(): void {
     this.events = [];
-    this.calendarUrls.forEach((calendarUrl: string) => {
+    this.calendarUrls?.forEach((calendarUrl: string) => {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
         next: (calendarData) => {
           this.events = [...this.events, ...this.parseEvents(calendarData)];

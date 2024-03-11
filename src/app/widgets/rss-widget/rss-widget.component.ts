@@ -18,11 +18,23 @@ import { NgIf } from '@angular/common';
 import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-    selector: 'dash-rss-widget',
-    templateUrl: './rss-widget.component.html',
-    styleUrls: ['./rss-widget.component.scss', '../widget/widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, NgIf, MatFormField, MatLabel, MatInput, FormsModule, MatIconButton, MatTooltip, MatIcon, RssFeedComponent, SafePipe]
+  selector: 'dash-rss-widget',
+  templateUrl: './rss-widget.component.html',
+  styleUrls: ['./rss-widget.component.scss', '../widget/widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    NgIf,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    RssFeedComponent,
+    SafePipe
+  ]
 })
 export class RssWidgetComponent {
   public feed: IArticle[] = [];
@@ -34,7 +46,7 @@ export class RssWidgetComponent {
 
   public isFeedClosed = true;
   public readArticles: string[] = [];
-  public urlFeed: string | null = null;
+  public urlFeed?: string;
 
   private ERROR_GETTING_RSS_FEED = 'Erreur pendant la récupération du flux RSS.';
   private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
@@ -83,7 +95,7 @@ export class RssWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return this.urlFeed !== null && this.urlFeed.length > 0;
+    return (this.urlFeed ?? '').length > 0;
   }
 
   public getWidgetData(): { url: string } | undefined {

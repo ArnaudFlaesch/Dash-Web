@@ -19,11 +19,25 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-    selector: 'dash-steam-widget',
-    templateUrl: './steam-widget.component.html',
-    styleUrls: ['./steam-widget.component.scss', '../widget/widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, NgIf, MatIconButton, MatTooltip, MatIcon, NgFor, GameDetailsComponent, MatPaginator]
+  selector: 'dash-steam-widget',
+  templateUrl: './steam-widget.component.html',
+  styleUrls: ['./steam-widget.component.scss', '../widget/widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    NgFor,
+    GameDetailsComponent,
+    MatPaginator
+  ]
 })
 export class SteamWidgetComponent implements OnInit, OnDestroy {
   public playerData: IPlayerDataResponse | undefined;
@@ -34,7 +48,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   public pageSizeOptions = [this.pageSize];
   public pageNumber = 0;
 
-  public steamUserId: string | undefined;
+  public steamUserId?: string;
   public searchFormControl = new FormControl('');
   public isPlayerDataLoaded = false;
   public areGamesLoaded = false;
@@ -115,7 +129,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   }
 
   public isFormValid(): boolean {
-    return !!this.steamUserId && this.steamUserId?.length > 0;
+    return (this.steamUserId ?? '').length > 0;
   }
 
   private getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {
