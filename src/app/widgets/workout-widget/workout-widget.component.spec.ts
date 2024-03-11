@@ -107,40 +107,6 @@ describe('WorkoutWidgetComponent', () => {
   });
 
   it('should add a new workout type', () => {
-    expect(component.workoutTypes).toEqual([]);
-    expect(component.workoutSessions).toEqual([]);
-
-    component.refreshWidget();
-
-    const workoutTypesRequest = httpTestingController.expectOne(
-      environment.backend_url + `/workoutWidget/workoutTypes`
-    );
-    workoutTypesRequest.flush([]);
-    const workoutSessionsRequest = httpTestingController.expectOne(
-      environment.backend_url +
-        `/workoutWidget/workoutSessions?dateIntervalStart=${format(
-          startOfMonth(new Date()),
-          dateFormat
-        )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
-    );
-    workoutSessionsRequest.flush([]);
-    const workoutStatsWeekRequest = httpTestingController.expectOne(
-      environment.backend_url +
-        `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-          startOfISOWeek(new Date()),
-          dateFormat
-        )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`
-    );
-    workoutStatsWeekRequest.flush([]);
-    const workoutStatsMonthRequest = httpTestingController.expectOne(
-      environment.backend_url +
-        `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
-          startOfMonth(new Date()),
-          dateFormat
-        )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
-    );
-    workoutStatsMonthRequest.flush([]);
-
     const newWorkoutTypeName = 'Haltères';
     component.workoutNameInput = newWorkoutTypeName;
     component.addWorkoutType();
@@ -155,6 +121,47 @@ describe('WorkoutWidgetComponent', () => {
     } as IWorkoutType;
     addWorkoutTypeRequest.flush(addWorkoutTypeResponse);
     expect(component.workoutTypes).toEqual([addWorkoutTypeResponse]);
+  });
+
+  it('Should create widget with errors from webservices', () => {
+    expect(component.workoutTypes).toEqual([]);
+    expect(component.workoutSessions).toEqual([]);
+
+    component.refreshWidget();
+
+    httpTestingController
+      .expectOne(environment.backend_url + `/workoutWidget/workoutTypes`)
+      .error(new ProgressEvent('Server error'));
+
+    httpTestingController
+      .expectOne(
+        environment.backend_url +
+          `/workoutWidget/workoutSessions?dateIntervalStart=${format(
+            startOfMonth(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
+      )
+      .error(new ProgressEvent('Server error'));
+
+    httpTestingController
+      .expectOne(
+        environment.backend_url +
+          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+            startOfISOWeek(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`
+      )
+      .error(new ProgressEvent('Server error'));
+
+    httpTestingController
+      .expectOne(
+        environment.backend_url +
+          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+            startOfMonth(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
+      )
+      .error(new ProgressEvent('Server error'));
   });
 
   it('Should create a new workout session', () => {
