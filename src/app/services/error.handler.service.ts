@@ -42,7 +42,7 @@ export class ErrorHandlerService {
   }
 
   private displayErrorMessage(errorMessage: string, messageToDisplay: string) {
-    console.error(errorMessage);
+    console.log(errorMessage);
     this.snackbar.open(messageToDisplay, undefined, { duration: 3000 });
   }
 }

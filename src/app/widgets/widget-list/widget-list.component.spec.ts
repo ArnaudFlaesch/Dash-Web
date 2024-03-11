@@ -1,3 +1,4 @@
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -26,7 +27,13 @@ describe('WidgetListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, MatDialogModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        MatSnackBarModule,
+        MatDialogModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        NoopAnimationsModule
+      ],
       providers: [
         RssWidgetService,
         SteamWidgetService,
@@ -104,7 +111,7 @@ describe('WidgetListComponent', () => {
         tabId: 1
       }
     ];
-
+    component.widgetList = widgetListConfig;
     component.ngOnChanges({
       widgetList: new SimpleChange(null, widgetListConfig, true)
     });
