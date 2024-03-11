@@ -26,11 +26,11 @@ import { IncidentWidgetComponent } from '../incident-widget/incident-widget.comp
 import { NgFor } from '@angular/common';
 
 @Component({
-    selector: 'dash-widget-list',
-    templateUrl: './widget-list.component.html',
-    styleUrls: ['./widget-list.component.scss'],
-    standalone: true,
-    imports: [CdkDropList, NgFor, CdkDrag]
+  selector: 'dash-widget-list',
+  templateUrl: './widget-list.component.html',
+  styleUrls: ['./widget-list.component.scss'],
+  standalone: true,
+  imports: [CdkDropList, NgFor, CdkDrag]
 })
 export class WidgetListComponent implements OnChanges {
   @Input() widgetList: IWidgetConfig[] = [];
@@ -77,26 +77,22 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector
             });
-            component.instance.city = widgetData ? (widgetData['city'] as string) : null;
+            component.instance.city = widgetData?.['city'] as string;
             break;
           }
           case WidgetTypeEnum.RSS: {
             component = target.createComponent(RssWidgetComponent, {
               injector: injector
             });
-            component.instance.urlFeed = widgetData ? (widgetData['url'] as string) : null;
-            component.instance.readArticles = widgetData?.['readArticlesGuids']
-              ? (widgetData['readArticlesGuids'] as string[])
-              : [];
+            component.instance.urlFeed = widgetData?.['url'] as string;
+            component.instance.readArticles = (widgetData?.['readArticlesGuids'] as string[]) ?? [];
             break;
           }
           case WidgetTypeEnum.CALENDAR: {
             component = target.createComponent(CalendarWidgetComponent, {
               injector: injector
             });
-            component.instance.calendarUrls = widgetData?.['calendarUrls']
-              ? (widgetData['calendarUrls'] as string[])
-              : [];
+            component.instance.calendarUrls = (widgetData?.['calendarUrls'] as string[]) ?? [];
             break;
           }
           case WidgetTypeEnum.STRAVA: {
@@ -109,9 +105,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(SteamWidgetComponent, {
               injector: injector
             });
-            component.instance.steamUserId = widgetData?.['steamUserId']
-              ? (widgetData['steamUserId'] as string)
-              : undefined;
+            component.instance.steamUserId = widgetData?.['steamUserId'] as string;
             break;
           }
           case WidgetTypeEnum.WORKOUT: {
@@ -124,12 +118,8 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(AirParifWidgetComponent, {
               injector: injector
             });
-            component.instance.airParifApiKey = widgetData
-              ? (widgetData['airParifApiKey'] as string)
-              : undefined;
-            component.instance.communeInseeCode = widgetData
-              ? (widgetData['communeInseeCode'] as string)
-              : undefined;
+            component.instance.airParifApiKey = widgetData?.['airParifApiKey'] as string;
+            component.instance.communeInseeCode = widgetData?.['communeInseeCode'] as string;
             break;
           }
           case WidgetTypeEnum.ECOWATT: {
@@ -142,9 +132,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(IncidentWidgetComponent, {
               injector: injector
             });
-            component.instance.incidentName = widgetData
-              ? (widgetData['incidentName'] as string)
-              : undefined;
+            component.instance.incidentName = widgetData?.['incidentName'] as string;
             break;
           }
         }

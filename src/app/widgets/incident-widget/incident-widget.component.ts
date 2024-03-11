@@ -16,11 +16,22 @@ import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-    selector: 'dash-incident-widget',
-    templateUrl: './incident-widget.component.html',
-    styleUrls: ['./incident-widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, MatIcon, MatFormField, MatLabel, MatInput, FormsModule, NgIf, MatButton, NgFor, DateFormatPipe]
+  selector: 'dash-incident-widget',
+  templateUrl: './incident-widget.component.html',
+  styleUrls: ['./incident-widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    MatIcon,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    NgIf,
+    MatButton,
+    NgFor,
+    DateFormatPipe
+  ]
 })
 export class IncidentWidgetComponent {
   public incidentId?: number;
@@ -114,7 +125,7 @@ export class IncidentWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return this.incidentName !== undefined && this.incidentName.length > 0;
+    return (this.incidentName ?? '').length > 0;
   }
 
   private endCurrentStreak(): void {

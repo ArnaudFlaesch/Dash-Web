@@ -24,11 +24,11 @@ import { MatMiniFabButton } from '@angular/material/button';
 import { NgFor } from '@angular/common';
 
 @Component({
-    selector: 'dash-miniwidget-list',
-    templateUrl: './miniwidget-list.component.html',
-    styleUrls: ['./miniwidget-list.component.scss'],
-    standalone: true,
-    imports: [NgFor, MatMiniFabButton, MatTooltip, MatIcon]
+  selector: 'dash-miniwidget-list',
+  templateUrl: './miniwidget-list.component.html',
+  styleUrls: ['./miniwidget-list.component.scss'],
+  standalone: true,
+  imports: [NgFor, MatMiniFabButton, MatTooltip, MatIcon]
 })
 export class MiniWidgetListComponent implements OnInit, OnDestroy {
   @ViewChildren('dynamic', { read: ViewContainerRef })
@@ -118,7 +118,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
             component = target.createComponent(WeatherMiniWidgetComponent, {
               injector: injector
             });
-            component.instance.city = widgetData ? (widgetData['city'] as string) : null;
+            component.instance.city = widgetData?.['city'] as string;
             break;
           }
         }
