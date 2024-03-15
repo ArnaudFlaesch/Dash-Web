@@ -39,7 +39,7 @@
     "@angular/service-worker": "17.3.0",
     "@compodoc/compodoc": "1.1.23",
     "chart.js": "4.4.2",
-    "date-fns": "3.4.0",
+    "date-fns": "3.5.0",
     "jwt-decode": "4.0.0",
     "leaflet": "1.9.4",
     "leaflet-sidebar-v2": "3.2.3",
