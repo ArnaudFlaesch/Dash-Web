@@ -24,9 +24,6 @@
     "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s",
     "compodoc:serve": "compodoc -s"
   },
-  "overrides": {
-    "webpack-dev-middleware": "7.1.1"
-  },
   "dependencies": {
     "@angular/animations": "17.3.1",
     "@angular/cdk": "17.3.1",
