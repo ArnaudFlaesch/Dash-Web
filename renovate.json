@@ -3,8 +3,12 @@
   "assignees": ["ArnaudFlaesch"],
   "packageRules": [
     {
-      "extends": ["monorepo:angular", "monorepo:angularmaterial"],
-      "packageNames": ["@angular", "@angular-devkit", "zone.js"]
+      "groupName": "angular",
+      "matchPackagePatterns": [
+        "^@angular/",
+        "^@angular-devkit/",
+        "zone.js/"
+      ]
     }
   ],
   "schedule": ["at 2:00 pm on Fri"]
