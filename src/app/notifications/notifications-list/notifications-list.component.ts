@@ -1,10 +1,10 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { INotificationToDisplay, NotificationTypeEnum } from '../../model/INotification';
-import { DateFormatPipe } from '../../pipes/date-format.pipe';
+import { NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NgClass, NgIf } from '@angular/common';
+import { INotificationToDisplay, NotificationTypeEnum } from '../../model/INotification';
+import { DateFormatPipe } from '../../pipes/date-format.pipe';
 
 @Component({
   selector: 'dash-notifications-list',
