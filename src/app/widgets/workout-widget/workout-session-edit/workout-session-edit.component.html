@@ -2,15 +2,14 @@
 <div id="workout-widget-header">
   <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat:'short' }}</h3>
 
-  <ng-template [ngIf]="this.sessionEditMode" [ngIfElse]="editModeButton">
+  @if(this.sessionEditMode) {
     <button id="validate-session-button" mat-icon-button (click)="toggleSessionEditMode()">
       <mat-icon>check</mat-icon></button>
-  </ng-template>
-
-  <ng-template #editModeButton>
+  }
+  @else {
     <button id="edit-session-button" mat-icon-button (click)="toggleSessionEditMode()">
       <mat-icon>edit</mat-icon></button>
-  </ng-template>
+  }
 </div>
 
 <div id="workout-sessions-grid">
