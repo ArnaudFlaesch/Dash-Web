@@ -3,33 +3,31 @@
 @include mat.core;
 
 // Define a dark theme
-$dark-theme: mat.define-dark-theme(
-  (
-    color: (
-      primary: mat.define-palette(mat.$pink-palette),
-      accent: mat.define-palette(mat.$blue-grey-palette)
-    ),
-    typography: mat.define-typography-config(),
-    density: 0
-  )
-);
+
+
+$dark-theme: mat.define-theme((
+  color: (
+      theme-type: dark,
+      primary: mat.$red-palette
+    )
+));
 
 // Define a light theme
-$light-theme: mat.define-light-theme(
-  (
-    color: (
-      primary: mat.define-palette(mat.$indigo-palette),
-      accent: mat.define-palette(mat.$pink-palette)
+$light-theme: mat.define-theme((
+  color: (
+      theme-type: light,
+      primary: mat.$azure-palette
     )
-  )
-);
+));
 
-// Apply the light theme by default
-@include mat.core-theme($light-theme);
-@include mat.button-color($light-theme);
+
 
 html,
 body {
+  // Apply the light theme by default
+@include mat.core-theme($light-theme);
+@include mat.button-color($light-theme);
+
   height: 100%;
 
   // Light mode
@@ -73,8 +71,7 @@ body {
   }
 
   &.dark-mode {
-    @include mat.core-color($dark-theme);
-    @include mat.button-color($dark-theme);
+    @include mat.all-component-themes($dark-theme);
 
     background-color: var(--dash-dark-mode-background-color);
 
