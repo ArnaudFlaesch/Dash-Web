@@ -18,14 +18,18 @@
   </ng-template>
 
   <ng-template #body>
-    <div *ngIf="city && weather && weather.weather" class="weather-forecast-container">
+    @if(city && weather && weather.weather) {
+    <div class="weather-forecast-container">
       <dash-weather-today [weather]="this.weather"></dash-weather-today>
-      <div class="forecast-data-container" *ngIf="cityData && forecastResponse">
+      @if(cityData && forecastResponse) {
+      <div class="forecast-data-container">
         <div class="forecast-selector">
-          <button *ngFor="let date of forecastDays" [color]="this.isSelectedDay(date) ? 'primary' : ''"
-            mat-raised-button (click)="selectDayForecast(date)" class="selectForecast">
+          @for(date of forecastDays; track date.getTime()) {
+          <button [color]="this.isSelectedDay(date) ? 'primary' : ''" mat-raised-button
+            (click)="selectDayForecast(date)" class="selectForecast">
             {{ formatDate(date) | initialUppercase }}
           </button>
+          }
 
           <button [color]="this.isForecastModeWeek() ? 'primary' : ''" mat-raised-button id="toggleWeekForecast"
             (click)="selectWeekForecast()">
@@ -37,9 +41,12 @@
             Afficher les prévisions complètes
           </mat-slide-toggle>
         </div>
-        <dash-weather-forecast *ngIf="this.cityData" [forecast]="this.forecastToDisplay"
-          [forecastMode]="this.forecastMode" [timezone]="this.cityData.timezone"></dash-weather-forecast>
-      </div>
+        @if(this.cityData) {
+        <dash-weather-forecast [forecast]="this.forecastToDisplay" [forecastMode]="this.forecastMode"
+          [timezone]="this.cityData.timezone"></dash-weather-forecast>
+        }
+      </div>}
     </div>
+    }
   </ng-template>
 </dash-widget>

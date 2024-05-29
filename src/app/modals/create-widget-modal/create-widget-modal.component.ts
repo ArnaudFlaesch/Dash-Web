@@ -10,7 +10,6 @@ import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card';
-import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'dash-create-widget-modal',
@@ -20,7 +19,7 @@ import { NgFor } from '@angular/common';
   imports: [
     MatDialogTitle,
     MatDialogContent,
-    NgFor,
+
     MatCard,
     MatCardContent,
     MatIcon,

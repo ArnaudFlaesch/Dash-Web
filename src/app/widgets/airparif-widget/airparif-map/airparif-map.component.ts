@@ -15,16 +15,16 @@ import 'leaflet-sidebar-v2';
 import { AirParifWidgetService } from '../airparif-widget.service';
 import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from '../model/IAirParif';
 import { MatButton } from '@angular/material/button';
-import { NgIf, NgFor } from '@angular/common';
+
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    selector: 'dash-airparif-map',
-    templateUrl: './airparif-map.component.html',
-    styleUrls: ['./airparif-map.component.scss'],
-    standalone: true,
-    imports: [MatIcon, NgIf, MatButton, NgFor]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dash-airparif-map',
+  templateUrl: './airparif-map.component.html',
+  styleUrls: ['./airparif-map.component.scss'],
+  standalone: true,
+  imports: [MatIcon, MatButton]
 })
 export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input()

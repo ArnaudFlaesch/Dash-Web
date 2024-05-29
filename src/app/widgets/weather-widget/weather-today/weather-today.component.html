@@ -1,4 +1,5 @@
-<div *ngIf="weather && weather.weather" class="weather-today-container">
+@if(weather && weather.weather) {
+<div class="weather-today-container">
   <div class="weather-container">
     <img class="current-weather-icon" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
       [matTooltip]="weather.weather[0].description | initialUppercase" [alt]="weather.weather[0].description" />
@@ -47,3 +48,4 @@
 
   </div>
 </div>
+}

@@ -1,5 +1,6 @@
 <div class="widget">
-  <div *ngIf="isModeEdit()" class="widget-edit-mode">
+  @if(isModeEdit()) {
+  <div class="widget-edit-mode">
     <div class="header-container">
       <div class="header-actions">
         <button class="deleteButton" mat-icon-button matTooltip="Supprimer le widget" (click)="this.toDeleteMode()">
@@ -12,10 +13,11 @@
         <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
       </div>
       <div class="edit-component-actions">
-        <button class="cancelButton" mat-raised-button (click)="cancelEdition()"
-          *ngIf="this.isWidgetLoaded && this.widgetData">
+        @if(this.isWidgetLoaded && this.widgetData) {
+        <button class="cancelButton" mat-raised-button (click)="cancelEdition()">
           Annuler
         </button>
+        }
         <button class="validateButton" mat-raised-button (click)="onValidation()" color="primary"
           [disabled]="!this.isFormValid">
           Valider
@@ -23,11 +25,15 @@
       </div>
     </div>
   </div>
+  }
 
-  <dash-delete-widget *ngIf="this.isModeDelete()" (cancelWidgetDeletion)="toReadMode()"
+  @if(this.isModeDelete()) {
+  <dash-delete-widget (cancelWidgetDeletion)="toReadMode()"
     (validateWidgetDeletion)="deleteWidget()"></dash-delete-widget>
+  }
 
-  <div *ngIf="this.isModeRead()" class="widget-read-mode">
+  @if(this.isModeRead()) {
+  <div class="widget-read-mode">
     <div class="header-container">
       <div class="header">
         <div *ngTemplateOutlet="headerIcon"> </div>
@@ -35,28 +41,33 @@
       </div>
 
       <div class="header-actions">
-        <span *ngIf="additionalActions">
+        @if(additionalActions) {
+        <span>
           <ng-container *ngTemplateOutlet="additionalActions"> </ng-container>
         </span>
+        }
 
         <button mat-icon-button matTooltip="Actualiser le widget" (click)="this.refreshWidget()" class="refreshButton">
           <mat-icon aria-hidden="false">refresh</mat-icon>
         </button>
-        <button *ngIf="this.editComponent" mat-icon-button matTooltip="Modifier le widget" (click)="this.toEditMode()"
-          class="editButton">
+        @if(this.editComponent) {
+        <button mat-icon-button matTooltip="Modifier le widget" (click)="this.toEditMode()" class="editButton">
           <mat-icon>settings</mat-icon>
         </button>
+        }
       </div>
     </div>
     <div class="widget-body">
-      <ng-template [ngIf]="this.isWidgetLoaded" [ngIfElse]="isWidgetLoading">
-        <ng-container *ngTemplateOutlet="body"> </ng-container>
-      </ng-template>
-      <ng-template #isWidgetLoading>
-        <div class="widget-loading-spinner">
-          <mat-spinner></mat-spinner>
-        </div>
-      </ng-template>
+
+      @if(this.isWidgetLoaded) {
+      <ng-container *ngTemplateOutlet="body"> </ng-container>
+      }
+      @else {
+      <div class="widget-loading-spinner">
+        <mat-spinner></mat-spinner>
+      </div>
+      }
     </div>
   </div>
+  }
 </div>

@@ -1,105 +1,140 @@
-<ng-template [ngIf]="this.isDashboardLoaded" [ngIfElse]="isDashboardLoading">
-  <div id="home-header-container">
-    <div id="home-header-top-bar">
-      <div id="tab-list-container">
-        <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)">
-          <dash-tab *ngFor="let tab of this.tabs" class="tab" (click)="selectTab(tab.id)"
-            (tabDeletedEvent)="deleteTabFromDash($event)" [cdkDragDisabled]="!editModeEnabled"
-            [ngClass]="{ 'selected-item': activeTab === tab.id }" [tab]="tab" cdkDrag
-            cdkDragBoundary="#tab-list"></dash-tab>
-        </div>
-        <button (click)="this.addNewTab()" matTooltip="Ajouter un nouvel onglet" id="addNewTabButton" mat-mini-fab
-          color="primary">
-          <mat-icon aria-hidden="false">
-            add_circle_outline</mat-icon>
-        </button>
+@if (this.isDashboardLoaded) {
+<div id="home-header-container">
+  <div id="home-header-top-bar">
+    <div id="tab-list-container">
+      <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)">
+        @for (tab of this.tabs; track tab.id) {
+        <dash-tab
+          class="tab"
+          (click)="selectTab(tab.id)"
+          (tabDeletedEvent)="deleteTabFromDash($event)"
+          [cdkDragDisabled]="!editModeEnabled"
+          [ngClass]="{ 'selected-item': activeTab === tab.id }"
+          [tab]="tab"
+          cdkDrag
+          cdkDragBoundary="#tab-list"></dash-tab>
+        }
       </div>
+      <button
+        (click)="this.addNewTab()"
+        matTooltip="Ajouter un nouvel onglet"
+        id="addNewTabButton"
+        mat-mini-fab
+        color="primary">
+        <mat-icon aria-hidden="false"> add_circle_outline</mat-icon>
+      </button>
+    </div>
 
-      <div id="action-bar-buttons">
-        <button mat-mini-fab matTooltip="Applications" [matMenuTriggerFor]="appsMenu" color="primary">
-          <mat-icon>apps</mat-icon>
-        </button>
+    <div id="action-bar-buttons">
+      <button mat-mini-fab matTooltip="Applications"
+        [matMenuTriggerFor]="appsMenu" color="primary">
+        <mat-icon>apps</mat-icon>
+      </button>
 
-        <dash-notifications *ngIf="this.canUserSeeNotifications()"></dash-notifications>
-        <ng-template [ngIf]="editModeEnabled" [ngIfElse]="editWidgetList">
-          <button (click)="this.toggleEditMode()" matTooltip="Valider l'ordre des widgets" id="validateWidgetListButton"
-            mat-mini-fab color="primary">
-            <mat-icon aria-hidden="false">check</mat-icon>
-          </button>
-        </ng-template>
-        <ng-template #editWidgetList>
-          <button (click)="this.toggleEditMode()" matTooltip="Changer l'ordre des widgets" id="toggleEditModeButton"
-            mat-mini-fab color="primary">
-            <mat-icon aria-hidden="false">edit</mat-icon>
-          </button>
-        </ng-template>
-        <button [disabled]="this.tabs.length < 1" matTooltip="Ajouter un nouveau widget"
-          (click)="this.openCreateWidgetModal()" id="openAddWidgetModal" color="primary" mat-mini-fab>
-          <mat-icon aria-hidden="false">add_circle_outline</mat-icon>
-        </button>
-        <button (click)="this.refreshAllWidgets()" matTooltip="Réactualiser tous les widgets" mat-mini-fab
-          id="reloadAllWidgetsButton" color="primary">
-          <mat-icon aria-hidden="false">refresh</mat-icon>
-        </button>
+      @if(this.canUserSeeNotifications()) {<dash-notifications></dash-notifications>}
 
-        <button id="dash-menu" matTooltip="Menu utilisateur" mat-mini-fab [matMenuTriggerFor]="dashMenu"
-          color="primary">
-          <mat-icon>account_circle</mat-icon>
-        </button>
+      @if(editModeEnabled) {
+        <button
+        (click)="this.toggleEditMode()"
+        matTooltip="Valider l'ordre des widgets"
+        id="validateWidgetListButton"
+        mat-mini-fab
+        color="primary">
+        <mat-icon aria-hidden="false">check</mat-icon>
+      </button>
+      }
 
-        <mat-menu #appsMenu="matMenu">
-          <a [href]="cashManagerApplicationUrl">
-            <mat-icon>savings</mat-icon>
-            <span>CashManager</span>
-          </a>
-        </mat-menu>
+      @else {
+        <button
+        (click)="this.toggleEditMode()"
+        matTooltip="Changer l'ordre des widgets"
+        id="toggleEditModeButton"
+        mat-mini-fab
+        color="primary">
+        <mat-icon aria-hidden="false">edit</mat-icon>
+      </button>
+      }
 
-        <mat-menu #dashMenu="matMenu">
-          <div mat-menu-item>
-            <div id="toggle-mode-container">
-              <mat-icon>light_mode</mat-icon>
-              <mat-slide-toggle (change)="toggleTheme($event.checked)" [formControl]="toggleControl">
-              </mat-slide-toggle>
-              <mat-icon>dark_mode</mat-icon>
-            </div>
+      <button
+        [disabled]="this.tabs.length < 1"
+        matTooltip="Ajouter un nouveau widget"
+        (click)="this.openCreateWidgetModal()"
+        id="openAddWidgetModal"
+        color="primary"
+        mat-mini-fab>
+        <mat-icon aria-hidden="false">add_circle_outline</mat-icon>
+      </button>
+      <button
+        (click)="this.refreshAllWidgets()"
+        matTooltip="Réactualiser tous les widgets"
+        mat-mini-fab
+        id="reloadAllWidgetsButton"
+        color="primary">
+        <mat-icon aria-hidden="false">refresh</mat-icon>
+      </button>
+
+      <button
+        id="dash-menu"
+        matTooltip="Menu utilisateur"
+        mat-mini-fab
+        [matMenuTriggerFor]="dashMenu"
+        color="primary">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+
+      <mat-menu #appsMenu="matMenu">
+        <a [href]="cashManagerApplicationUrl">
+          <mat-icon>savings</mat-icon>
+          <span>CashManager</span>
+        </a>
+      </mat-menu>
+
+      <mat-menu #dashMenu="matMenu">
+        <div mat-menu-item>
+          <div id="toggle-mode-container">
+            <mat-icon>light_mode</mat-icon>
+            <mat-slide-toggle (change)="toggleTheme($event.checked)"
+              [formControl]="toggleControl">
+            </mat-slide-toggle>
+            <mat-icon>dark_mode</mat-icon>
           </div>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="this.downloadConfig()" id="downloadConfigButton">
-            <mat-icon>download</mat-icon>
-            <span>Télécharger la configuration</span>
-          </button>
-          <button mat-menu-item (click)="this.openImportConfigModal()" id="openImportConfigModal">
-            <mat-icon>upload</mat-icon>
-            <span>Importer une configuration</span>
-          </button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="logout()" id="logoutButton">
-            <mat-icon>logout</mat-icon>
-            <span>Déconnexion</span>
-          </button>
-        </mat-menu>
-      </div>
-    </div>
-
-    <div id="mini-widgets-container">
-      <dash-miniwidget-list></dash-miniwidget-list>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="this.downloadConfig()"
+          id="downloadConfigButton">
+          <mat-icon>download</mat-icon>
+          <span>Télécharger la configuration</span>
+        </button>
+        <button mat-menu-item (click)="this.openImportConfigModal()"
+          id="openImportConfigModal">
+          <mat-icon>upload</mat-icon>
+          <span>Importer une configuration</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()" id="logoutButton">
+          <mat-icon>logout</mat-icon>
+          <span>Déconnexion</span>
+        </button>
+      </mat-menu>
     </div>
   </div>
 
-  <ng-template [ngIf]="this.areWidgetsLoaded" [ngIfElse]="widgetsLoading">
-    <dash-widget-list [widgetList]="this.activeWidgets" *ngIf="this.activeWidgets.length"
-      [toggleEditMode]="editModeEnabled" (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"></dash-widget-list>
-  </ng-template>
-
-  <ng-template #widgetsLoading>
-    <div class="loading-spinner-container">
-      <mat-spinner></mat-spinner>
-    </div>
-  </ng-template>
-</ng-template>
-
-<ng-template #isDashboardLoading>
-  <div class="loading-spinner-container">
-    <mat-spinner></mat-spinner>
+  <div id="mini-widgets-container">
+    <dash-miniwidget-list></dash-miniwidget-list>
   </div>
-</ng-template>
+</div>
+@if (this.areWidgetsLoaded && this.activeWidgets.length) {
+<dash-widget-list
+  [widgetList]="this.activeWidgets"
+  [toggleEditMode]="editModeEnabled"
+  (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"></dash-widget-list>
+} @else {
+<div class="loading-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+}
+} @else {
+<div class="loading-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+}

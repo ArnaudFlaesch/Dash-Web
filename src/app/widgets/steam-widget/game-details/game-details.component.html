@@ -1,5 +1,6 @@
-<mat-expansion-panel *ngIf="this.steamUserId && this.gameInfo"
-  (afterExpand)="loadAchievementsData(this.steamUserId, this.gameInfo)" hideToggle>
+@if(this.steamUserId && this.gameInfo) {
+
+<mat-expansion-panel (afterExpand)="loadAchievementsData(this.steamUserId, this.gameInfo)" hideToggle>
   <mat-expansion-panel-header>
     <mat-panel-title>
       <div class="game-info">
@@ -12,22 +13,27 @@
 
     <div class="game-data-container">
       <div class="game-achievements-data-container">
-        <a href="{{gameInfo.playerAchievementUrl}}"
-          *ngIf="this.achievements && this.completedAchievements && this.achievements.length"
+        @if(this.achievements && this.completedAchievements && this.achievements.length) {
+          <a href="{{gameInfo.playerAchievementUrl}}"
           class="game-achievements-data">
           <div class="totalachievements">Succès : {{ achievements.length }}</div>
           <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
         </a>
+        }
+
         <a href="{{gameInfo.appIdLink}}" class="hoverable-link"> Community hub </a>
       </div>
 
+      @if(this.achievements.length && this.completedAchievements) {
       <a href="{{gameInfo.playerAchievementUrl}}"
-        *ngIf="this.achievements && this.completedAchievements && this.achievements.length" class="spinner-container">
+        class="spinner-container">
         <div class="progress-value">{{ spinner.value }}%</div>
         <mat-progress-spinner #spinner [title]="'test'" [color]="'primary'" [mode]="'determinate'"
           [value]="this.completionStatus">
         </mat-progress-spinner>
       </a>
+    }
     </div>
   </ng-template>
 </mat-expansion-panel>
+}

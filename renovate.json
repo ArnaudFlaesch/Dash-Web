@@ -4,11 +4,7 @@
   "packageRules": [
     {
       "groupName": "angular",
-      "matchPackagePatterns": [
-        "^@angular/",
-        "^@angular-devkit/",
-        "zone.js/"
-      ]
+      "matchPackagePatterns": ["^@angular/", "^@angular-devkit/", "zone.js/"]
     }
   ],
   "schedule": ["at 2:00 pm on Fri"]

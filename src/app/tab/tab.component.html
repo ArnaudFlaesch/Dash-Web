@@ -1,13 +1,15 @@
-<ng-template [ngIf]="this.editMode" [ngIfElse]="readMode">
-  <div class="tab-input" *ngIf="this.tab">
-    <input (keypress)="this.enterSaveTabName($event)"
-      (dblclick)="this.saveTabName(this.tab.id, this.tab.label, this.tab.tabOrder)" [(ngModel)]="this.tab.label" />
-    <mat-icon class="deleteTabButton" (click)="this.deleteTabFromDash()"> delete </mat-icon>
-  </div>
-</ng-template>
 
-<ng-template #readMode>
+  @if(this.editMode) {
+    @if(this.tab) {
+      <div class="tab-input" >
+        <input (keypress)="this.enterSaveTabName($event)"
+          (dblclick)="this.saveTabName(this.tab.id, this.tab.label, this.tab.tabOrder)" [(ngModel)]="this.tab.label" />
+        <mat-icon class="deleteTabButton" (click)="this.deleteTabFromDash()"> delete </mat-icon>
+      </div>
+    }
+}
+@else {
   <div class="tab-label" (dblclick)="this.toggleEditMode()">
     {{ this.tab?.label }}
   </div>
-</ng-template>
+}

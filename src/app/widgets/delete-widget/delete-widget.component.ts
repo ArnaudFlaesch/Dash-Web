@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { MatButton } from '@angular/material/button';
 
 @Component({
-    selector: 'dash-delete-widget',
-    templateUrl: './delete-widget.component.html',
-    styleUrls: ['./delete-widget.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatButton]
+  selector: 'dash-delete-widget',
+  templateUrl: './delete-widget.component.html',
+  styleUrls: ['./delete-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatButton]
 })
 export class DeleteWidgetComponent {
   @Output() validateWidgetDeletion = new EventEmitter();

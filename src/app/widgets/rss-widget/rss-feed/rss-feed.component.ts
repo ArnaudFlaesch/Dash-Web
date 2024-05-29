@@ -3,7 +3,7 @@ import { isToday, isThisYear } from 'date-fns';
 import { IArticle } from '../IArticle';
 import { SafePipe } from '../../../pipes/safe.pipe';
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
-import { NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -20,7 +20,7 @@ import {
   standalone: true,
   imports: [
     MatAccordion,
-    NgFor,
+
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,

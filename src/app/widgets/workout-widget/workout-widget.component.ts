@@ -1,7 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle
+} from '@angular/material/datepicker';
 import {
   endOfMonth,
   endOfWeek,
@@ -12,25 +16,25 @@ import {
   subMonths
 } from 'date-fns';
 
+import { NgSwitch, NgSwitchCase } from '@angular/common';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
 import { DEFAULT_DATE_FORMAT } from '../../../app/utils/Constants';
+import { DateFormatPipe } from '../../pipes/date-format.pipe';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
+import { WidgetComponent } from '../widget/widget.component';
 import {
   IWorkoutSession,
   IWorkoutStatByMonth,
   IWorkoutStatsByPeriod,
   IWorkoutType
 } from './model/Workout';
-import { WorkoutWidgetService } from './workout.widget.service';
-import { DateFormatPipe } from '../../pipes/date-format.pipe';
 import { WorkoutSessionEditComponent } from './workout-session-edit/workout-session-edit.component';
 import { WorkoutStatisticsComponent } from './workout-statistics/workout-statistics.component';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel, MatSuffix, MatHint } from '@angular/material/form-field';
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { NgSwitch, NgSwitchCase, NgFor, NgIf } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import { WidgetComponent } from '../widget/widget.component';
+import { WorkoutWidgetService } from './workout.widget.service';
 
 enum WORKOUT_WIDGET_VIEW {
   WORKOUT_SESSIONS_LIST_VIEW = 1,
@@ -46,11 +50,31 @@ enum WORKOUT_STATISTICS {
 }
 
 @Component({
-    selector: 'dash-workout-widget',
-    templateUrl: './workout-widget.component.html',
-    styleUrls: ['./workout-widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, MatIcon, NgSwitch, NgSwitchCase, MatButton, MatFormField, MatLabel, MatInput, MatDatepickerInput, FormsModule, ReactiveFormsModule, MatDatepickerToggle, MatSuffix, MatDatepicker, NgFor, MatHint, NgIf, MatIconButton, WorkoutStatisticsComponent, WorkoutSessionEditComponent, DateFormatPipe]
+  selector: 'dash-workout-widget',
+  templateUrl: './workout-widget.component.html',
+  styleUrls: ['./workout-widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    MatIcon,
+    NgSwitch,
+    NgSwitchCase,
+    MatButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatDatepickerInput,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerToggle,
+    MatSuffix,
+    MatDatepicker,
+    MatHint,
+    MatIconButton,
+    WorkoutStatisticsComponent,
+    WorkoutSessionEditComponent,
+    DateFormatPipe
+  ]
 })
 export class WorkoutWidgetComponent {
   public workoutTypes: IWorkoutType[] = [];

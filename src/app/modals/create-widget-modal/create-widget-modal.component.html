@@ -2,7 +2,8 @@
 
 <mat-dialog-content>
   <div id="widget-types-list">
-    <mat-card *ngFor="let widgetType of widgetTypeEnumKeys">
+    @for(widgetType of widgetTypeEnumKeys; track widgetType.type) {
+    <mat-card >
       <mat-card-content>
         <div class="widget-type-container">
           <mat-icon>{{widgetType.icon }}</mat-icon>
@@ -14,6 +15,7 @@
           [mat-dialog-close]="widgetType.type">Ajouter</button>
       </mat-card-actions>
     </mat-card>
+    }
   </div>
 </mat-dialog-content>
 

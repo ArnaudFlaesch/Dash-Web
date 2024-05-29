@@ -17,7 +17,7 @@ import { WeatherForecastComponent } from './weather-forecast/weather-forecast.co
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatButton } from '@angular/material/button';
 import { WeatherTodayComponent } from './weather-today/weather-today.component';
-import { NgIf, NgFor } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -36,9 +36,9 @@ import { WidgetComponent } from '../widget/widget.component';
     MatLabel,
     MatInput,
     FormsModule,
-    NgIf,
+
     WeatherTodayComponent,
-    NgFor,
+
     MatButton,
     MatSlideToggle,
     WeatherForecastComponent,

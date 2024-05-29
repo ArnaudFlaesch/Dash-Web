@@ -1,8 +1,10 @@
 <div id="miniwidget-list-container">
   <div id="miniwidget-list">
-    <div class="miniwidget-container" *ngFor="let miniWidget of this.miniWidgetList">
+    @for(miniWidget of this.miniWidgetList; track miniWidget.id) {
+    <div class="miniwidget-container">
       <ng-template #dynamic></ng-template>
     </div>
+    }
   </div>
   <button (click)="this.openCreateMiniWidgetModal()" matTooltip="Ajouter un nouveau mini widget"
     id="add-mini-widget-button" color="primary" mat-mini-fab>
