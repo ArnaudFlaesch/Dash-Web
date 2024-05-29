@@ -26,9 +26,10 @@
           </mat-form-field>
 
           <div id="workout-sessions-grid">
-            <span class="workout-session" *ngFor="let workoutSession of this.workoutSessions"
-              (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate | dateFormat:'short' }}
-            </span>
+            @for(workoutSession of this.workoutSessions; track workoutSession.id) {
+            <span class="workout-session" (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate |
+              dateFormat:'short' }}</span>
+            }
           </div>
 
           <h4>Créer une session</h4>
@@ -45,28 +46,39 @@
           </button>
         </div>
 
-        <div id="workout-stats-by-week-container" *ngIf="this.workoutStatsByWeek.length">
+        @if(this.workoutStatsByWeek.length) {
+        <div id="workout-stats-by-week-container">
           <div class="workout-stats-header">Cette semaine :</div>
           <div class="stats-container">
-            <div *ngFor="let workoutStat of this.workoutStatsByWeek">
+            @for(workoutStat of this.workoutStatsByWeek; track workoutStat.workoutTypeName) {
+            <div>
               {{workoutStat.workoutTypeName}} : {{workoutStat.totalNumberOfReps}}
             </div>
+            }
           </div>
         </div>
+        }
 
-        <div id="workout-stats-by-month-container" *ngIf="this.workoutStatsByMonth.length">
+
+        @if(this.workoutStatsByMonth.length) {
+        <div id="workout-stats-by-month-container">
           <div class="workout-stats-header">Ce mois-ci</div>
           <div class="stats-container">
-            <div *ngFor="let workoutStat of this.workoutStatsByMonth">
+            @for(workoutStat of this.workoutStatsByMonth; track workoutStat.workoutTypeName) {
+            <div>
               {{workoutStat.workoutTypeName}} :{{workoutStat.totalNumberOfReps}}
             </div>
+            }
           </div>
         </div>
+        }
 
         <h2>Types d'exercices</h2>
         <div id="workout-types-grid">
-          <span class="workoutTypeName" *ngFor="let workoutType of this.workoutTypes">
+          @for(workoutType of this.workoutTypes; track workoutType.id) {
+          <span class="workoutTypeName">
             {{ workoutType.name }}</span>
+          }
         </div>
 
         <div>

@@ -2,13 +2,14 @@
   (refreshWidgetAction)="this.refreshWidget()">
 
   <ng-template #headerIcon>
-    <img class="rss-widget-header" *ngIf="this.image" src="{{ image.url }}" alt="logo" />
+    @if(this.image) {<img class="rss-widget-header"  src="{{ image.url }}" alt="logo" />}
   </ng-template>
 
   <ng-template #headerTitle>
-    <a *ngIf="this.image" [href]="this.image.link | safe: 'url'">
+    @if(this.image) {
+    <a  [href]="this.image.link | safe: 'url'">
       <div class="rss-title">{{ this.title }}</div>
-    </a>
+    </a> }
   </ng-template>
 
   <ng-template #editComponent>
@@ -26,10 +27,11 @@
   </ng-template>
 
   <ng-template #body>
-    <div class="rss-widget-body" *ngIf="this.urlFeed">
+    @if(this.urlFeed) {
+    <div class="rss-widget-body" >
       <div class="rss-widget-description">{{ this.description }}</div>
       <dash-rss-feed [feed]="this.feed" [readArticles]="this.readArticles"
         (markArticleAsReadEvent)="this.markArticleAsRead($event)"></dash-rss-feed>
-    </div>
+    </div>}
   </ng-template>
 </dash-widget>

@@ -18,34 +18,39 @@
   </ng-template>
 
   <ng-template #body>
-    <ng-template [ngIf]="this.lastIncidentDate" [ngIfElse]="startStreak">
-      <ng-template [ngIf]="this.isWidgetViewCurrentStreak()" [ngIfElse]="pastStreaksView">
-        <div id="incident-widget-body-header">
-          <div> Dernier incident le {{lastIncidentDate | dateFormat : 'short'}}</div>
-          <button (click)="this.goToPastStreaksView()" *ngIf="this.streaks.length > 0" mat-raised-button>Séries
-            précédentes</button>
-        </div>
 
-        <div id="incident-widget-body">
-          <div id="number-of-days-since-last-incident">{{this.getDaysSinceLastIncident()}} jours</div>
-          <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">Terminer</button>
-        </div>
-      </ng-template>
+    @if(this.lastIncidentDate) {
 
-      <ng-template #pastStreaksView>
-        <button id="go-to-current-streak-button" (click)="this.goToCurrentStreakView()" mat-raised-button>Série
-          actuelle</button>
+    @if(this.isWidgetViewCurrentStreak()) {
+    <div id="incident-widget-body-header">
+      <div> Dernier incident le {{lastIncidentDate | dateFormat : 'short'}}</div>
+      @if(this.streaks.length > 0) {
+      <button (click)="this.goToPastStreaksView()" mat-raised-button>Séries
+        précédentes</button>
+      }
+    </div>
 
-        <div id="past-streaks-list" *ngIf="this.streaks.length > 0">
-          <div *ngFor="let streak of this.streaks">{{this.getNumberOfDaysFromStreak(streak.streakStartDate,
-            streak.streakEndDate)}} jours</div>
-        </div>
-      </ng-template>
+    <div id="incident-widget-body">
+      <div id="number-of-days-since-last-incident">{{this.getDaysSinceLastIncident()}} jours</div>
+      <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">Terminer</button>
+    </div>
+    }
+    @else {
+    <button id="go-to-current-streak-button" (click)="this.goToCurrentStreakView()" mat-raised-button>Série
+      actuelle</button>
 
-    </ng-template>
-
-    <ng-template #startStreak>
-      <button mat-raised-button (click)="startNewStreak()">Départ</button>
-    </ng-template>
+    @if(this.streaks.length > 0) {
+    <div id="past-streaks-list">
+      @for(streak of this.streaks; track streak.streakStartDate) {
+      <div>{{this.getNumberOfDaysFromStreak(streak.streakStartDate,
+        streak.streakEndDate)}} jours</div>
+      }
+    </div>
+    }
+    }
+    }
+    @else {
+    <button mat-raised-button (click)="startNewStreak()">Départ</button>
+    }
   </ng-template>
 </dash-widget>

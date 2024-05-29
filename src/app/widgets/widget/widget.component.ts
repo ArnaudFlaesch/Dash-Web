@@ -8,14 +8,22 @@ import { DeleteWidgetComponent } from '../delete-widget/delete-widget.component'
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIconButton, MatButton } from '@angular/material/button';
-import { NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
-    selector: 'dash-widget',
-    templateUrl: './widget.component.html',
-    styleUrls: ['./widget.component.scss'],
-    standalone: true,
-    imports: [NgIf, MatIconButton, MatTooltip, MatIcon, NgTemplateOutlet, MatButton, DeleteWidgetComponent, MatProgressSpinner]
+  selector: 'dash-widget',
+  templateUrl: './widget.component.html',
+  styleUrls: ['./widget.component.scss'],
+  standalone: true,
+  imports: [
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    NgTemplateOutlet,
+    MatButton,
+    DeleteWidgetComponent,
+    MatProgressSpinner
+  ]
 })
 export class WidgetComponent extends AbstractWidgetComponent {
   @ContentChild('headerIcon', { static: false })

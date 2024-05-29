@@ -2,16 +2,25 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { format } from 'date-fns';
 import { IActivity } from '../IStrava';
 import { fr } from 'date-fns/locale/fr';
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelContent } from '@angular/material/expansion';
-import { NgFor } from '@angular/common';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+  MatExpansionPanelContent
+} from '@angular/material/expansion';
 
 @Component({
-    selector: 'dash-strava-activities',
-    templateUrl: './strava-activities.component.html',
-    styleUrls: ['./strava-activities.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgFor, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelContent]
+  selector: 'dash-strava-activities',
+  templateUrl: './strava-activities.component.html',
+  styleUrls: ['./strava-activities.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatExpansionPanelContent
+  ]
 })
 export class StravaActivitiesComponent {
   @Input()

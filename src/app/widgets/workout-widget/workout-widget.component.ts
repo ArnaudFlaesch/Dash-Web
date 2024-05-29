@@ -1,7 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle
+} from '@angular/material/datepicker';
 import {
   endOfMonth,
   endOfWeek,
@@ -28,7 +32,7 @@ import { WorkoutStatisticsComponent } from './workout-statistics/workout-statist
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel, MatSuffix, MatHint } from '@angular/material/form-field';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { NgSwitch, NgSwitchCase, NgFor, NgIf } from '@angular/common';
+import { NgSwitch, NgSwitchCase, NgIf } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
 
@@ -46,11 +50,31 @@ enum WORKOUT_STATISTICS {
 }
 
 @Component({
-    selector: 'dash-workout-widget',
-    templateUrl: './workout-widget.component.html',
-    styleUrls: ['./workout-widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, MatIcon, NgSwitch, NgSwitchCase, MatButton, MatFormField, MatLabel, MatInput, MatDatepickerInput, FormsModule, ReactiveFormsModule, MatDatepickerToggle, MatSuffix, MatDatepicker, NgFor, MatHint, NgIf, MatIconButton, WorkoutStatisticsComponent, WorkoutSessionEditComponent, DateFormatPipe]
+  selector: 'dash-workout-widget',
+  templateUrl: './workout-widget.component.html',
+  styleUrls: ['./workout-widget.component.scss'],
+  standalone: true,
+  imports: [
+    WidgetComponent,
+    MatIcon,
+    NgSwitch,
+    NgSwitchCase,
+    MatButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatDatepickerInput,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerToggle,
+    MatSuffix,
+    MatDatepicker,
+    MatHint,
+    MatIconButton,
+    WorkoutStatisticsComponent,
+    WorkoutSessionEditComponent,
+    DateFormatPipe
+  ]
 })
 export class WorkoutWidgetComponent {
   public workoutTypes: IWorkoutType[] = [];

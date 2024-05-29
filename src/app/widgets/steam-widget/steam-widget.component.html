@@ -28,16 +28,19 @@
         <input matInput [formControl]="searchFormControl" />
       </mat-form-field>
 
-      <button *ngIf="this.searchFormControl.dirty && this.searchFormControl.value" mat-icon-button
+      @if(this.searchFormControl.dirty && this.searchFormControl.value) {
+      <button  mat-icon-button
         matTooltip="Annuler la recherche" id="reset-form-button" (click)="this.resetForm()">
         <mat-icon aria-hidden="false">close</mat-icon>
       </button>
+    }
     </form>
 
-    <div *ngFor="let game of this.ownedGamesDisplay">
-      <dash-game-details [steamUserId]="this.steamUserId" [profileUrl]="this.playerData?.profileurl"
-        [gameInfo]="game"></dash-game-details>
-    </div>
+    @for(game of this.ownedGamesDisplay; track game.appid) {
+    <dash-game-details [steamUserId]="this.steamUserId" [profileUrl]="this.playerData?.profileurl"
+      [gameInfo]="game"></dash-game-details>
+    }
+
     <mat-paginator (page)="onPageChanged($event)" [length]="gameCount" [pageSize]="pageSize" [pageIndex]="pageNumber"
       [pageSizeOptions]="pageSizeOptions" aria-label="Sélectionnez une page">
     </mat-paginator>

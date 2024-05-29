@@ -1,9 +1,12 @@
 <div class="forecast-row">
-  <div class="forecast-container" *ngFor="let forecastDay of this.forecast">
+  @for(forecastDay of this.forecast; track forecastDay.dt) {
+  <div class="forecast-container">
     <div class="forecast">
-      <div class="forecast-time" *ngIf="forecastDay">
+      @if(forecastDay) {
+      <div class="forecast-time">
         {{ getDateToDisplay(forecastDay.dt, this.timezone) }}
       </div>
+      }
       <div>
         <img [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')" class="current-weather-icon"
           [matTooltip]="forecastDay.weather[0].description | initialUppercase"
@@ -25,4 +28,5 @@
       </div>
     </div>
   </div>
+  }
 </div>

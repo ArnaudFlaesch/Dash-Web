@@ -2,7 +2,8 @@
 
 <mat-dialog-content>
   <div id="mini-widget-types-list">
-    <mat-card *ngFor="let miniWidgetType of miniWidgetTypeEnumKeys">
+    @for(miniWidgetType of miniWidgetTypeEnumKeys; track miniWidgetType.type){
+    <mat-card >
       <mat-card-content>
         <div class="mini-widget-type-container">
           <mat-icon>{{miniWidgetType.icon }}</mat-icon>
@@ -14,6 +15,7 @@
           [mat-dialog-close]="miniWidgetType.type">Ajouter</button>
       </mat-card-actions>
     </mat-card>
+  }
   </div>
 </mat-dialog-content>
 

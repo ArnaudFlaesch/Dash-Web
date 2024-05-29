@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmModalComponent } from '../../modals/confirm-modal/confirm-modal.component';
 import { DateFormatPipe } from '../../pipes/date-format.pipe';
 import { MatButton } from '@angular/material/button';
-import { NgIf, NgFor } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -27,9 +27,9 @@ import { WidgetComponent } from '../widget/widget.component';
     MatLabel,
     MatInput,
     FormsModule,
-    NgIf,
+
     MatButton,
-    NgFor,
+
     DateFormatPipe
   ]
 })

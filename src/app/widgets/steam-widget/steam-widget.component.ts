@@ -13,7 +13,7 @@ import { GameDetailsComponent } from './game-details/game-details.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIconButton } from '@angular/material/button';
-import { NgIf, NgFor } from '@angular/common';
+
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { WidgetComponent } from '../widget/widget.component';
@@ -30,11 +30,11 @@ import { WidgetComponent } from '../widget/widget.component';
     MatInput,
     FormsModule,
     ReactiveFormsModule,
-    NgIf,
+
     MatIconButton,
     MatTooltip,
     MatIcon,
-    NgFor,
+
     GameDetailsComponent,
     MatPaginator
   ]

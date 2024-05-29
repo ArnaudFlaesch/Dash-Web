@@ -11,15 +11,14 @@
 
   <ng-template #editComponent>
     <div id="calendar-urls-list-container">
-      <div *ngFor="let calendarUrl of this.calendarUrls; let index = index">
-        <div class="calendar-url-container">
-          <input id="{{ index.toString() }}" (change)="onCalendarUrlUpdated($event)" [value]="calendarUrl"
-            placeholder="Saisissez une URL" />
+      @for(calendarUrl of this.calendarUrls; track calendarUrl ; let index = $index) {
+      <div class="calendar-url-container">
+        <input id="{{ index.toString() }}" (change)="onCalendarUrlUpdated($event)" [value]="calendarUrl"
+          placeholder="Saisissez une URL" />
 
-          <button mat-raised-button class="removeCalendarUrl"
-            (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
-        </div>
+        <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
       </div>
+      }
     </div>
     <button mat-raised-button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>
   </ng-template>

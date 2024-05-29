@@ -9,14 +9,14 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIconButton, MatButton } from '@angular/material/button';
-import { NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
-    selector: 'dash-mini-widget',
-    templateUrl: './mini-widget.component.html',
-    styleUrls: ['./mini-widget.component.scss'],
-    standalone: true,
-    imports: [NgIf, NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
+  selector: 'dash-mini-widget',
+  templateUrl: './mini-widget.component.html',
+  styleUrls: ['./mini-widget.component.scss'],
+  standalone: true,
+  imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })
 export class MiniWidgetComponent extends AbstractWidgetComponent {
   private ERROR_UPDATING_WIDGET_DATA =

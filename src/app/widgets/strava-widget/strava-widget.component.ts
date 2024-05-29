@@ -13,7 +13,7 @@ import { StravaActivitiesComponent } from './strava-activities/strava-activities
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { NgIf } from '@angular/common';
+
 import { WidgetComponent } from '../widget/widget.component';
 import { BaseChartDirective } from 'ng2-charts';
 
@@ -25,7 +25,7 @@ import { BaseChartDirective } from 'ng2-charts';
   imports: [
     WidgetComponent,
     BaseChartDirective,
-    NgIf,
+
     MatIcon,
     MatIconButton,
     MatTooltip,

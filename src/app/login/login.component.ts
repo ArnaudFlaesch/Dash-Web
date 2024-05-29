@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -13,7 +12,7 @@ import { ErrorHandlerService } from './../services/error.handler.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [RouterLink, FormsModule, MatButton, NgIf, MatProgressSpinner]
+  imports: [RouterLink, FormsModule, MatButton, MatProgressSpinner]
 })
 export class LoginComponent {
   public isLoading = false;

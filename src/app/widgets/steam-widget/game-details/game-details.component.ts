@@ -4,15 +4,25 @@ import { Component, Input } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IAchievement, IAchievementResponse, IGameInfoDisplay } from '../ISteam';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelContent } from '@angular/material/expansion';
-import { NgIf } from '@angular/common';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+  MatExpansionPanelContent
+} from '@angular/material/expansion';
 
 @Component({
-    selector: 'dash-game-details',
-    templateUrl: './game-details.component.html',
-    styleUrls: ['./game-details.component.scss'],
-    standalone: true,
-    imports: [NgIf, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelContent, MatProgressSpinner]
+  selector: 'dash-game-details',
+  templateUrl: './game-details.component.html',
+  styleUrls: ['./game-details.component.scss'],
+  standalone: true,
+  imports: [
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatExpansionPanelContent,
+    MatProgressSpinner
+  ]
 })
 export class GameDetailsComponent {
   @Input()

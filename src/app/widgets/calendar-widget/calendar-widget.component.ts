@@ -19,7 +19,7 @@ import { fr } from 'date-fns/locale';
 import { InitialUppercasePipe } from '../../pipes/initial.uppercase.pipe';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatButton } from '@angular/material/button';
-import { NgFor, NgSwitch, NgSwitchCase } from '@angular/common';
+import { NgSwitch, NgSwitchCase } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
 
@@ -31,7 +31,7 @@ import { WidgetComponent } from '../widget/widget.component';
   imports: [
     WidgetComponent,
     MatIcon,
-    NgFor,
+
     MatButton,
     MatTooltip,
     CalendarCommonModule,

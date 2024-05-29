@@ -1,40 +1,46 @@
 <div class="mini-widget">
-  <div *ngIf="isModeEdit()">
-    <div class="edit-mini-widget">
-      <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
-      <button class="cancelButton" matTooltip="Annuler" mat-icon-button (click)="cancelEdition()"
-        *ngIf="this.isWidgetLoaded && this.widgetData">
-        <mat-icon>undo</mat-icon>
-      </button>
-      <button class="validateButton" matTooltip="Valider" mat-icon-button (click)="onValidation()" color="primary"
-        [disabled]="!this.isFormValid">
-        <mat-icon>check</mat-icon>
-      </button>
-      <button mat-icon-button matTooltip="Supprimer le widget" (click)="this.toDeleteMode()" color="alert">
-        <mat-icon aria-hidden="false">delete</mat-icon>
-      </button>
-    </div>
+  @if(isModeEdit()) {
+  <div class="edit-mini-widget">
+    <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
 
+    @if(this.isWidgetLoaded && this.widgetData) {
+    <button class="cancelButton" matTooltip="Annuler" mat-icon-button (click)="cancelEdition()">
+      <mat-icon>undo</mat-icon>
+    </button>
+    }
+
+    <button class="validateButton" matTooltip="Valider" mat-icon-button (click)="onValidation()" color="primary"
+      [disabled]="!this.isFormValid">
+      <mat-icon>check</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Supprimer le widget" (click)="this.toDeleteMode()" color="alert">
+      <mat-icon aria-hidden="false">delete</mat-icon>
+    </button>
   </div>
+  }
 
-  <div *ngIf="this.isModeDelete()">
+  @if(isModeDelete()) {
+  <div>
     <h4>Êtes-vous sûr de vouloir supprimer ce widget ?</h4>
     <div id="delete-mini-widget-actions">
       <button (click)="deleteMiniWidget()" mat-raised-button color="warn"
         class="validateDeletionButton">Supprimer</button>
     </div>
   </div>
+  }
 
-  <div *ngIf="this.isModeRead()" (dblclick)="this.toEditMode()">
+  @if(isModeRead()) {
+  <div (dblclick)="this.toEditMode()">
     <div class="read-mini-widget-body-container">
-      <ng-template [ngIf]="this.isWidgetLoaded" [ngIfElse]="isWidgetLoading">
-        <ng-container *ngTemplateOutlet="body"> </ng-container>
-      </ng-template>
-      <ng-template #isWidgetLoading>
-        <div class="loading-spinner">
-          <mat-spinner></mat-spinner>
-        </div>
-      </ng-template>
+      @if(this.isWidgetLoaded) {
+      <ng-container *ngTemplateOutlet="body"> </ng-container>
+      }
+      @else {
+      <div class="loading-spinner">
+        <mat-spinner></mat-spinner>
+      </div>
+      }
     </div>
   </div>
+  }
 </div>

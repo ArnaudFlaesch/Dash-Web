@@ -9,11 +9,11 @@ export interface IMenu {
 }
 
 @Component({
-    selector: 'dash-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: true,
-    imports: [RouterOutlet]
+  selector: 'dash-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
   title = 'Dash';

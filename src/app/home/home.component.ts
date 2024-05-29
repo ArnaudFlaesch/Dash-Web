@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
-import { Location, NgIf, NgFor, NgClass } from '@angular/common';
+import { Location, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -31,11 +31,30 @@ import { MatMiniFabButton } from '@angular/material/button';
 import { TabComponent } from '../tab/tab.component';
 
 @Component({
-    selector: 'dash-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    standalone: true,
-    imports: [NgIf, CdkDropList, NgFor, TabComponent, CdkDrag, NgClass, MatMiniFabButton, MatTooltip, MatIcon, MatMenuTrigger, NotificationsComponent, MatMenu, MatMenuItem, MatSlideToggle, FormsModule, ReactiveFormsModule, MatDivider, MiniWidgetListComponent, WidgetListComponent, MatProgressSpinner]
+  selector: 'dash-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  standalone: true,
+  imports: [
+    CdkDropList,
+    TabComponent,
+    CdkDrag,
+    NgClass,
+    MatMiniFabButton,
+    MatTooltip,
+    MatIcon,
+    MatMenuTrigger,
+    NotificationsComponent,
+    MatMenu,
+    MatMenuItem,
+    MatSlideToggle,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDivider,
+    MiniWidgetListComponent,
+    WidgetListComponent,
+    MatProgressSpinner
+  ]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public tabs: ITab[] = [];

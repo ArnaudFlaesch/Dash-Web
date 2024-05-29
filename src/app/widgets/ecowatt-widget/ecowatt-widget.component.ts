@@ -11,11 +11,11 @@ import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
-    selector: 'dash-ecowatt-widget',
-    templateUrl: './ecowatt-widget.component.html',
-    styleUrls: ['./ecowatt-widget.component.scss'],
-    standalone: true,
-    imports: [WidgetComponent, MatIcon, SafePipe]
+  selector: 'dash-ecowatt-widget',
+  templateUrl: './ecowatt-widget.component.html',
+  styleUrls: ['./ecowatt-widget.component.scss'],
+  standalone: true,
+  imports: [WidgetComponent, MatIcon, SafePipe]
 })
 export class EcowattWidgetComponent implements AfterViewInit {
   @ViewChild('iframeContainer')

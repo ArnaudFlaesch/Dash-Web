@@ -1,4 +1,5 @@
-<mat-expansion-panel *ngFor="let activity of this.activities" class="stravaActivity" hideToggle>
+@for(activity of this.activities; track activity.id) {
+<mat-expansion-panel class="stravaActivity" hideToggle>
   <mat-expansion-panel-header>
     <mat-panel-title> {{ getTitleToDisplay(activity) }} </mat-panel-title>
   </mat-expansion-panel-header>
@@ -18,3 +19,4 @@
     </div>
   </ng-template>
 </mat-expansion-panel>
+}
