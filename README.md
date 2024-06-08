@@ -53,20 +53,20 @@ directement.
 Sinon, il est possible de récupérer le backend via Docker en commençant par sa
 base de données :
 
-> docker pull postgres:13.2-alpine
+> docker pull postgres:16.3-alpine3.20
 > docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash
-> postgres:13.2-alpine;
+> postgres:16.3-alpine3.20;
 
 et son image Docker :
 
-> docker pull arnaudf93/dashwebservices:latest
+> docker pull ghcr.io/arnaudflaesch/dash-webservices:latest
 
 puis de l'exécuter via la commande :
 
-> docker run -p 8080:8080 -d -e OPENWEATHERMAP_KEY=${OPENWEATHERMAP_KEY} -e
-> STRAVA_CLIENT_ID=${STRAVA_CLIENT_ID} -e
-> STRAVA_CLIENT_SECRET=${STRAVA_CLIENT_SECRET} -e STEAM_API_KEY=${STEAM_API_KEY}
-> -e AIRPARIF_API_TOKEN=${AIRPARIF_API_TOKEN} arnaudf93/dashwebservices:latest
+> docker run -p 8080:8080 -d -e POSTGRES_PASSWORD=postgres -e OPENWEATHERMAP_KEY=${OPENWEATHERMAP_KEY}
+> -e STRAVA_CLIENT_ID=${STRAVA_CLIENT_ID}
+> -e STRAVA_CLIENT_SECRET=${STRAVA_CLIENT_SECRET} -e STEAM_API_KEY=${STEAM_API_KEY}
+> -e AIRPARIF_API_TOKEN=${AIRPARIF_API_TOKEN} ghcr.io/arnaudflaesch/dash-webservices:latest
 
 en renseignant les variables d'environnement nécessaires en suivant le README du
 backend ici :
