@@ -67,7 +67,7 @@ jobs:
       - name: Start backend image
         run: |
           [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]] && tagName=${{github.ref_name}} || tagName=latest
-          docker run -p 8080:8080 -d --network="host" -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:$tagName
+          docker run -p 8080:8080 -d --network="host" -e POSTGRES_PASSWORD=postgres -e OPENWEATHERMAP_KEY=test -e STRAVA_CLIENT_ID=test -e STRAVA_CLIENT_SECRET=test -e STEAM_API_KEY=test -e AIRPARIF_API_TOKEN=test ghcr.io/arnaudflaesch/dash-webservices:$tagName
 
       - name: E2E Tests
         uses: cypress-io/github-action@v6
