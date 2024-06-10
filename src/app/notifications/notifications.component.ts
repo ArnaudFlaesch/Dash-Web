@@ -20,7 +20,6 @@ import { MatMiniFabButton, MatIconButton } from '@angular/material/button';
 @Component({
   selector: 'dash-notifications',
   templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.scss'],
   standalone: true,
   imports: [
     MatMiniFabButton,

@@ -121,7 +121,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public clearWidgetAutoRefresh(): void {
     if (this.refreshInterval) {
-      //console.log('clearInterval');
       clearInterval(this.refreshInterval);
     }
   }
@@ -211,7 +210,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', 'dashboardConfig.json');
-        document.body.appendChild(link);
+        document.body.innerText += link;
         link.click();
       },
       error: (error: HttpErrorResponse) =>

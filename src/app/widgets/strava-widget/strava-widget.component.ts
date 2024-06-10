@@ -136,7 +136,7 @@ export class StravaWidgetComponent implements OnInit {
       return {
         x: new Date(month),
         y: Math.round(
-          activitiesByMonthList[month].reduce((total: number, distance: number) => total + distance)
+          activitiesByMonthList[month].reduce((total: number, distance: number) => total + distance, 0)
         )
       };
     });

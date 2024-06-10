@@ -14,7 +14,6 @@ import { MatButton } from '@angular/material/button';
 @Component({
   selector: 'dash-import-config-modal',
   templateUrl: './import-config-modal.component.html',
-  styleUrls: ['./import-config-modal.component.scss'],
   standalone: true,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })

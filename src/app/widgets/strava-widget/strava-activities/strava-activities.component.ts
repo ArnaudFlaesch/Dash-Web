@@ -12,7 +12,6 @@ import {
 @Component({
   selector: 'dash-strava-activities',
   templateUrl: './strava-activities.component.html',
-  styleUrls: ['./strava-activities.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

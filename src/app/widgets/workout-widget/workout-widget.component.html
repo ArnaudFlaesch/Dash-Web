@@ -27,8 +27,8 @@
 
           <div id="workout-sessions-grid">
             @for(workoutSession of this.workoutSessions; track workoutSession.id) {
-            <span class="workout-session" (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate |
-              dateFormat:'short' }}</span>
+            <button class="workout-session" (keydown)="editWorkoutSession(workoutSession)" (click)="editWorkoutSession(workoutSession)">{{ workoutSession.workoutDate |
+              dateFormat:'short' }}</button>
             }
           </div>
 

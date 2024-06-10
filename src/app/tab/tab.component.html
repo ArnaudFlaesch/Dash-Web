@@ -4,7 +4,7 @@
       <div class="tab-input" >
         <input (keypress)="this.enterSaveTabName($event)"
           (dblclick)="this.saveTabName(this.tab.id, this.tab.label, this.tab.tabOrder)" [(ngModel)]="this.tab.label" />
-        <mat-icon class="deleteTabButton" (click)="this.deleteTabFromDash()"> delete </mat-icon>
+        <mat-icon class="deleteTabButton" (keydown)="this.deleteTabFromDash()" (click)="this.deleteTabFromDash()"> delete </mat-icon>
       </div>
     }
 }
