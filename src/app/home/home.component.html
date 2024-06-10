@@ -6,6 +6,7 @@
         @for (tab of this.tabs; track tab.id) {
         <dash-tab
           class="tab"
+          (keydown)="selectTab(tab.id)"
           (click)="selectTab(tab.id)"
           (tabDeletedEvent)="deleteTabFromDash($event)"
           [cdkDragDisabled]="!editModeEnabled"

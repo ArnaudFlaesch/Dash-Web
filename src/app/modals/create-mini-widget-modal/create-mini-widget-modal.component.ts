@@ -38,11 +38,12 @@ export class CreateMiniWidgetModalComponent {
   constructor(public dialogRef: MatDialogRef<CreateMiniWidgetModalComponent>) {}
 
   public getWidgetTypeEnumIconToDisplay(miniWidgetType: unknown): string {
-    const key = MiniWidgetTypeEnum[miniWidgetType as MiniWidgetTypeEnum];
-    switch (key as unknown as MiniWidgetTypeEnum) {
-      case MiniWidgetTypeEnum.WEATHER: {
-        return 'sunny';
-      }
+    const key = MiniWidgetTypeEnum[
+      miniWidgetType as MiniWidgetTypeEnum
+    ] as unknown as MiniWidgetTypeEnum;
+    if (key === MiniWidgetTypeEnum.WEATHER) {
+      return 'sunny';
     }
+    return '';
   }
 }

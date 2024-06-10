@@ -11,7 +11,6 @@ export interface IMenu {
 @Component({
   selector: 'dash-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
   standalone: true,
   imports: [RouterOutlet]
 })
