@@ -71,7 +71,7 @@ describe('HomeComponent', () => {
     request.flush(tabData);
     expect(component.tabs).toEqual(tabData);
     const getWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getWidgetsRequest.flush(firstTabWidgetData);
     expect(component.tabs.length).toEqual(2);
@@ -82,7 +82,7 @@ describe('HomeComponent', () => {
     component.selectTab(tabData[1].id);
     expect(component.activeTab).toEqual(tabData[1].id);
     const getSecondTabWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getSecondTabWidgetsRequest.flush([]);
   });
@@ -92,7 +92,7 @@ describe('HomeComponent', () => {
     request.flush(tabData);
     expect(component.tabs).toEqual(tabData);
     const getWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getWidgetsRequest.flush(firstTabWidgetData);
     expect(component.tabs.length).toEqual(2);
@@ -102,7 +102,7 @@ describe('HomeComponent', () => {
     const widgetIdToDelete = component.activeWidgets[1].id;
     component.deleteWidgetFromDashboard(widgetIdToDelete);
     const deleteWidgetRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/deleteWidget?id=' + widgetIdToDelete
+      `${environment.backend_url}/widget/deleteWidget?id=${widgetIdToDelete}`
     );
     deleteWidgetRequest.flush(null, { status: 200, statusText: 'OK' });
     expect(component.activeWidgets.length).toEqual(1);
@@ -111,7 +111,7 @@ describe('HomeComponent', () => {
     const tabIdToDelete = component.tabs[1].id;
     component.deleteTabFromDash(tabIdToDelete);
     const deleteTabRequest = httpTestingController.expectOne(
-      environment.backend_url + '/tab/deleteTab?id=' + tabIdToDelete
+      `${environment.backend_url}/tab/deleteTab?id=${tabIdToDelete}`
     );
     deleteTabRequest.flush(null, { status: 200, statusText: 'OK' });
     expect(component.tabs.length).toEqual(1);
@@ -128,7 +128,7 @@ describe('HomeComponent', () => {
     getTabsRequest.flush(tabsFromDatabase);
 
     const getWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getWidgetsRequest.flush([]);
     expect(component.activeTab).toEqual(tabsFromDatabase[0].id);
@@ -145,19 +145,19 @@ describe('HomeComponent', () => {
     getTabsRequest.flush(tabsFromDatabase);
 
     const getWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getWidgetsRequest.flush([]);
 
     const tabIdToDelete = component.tabs[0].id;
     component.deleteTabFromDash(tabIdToDelete);
     const deleteTabRequest = httpTestingController.expectOne(
-      environment.backend_url + '/tab/deleteTab?id=' + tabIdToDelete
+      `${environment.backend_url}/tab/deleteTab?id=${tabIdToDelete}`
     );
     deleteTabRequest.flush(null);
 
     const getTabWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getTabWidgetsRequest.flush([]);
 
@@ -175,14 +175,14 @@ describe('HomeComponent', () => {
     getTabsRequest.flush(tabsFromDatabase);
 
     const getWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getWidgetsRequest.flush([]);
 
     component.selectTab(component.tabs[1].id);
 
     const getSecondTabWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.tabs[1].id
+      `${environment.backend_url}/widget/?tabId=${component.tabs[1].id}`
     );
     getSecondTabWidgetsRequest.flush([]);
 
@@ -190,12 +190,12 @@ describe('HomeComponent', () => {
 
     component.deleteTabFromDash(tabIdToDelete);
     const deleteTabRequest = httpTestingController.expectOne(
-      environment.backend_url + '/tab/deleteTab?id=' + tabIdToDelete
+      `${environment.backend_url}/tab/deleteTab?id=${tabIdToDelete}`
     );
     deleteTabRequest.flush(null);
 
     const getTabWidgetRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getTabWidgetRequest.flush([]);
     expect(component.activeTab).toEqual(tabsFromDatabase[0].id);
@@ -208,14 +208,14 @@ describe('HomeComponent', () => {
     getTabsRequest.flush(tabsFromDatabase);
 
     const getWidgetsRequest = httpTestingController.expectOne(
-      environment.backend_url + '/widget/?tabId=' + component.activeTab
+      `${environment.backend_url}/widget/?tabId=${component.activeTab}`
     );
     getWidgetsRequest.flush([]);
 
     const lastTabToDelete = component.activeTab;
     component.deleteTabFromDash(lastTabToDelete);
     const deleteLastTabRequest = httpTestingController.expectOne(
-      environment.backend_url + '/tab/deleteTab?id=' + lastTabToDelete
+      `${environment.backend_url}/tab/deleteTab?id=${lastTabToDelete}`
     );
     deleteLastTabRequest.flush(null);
   });
