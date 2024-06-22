@@ -10,7 +10,7 @@ export class SafePipe implements PipeTransform {
 
   public transform(value: string, arg: string): SafeResourceUrl {
     if (arg === 'url') {
-      return this.sanitizer.sanitize(SecurityContext.URL, value) || '';
+      return this.sanitizer.sanitize(SecurityContext.URL, value) ?? '';
     } else if (arg === 'resource_url') {
       return this.sanitizer.bypassSecurityTrustResourceUrl(value);
     } else {
