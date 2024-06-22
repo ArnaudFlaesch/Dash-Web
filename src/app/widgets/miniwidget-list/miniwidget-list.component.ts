@@ -112,14 +112,11 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
           ]
         });
         const widgetData = this.miniWidgetList[index].data;
-        switch (this.miniWidgetList[index].type) {
-          case MiniWidgetTypeEnum.WEATHER: {
-            component = target.createComponent(WeatherMiniWidgetComponent, {
-              injector: injector
-            });
-            component.instance.city = widgetData?.['city'] as string;
-            break;
-          }
+        if (this.miniWidgetList[index].type === MiniWidgetTypeEnum.WEATHER) {
+          component = target.createComponent(WeatherMiniWidgetComponent, {
+            injector: injector
+          });
+          component.instance.city = widgetData?.['city'] as string;
         }
       });
     }
