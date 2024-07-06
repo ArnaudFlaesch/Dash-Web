@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   MatDialogRef,
   MatDialogTitle,
@@ -16,6 +16,7 @@ import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card'
   templateUrl: './create-mini-widget-modal.component.html',
   styleUrls: ['./create-mini-widget-modal.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDialogTitle,
     MatDialogContent,
