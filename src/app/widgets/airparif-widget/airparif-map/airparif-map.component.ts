@@ -57,17 +57,11 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   constructor(private airParifWidgetService: AirParifWidgetService) {
     this.airParifForecastTodayLayer = L.tileLayer.wms(
       this.airParifUrl + 'siteweb/wms',
-      this.getWmsOptions(
-        'siteweb:vue_indice_atmo_2020_com',
-        `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`
-      )
+      this.getAirParifWmsOptions('siteweb:vue_indice_atmo_2020_com')
     );
     this.airParifForecastTomorrowLayer = L.tileLayer.wms(
       this.airParifUrl + 'siteweb/wms',
-      this.getWmsOptions(
-        'siteweb:vue_indice_atmo_2020_com_jp1',
-        `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`
-      )
+      this.getAirParifWmsOptions('siteweb:vue_indice_atmo_2020_com_jp1')
     );
   }
 
@@ -140,7 +134,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
     }
   }
 
-  private getWmsOptions(layer: string, attribution: string) {
+  private getAirParifWmsOptions(layer: string) {
     return {
       service: 'WMS',
       version: '1.3',
@@ -150,7 +144,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
       format: 'image/png8',
       styles: 'nouvel_indice_polygones',
       opacity: 0.5,
-      attribution: attribution,
+      attribution: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`,
       authkey: this.airParifApiKey
     };
   }

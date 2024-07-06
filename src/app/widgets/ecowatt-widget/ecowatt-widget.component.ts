@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -15,6 +16,7 @@ import { WidgetComponent } from '../widget/widget.component';
   templateUrl: './ecowatt-widget.component.html',
   styleUrls: ['./ecowatt-widget.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [WidgetComponent, MatIcon, SafePipe]
 })
 export class EcowattWidgetComponent implements AfterViewInit {
