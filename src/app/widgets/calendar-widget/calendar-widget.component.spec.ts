@@ -2,7 +2,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CalendarView, DateAdapter } from 'angular-calendar';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -10,6 +10,7 @@ import { WidgetService } from '../../services/widget.service/widget.service';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { CalendarWidgetComponent } from './calendar-widget.component';
 import { CalendarWidgetService } from './calendar-widget.service';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('CalendarWidgetComponent', () => {
   let component: CalendarWidgetComponent;
@@ -17,8 +18,10 @@ describe('CalendarWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatSnackBarModule, HttpClientTestingModule],
+      imports: [MatDialogModule, MatSnackBarModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         CalendarWidgetService,
         DateAdapter,
         DateUtilsService,

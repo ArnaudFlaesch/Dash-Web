@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -9,6 +9,7 @@ import { WidgetService } from '../../services/widget.service/widget.service';
 import { IIncident, IIncidentStreak } from './IIncident';
 import { IncidentWidgetComponent } from './incident-widget.component';
 import { IncidentWidgetService } from './incident.widget.service';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('IncidentWidgetComponent', () => {
   let component: IncidentWidgetComponent;
@@ -16,8 +17,10 @@ describe('IncidentWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatSnackBarModule, HttpClientTestingModule],
+      imports: [MatDialogModule, MatSnackBarModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         ErrorHandlerService,
         IncidentWidgetService,
         WidgetService,

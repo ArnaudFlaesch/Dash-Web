@@ -1,13 +1,14 @@
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
 import { MiniWidgetListComponent } from './miniwidget-list.component';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('MiniWidgetListComponent', () => {
   let component: MiniWidgetListComponent;
@@ -15,8 +16,13 @@ describe('MiniWidgetListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatSnackBarModule, HttpClientTestingModule],
-      providers: [MiniWidgetService, ErrorHandlerService]
+      imports: [MatDialogModule, MatSnackBarModule],
+      providers: [
+        MiniWidgetService,
+        ErrorHandlerService,
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(MiniWidgetListComponent);

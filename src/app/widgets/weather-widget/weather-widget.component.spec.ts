@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { format } from 'date-fns';
@@ -10,6 +10,7 @@ import { ErrorHandlerService } from './../../services/error.handler.service';
 import { IForecastAPIResponse } from './IWeather';
 import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('WeatherWidgetComponent', () => {
   let component: WeatherWidgetComponent;
@@ -17,8 +18,10 @@ describe('WeatherWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, HttpClientTestingModule],
+      imports: [MatSnackBarModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         WeatherWidgetService,
         DateUtilsService,
         ErrorHandlerService,

@@ -13,7 +13,7 @@ import {
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IWorkoutSession, IWorkoutType } from './model/Workout';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service/auth.service';
@@ -21,6 +21,7 @@ import { DateUtilsService } from '../../services/date.utils.service/date.utils.s
 import { WidgetService } from '../../services/widget.service/widget.service';
 import { WorkoutWidgetComponent } from './workout-widget.component';
 import { WorkoutWidgetService } from './workout.widget.service';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('WorkoutWidgetComponent', () => {
   let component: WorkoutWidgetComponent;
@@ -30,8 +31,10 @@ describe('WorkoutWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, HttpClientTestingModule],
+      imports: [MatSnackBarModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         DateUtilsService,
         WorkoutWidgetService,
         AuthService,

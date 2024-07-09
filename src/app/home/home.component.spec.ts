@@ -1,9 +1,10 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { RouterTestingModule } from '@angular/router/testing';
 
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { WidgetTypeEnum } from './../enums/WidgetTypeEnum';
 import { IWidgetConfig } from './../model/IWidgetConfig';
@@ -45,8 +46,16 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, MatDialogModule, MatSnackBarModule],
+      imports: [MatDialogModule, MatSnackBarModule],
       providers: [
+        provideRouter([
+          {
+            path: 'home',
+            component: HomeComponent
+          }
+        ]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         AuthService,
         TabService,
         WidgetService,
