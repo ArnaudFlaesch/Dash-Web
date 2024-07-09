@@ -1,11 +1,13 @@
 import { FormsModule } from '@angular/forms';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { HomeComponent } from '../home/home.component';
 import { AuthService } from './../services/auth.service/auth.service';
 import { ErrorHandlerService } from './../services/error.handler.service';
 import { LoginComponent } from './login.component';
@@ -16,14 +18,23 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        MatProgressSpinnerModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        NoopAnimationsModule
-      ],
-      providers: [AuthService, ErrorHandlerService]
+      imports: [FormsModule, MatProgressSpinnerModule, NoopAnimationsModule],
+      providers: [
+        provideRouter([
+          {
+            path: 'login',
+            component: LoginComponent
+          },
+          {
+            path: 'home',
+            component: HomeComponent
+          }
+        ]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        AuthService,
+        ErrorHandlerService
+      ]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(LoginComponent);

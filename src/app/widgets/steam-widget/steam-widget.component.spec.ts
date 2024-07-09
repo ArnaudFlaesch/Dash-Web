@@ -1,7 +1,7 @@
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { IPage } from '../../../app/model/IPage';
 import { environment } from '../../../environments/environment';
@@ -10,6 +10,7 @@ import { WidgetService } from '../../services/widget.service/widget.service';
 import { IGameInfoResponse, IPlayerDataResponse } from './ISteam';
 import { SteamWidgetComponent } from './steam-widget.component';
 import { SteamWidgetService } from './steam.widget.service';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('SteamWidgetComponent', () => {
   let component: SteamWidgetComponent;
@@ -17,8 +18,10 @@ describe('SteamWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, HttpClientTestingModule],
+      imports: [MatSnackBarModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         SteamWidgetService,
         WidgetService,
         ErrorHandlerService,

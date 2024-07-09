@@ -1,12 +1,13 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { IGameInfoDisplay } from '../ISteam';
 import { SteamWidgetService } from '../steam.widget.service';
 import { environment } from './../../../../environments/environment';
 import { GameDetailsComponent } from './game-details.component';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('GameDetailsComponent', () => {
   let component: GameDetailsComponent;
@@ -14,8 +15,13 @@ describe('GameDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, HttpClientTestingModule],
-      providers: [SteamWidgetService, ErrorHandlerService]
+      imports: [MatSnackBarModule],
+      providers: [
+        SteamWidgetService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        ErrorHandlerService
+      ]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(GameDetailsComponent);

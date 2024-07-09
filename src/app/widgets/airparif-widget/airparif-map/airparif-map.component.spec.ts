@@ -2,15 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { AirParifWidgetService } from '../airparif-widget.service';
 import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from '../model/IAirParif';
 import { AirParifMapComponent } from './airparif-map.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('AirParifMapComponent', () => {
   let component: AirParifMapComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [AirParifWidgetService]
+      providers: [provideHttpClient(), provideHttpClientTesting(), AirParifWidgetService]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(AirParifMapComponent);

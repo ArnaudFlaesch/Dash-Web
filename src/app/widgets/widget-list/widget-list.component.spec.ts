@@ -1,9 +1,7 @@
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { RouterTestingModule } from '@angular/router/testing';
-
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { ErrorHandlerService } from '../../services/error.handler.service';
@@ -20,6 +18,9 @@ import { WorkoutWidgetService } from '../workout-widget/workout.widget.service';
 import { WidgetListComponent } from './widget-list.component';
 import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { SimpleChange } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
+import { HomeComponent } from '../../home/home.component';
 
 describe('WidgetListComponent', () => {
   let component: WidgetListComponent;
@@ -27,14 +28,16 @@ describe('WidgetListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        MatSnackBarModule,
-        MatDialogModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        NoopAnimationsModule
-      ],
+      imports: [MatSnackBarModule, MatDialogModule, NoopAnimationsModule],
       providers: [
+        provideRouter([
+          {
+            path: 'home',
+            component: HomeComponent
+          }
+        ]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         RssWidgetService,
         SteamWidgetService,
         StravaWidgetService,

@@ -1,6 +1,6 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { environment } from '../../../../environments/environment';
@@ -9,6 +9,7 @@ import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from '../model/Workout';
 import { WorkoutWidgetService } from '../workout.widget.service';
 import { WorkoutSessionEditComponent } from './workout-session-edit.component';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('WorkoutSessionEditComponent', () => {
   let component: WorkoutSessionEditComponent;
@@ -24,8 +25,13 @@ describe('WorkoutSessionEditComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, DateFormatPipe, HttpClientTestingModule],
-      providers: [WorkoutWidgetService, ErrorHandlerService]
+      imports: [MatSnackBarModule, DateFormatPipe],
+      providers: [
+        WorkoutWidgetService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        ErrorHandlerService
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkoutSessionEditComponent);

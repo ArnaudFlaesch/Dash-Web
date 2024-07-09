@@ -2,7 +2,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { startOfYesterday } from 'date-fns';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { IPage } from '../../app/model/IPage';
 import { environment } from '../../environments/environment';
@@ -11,6 +11,7 @@ import { ErrorHandlerService } from '../services/error.handler.service';
 import { NotificationService } from '../services/notification.service/NotificationService';
 import { WidgetService } from '../services/widget.service/widget.service';
 import { NotificationsComponent } from './notifications.component';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('NotificationsComponent', () => {
   let component: NotificationsComponent;
@@ -18,8 +19,14 @@ describe('NotificationsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, MatMenuModule, HttpClientTestingModule],
-      providers: [WidgetService, ErrorHandlerService, NotificationService]
+      imports: [MatSnackBarModule, MatMenuModule],
+      providers: [
+        WidgetService,
+        ErrorHandlerService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        NotificationService
+      ]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(NotificationsComponent);

@@ -1,12 +1,13 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
 import { AirParifWidgetComponent } from './airparif-widget.component';
 import { AirParifWidgetService } from './airparif-widget.service';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('AirParifWidgetComponent', () => {
   let component: AirParifWidgetComponent;
@@ -65,8 +66,10 @@ describe('AirParifWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MatSnackBarModule],
+      imports: [MatSnackBarModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         AirParifWidgetService,
         ErrorHandlerService,
         WidgetService,

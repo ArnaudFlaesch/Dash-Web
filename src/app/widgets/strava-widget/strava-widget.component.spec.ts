@@ -1,9 +1,9 @@
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { addDays, getTime } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
@@ -11,6 +11,8 @@ import { IActivity, IAthlete, ITokenData } from './IStrava';
 import { StravaWidgetComponent } from './strava-widget.component';
 import { StravaWidgetService } from './strava.widget.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
+import { HomeComponent } from '../../home/home.component';
+import { provideRouter } from '@angular/router';
 
 describe('StravaWidgetComponent', () => {
   let component: StravaWidgetComponent;
@@ -18,8 +20,16 @@ describe('StravaWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [MatSnackBarModule],
       providers: [
+        provideRouter([
+          {
+            path: 'home',
+            component: HomeComponent
+          }
+        ]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         StravaWidgetService,
         ErrorHandlerService,
         WidgetService,

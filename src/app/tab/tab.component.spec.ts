@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from '../../environments/environment';
@@ -6,6 +6,7 @@ import { TabService } from '../services/tab.service/tab.service';
 import { ITab } from './../model/Tab';
 import { ErrorHandlerService } from './../services/error.handler.service';
 import { TabComponent } from './tab.component';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('TabComponent', () => {
   let component: TabComponent;
@@ -19,8 +20,8 @@ describe('TabComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, HttpClientTestingModule],
-      providers: [ErrorHandlerService, TabService]
+      imports: [MatSnackBarModule],
+      providers: [ErrorHandlerService, provideHttpClient(), provideHttpClientTesting(), TabService]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(TabComponent);
