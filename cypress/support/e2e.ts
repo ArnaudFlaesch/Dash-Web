@@ -21,7 +21,6 @@ import { Interception } from 'cypress/types/net-stubbing';
 import './commands';
 
 import 'cypress-file-upload';
-import 'cypress-wait-until';
 
 Cypress.Commands.add('loginAsAdmin', (): Cypress.Chainable<Response> => {
   return loginAs('admintest', 'adminpassword');

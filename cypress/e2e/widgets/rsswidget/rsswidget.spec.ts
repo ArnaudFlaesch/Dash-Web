@@ -47,9 +47,8 @@ describe('RSS Widget tests', () => {
     cy.get('.refreshButton').click();
     cy.wait('@refreshWidget').then(() => {
       cy.get('.widget .rss-article').should('have.length', NUMBER_OF_ARTICLES);
-      cy.waitUntil(() => cy.get('.widget .rss-article:nth(0)  .article-title').should('be.visible'))
-        .get('.widget .rss-article:nth(0)')
-        .click();
+      cy.get('.widget .rss-article:nth(0)  .article-title').should('be.visible');
+      cy.get('.widget .rss-article:nth(0)').click();
       cy.get('.widget .article-content')
         .invoke('text')
         .then((text) => {

@@ -26,13 +26,10 @@ describe('Login tests', () => {
       cy.url().should('be.equal', `${Cypress.config('baseUrl')}home`);
       cy.get('#dash-menu').click();
       cy.get('#logoutButton').click();
-      cy.waitUntil(() =>
-        cy
-          .get('#login-page-title')
-          .should('have.text', 'Dash')
-          .url()
-          .should('be.equal', `${Cypress.config('baseUrl')}login`)
-      ).then(() => expect(localStorage.getItem('user')).to.be.null);
+      cy.get('#login-page-title').should('have.text', 'Dash');
+      cy.url()
+        .should('be.equal', `${Cypress.config('baseUrl')}login`)
+        .then(() => expect(localStorage.getItem('user')).to.be.null);
     });
   });
 });
