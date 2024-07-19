@@ -4,9 +4,8 @@ import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Config tests', () => {
   beforeEach(() => {
-    cy.loginAsAdmin()
-      .visit('/')
-      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'));
+    cy.loginAsAdmin().visit('/');
+    cy.get('.tab.selected-item').should('be.visible');
   });
 
   it('Should export config', () => {

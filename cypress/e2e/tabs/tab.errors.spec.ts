@@ -1,12 +1,10 @@
 import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Tab error tests', () => {
-  beforeEach(() =>
-    cy
-      .loginAsAdmin()
-      .visit('/')
-      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'))
-  );
+  beforeEach(() => {
+    cy.loginAsAdmin().visit('/');
+    cy.get('.tab.selected-item').should('be.visible');
+  });
 
   it('Should fail to get the list of tabs', () => {
     cy.intercept('GET', '/tab/', { statusCode: 500 })

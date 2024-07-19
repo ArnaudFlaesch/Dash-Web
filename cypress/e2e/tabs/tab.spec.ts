@@ -4,9 +4,8 @@ import { Interception } from 'cypress/types/net-stubbing';
 
 describe('Tab tests', () => {
   beforeEach(() => {
-    cy.loginAsAdmin()
-      .visit('/')
-      .waitUntil(() => cy.get('.tab.selected-item').should('be.visible'));
+    cy.loginAsAdmin().visit('/');
+    cy.get('.tab.selected-item').should('be.visible');
   });
 
   it('Should create a new tab', () => {
