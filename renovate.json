@@ -18,11 +18,11 @@
       "groupName": "eslint-tslint",
       "matchPackagePatterns": [
         "^eslint",
-        "^@typescript-eslint/"
+        "typescript-eslint"
       ]
     }
   ],
   "schedule": [
-    "on friday and saturday at 2:00 pm"
+    "on wednesday and friday at 2:00 pm"
   ]
 }
