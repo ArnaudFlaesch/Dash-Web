@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 import addContext = require('mochawesome/addContext');
 
 // Import commands.ts using ES2015 syntax:
