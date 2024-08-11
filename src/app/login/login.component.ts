@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -12,6 +12,7 @@ import { ErrorHandlerService } from './../services/error.handler.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Default,
   imports: [RouterLink, FormsModule, MatButton, MatProgressSpinner]
 })
 export class LoginComponent {

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatDatepicker,
@@ -53,6 +53,7 @@ enum WORKOUT_STATISTICS {
   selector: 'dash-workout-widget',
   templateUrl: './workout-widget.component.html',
   styleUrls: ['./workout-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,

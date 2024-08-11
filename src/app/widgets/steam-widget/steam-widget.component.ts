@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -22,6 +22,7 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-steam-widget',
   templateUrl: './steam-widget.component.html',
   styleUrls: ['./steam-widget.component.scss', '../widget/widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -30,11 +31,9 @@ import { WidgetComponent } from '../widget/widget.component';
     MatInput,
     FormsModule,
     ReactiveFormsModule,
-
     MatIconButton,
     MatTooltip,
     MatIcon,
-
     GameDetailsComponent,
     MatPaginator
   ]

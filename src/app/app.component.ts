@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service/auth.service';
 import { ThemeService } from './services/theme.service/theme.service';
@@ -12,6 +12,7 @@ export interface IMenu {
   selector: 'dash-root',
   templateUrl: './app.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Default,
   imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {

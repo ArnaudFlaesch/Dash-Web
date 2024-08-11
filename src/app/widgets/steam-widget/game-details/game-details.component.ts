@@ -1,6 +1,6 @@
 import { ErrorHandlerService } from './../../../services/error.handler.service';
 import { SteamWidgetService } from './../steam.widget.service';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IAchievement, IAchievementResponse, IGameInfoDisplay } from '../ISteam';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -15,6 +15,7 @@ import {
   selector: 'dash-game-details',
   templateUrl: './game-details.component.html',
   styleUrls: ['./game-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     MatExpansionPanel,

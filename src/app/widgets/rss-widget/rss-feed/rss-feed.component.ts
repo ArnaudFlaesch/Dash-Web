@@ -20,7 +20,6 @@ import {
   standalone: true,
   imports: [
     MatAccordion,
-
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,

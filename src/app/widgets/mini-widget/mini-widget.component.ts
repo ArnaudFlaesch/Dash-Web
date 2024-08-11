@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
@@ -15,6 +15,7 @@ import { NgTemplateOutlet } from '@angular/common';
   selector: 'dash-mini-widget',
   templateUrl: './mini-widget.component.html',
   styleUrls: ['./mini-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })

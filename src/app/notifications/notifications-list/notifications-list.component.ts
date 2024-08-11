@@ -10,7 +10,7 @@ import { DateFormatPipe } from '../../pipes/date-format.pipe';
   selector: 'dash-notifications-list',
   templateUrl: './notifications-list.component.html',
   styleUrl: './notifications-list.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [NgClass, MatTooltip, MatIcon, MatIconButton, DateFormatPipe]
 })

@@ -1,4 +1,10 @@
-import { Component, ContentChild, Inject, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  Inject,
+  TemplateRef
+} from '@angular/core';
 
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
 import { WidgetService } from '../../../app/services/widget.service/widget.service';
@@ -14,6 +20,7 @@ import { NgTemplateOutlet } from '@angular/common';
   selector: 'dash-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     MatIconButton,

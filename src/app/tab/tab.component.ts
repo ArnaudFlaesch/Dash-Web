@@ -1,6 +1,6 @@
 import { ErrorHandlerService } from './../services/error.handler.service';
 import { TabService } from './../services/tab.service/tab.service';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ITab } from '../model/Tab';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatIcon } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Default,
   imports: [FormsModule, MatIcon]
 })
 export class TabComponent {
