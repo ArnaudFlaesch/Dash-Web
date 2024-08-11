@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 import pluginCypress from 'eslint-plugin-cypress/flat';
 import eslintConfigPrettier from 'eslint-config-prettier';
 //jest
-//  'prettier'
+
 export default [
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   { languageOptions: { globals: globals.browser } },

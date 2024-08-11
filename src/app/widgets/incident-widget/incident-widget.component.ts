@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IIncidentStreak, IIncidentViewEnum } from './IIncident';
@@ -19,6 +19,7 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-incident-widget',
   templateUrl: './incident-widget.component.html',
   styleUrls: ['./incident-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -27,9 +28,7 @@ import { WidgetComponent } from '../widget/widget.component';
     MatLabel,
     MatInput,
     FormsModule,
-
     MatButton,
-
     DateFormatPipe
   ]
 })

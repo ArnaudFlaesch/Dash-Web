@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ErrorHandlerService } from '../../../../app/services/error.handler.service';
 import { IWeatherAPIResponse, IForecast, ICity } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
@@ -15,6 +15,7 @@ import { MiniWidgetComponent } from '../../mini-widget/mini-widget.component';
   selector: 'dash-weather-miniwidget',
   templateUrl: './weather-miniwidget.component.html',
   styleUrls: ['./weather-miniwidget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     MiniWidgetComponent,

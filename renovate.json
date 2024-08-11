@@ -1,28 +1,15 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "assignees": [
-    "ArnaudFlaesch"
-  ],
+  "extends": ["config:base"],
+  "assignees": ["ArnaudFlaesch"],
   "packageRules": [
     {
       "groupName": "angular",
-      "matchPackagePatterns": [
-        "^@angular/",
-        "^@angular-devkit/",
-        "zone.js/"
-      ]
+      "matchPackagePatterns": ["^@angular/", "^@angular-devkit/", "zone.js/"]
     },
     {
       "groupName": "eslint-tslint",
-      "matchPackagePatterns": [
-        "^eslint",
-        "typescript-eslint"
-      ]
+      "matchPackagePatterns": ["^eslint", "typescript-eslint"]
     }
   ],
-  "schedule": [
-    "on wednesday and friday at 2:00 pm"
-  ]
+  "schedule": ["on wednesday and friday at 2:00 pm"]
 }

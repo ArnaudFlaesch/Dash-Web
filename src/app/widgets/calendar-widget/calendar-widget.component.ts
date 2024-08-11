@@ -1,4 +1,4 @@
-import { Component, Inject, LOCALE_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, LOCALE_ID } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
   CalendarEvent,
@@ -27,11 +27,11 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-calendar-widget',
   templateUrl: './calendar-widget.component.html',
   styleUrls: ['./calendar-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,
     MatIcon,
-
     MatButton,
     MatTooltip,
     CalendarCommonModule,

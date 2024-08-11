@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
@@ -21,11 +21,11 @@ import { BaseChartDirective } from 'ng2-charts';
   selector: 'dash-strava-widget',
   templateUrl: './strava-widget.component.html',
   styleUrls: ['./strava-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,
     BaseChartDirective,
-
     MatIcon,
     MatIconButton,
     MatTooltip,

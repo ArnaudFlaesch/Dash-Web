@@ -1,5 +1,5 @@
 import { ErrorHandlerService } from './../../services/error.handler.service';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   MatDialogRef,
   MatDialogTitle,
@@ -15,6 +15,7 @@ import { MatButton } from '@angular/material/button';
   selector: 'dash-import-config-modal',
   templateUrl: './import-config-modal.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Default,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ImportConfigModalComponent {

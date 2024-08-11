@@ -1,7 +1,7 @@
 import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { IArticle, ImageContent, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -21,10 +21,10 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-rss-widget',
   templateUrl: './rss-widget.component.html',
   styleUrls: ['./rss-widget.component.scss', '../widget/widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,
-
     MatFormField,
     MatLabel,
     MatInput,

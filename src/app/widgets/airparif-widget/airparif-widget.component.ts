@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { AirParifWidgetService } from './airparif-widget.service';
@@ -15,6 +15,7 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-airparif-widget',
   templateUrl: './airparif-widget.component.html',
   styleUrls: ['./airparif-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,

@@ -1,5 +1,5 @@
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './../model/Workout';
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core';
 import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { WorkoutWidgetService } from '../workout.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -13,6 +13,7 @@ import { NgClass } from '@angular/common';
   selector: 'dash-workout-session-edit',
   templateUrl: './workout-session-edit.component.html',
   styleUrls: ['./workout-session-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })

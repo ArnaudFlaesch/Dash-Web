@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Injector,
@@ -26,6 +27,7 @@ import { MatMiniFabButton } from '@angular/material/button';
   selector: 'dash-miniwidget-list',
   templateUrl: './miniwidget-list.component.html',
   styleUrls: ['./miniwidget-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [MatMiniFabButton, MatTooltip, MatIcon]
 })

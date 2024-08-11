@@ -19,10 +19,10 @@ import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dash-airparif-map',
   templateUrl: './airparif-map.component.html',
   styleUrls: ['./airparif-map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MatIcon, MatButton]
 })

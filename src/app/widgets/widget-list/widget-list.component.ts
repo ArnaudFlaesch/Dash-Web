@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -28,6 +29,7 @@ import { IncidentWidgetComponent } from '../incident-widget/incident-widget.comp
   selector: 'dash-widget-list',
   templateUrl: './widget-list.component.html',
   styleUrls: ['./widget-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [CdkDropList, CdkDrag]
 })

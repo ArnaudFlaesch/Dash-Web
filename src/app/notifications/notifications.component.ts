@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import {
   INotification,
   INotificationToDisplay,
@@ -20,6 +20,7 @@ import { MatMiniFabButton, MatIconButton } from '@angular/material/button';
 @Component({
   selector: 'dash-notifications',
   templateUrl: './notifications.component.html',
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     MatMiniFabButton,
@@ -93,13 +94,14 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.notificationService.getNotifications().subscribe({
       next: (notifications) => {
         this.notificationsFromDatabase = notifications.content;
-        this.computeNotificationsToDisplay();
+        this.notificationsToDisplay = this.computeNotificationsToDisplay();
+        this.unreadNotificationsForBadge = this.computeUnreadNotificationsBadge();
       }
     });
   }
 
-  private computeNotificationsToDisplay(): void {
-    this.notificationsToDisplay = this.notificationsFromDatabase.map((notification) => {
+  private computeNotificationsToDisplay(): INotificationToDisplay[] {
+    return this.notificationsFromDatabase.map((notification) => {
       return {
         ...notification,
         ...{
@@ -108,7 +110,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         }
       };
     });
-    this.unreadNotificationsForBadge = this.computeUnreadNotificationsBadge();
   }
 
   private computeDateToDisplay(date: string): string {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { format, isToday, startOfDay } from 'date-fns';
 
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -28,6 +28,7 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-weather-widget',
   templateUrl: './weather-widget.component.html',
   styleUrls: ['./weather-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -36,9 +37,7 @@ import { WidgetComponent } from '../widget/widget.component';
     MatLabel,
     MatInput,
     FormsModule,
-
     WeatherTodayComponent,
-
     MatButton,
     MatSlideToggle,
     WeatherForecastComponent,
