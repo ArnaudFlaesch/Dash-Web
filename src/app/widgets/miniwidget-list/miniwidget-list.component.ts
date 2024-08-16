@@ -8,7 +8,8 @@ import {
   OnInit,
   QueryList,
   ViewChildren,
-  ViewContainerRef
+  ViewContainerRef,
+  inject
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -32,6 +33,11 @@ import { MatMiniFabButton } from '@angular/material/button';
   imports: [MatMiniFabButton, MatTooltip, MatIcon]
 })
 export class MiniWidgetListComponent implements OnInit, OnDestroy {
+  private cdRef = inject(ChangeDetectorRef);
+  dialog = inject(MatDialog);
+  private miniWidgetService = inject(MiniWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+
   @ViewChildren('dynamic', { read: ViewContainerRef })
   private miniWidgetTargets: QueryList<ViewContainerRef> | undefined;
 
@@ -41,13 +47,6 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
   private ERROR_MESSAGE_GET_MINI_WIDGETS = 'Erreur lors de la récupération des mini widgets.';
   private ERROR_MESSAGE_ADD_MINI_WIDGET = "Erreur lors de l'ajout d'un mini widget.";
   private ERROR_MESSAGE_DELETE_MINI_WIDGET = 'Erreur lors de la suppression du mini widget.';
-
-  constructor(
-    private cdRef: ChangeDetectorRef,
-    public dialog: MatDialog,
-    private miniWidgetService: MiniWidgetService,
-    private errorHandlerService: ErrorHandlerService
-  ) {}
 
   ngOnInit(): void {
     this.miniWidgetService.getMiniWidgets().subscribe({

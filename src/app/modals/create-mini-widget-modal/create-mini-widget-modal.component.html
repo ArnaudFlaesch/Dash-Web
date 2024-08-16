@@ -2,20 +2,26 @@
 
 <mat-dialog-content>
   <div id="mini-widget-types-list">
-    @for(miniWidgetType of miniWidgetTypeEnumKeys; track miniWidgetType.type){
-    <mat-card >
-      <mat-card-content>
-        <div class="mini-widget-type-container">
-          <mat-icon>{{miniWidgetType.icon }}</mat-icon>
-          <span> {{ miniWidgetType.type }}</span>
-        </div>
-      </mat-card-content>
-      <mat-card-actions>
-        <button id="{{ miniWidgetType.type }}" mat-raised-button color="primary"
-          [mat-dialog-close]="miniWidgetType.type">Ajouter</button>
-      </mat-card-actions>
-    </mat-card>
-  }
+    @for (miniWidgetType of miniWidgetTypeEnumKeys; track miniWidgetType.type) {
+      <mat-card>
+        <mat-card-content>
+          <div class="mini-widget-type-container">
+            <mat-icon>{{ miniWidgetType.icon }}</mat-icon>
+            <span> {{ miniWidgetType.type }}</span>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button
+            id="{{ miniWidgetType.type }}"
+            mat-raised-button
+            color="primary"
+            [mat-dialog-close]="miniWidgetType.type"
+          >
+            Ajouter
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    }
   </div>
 </mat-dialog-content>
 

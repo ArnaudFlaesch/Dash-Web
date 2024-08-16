@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogTitle,
@@ -25,8 +25,12 @@ import { MatButton } from '@angular/material/button';
   ]
 })
 export class EventDetailModalComponent {
+  data = inject(MAT_DIALOG_DATA);
+
   public eventDetail: CalendarEvent;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: CalendarEvent) {
+  constructor() {
+    const data = this.data;
+
     this.eventDetail = data;
   }
 }

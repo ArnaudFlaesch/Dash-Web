@@ -1,6 +1,6 @@
 import { ErrorHandlerService } from './../../../services/error.handler.service';
 import { SteamWidgetService } from './../steam.widget.service';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IAchievement, IAchievementResponse, IGameInfoDisplay } from '../ISteam';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -26,6 +26,9 @@ import {
   ]
 })
 export class GameDetailsComponent {
+  private errorHandlerService = inject(ErrorHandlerService);
+  private steamWidgetService = inject(SteamWidgetService);
+
   @Input()
   public gameInfo: IGameInfoDisplay | undefined;
 
@@ -40,11 +43,6 @@ export class GameDetailsComponent {
   public completionStatus: number | undefined;
 
   private ERROR_GETTING_ACHIEVEMENTS_DATA = 'Erreur lors de la récupération des succès.';
-
-  constructor(
-    private errorHandlerService: ErrorHandlerService,
-    private steamWidgetService: SteamWidgetService
-  ) {}
 
   public loadAchievementsData(steamUserId: string, gameInfo: IGameInfoDisplay): void {
     this.steamWidgetService.getAchievementList(steamUserId, gameInfo.appid).subscribe({

@@ -1,22 +1,22 @@
-@for(activity of this.activities; track activity.id) {
-<mat-expansion-panel class="stravaActivity" hideToggle>
-  <mat-expansion-panel-header>
-    <mat-panel-title> {{ getTitleToDisplay(activity) }} </mat-panel-title>
-  </mat-expansion-panel-header>
-  <ng-template matExpansionPanelContent>
-    <div>
-      <a class="hoverable-link" href="https://www.strava.com/activities/{{ activity.id }}">
-        {{ formatDate(activity.startDateLocal) }} {{ activity.name }}
-      </a>
-      <div>Distance : {{ roundDistance(activity.distance) }} kms</div>
-      <div>Durée : {{ convertDecimalTimeToTime(activity.movingTime) }} minutes</div>
-      <div>Denivelé : {{ activity.totalElevationGain }} mètres</div>
-      <div>Trophées : {{ activity.achievementCount }}</div>
-      <div>Vitesse moyenne : {{ activity.averageSpeed }}</div>
-      <div>Vitesse max : {{ activity.maxSpeed }}</div>
-      <div>Kudos : {{ activity.kudosCount }}</div>
-      <div>Commentaires : {{ activity.commentCount }}</div>
-    </div>
-  </ng-template>
-</mat-expansion-panel>
+@for (activity of this.activities; track activity.id) {
+  <mat-expansion-panel class="stravaActivity" hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title> {{ getTitleToDisplay(activity) }} </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <div>
+        <a class="hoverable-link" href="https://www.strava.com/activities/{{ activity.id }}">
+          {{ formatDate(activity.startDateLocal) }} {{ activity.name }}
+        </a>
+        <div>Distance : {{ roundDistance(activity.distance) }} kms</div>
+        <div>Durée : {{ convertDecimalTimeToTime(activity.movingTime) }} minutes</div>
+        <div>Denivelé : {{ activity.totalElevationGain }} mètres</div>
+        <div>Trophées : {{ activity.achievementCount }}</div>
+        <div>Vitesse moyenne : {{ activity.averageSpeed }}</div>
+        <div>Vitesse max : {{ activity.maxSpeed }}</div>
+        <div>Kudos : {{ activity.kudosCount }}</div>
+        <div>Commentaires : {{ activity.commentCount }}</div>
+      </div>
+    </ng-template>
+  </mat-expansion-panel>
 }

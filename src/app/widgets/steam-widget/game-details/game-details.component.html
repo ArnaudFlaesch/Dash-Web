@@ -1,39 +1,40 @@
-@if(this.steamUserId && this.gameInfo) {
+@if (this.steamUserId && this.gameInfo) {
+  <mat-expansion-panel (afterExpand)="loadAchievementsData(this.steamUserId, this.gameInfo)" hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <div class="game-info">
+          <img [src]="gameInfo.gameImgSrc" alt="game icon" />
+          <p>{{ gameInfo.name }}</p>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <div class="game-data-container">
+        <div class="game-achievements-data-container">
+          @if (this.achievements && this.completedAchievements && this.achievements.length) {
+            <a href="{{ gameInfo.playerAchievementUrl }}" class="game-achievements-data">
+              <div class="totalachievements">Succès : {{ achievements.length }}</div>
+              <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
+            </a>
+          }
 
-<mat-expansion-panel (afterExpand)="loadAchievementsData(this.steamUserId, this.gameInfo)" hideToggle>
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      <div class="game-info">
-        <img [src]="gameInfo.gameImgSrc" alt="game icon" />
-        <p>{{ gameInfo.name }}</p>
-      </div>
-    </mat-panel-title>
-  </mat-expansion-panel-header>
-  <ng-template matExpansionPanelContent>
+          <a href="{{ gameInfo.appIdLink }}" class="hoverable-link"> Community hub </a>
+        </div>
 
-    <div class="game-data-container">
-      <div class="game-achievements-data-container">
-        @if(this.achievements && this.completedAchievements && this.achievements.length) {
-          <a href="{{gameInfo.playerAchievementUrl}}"
-          class="game-achievements-data">
-          <div class="totalachievements">Succès : {{ achievements.length }}</div>
-          <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
-        </a>
+        @if (this.achievements.length && this.completedAchievements) {
+          <a href="{{ gameInfo.playerAchievementUrl }}" class="spinner-container">
+            <div class="progress-value">{{ spinner.value }}%</div>
+            <mat-progress-spinner
+              #spinner
+              [title]="'test'"
+              [color]="'primary'"
+              [mode]="'determinate'"
+              [value]="this.completionStatus"
+            >
+            </mat-progress-spinner>
+          </a>
         }
-
-        <a href="{{gameInfo.appIdLink}}" class="hoverable-link"> Community hub </a>
       </div>
-
-      @if(this.achievements.length && this.completedAchievements) {
-      <a href="{{gameInfo.playerAchievementUrl}}"
-        class="spinner-container">
-        <div class="progress-value">{{ spinner.value }}%</div>
-        <mat-progress-spinner #spinner [title]="'test'" [color]="'primary'" [mode]="'determinate'"
-          [value]="this.completionStatus">
-        </mat-progress-spinner>
-      </a>
-    }
-    </div>
-  </ng-template>
-</mat-expansion-panel>
+    </ng-template>
+  </mat-expansion-panel>
 }

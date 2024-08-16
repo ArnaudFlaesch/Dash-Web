@@ -1,13 +1,18 @@
 <div id="miniwidget-list-container">
   <div id="miniwidget-list">
-    @for(miniWidget of this.miniWidgetList; track miniWidget.id) {
-    <div class="miniwidget-container">
-      <ng-template #dynamic></ng-template>
-    </div>
+    @for (miniWidget of this.miniWidgetList; track miniWidget.id) {
+      <div class="miniwidget-container">
+        <ng-template #dynamic></ng-template>
+      </div>
     }
   </div>
-  <button (click)="this.openCreateMiniWidgetModal()" matTooltip="Ajouter un nouveau mini widget"
-    id="add-mini-widget-button" color="primary" mat-mini-fab>
+  <button
+    (click)="this.openCreateMiniWidgetModal()"
+    matTooltip="Ajouter un nouveau mini widget"
+    id="add-mini-widget-button"
+    color="primary"
+    mat-mini-fab
+  >
     <mat-icon aria-hidden="false">add_circle_outline</mat-icon>
   </button>
 </div>

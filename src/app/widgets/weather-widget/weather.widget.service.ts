@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../../app/services/authorizationBearer/authorizationBearer';
 import { environment } from './../../../environments/environment';
@@ -7,7 +7,7 @@ import { IForecastAPIResponse, IWeatherAPIResponse } from './IWeather';
 
 @Injectable()
 export class WeatherWidgetService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   public fetchWeatherData(cityName: string): Observable<IWeatherAPIResponse> {
     return this.http.get<IWeatherAPIResponse>(`${environment.backend_url}/weatherWidget/weather`, {

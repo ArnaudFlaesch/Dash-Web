@@ -19,7 +19,7 @@
     "lint:styles": "stylelint \"src/**/*.{css,scss,sass}\" ",
     "lint:styles:fix": "npm run lint:styles -- --fix ",
     "lint:styles:report": "npm run lint:styles -- --formatter json --output-file ./styleLintReport.json",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,html}\"",
     "compodoc:build": "compodoc -p tsconfig.doc.json",
     "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s",
     "compodoc:serve": "compodoc -s"

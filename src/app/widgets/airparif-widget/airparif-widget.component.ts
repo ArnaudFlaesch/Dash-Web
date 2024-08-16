@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { AirParifWidgetService } from './airparif-widget.service';
@@ -29,6 +29,9 @@ import { WidgetComponent } from '../widget/widget.component';
   ]
 })
 export class AirParifWidgetComponent {
+  private airParifWidgetService = inject(AirParifWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+
   public airParifApiKey?: string;
   public communeInseeCode?: string;
 
@@ -44,11 +47,6 @@ export class AirParifWidgetComponent {
     "Erreur lors de la récupération des prévisions d'AirParif.";
   private ERROR_GETTING_AIRPARIF_COLOR_INDICES =
     "Erreur lors de la récupération des couleurs d'indices d'AirParif.";
-
-  constructor(
-    private airParifWidgetService: AirParifWidgetService,
-    private errorHandlerService: ErrorHandlerService
-  ) {}
 
   public refreshWidget(): void {
     if (this.airParifApiKey && this.communeInseeCode) {

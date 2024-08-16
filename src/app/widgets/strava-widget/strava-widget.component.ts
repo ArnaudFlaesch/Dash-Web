@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
@@ -34,6 +34,11 @@ import { BaseChartDirective } from 'ng2-charts';
   ]
 })
 export class StravaWidgetComponent implements OnInit {
+  private stravaWidgetService = inject(StravaWidgetService);
+  private route = inject(ActivatedRoute);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private router = inject(Router);
+
   public activities: IActivity[] = [];
   public athlete: IAthlete | undefined;
   public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
@@ -55,13 +60,6 @@ export class StravaWidgetComponent implements OnInit {
   private ERROR_NO_REFRESH_TOKEN = "Vous n'êtes pas connecté à Strava.";
   private ERROR_GETTING_ATHLETE_DATA = 'Erreur lors de la récupération de vos informations Strava.';
   private ERROR_GETTING_ACTIVITIES = 'Erreur lors de la récupération des activités Strava.';
-
-  constructor(
-    private stravaWidgetService: StravaWidgetService,
-    private route: ActivatedRoute,
-    private errorHandlerService: ErrorHandlerService,
-    private router: Router
-  ) {}
 
   public async ngOnInit(): Promise<void> {
     const apiCode = this.route.snapshot.queryParamMap.get('code');

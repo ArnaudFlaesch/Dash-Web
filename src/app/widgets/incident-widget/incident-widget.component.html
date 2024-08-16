@@ -1,56 +1,59 @@
-<dash-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
-  (refreshWidgetAction)="refreshWidget()">
-
+<dash-widget
+  [widgetData]="getWidgetConfig()"
+  [isFormValid]="isFormValid()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="refreshWidget()"
+>
   <ng-template #headerIcon>
     <mat-icon>priority_high</mat-icon>
   </ng-template>
 
   <ng-template #headerTitle>
-    <div>Incident {{incidentName}}</div>
+    <div>Incident {{ incidentName }}</div>
   </ng-template>
 
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Type d'incident</mat-label>
-      <input id="incidentName" name="incidentName" matInput [(ngModel)]="this.incidentName"
-        placeholder="Saisissez le type d'incident" />
+      <input
+        id="incidentName"
+        name="incidentName"
+        matInput
+        [(ngModel)]="this.incidentName"
+        placeholder="Saisissez le type d'incident"
+      />
     </mat-form-field>
   </ng-template>
 
   <ng-template #body>
+    @if (this.lastIncidentDate) {
+      @if (this.isWidgetViewCurrentStreak()) {
+        <div id="incident-widget-body-header">
+          <div>Dernier incident le {{ lastIncidentDate | dateFormat: 'short' }}</div>
+          @if (this.streaks.length > 0) {
+            <button (click)="this.goToPastStreaksView()" mat-raised-button>Séries précédentes</button>
+          }
+        </div>
 
-    @if(this.lastIncidentDate) {
+        <div id="incident-widget-body">
+          <div id="number-of-days-since-last-incident">{{ this.getDaysSinceLastIncident() }} jours</div>
+          <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">Terminer</button>
+        </div>
+      } @else {
+        <button id="go-to-current-streak-button" (click)="this.goToCurrentStreakView()" mat-raised-button>
+          Série actuelle
+        </button>
 
-    @if(this.isWidgetViewCurrentStreak()) {
-    <div id="incident-widget-body-header">
-      <div> Dernier incident le {{lastIncidentDate | dateFormat : 'short'}}</div>
-      @if(this.streaks.length > 0) {
-      <button (click)="this.goToPastStreaksView()" mat-raised-button>Séries
-        précédentes</button>
+        @if (this.streaks.length > 0) {
+          <div id="past-streaks-list">
+            @for (streak of this.streaks; track streak.streakStartDate) {
+              <div>{{ this.getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate) }} jours</div>
+            }
+          </div>
+        }
       }
-    </div>
-
-    <div id="incident-widget-body">
-      <div id="number-of-days-since-last-incident">{{this.getDaysSinceLastIncident()}} jours</div>
-      <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">Terminer</button>
-    </div>
-    }
-    @else {
-    <button id="go-to-current-streak-button" (click)="this.goToCurrentStreakView()" mat-raised-button>Série
-      actuelle</button>
-
-    @if(this.streaks.length > 0) {
-    <div id="past-streaks-list">
-      @for(streak of this.streaks; track streak.streakStartDate) {
-      <div>{{this.getNumberOfDaysFromStreak(streak.streakStartDate,
-        streak.streakEndDate)}} jours</div>
-      }
-    </div>
-    }
-    }
-    }
-    @else {
-    <button mat-raised-button (click)="startNewStreak()">Départ</button>
+    } @else {
+      <button mat-raised-button (click)="startNewStreak()">Départ</button>
     }
   </ng-template>
 </dash-widget>

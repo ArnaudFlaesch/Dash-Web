@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { ForecastMode, IForecast } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
@@ -15,6 +15,9 @@ import { MatTooltip } from '@angular/material/tooltip';
   imports: [MatTooltip, MatIcon, InitialUppercasePipe]
 })
 export class WeatherForecastComponent {
+  private weatherWidgetService = inject(WeatherWidgetService);
+  private dateUtils = inject(DateUtilsService);
+
   @Input()
   public forecast: IForecast[] = [];
 
@@ -23,11 +26,6 @@ export class WeatherForecastComponent {
 
   @Input()
   public forecastMode: ForecastMode = ForecastMode.DAY;
-
-  constructor(
-    private weatherWidgetService: WeatherWidgetService,
-    private dateUtils: DateUtilsService
-  ) {}
 
   public getDateToDisplay(dateTime: number, timezone: number): string {
     const options: Intl.DateTimeFormatOptions =

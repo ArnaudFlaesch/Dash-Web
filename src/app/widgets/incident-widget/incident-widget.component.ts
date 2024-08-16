@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IIncidentStreak, IIncidentViewEnum } from './IIncident';
@@ -41,18 +41,16 @@ export class IncidentWidgetComponent {
 
   private widgetView: IIncidentViewEnum = IIncidentViewEnum.CURRENT_STREAK;
 
+  private dialog = inject(MatDialog);
+  private incidentWidgetService = inject(IncidentWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private widgetId = inject<number>('widgetId' as never);
+
   private ERROR_GETTING_WIDGET_CONFIG =
     'Erreur lors de la récupération de la configuration du widget.';
   private ERROR_STARTING_NEW_STREAK = 'Erreur lors du démarrage de la série.';
   private ERROR_ENDING_NEW_STREAK = 'Erreur lors de la clôture de la série.';
   private ERROR_GETTING_INCIDENT_STREAKS = 'Erreur lors de la récupération des séries.';
-
-  constructor(
-    private dialog: MatDialog,
-    private incidentWidgetService: IncidentWidgetService,
-    private errorHandlerService: ErrorHandlerService,
-    @Inject('widgetId') private widgetId: number
-  ) {}
 
   public refreshWidget(): void {
     this.isWidgetLoaded = false;

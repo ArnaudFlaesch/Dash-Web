@@ -5,7 +5,8 @@ import {
   Component,
   ElementRef,
   HostListener,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
 import { SafePipe } from '../../pipes/safe.pipe';
 import { MatIcon } from '@angular/material/icon';
@@ -20,6 +21,8 @@ import { WidgetComponent } from '../widget/widget.component';
   imports: [WidgetComponent, MatIcon, SafePipe]
 })
 export class EcowattWidgetComponent implements AfterViewInit {
+  private cdRef = inject(ChangeDetectorRef);
+
   @ViewChild('iframeContainer')
   private iframeContainer: ElementRef | undefined;
 
@@ -29,8 +32,6 @@ export class EcowattWidgetComponent implements AfterViewInit {
   public isWidgetLoaded = true;
   public iframeContainerHeight = 0;
   public iframeContainerWidth = 0;
-
-  constructor(private cdRef: ChangeDetectorRef) {}
 
   @HostListener('window:resize', ['$event'])
   private onResize(): void {

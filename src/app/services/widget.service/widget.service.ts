@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import authorizationBearer from '../authorizationBearer/authorizationBearer';
@@ -7,13 +7,13 @@ import { IWidgetConfig } from './../../model/IWidgetConfig';
 
 @Injectable()
 export class WidgetService {
+  private http = inject(HttpClient);
+
   public _widgetDeletedEvent: ReplaySubject<number> = new ReplaySubject(0);
   public _refreshWidgetsAction: ReplaySubject<unknown> = new ReplaySubject(0);
   public readonly widgetDeleted: Observable<number> = this._widgetDeletedEvent.asObservable();
   public readonly refreshWidgetsAction: Observable<unknown> =
     this._refreshWidgetsAction.asObservable();
-
-  constructor(private http: HttpClient) {}
 
   public getWidgets(tabId: number): Observable<IWidgetConfig[]> {
     return this.http.get<IWidgetConfig[]>(`${environment.backend_url}/widget/?tabId=${tabId}`, {

@@ -1,15 +1,15 @@
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import {
-  MatDialogRef,
-  MatDialogTitle,
-  MatDialogContent,
   MatDialogActions,
-  MatDialogClose
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle
 } from '@angular/material/dialog';
 import { ConfigService } from './../../services/config.service/config.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { MatButton } from '@angular/material/button';
+import { ErrorHandlerService } from './../../services/error.handler.service';
 
 @Component({
   selector: 'dash-import-config-modal',
@@ -19,14 +19,12 @@ import { MatButton } from '@angular/material/button';
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ImportConfigModalComponent {
+  private configService = inject(ConfigService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  dialogRef = inject<MatDialogRef<ImportConfigModalComponent>>(MatDialogRef);
+
   public fileToUpload: File | null = null;
   private ERROR_IMPORT_CONFIGURATION = "Erreur lors de l'import de la configuration.";
-
-  constructor(
-    private configService: ConfigService,
-    private errorHandlerService: ErrorHandlerService,
-    public dialogRef: MatDialogRef<ImportConfigModalComponent>
-  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public selectFile(event: any): void {

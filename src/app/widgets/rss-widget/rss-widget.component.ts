@@ -1,7 +1,7 @@
 import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { IArticle, ImageContent, IRSSHeader } from './IArticle';
 import { RssWidgetService } from './rss.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -37,6 +37,12 @@ import { WidgetComponent } from '../widget/widget.component';
   ]
 })
 export class RssWidgetComponent {
+  private widgetId = inject<number>('widgetId' as any);
+  private rssWidgetService = inject(RssWidgetService);
+  private widgetService = inject(WidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  dateUtilsService = inject(DateUtilsService);
+
   public feed: IArticle[] = [];
   public description = '';
   public link = '';
@@ -50,14 +56,6 @@ export class RssWidgetComponent {
 
   private ERROR_GETTING_RSS_FEED = 'Erreur pendant la récupération du flux RSS.';
   private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
-
-  constructor(
-    @Inject('widgetId') private widgetId: number,
-    private rssWidgetService: RssWidgetService,
-    private widgetService: WidgetService,
-    private errorHandlerService: ErrorHandlerService,
-    public dateUtilsService: DateUtilsService
-  ) {}
 
   public refreshWidget(): void {
     if (this.urlFeed) {

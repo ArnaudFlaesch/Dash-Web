@@ -1,6 +1,9 @@
-<dash-widget [widgetData]="getWidgetConfig()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
-  (refreshWidgetAction)="this.refreshWidget()">
-
+<dash-widget
+  [widgetData]="getWidgetConfig()"
+  [isFormValid]="isFormValid()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #headerIcon>
     <mat-icon>calendar_month</mat-icon>
   </ng-template>
@@ -11,13 +14,19 @@
 
   <ng-template #editComponent>
     <div id="calendar-urls-list-container">
-      @for(calendarUrl of this.calendarUrls; track calendarUrl ; let index = $index) {
-      <div class="calendar-url-container">
-        <input id="{{ index.toString() }}" (change)="onCalendarUrlUpdated($event)" [value]="calendarUrl"
-          placeholder="Saisissez une URL" />
+      @for (calendarUrl of this.calendarUrls; track calendarUrl; let index = $index) {
+        <div class="calendar-url-container">
+          <input
+            id="{{ index.toString() }}"
+            (change)="onCalendarUrlUpdated($event)"
+            [value]="calendarUrl"
+            placeholder="Saisissez une URL"
+          />
 
-        <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">Supprimer</button>
-      </div>
+          <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">
+            Supprimer
+          </button>
+        </div>
       }
     </div>
     <button mat-raised-button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>
@@ -26,50 +35,93 @@
   <ng-template #body>
     <div id="calendar-actions-container">
       <div id="date-navigation-container">
-        <button mat-raised-button matTooltip="Précédent" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
-          color="primary" (viewDateChange)="closeOpenMonthViewDay()">
+        <button
+          mat-raised-button
+          matTooltip="Précédent"
+          mwlCalendarPreviousView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          color="primary"
+          (viewDateChange)="closeOpenMonthViewDay()"
+        >
           <mat-icon aria-hidden="false">arrow_back</mat-icon>
         </button>
-        <button mat-raised-button matTooltip="Aujourd'hui" mwlCalendarToday
-          [(viewDate)]="viewDate">{{displayTodaysDate() | initialUppercase}}</button>
-        <button mat-raised-button matTooltip="Suivant" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
-          color="primary" (viewDateChange)="closeOpenMonthViewDay()">
+        <button mat-raised-button matTooltip="Aujourd'hui" mwlCalendarToday [(viewDate)]="viewDate">
+          {{ displayTodaysDate() | initialUppercase }}
+        </button>
+        <button
+          mat-raised-button
+          matTooltip="Suivant"
+          mwlCalendarNextView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          color="primary"
+          (viewDateChange)="closeOpenMonthViewDay()"
+        >
           <mat-icon aria-hidden="false">arrow_forward</mat-icon>
         </button>
       </div>
 
       <div id="calendar-view-switch-container">
-        <button mat-raised-button (click)="setView(calendarView.Day)"
-          [color]="this.isCalendarViewDay() ? 'primary' : ''">
+        <button
+          mat-raised-button
+          (click)="setView(calendarView.Day)"
+          [color]="this.isCalendarViewDay() ? 'primary' : ''"
+        >
           Jour
         </button>
-        <button mat-raised-button (click)="setView(calendarView.Month)"
-          [color]="this.isCalendarViewMonth() ? 'primary' : ''">
+        <button
+          mat-raised-button
+          (click)="setView(calendarView.Month)"
+          [color]="this.isCalendarViewMonth() ? 'primary' : ''"
+        >
           Mois
         </button>
-        <button mat-raised-button (click)="setView(calendarView.Week)"
-          [color]="this.isCalendarViewWeek() ? 'primary' : ''">
+        <button
+          mat-raised-button
+          (click)="setView(calendarView.Week)"
+          [color]="this.isCalendarViewWeek() ? 'primary' : ''"
+        >
           Semaine
         </button>
       </div>
     </div>
 
     <div id="calendar-selected-date">
-      <h3>{{ viewDate | calendarDate: view + 'ViewTitle':'fr' | initialUppercase }}</h3>
+      <h3>{{ viewDate | calendarDate: view + 'ViewTitle' : 'fr' | initialUppercase }}</h3>
     </div>
 
     <div [ngSwitch]="view">
-      <mwl-calendar-month-view *ngSwitchCase="calendarView.Month" [locale]="locale" [viewDate]="viewDate"
-        [events]="events" [weekStartsOn]="weekStartsOn" [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen"
-        (eventClicked)="handleEvent('Clicked', $event.event)">
+      <mwl-calendar-month-view
+        *ngSwitchCase="calendarView.Month"
+        [locale]="locale"
+        [viewDate]="viewDate"
+        [events]="events"
+        [weekStartsOn]="weekStartsOn"
+        [refresh]="refresh"
+        [activeDayIsOpen]="activeDayIsOpen"
+        (eventClicked)="handleEvent('Clicked', $event.event)"
+      >
       </mwl-calendar-month-view>
 
-      <mwl-calendar-week-view *ngSwitchCase="calendarView.Week" [viewDate]="viewDate" [weekStartsOn]="weekStartsOn"
-        [locale]="locale" [events]="events" [refresh]="refresh" (eventClicked)="handleEvent('Clicked', $event.event)">
+      <mwl-calendar-week-view
+        *ngSwitchCase="calendarView.Week"
+        [viewDate]="viewDate"
+        [weekStartsOn]="weekStartsOn"
+        [locale]="locale"
+        [events]="events"
+        [refresh]="refresh"
+        (eventClicked)="handleEvent('Clicked', $event.event)"
+      >
       </mwl-calendar-week-view>
 
-      <mwl-calendar-day-view *ngSwitchCase="calendarView.Day" [viewDate]="viewDate" [locale]="locale" [events]="events"
-        [refresh]="refresh"></mwl-calendar-day-view>
+      <mwl-calendar-day-view
+        *ngSwitchCase="calendarView.Day"
+        [viewDate]="viewDate"
+        [locale]="locale"
+        [events]="events"
+        [refresh]="refresh"
+      ></mwl-calendar-day-view>
     </div>
   </ng-template>
 </dash-widget>

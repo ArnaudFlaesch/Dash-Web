@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -8,7 +8,7 @@ import { IIncident, IIncidentStreak } from './IIncident';
 
 @Injectable()
 export class IncidentWidgetService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   public getIncidentConfigForWidget(widgetId: number): Observable<IIncident> {
     return this.http.get<IIncident>(

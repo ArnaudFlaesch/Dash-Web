@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { format, isToday, startOfDay } from 'date-fns';
 
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
@@ -28,7 +28,7 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-weather-widget',
   templateUrl: './weather-widget.component.html',
   styleUrls: ['./weather-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -60,16 +60,14 @@ export class WeatherWidgetComponent {
   public isWeatherLoaded = false;
   public isForecastLoaded = false;
 
+  private weatherWidgetService = inject(WeatherWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private dateUtils = inject(DateUtilsService);
+
   private ERROR_GETTING_WEATHER_DATA =
     'Erreur lors de la récupération des données météorologiques.';
   private ERROR_GETTING_FORECAST_DATA =
     'Erreur lors de la récupération des prévisions météorologiques.';
-
-  constructor(
-    private weatherWidgetService: WeatherWidgetService,
-    private errorHandlerService: ErrorHandlerService,
-    public dateUtils: DateUtilsService
-  ) {}
 
   public refreshWidget(): void {
     if (this.city) {

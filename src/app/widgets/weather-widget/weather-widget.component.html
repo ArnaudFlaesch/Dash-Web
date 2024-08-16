@@ -1,6 +1,9 @@
-<dash-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()"
-  [isWidgetLoaded]="isWeatherLoaded && isForecastLoaded" (refreshWidgetAction)="this.refreshWidget()">
-
+<dash-widget
+  [isFormValid]="isFormValid()"
+  [widgetData]="getWidgetData()"
+  [isWidgetLoaded]="isWeatherLoaded && isForecastLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #headerIcon>
     <mat-icon>sunny</mat-icon>
   </ng-template>
@@ -12,41 +15,58 @@
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Ville</mat-label>
-      <input id="cityNameInput" name="city" matInput [(ngModel)]="this.city"
-        placeholder="Saisissez de nom de la ville" />
+      <input
+        id="cityNameInput"
+        name="city"
+        matInput
+        [(ngModel)]="this.city"
+        placeholder="Saisissez de nom de la ville"
+      />
     </mat-form-field>
   </ng-template>
 
   <ng-template #body>
-    @if(city && weather && weather.weather) {
-    <div class="weather-forecast-container">
-      <dash-weather-today [weather]="this.weather"></dash-weather-today>
-      @if(cityData && forecastResponse) {
-      <div class="forecast-data-container">
-        <div class="forecast-selector">
-          @for(date of forecastDays; track date.getTime()) {
-          <button [color]="this.isSelectedDay(date) ? 'primary' : ''" mat-raised-button
-            (click)="selectDayForecast(date)" class="selectForecast">
-            {{ formatDate(date) | initialUppercase }}
-          </button>
-          }
+    @if (city && weather && weather.weather) {
+      <div class="weather-forecast-container">
+        <dash-weather-today [weather]="this.weather"></dash-weather-today>
+        @if (cityData && forecastResponse) {
+          <div class="forecast-data-container">
+            <div class="forecast-selector">
+              @for (date of forecastDays; track date.getTime()) {
+                <button
+                  [color]="this.isSelectedDay(date) ? 'primary' : ''"
+                  mat-raised-button
+                  (click)="selectDayForecast(date)"
+                  class="selectForecast"
+                >
+                  {{ formatDate(date) | initialUppercase }}
+                </button>
+              }
 
-          <button [color]="this.isForecastModeWeek() ? 'primary' : ''" mat-raised-button id="toggleWeekForecast"
-            (click)="selectWeekForecast()">
-            Semaine
-          </button>
-        </div>
-        <div class="toggle-forecast">
-          <mat-slide-toggle color="'primary'" (change)="this.updateForecastData()" [(ngModel)]="displayAllForecast">
-            Afficher les prévisions complètes
-          </mat-slide-toggle>
-        </div>
-        @if(this.cityData) {
-        <dash-weather-forecast [forecast]="this.forecastToDisplay" [forecastMode]="this.forecastMode"
-          [timezone]="this.cityData.timezone"></dash-weather-forecast>
+              <button
+                [color]="this.isForecastModeWeek() ? 'primary' : ''"
+                mat-raised-button
+                id="toggleWeekForecast"
+                (click)="selectWeekForecast()"
+              >
+                Semaine
+              </button>
+            </div>
+            <div class="toggle-forecast">
+              <mat-slide-toggle color="'primary'" (change)="this.updateForecastData()" [(ngModel)]="displayAllForecast">
+                Afficher les prévisions complètes
+              </mat-slide-toggle>
+            </div>
+            @if (this.cityData) {
+              <dash-weather-forecast
+                [forecast]="this.forecastToDisplay"
+                [forecastMode]="this.forecastMode"
+                [timezone]="this.cityData.timezone"
+              ></dash-weather-forecast>
+            }
+          </div>
         }
-      </div>}
-    </div>
+      </div>
     }
   </ng-template>
 </dash-widget>

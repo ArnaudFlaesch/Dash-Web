@@ -1,51 +1,61 @@
-<dash-widget [widgetData]="{}" (refreshWidgetAction)="this.refreshWidget()" [isFormValid]="true"
-  [isWidgetLoaded]="this.isWidgetLoaded">
-
+<dash-widget
+  [widgetData]="{}"
+  (refreshWidgetAction)="this.refreshWidget()"
+  [isFormValid]="true"
+  [isWidgetLoaded]="this.isWidgetLoaded"
+>
   <ng-template #headerIcon>
-    @if(athlete) {
+    @if (athlete) {
       <a [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader">
         <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="Athlete profile" />
       </a>
-    }
-    @else {
+    } @else {
       <mat-icon>directions_run</mat-icon>
     }
   </ng-template>
 
   <ng-template #headerTitle>
-    @if(athlete) {
-    <div class="strava-header">{{ athlete.firstname }} {{ athlete.lastname }}</div>
-    }
-    @else {
-    <div>Strava</div>
+    @if (athlete) {
+      <div class="strava-header">{{ athlete.firstname }} {{ athlete.lastname }}</div>
+    } @else {
+      <div>Strava</div>
     }
   </ng-template>
 
   <ng-template #body>
-
-    @if(this.isUserLoggedIn()) {
-    @if(this.activities.length) {
-    <div>
-      <div id="strava-activities-container">
-        <div id="activities-pagination-container">
-          <button (click)="this.getNextActivitiesPage()" matTooltip="Page suivante" mat-icon-button
-            *ngIf="this.pageNumber > 1">
-            <mat-icon>arrow_forward</mat-icon></button>
-          <button (click)="this.getPreviousActivitiesPage()" matTooltip="Page précédente" mat-icon-button
-            *ngIf="this.activities.length === this.paginationActivities">
-            <mat-icon>arrow_back</mat-icon></button>
+    @if (this.isUserLoggedIn()) {
+      @if (this.activities.length) {
+        <div>
+          <div id="strava-activities-container">
+            <div id="activities-pagination-container">
+              <button
+                (click)="this.getNextActivitiesPage()"
+                matTooltip="Page suivante"
+                mat-icon-button
+                *ngIf="this.pageNumber > 1"
+              >
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+              <button
+                (click)="this.getPreviousActivitiesPage()"
+                matTooltip="Page précédente"
+                mat-icon-button
+                *ngIf="this.activities.length === this.paginationActivities"
+              >
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+            </div>
+            <dash-strava-activities [activities]="this.activities"></dash-strava-activities>
+          </div>
+          <div id="strava-statistics">
+            <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
+          </div>
         </div>
-        <dash-strava-activities [activities]="this.activities"></dash-strava-activities>
-      </div>
-      <div id="strava-statistics">
-        <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
-      </div>
-    </div>
-    }
-    }
-    @else {
-    <button (click)="loginToStrava()" id="login-to-strava-button" mat-raised-button color="primary">Se
-      connecter</button>
+      }
+    } @else {
+      <button (click)="loginToStrava()" id="login-to-strava-button" mat-raised-button color="primary">
+        Se connecter
+      </button>
     }
   </ng-template>
 </dash-widget>

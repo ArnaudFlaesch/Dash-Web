@@ -1,5 +1,5 @@
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './../model/Workout';
-import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, SimpleChanges, inject } from '@angular/core';
 import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { WorkoutWidgetService } from '../workout.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -18,6 +18,9 @@ import { NgClass } from '@angular/common';
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
+  private errorHandlerService = inject(ErrorHandlerService);
+  private workoutWidgetService = inject(WorkoutWidgetService);
+
   @Input() public workoutTypes: IWorkoutType[] = [];
   @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
@@ -29,11 +32,6 @@ export class WorkoutSessionEditComponent {
 
   private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
   private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
-
-  constructor(
-    private errorHandlerService: ErrorHandlerService,
-    private workoutWidgetService: WorkoutWidgetService
-  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentWorkoutSessionToEdit'].currentValue)

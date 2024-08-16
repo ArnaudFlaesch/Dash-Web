@@ -1,32 +1,35 @@
 <div class="forecast-row">
-  @for(forecastDay of this.forecast; track forecastDay.dt) {
-  <div class="forecast-container">
-    <div class="forecast">
-      @if(forecastDay) {
-      <div class="forecast-time">
-        {{ getDateToDisplay(forecastDay.dt, this.timezone) }}
+  @for (forecastDay of this.forecast; track forecastDay.dt) {
+    <div class="forecast-container">
+      <div class="forecast">
+        @if (forecastDay) {
+          <div class="forecast-time">
+            {{ getDateToDisplay(forecastDay.dt, this.timezone) }}
+          </div>
+        }
+        <div>
+          <img
+            [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')"
+            class="current-weather-icon"
+            [matTooltip]="forecastDay.weather[0].description | initialUppercase"
+            [alt]="forecastDay.weather[0].description"
+          />
+        </div>
       </div>
-      }
-      <div>
-        <img [src]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')" class="current-weather-icon"
-          [matTooltip]="forecastDay.weather[0].description | initialUppercase"
-          [alt]="forecastDay.weather[0].description" />
+      <div class="forecast-icons">
+        <div>
+          <mat-icon matTooltip="Température maximum" class="weather-widget-icon temp-max">device_thermostat</mat-icon>
+          {{ forecastDay.main.tempMax }}°
+        </div>
+        <div>
+          <mat-icon matTooltip="Température minimum" class="weather-widget-icon temp-min">device_thermostat</mat-icon>
+          {{ forecastDay.main.tempMin }}°
+        </div>
+        <div>
+          <mat-icon matTooltip="Humidité" class="weather-widget-icon humidity">opacity</mat-icon>
+          {{ forecastDay.main.humidity }}%
+        </div>
       </div>
     </div>
-    <div class="forecast-icons">
-      <div>
-        <mat-icon matTooltip="Température maximum" class="weather-widget-icon temp-max">device_thermostat</mat-icon>
-        {{ forecastDay.main.tempMax }}°
-      </div>
-      <div>
-        <mat-icon matTooltip="Température minimum" class="weather-widget-icon temp-min">device_thermostat</mat-icon>
-        {{ forecastDay.main.tempMin }}°
-      </div>
-      <div>
-        <mat-icon matTooltip="Humidité" class="weather-widget-icon humidity">opacity</mat-icon>
-        {{ forecastDay.main.humidity }}%
-      </div>
-    </div>
-  </div>
   }
 </div>
