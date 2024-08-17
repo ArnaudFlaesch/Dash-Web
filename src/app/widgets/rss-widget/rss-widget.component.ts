@@ -1,19 +1,18 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatTooltip } from '@angular/material/tooltip';
+import { SafePipe } from '../../pipes/safe.pipe';
 import { IWidgetConfig } from './../../model/IWidgetConfig';
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { IArticle, ImageContent, IRSSHeader } from './IArticle';
-import { RssWidgetService } from './rss.widget.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
-import { SafePipe } from '../../pipes/safe.pipe';
+import { IRSSHeader } from './IArticle';
 import { RssFeedComponent } from './rss-feed/rss-feed.component';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIconButton } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { RssWidgetService } from './rss.widget.service';
 
 import { WidgetComponent } from '../widget/widget.component';
 
@@ -21,7 +20,7 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-rss-widget',
   templateUrl: './rss-widget.component.html',
   styleUrls: ['./rss-widget.component.scss', '../widget/widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -37,46 +36,32 @@ import { WidgetComponent } from '../widget/widget.component';
   ]
 })
 export class RssWidgetComponent {
+  public isWidgetLoaded = false;
+
+  public isFeedClosed = true;
+  public urlFeed?: string;
+  public rssFeedResult: IRSSHeader | undefined;
+  public readArticles: string[] = [];
+
+  private ERROR_GETTING_RSS_FEED = 'Erreur pendant la récupération du flux RSS.';
+  private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
+
   private widgetId = inject<number>('widgetId' as any);
   private rssWidgetService = inject(RssWidgetService);
   private widgetService = inject(WidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
-  dateUtilsService = inject(DateUtilsService);
-
-  public feed: IArticle[] = [];
-  public description = '';
-  public link = '';
-  public title = '';
-  public image: ImageContent | undefined = undefined;
-  public isWidgetLoaded = false;
-
-  public isFeedClosed = true;
-  public readArticles: string[] = [];
-  public urlFeed?: string;
-
-  private ERROR_GETTING_RSS_FEED = 'Erreur pendant la récupération du flux RSS.';
-  private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
+  private changeDetectorRef = inject(ChangeDetectorRef);
 
   public refreshWidget(): void {
     if (this.urlFeed) {
       this.isWidgetLoaded = false;
       this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
         next: (apiResult: unknown) => {
-          if (apiResult) {
-            if ((apiResult as Record<string, unknown>)['channel'] != null) {
-              const res = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
-              this.description = res.description;
-              this.feed = res.item;
-              this.link = res.link;
-              this.title = res.title;
-              this.image = res.image;
-            } else {
-              const res = apiResult as Record<string, unknown>;
-              this.feed = res['entry'] as IArticle[];
-              this.title = res['title'] as string;
-            }
+          if (apiResult && (apiResult as Record<string, unknown>)['channel'] != null) {
+            this.rssFeedResult = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
           }
           this.isWidgetLoaded = true;
+          this.changeDetectorRef.detectChanges();
         },
         error: (error) => this.errorHandlerService.handleError(error, this.ERROR_GETTING_RSS_FEED),
         complete: () => (this.isWidgetLoaded = true)
@@ -89,7 +74,7 @@ export class RssWidgetComponent {
   }
 
   public markAllFeedAsRead(): void {
-    this.updateRssFeed(this.feed.map((article) => article.guid));
+    this.updateRssFeed(this.rssFeedResult?.item.map((article) => article.guid) ?? []);
   }
 
   public isFormValid(): boolean {
@@ -112,7 +97,8 @@ export class RssWidgetComponent {
             ? (response.data['readArticlesGuids'] as string[])
             : []),
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ)
+          this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ),
+        complete: () => this.changeDetectorRef.detectChanges()
       });
   }
 }

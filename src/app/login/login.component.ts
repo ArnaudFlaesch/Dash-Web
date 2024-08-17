@@ -12,18 +12,18 @@ import { ErrorHandlerService } from './../services/error.handler.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, FormsModule, MatButton, MatProgressSpinner]
 })
 export class LoginComponent {
-  private authService = inject(AuthService);
-  private errorHandlerService = inject(ErrorHandlerService);
-  private router = inject(Router);
-
   public isLoading = false;
 
   public inputUsername = '';
   public inputPassword = '';
+
+  private authService = inject(AuthService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private router = inject(Router);
 
   public async handleLogin(): Promise<void> {
     if (this.inputUsername && this.inputPassword) {
@@ -36,8 +36,6 @@ export class LoginComponent {
         this.isLoading = false;
         this.errorHandlerService.handleLoginError(error as Error);
       }
-    } else {
-      this.isLoading = false;
     }
   }
 

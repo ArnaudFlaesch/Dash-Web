@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
@@ -34,11 +34,6 @@ import { BaseChartDirective } from 'ng2-charts';
   ]
 })
 export class StravaWidgetComponent implements OnInit {
-  private stravaWidgetService = inject(StravaWidgetService);
-  private route = inject(ActivatedRoute);
-  private errorHandlerService = inject(ErrorHandlerService);
-  private router = inject(Router);
-
   public activities: IActivity[] = [];
   public athlete: IAthlete | undefined;
   public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
@@ -46,7 +41,7 @@ export class StravaWidgetComponent implements OnInit {
 
   public isWidgetLoaded = true;
   public pageNumber = 1;
-  public paginationActivities = 25;
+  readonly paginationActivities = 25;
 
   private STRAVA_CLIENT_ID = 30391;
   private loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
@@ -61,25 +56,29 @@ export class StravaWidgetComponent implements OnInit {
   private ERROR_GETTING_ATHLETE_DATA = 'Erreur lors de la récupération de vos informations Strava.';
   private ERROR_GETTING_ACTIVITIES = 'Erreur lors de la récupération des activités Strava.';
 
+  private stravaWidgetService = inject(StravaWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   public async ngOnInit(): Promise<void> {
-    const apiCode = this.route.snapshot.queryParamMap.get('code');
-    if (apiCode) {
-      await this.getToken(apiCode);
-    }
+    setTimeout(async () => {
+      this.getAthleteData();
+      const apiCode = this.route.snapshot.queryParamMap.get('code');
+      if (apiCode) {
+        await this.getToken(apiCode);
+      }
+    }, 2500);
   }
 
   public refreshWidget(): void {
-    if (this.getTokenValue()) {
-      this.getUserData();
-    }
+    this.getUserData();
   }
 
   public getUserData(): void {
     if (this.isUserLoggedIn()) {
-      if (this.getTokenValue()) {
-        this.activities = [];
-        this.getAthleteData();
-      }
+      this.activities = [];
+      this.getAthleteData();
     } else if (this.getRefreshTokenValue()) {
       this.refreshTokenFromApi();
     }
@@ -98,7 +97,7 @@ export class StravaWidgetComponent implements OnInit {
     }
   }
 
-  public getAthleteData(): void {
+  private getAthleteData(): void {
     const token = this.getTokenValue();
     if (token) {
       this.isWidgetLoaded = false;
@@ -115,7 +114,7 @@ export class StravaWidgetComponent implements OnInit {
     }
   }
 
-  public getActivitiesByMonth(): Record<string, number[]> {
+  private getActivitiesByMonth(): Record<string, number[]> {
     return [...this.activities]
       .sort((activityA, activityB) => this.sortByActivityDate(activityA, activityB, false))
       .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
@@ -128,7 +127,7 @@ export class StravaWidgetComponent implements OnInit {
       }, {});
   }
 
-  public getStatsFromActivities(): IActivitiesStatsByMonth[] {
+  private getStatsFromActivities(): IActivitiesStatsByMonth[] {
     const activitiesByMonthList = this.getActivitiesByMonth();
     return Object.keys(activitiesByMonthList).map((month) => {
       return {
@@ -155,7 +154,7 @@ export class StravaWidgetComponent implements OnInit {
     );
   }
 
-  public getChartData(): void {
+  private getChartData(): void {
     const activitiesStats = this.getStatsFromActivities();
     this.activitiesChartData = {
       labels: activitiesStats.map((data: IActivitiesStatsByMonth) =>

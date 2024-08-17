@@ -18,9 +18,6 @@ import { NgClass } from '@angular/common';
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
-  private errorHandlerService = inject(ErrorHandlerService);
-  private workoutWidgetService = inject(WorkoutWidgetService);
-
   @Input() public workoutTypes: IWorkoutType[] = [];
   @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
@@ -32,6 +29,9 @@ export class WorkoutSessionEditComponent {
 
   private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
   private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
+
+  private errorHandlerService = inject(ErrorHandlerService);
+  private workoutWidgetService = inject(WorkoutWidgetService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentWorkoutSessionToEdit'].currentValue)
@@ -50,9 +50,7 @@ export class WorkoutSessionEditComponent {
     const workoutType = this.workoutExercises.find(
       (workoutExercise) => workoutExercise.workoutTypeId === workoutTypeId
     );
-    if (workoutType) {
-      return workoutType.numberOfReps;
-    } else return 0;
+    return workoutType ? workoutType.numberOfReps : 0;
   }
 
   public toggleSessionEditMode(): void {

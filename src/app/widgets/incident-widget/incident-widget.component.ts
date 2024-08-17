@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ChangeDetectorRef } from '@angular/core';
 
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IIncidentStreak, IIncidentViewEnum } from './IIncident';
@@ -14,12 +14,13 @@ import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'dash-incident-widget',
   templateUrl: './incident-widget.component.html',
   styleUrls: ['./incident-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -41,29 +42,40 @@ export class IncidentWidgetComponent {
 
   private widgetView: IIncidentViewEnum = IIncidentViewEnum.CURRENT_STREAK;
 
-  private dialog = inject(MatDialog);
-  private incidentWidgetService = inject(IncidentWidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
-  private widgetId = inject<number>('widgetId' as never);
-
-  private ERROR_GETTING_WIDGET_CONFIG =
-    'Erreur lors de la récupération de la configuration du widget.';
   private ERROR_STARTING_NEW_STREAK = 'Erreur lors du démarrage de la série.';
   private ERROR_ENDING_NEW_STREAK = 'Erreur lors de la clôture de la série.';
   private ERROR_GETTING_INCIDENT_STREAKS = 'Erreur lors de la récupération des séries.';
 
+  private dialog = inject(MatDialog);
+  private incidentWidgetService = inject(IncidentWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private changeDetectorRef = inject(ChangeDetectorRef);
+  private widgetId = inject<number>('widgetId' as never);
+
   public refreshWidget(): void {
     this.isWidgetLoaded = false;
-    this.incidentWidgetService.getIncidentConfigForWidget(this.widgetId).subscribe({
-      next: (incidentConfig) => {
-        this.incidentId = incidentConfig.id;
-        this.lastIncidentDate = incidentConfig.lastIncidentDate;
-        this.isWidgetLoaded = true;
-        this.getIncidentStreaks(this.incidentId);
-      },
-      error: (error) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WIDGET_CONFIG)
-    });
+    this.incidentWidgetService
+      .getIncidentConfigForWidget(this.widgetId)
+      .pipe(
+        switchMap((incidentConfig) => {
+          this.incidentId = incidentConfig.id;
+          this.lastIncidentDate = incidentConfig.lastIncidentDate;
+          this.isWidgetLoaded = true;
+          return this.incidentWidgetService.getIncidentStreaks(this.incidentId);
+        })
+      )
+      .subscribe({
+        next: (incidentStreaks) =>
+          (this.streaks = incidentStreaks
+            .slice()
+            .sort(
+              (streakA: IIncidentStreak, streakB: IIncidentStreak) =>
+                Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
+            )),
+        error: (error) =>
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS),
+        complete: () => this.changeDetectorRef.detectChanges()
+      });
   }
 
   public startNewStreak(): void {
@@ -130,20 +142,6 @@ export class IncidentWidgetComponent {
       next: (updatedIncidentConfig) =>
         (this.lastIncidentDate = updatedIncidentConfig.lastIncidentDate),
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_ENDING_NEW_STREAK)
-    });
-  }
-
-  private getIncidentStreaks(incidentId: number): void {
-    this.incidentWidgetService.getIncidentStreaks(incidentId).subscribe({
-      next: (incidentStreaks) =>
-        (this.streaks = incidentStreaks
-          .slice()
-          .sort(
-            (streakA: IIncidentStreak, streakB: IIncidentStreak) =>
-              Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
-          )),
-      error: (error) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS)
     });
   }
 }

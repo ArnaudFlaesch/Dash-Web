@@ -7,8 +7,8 @@
     "npm": "10.x"
   },
   "scripts": {
-    "start": "ng serve",
-    "start:dev": "ng serve -c=dev",
+    "start": "ng serve -o",
+    "start:dev": "npm run start -- -c=dev",
     "build": "ng build",
     "test": "jest --config jest-config.js",
     "test:watch": "npm run test -- --watch",

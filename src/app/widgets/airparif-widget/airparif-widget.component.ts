@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ChangeDetectorRef } from '@angular/core';
 
 import { ErrorHandlerService } from './../../services/error.handler.service';
 import { AirParifWidgetService } from './airparif-widget.service';
@@ -10,12 +10,13 @@ import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { WidgetComponent } from '../widget/widget.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'dash-airparif-widget',
   templateUrl: './airparif-widget.component.html',
   styleUrls: ['./airparif-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -29,9 +30,6 @@ import { WidgetComponent } from '../widget/widget.component';
   ]
 })
 export class AirParifWidgetComponent {
-  private airParifWidgetService = inject(AirParifWidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
-
   public airParifApiKey?: string;
   public communeInseeCode?: string;
 
@@ -41,30 +39,27 @@ export class AirParifWidgetComponent {
 
   public isWidgetLoaded = true;
 
-  public airParifWebsiteUrl = this.airParifWidgetService.getAirParifWebsiteUrl();
-
   private ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
-  private ERROR_GETTING_AIRPARIF_COLOR_INDICES =
-    "Erreur lors de la récupération des couleurs d'indices d'AirParif.";
+
+  private changeDetectorRef = inject(ChangeDetectorRef);
+  private airParifWidgetService = inject(AirParifWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  public airParifWebsiteUrl = this.airParifWidgetService.getAirParifWebsiteUrl();
 
   public refreshWidget(): void {
     if (this.airParifApiKey && this.communeInseeCode) {
-      this.airParifWidgetService.getCommunePrevision(this.communeInseeCode).subscribe({
-        next: (forecast) => {
+      forkJoin([
+        this.airParifWidgetService.getCommunePrevision(this.communeInseeCode),
+        this.airParifWidgetService.getColors()
+      ]).subscribe({
+        next: ([forecast, airParifColors]) => {
           this.airParifForecast = forecast;
+          this.airParifCouleursIndices = airParifColors;
+          this.changeDetectorRef.detectChanges();
         },
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_AIRPARIF_FORECAST)
-      });
-
-      this.airParifWidgetService.getColors().subscribe({
-        next: (airParifColors) => (this.airParifCouleursIndices = airParifColors),
-        error: (error) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_GETTING_AIRPARIF_COLOR_INDICES
-          )
       });
     }
   }

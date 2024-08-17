@@ -44,13 +44,11 @@
           Série actuelle
         </button>
 
-        @if (this.streaks.length > 0) {
-          <div id="past-streaks-list">
-            @for (streak of this.streaks; track streak.streakStartDate) {
-              <div>{{ this.getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate) }} jours</div>
-            }
-          </div>
-        }
+        <div id="past-streaks-list">
+          @for (streak of this.streaks; track streak.streakStartDate) {
+            <div>{{ this.getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate) }} jours</div>
+          }
+        </div>
       }
     } @else {
       <button mat-raised-button (click)="startNewStreak()">Départ</button>
