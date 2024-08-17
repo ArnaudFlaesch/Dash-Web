@@ -1,21 +1,21 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, HostListener, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
 
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { fr } from 'date-fns/locale';
+import { firstValueFrom } from 'rxjs';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
-import { StravaWidgetService } from './strava.widget.service';
-import { firstValueFrom } from 'rxjs';
-import { fr } from 'date-fns/locale';
 import { StravaActivitiesComponent } from './strava-activities/strava-activities.component';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
+import { StravaWidgetService } from './strava.widget.service';
 
-import { WidgetComponent } from '../widget/widget.component';
 import { BaseChartDirective } from 'ng2-charts';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
   selector: 'dash-strava-widget',

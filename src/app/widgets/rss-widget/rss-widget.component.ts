@@ -46,7 +46,7 @@ export class RssWidgetComponent {
   private ERROR_GETTING_RSS_FEED = 'Erreur pendant la récupération du flux RSS.';
   private ERROR_MARKING_FEED_AS_READ = 'Erreur pendant la mise à jour du widget RSS.';
 
-  private widgetId = inject<number>('widgetId' as any);
+  private widgetId = inject<number>('widgetId' as never);
   private rssWidgetService = inject(RssWidgetService);
   private widgetService = inject(WidgetService);
   private errorHandlerService = inject(ErrorHandlerService);

@@ -29,7 +29,7 @@ export class MiniWidgetComponent extends AbstractWidgetComponent {
 
   constructor() {
     const widgetService = inject(WidgetService);
-    const widgetId = inject<number>('widgetId' as any);
+    const widgetId = inject<number>('widgetId' as never);
 
     super(widgetService, widgetId);
     this.widgetService = widgetService;
