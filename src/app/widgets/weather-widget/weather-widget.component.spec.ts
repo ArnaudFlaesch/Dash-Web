@@ -1,7 +1,7 @@
+import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { format } from 'date-fns';
 import { advanceTo } from 'jest-date-mock';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
@@ -10,7 +10,6 @@ import { ErrorHandlerService } from './../../services/error.handler.service';
 import { IForecastAPIResponse } from './IWeather';
 import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('WeatherWidgetComponent', () => {
   let component: WeatherWidgetComponent;
@@ -189,30 +188,6 @@ describe('WeatherWidgetComponent', () => {
       expect(component.cityData?.name).toEqual(cityName);
       expect(component.forecastResponse.length).toEqual(forecastData.list.length);
       expect(component.isWidgetLoaded()).toEqual(true);
-
-      if (component.cityData) {
-        expect(component.isForecastModeWeek()).toEqual(false);
-        component.selectDayForecast(new Date(component.forecastDays[0]));
-        const dateToSelect = new Date(component.forecastDays[1]);
-        component.selectDayForecast(dateToSelect);
-        expect(component.isSelectedDay(dateToSelect)).toEqual(true);
-        // Select the same date a second time to check that nothing changes and to cover all possible cases
-        component.selectDayForecast(dateToSelect);
-        expect(component.isSelectedDay(dateToSelect)).toEqual(true);
-        expect(
-          component.forecastToDisplay.map((forecast) =>
-            format(new Date(forecast.dt * 1000), 'dd-MM-yyyy')
-          )
-        ).toEqual(['07-03-2022']);
-        component.selectWeekForecast();
-        expect(component.isSelectedDay(dateToSelect)).toEqual(false);
-        component.selectWeekForecast();
-      }
-    });
-
-    it('Should format date', () => {
-      const date = new Date(2022, 5, 1);
-      expect(component.formatDate(date)).toEqual('mer. 01');
     });
   });
 

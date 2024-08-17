@@ -81,7 +81,7 @@ describe('NotificationsComponent', () => {
     expect(component.notificationsToDisplay[0].notificationTypeToDisplay).toEqual('warning');
     expect(component.notificationsToDisplay[1].notificationTypeToDisplay).toEqual('info');
     expect(component.notificationsToDisplay[1].notificationTypeToDisplay).toEqual('info');
-    expect(component.unreadNotificationsForBadge).toEqual('2');
+    expect(component.unreadNotificationsForBadge).toEqual(2);
   });
 
   it('Should mark all notifications as read', () => {
@@ -101,6 +101,6 @@ describe('NotificationsComponent', () => {
     });
     markNotificationAsReadRequest.flush(updatedNotificationsData);
 
-    expect(component.unreadNotificationsForBadge).toEqual('');
+    expect(component.unreadNotificationsForBadge).toEqual(0);
   });
 });

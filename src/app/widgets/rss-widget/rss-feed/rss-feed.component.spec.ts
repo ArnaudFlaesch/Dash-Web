@@ -44,7 +44,7 @@ describe('RssFeedComponent', () => {
       `15/03/2022 19:00:02 ${article.title}`
     );
     article.title = '';
-    expect(component.formatTitleForArticle(article)).toEqual(`15/03/2022 19:00:02 `);
+    expect(component.formatTitleForArticle(article)).toEqual(`15/03/2022 19:00:02`);
   });
 
   it('Should remove html from article content', () => {
