@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -20,7 +20,7 @@ import { WidgetComponent } from '../widget/widget.component';
   selector: 'dash-rss-widget',
   templateUrl: './rss-widget.component.html',
   styleUrls: ['./rss-widget.component.scss', '../widget/widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -50,7 +50,6 @@ export class RssWidgetComponent {
   private rssWidgetService = inject(RssWidgetService);
   private widgetService = inject(WidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
-  private changeDetectorRef = inject(ChangeDetectorRef);
 
   public refreshWidget(): void {
     if (this.urlFeed) {
@@ -61,7 +60,6 @@ export class RssWidgetComponent {
             this.rssFeedResult = (apiResult as Record<string, unknown>)['channel'] as IRSSHeader;
           }
           this.isWidgetLoaded = true;
-          this.changeDetectorRef.detectChanges();
         },
         error: (error) => this.errorHandlerService.handleError(error, this.ERROR_GETTING_RSS_FEED),
         complete: () => (this.isWidgetLoaded = true)
@@ -97,8 +95,7 @@ export class RssWidgetComponent {
             ? (response.data['readArticlesGuids'] as string[])
             : []),
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ),
-        complete: () => this.changeDetectorRef.detectChanges()
+          this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ)
       });
   }
 }

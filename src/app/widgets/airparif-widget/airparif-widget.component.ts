@@ -1,16 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { AirParifWidgetService } from './airparif-widget.service';
-import { IAirParifCouleur, IForecast } from './model/IAirParif';
-import { SafePipe } from '../../pipes/safe.pipe';
-import { AirParifMapComponent } from './airparif-map/airparif-map.component';
 import { FormsModule } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
-import { WidgetComponent } from '../widget/widget.component';
+import { MatInput } from '@angular/material/input';
 import { forkJoin } from 'rxjs';
+import { SafePipe } from '../../pipes/safe.pipe';
+import { WidgetComponent } from '../widget/widget.component';
+import { ErrorHandlerService } from './../../services/error.handler.service';
+import { AirParifMapComponent } from './airparif-map/airparif-map.component';
+import { AirParifWidgetService } from './airparif-widget.service';
+import { IAirParifCouleur, IForecast } from './model/IAirParif';
 
 @Component({
   selector: 'dash-airparif-widget',
@@ -42,7 +42,6 @@ export class AirParifWidgetComponent {
   private ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
 
-  private changeDetectorRef = inject(ChangeDetectorRef);
   private airParifWidgetService = inject(AirParifWidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
   public airParifWebsiteUrl = this.airParifWidgetService.getAirParifWebsiteUrl();
@@ -56,7 +55,6 @@ export class AirParifWidgetComponent {
         next: ([forecast, airParifColors]) => {
           this.airParifForecast = forecast;
           this.airParifCouleursIndices = airParifColors;
-          this.changeDetectorRef.detectChanges();
         },
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_AIRPARIF_FORECAST)

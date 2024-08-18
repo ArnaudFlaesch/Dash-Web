@@ -114,7 +114,7 @@ export class StravaWidgetComponent implements OnInit {
     }
   }
 
-  private getActivitiesByMonth(): Record<string, number[]> {
+  public getActivitiesByMonth(): Record<string, number[]> {
     return [...this.activities]
       .sort((activityA, activityB) => this.sortByActivityDate(activityA, activityB, false))
       .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
@@ -127,7 +127,7 @@ export class StravaWidgetComponent implements OnInit {
       }, {});
   }
 
-  private getStatsFromActivities(): IActivitiesStatsByMonth[] {
+  public getStatsFromActivities(): IActivitiesStatsByMonth[] {
     const activitiesByMonthList = this.getActivitiesByMonth();
     return Object.keys(activitiesByMonthList).map((month) => {
       return {

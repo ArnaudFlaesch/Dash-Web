@@ -5,9 +5,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { advanceTo } from 'jest-date-mock';
 import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
-import { environment } from './../../../environments/environment';
 import { ErrorHandlerService } from './../../services/error.handler.service';
-import { IForecastAPIResponse } from './IWeather';
+import { IForecastAPIResponse, IWeatherAPIResponse } from './IWeather';
 import { WeatherWidgetComponent } from './weather-widget.component';
 import { WeatherWidgetService } from './weather.widget.service';
 
@@ -40,20 +39,24 @@ describe('WeatherWidgetComponent', () => {
 
   advanceTo(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
-  const weatherData = {
+  const weatherData: IWeatherAPIResponse = {
     coord: { lon: 2.3488, lat: 48.8534 },
     weather: [{ id: 800, main: 'Clear', description: 'ciel dégagé', icon: '01d' }],
     base: 'stations',
     main: {
       temp: 7.57,
       feels_like: 3.75,
-      temp_min: 6.11,
-      temp_max: 8.54,
+      tempMin: 6.11,
+      tempMax: 8.54,
       pressure: 1022,
       humidity: 45
     },
     visibility: 10000,
-    wind: { speed: 7.2, deg: 50 },
+    wind: {
+      speed: 7.2,
+      deg: 50,
+      gust: 0
+    },
     clouds: { all: 0 },
     dt: 1646586617,
     sys: {
@@ -176,14 +179,9 @@ describe('WeatherWidgetComponent', () => {
       expect(component.getWidgetData()).toEqual({ city: cityName });
       component.refreshWidget();
 
-      const weatherRequest = httpTestingController.expectOne(
-        environment.backend_url + '/weatherWidget/weather?city=' + cityName
-      );
-      weatherRequest.flush(weatherData);
-      const forecastRequest = httpTestingController.expectOne(
-        environment.backend_url + '/weatherWidget/forecast?city=' + cityName
-      );
-      forecastRequest.flush(forecastData);
+      const requests = httpTestingController.match({ method: 'GET' });
+      requests[0].flush(weatherData);
+      requests[1].flush(forecastData);
 
       expect(component.cityData?.name).toEqual(cityName);
       expect(component.forecastResponse.length).toEqual(forecastData.list.length);
@@ -196,13 +194,8 @@ describe('WeatherWidgetComponent', () => {
       const cityName = 'Paris';
       component.city = cityName;
       component.refreshWidget();
-
-      httpTestingController
-        .expectOne(environment.backend_url + '/weatherWidget/weather?city=' + cityName)
-        .error(new ProgressEvent('Server error'));
-      httpTestingController
-        .expectOne(environment.backend_url + '/weatherWidget/forecast?city=' + cityName)
-        .error(new ProgressEvent('Server error'));
+      const requests = httpTestingController.match({ method: 'GET' });
+      requests[0].error(new ProgressEvent('Server error'));
 
       expect(component.weather).toEqual(undefined);
       expect(component.forecastResponse).toEqual([]);

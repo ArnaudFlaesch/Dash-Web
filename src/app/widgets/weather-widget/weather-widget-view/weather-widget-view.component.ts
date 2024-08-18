@@ -72,6 +72,9 @@ export class WeatherWidgetViewComponent implements OnChanges {
   }
 
   public isSelectedDay(date: Date): boolean {
+    console.log(this.forecastMode);
+    console.log(this.selectedDayForecast.getDay());
+    console.log(date.getDay());
     return (
       this.forecastMode === ForecastMode.DAY && this.selectedDayForecast.getDay() === date.getDay()
     );

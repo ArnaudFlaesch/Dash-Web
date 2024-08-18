@@ -21,7 +21,7 @@ export class LoginComponent {
   public inputUsername = '';
   public inputPassword = '';
 
-  private authService = inject(AuthService);
+  public authService = inject(AuthService);
   private errorHandlerService = inject(ErrorHandlerService);
   private router = inject(Router);
 

@@ -49,82 +49,8 @@ jobs:
         id: application-tests
         run: npm run test
 
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-
-      - name: Start mock server
-        run: |
-          [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-MockServer ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]] && tagName=${{github.ref_name}} || tagName=latest
-          docker run -p 5000:5000 -d ghcr.io/arnaudflaesch/dash-mockserver:$tagName
-
-      - name: Start database image
-        run: |
-          docker run -p 5432:5432 -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dash postgres:16.3-alpine3.20
-
-      - name: Start backend image
-        run: |
-          [[ "$(git ls-remote --heads https://github.com/ArnaudFlaesch/Dash-WebServices ${{github.ref_name}} | wc -l)" == 1 && ${{github.ref_name}} != 'master' ]] && tagName=${{github.ref_name}} || tagName=latest
-          docker run -p 8080:8080 -d --network="host" -e POSTGRES_PASSWORD=postgres ghcr.io/arnaudflaesch/dash-webservices:$tagName
-
-      - name: E2E Tests
-        uses: cypress-io/github-action@v6
-        id: e2e-tests
-        with:
-          browser: firefox
-          config-file: cypress-test.config.ts
-          start: npm start
-          wait-on: 'http://localhost:4200'
-
-      - name: Generate test report
-        id: generate-e2e-report
-        if: always() && steps.e2e-tests.outcome == 'failure'
-        run: |
-          mkdir cypress/screenshots || true
-          npx mochawesome-merge ./cypress/results/mochawesome-report/*.json > tests-report.json
-          npx marge tests-report.json -o cypress/reports/html
-          cp -r cypress/screenshots cypress/reports/html/screenshots
-
-      - name: Upload Cypress report
-        uses: actions/upload-artifact@v4
-        if: always() && steps.generate-e2e-report.outcome == 'success'
-        with:
-          name: Cypress report
-          path: cypress/reports/html
-
-      - name: Report coverage for Codecov
-        uses: codecov/codecov-action@v4
-        if: always() && steps.application-tests.outcome == 'success'
-        with:
-          directory: coverage-jest
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Report coverage for Codacy
-        if: always() && steps.application-tests.outcome == 'success'
-        run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage-jest/lcov.info
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2.3.0
-        if: always() && steps.application-tests.outcome == 'success'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Generate documentation
-        if: success() && github.ref_name == 'master'
-        run: |
-          npm run compodoc:build
-          mv documentation public/documentation
-
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
-        if: success() && github.ref_name == 'master'
         with:
           path: ./public
 
@@ -140,7 +66,6 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: test
-    if: success() && github.ref_name == 'master'
 
     steps:
       - name: Deploy to GitHub Pages

@@ -1,5 +1,6 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
@@ -8,7 +9,6 @@ import { ErrorHandlerService } from './../../services/error.handler.service';
 import { WidgetService } from './../../services/widget.service/widget.service';
 import { RssWidgetComponent } from './rss-widget.component';
 import { RssWidgetService } from './rss.widget.service';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('RssWidgetComponent', () => {
   let component: RssWidgetComponent;
@@ -99,7 +99,7 @@ describe('RssWidgetComponent', () => {
   };
 
   it('Should read all articles', () => {
-    expect(component.feed).toEqual([]);
+    expect(component.rssFeedResult?.item).toEqual(undefined);
     component.urlFeed = urlFeed;
     component.refreshWidget();
 
@@ -109,7 +109,7 @@ describe('RssWidgetComponent', () => {
     );
     request.flush(rssFeedData);
     const feedLength = rssFeedData.channel.item.length;
-    expect(component.feed.length).toEqual(feedLength);
+    expect(component.rssFeedResult?.item.length).toEqual(feedLength);
     const allArticlesGuids = rssFeedData.channel.item.map((item) => item.guid);
 
     component.markAllFeedAsRead();

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { MatButton } from '@angular/material/button';
 import { ErrorHandlerService } from './../../services/error.handler.service';
@@ -17,7 +17,7 @@ import { WeatherWidgetViewComponent } from './weather-widget-view/weather-widget
   selector: 'dash-weather-widget',
   templateUrl: './weather-widget.component.html',
   styleUrls: ['./weather-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -43,7 +43,6 @@ export class WeatherWidgetComponent {
   private ERROR_GETTING_WEATHER_DATA =
     'Erreur lors de la récupération des données météorologiques.';
 
-  private changeDetectorRef = inject(ChangeDetectorRef);
   private weatherWidgetService = inject(WeatherWidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
 
@@ -61,7 +60,6 @@ export class WeatherWidgetComponent {
           this.forecastResponse = forecastApiResponse.list;
           this.cityData = forecastApiResponse.city;
           this.isForecastLoaded = true;
-          this.changeDetectorRef.detectChanges();
         },
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WEATHER_DATA)

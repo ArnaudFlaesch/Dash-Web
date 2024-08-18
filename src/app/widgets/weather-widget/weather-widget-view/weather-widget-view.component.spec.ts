@@ -1,8 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WeatherWidgetViewComponent } from './weather-widget-view.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { SimpleChange } from '@angular/core';
 import { format } from 'date-fns';
+import { advanceTo } from 'jest-date-mock';
+import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
 import { IForecastAPIResponse, IWeatherAPIResponse } from '../IWeather';
+import { WeatherWidgetService } from '../weather.widget.service';
+import { WeatherWidgetViewComponent } from './weather-widget-view.component';
 
 describe('WeatherWidgetViewComponent', () => {
   let component: WeatherWidgetViewComponent;
@@ -15,13 +21,17 @@ describe('WeatherWidgetViewComponent', () => {
     main: {
       temp: 7.57,
       feels_like: 3.75,
-      temp_min: 6.11,
-      temp_max: 8.54,
+      tempMin: 6.11,
+      tempMax: 8.54,
       pressure: 1022,
       humidity: 45
     },
     visibility: 10000,
-    wind: { speed: 7.2, deg: 50 },
+    wind: {
+      speed: 7.2,
+      deg: 50,
+      gust: 0
+    },
     clouds: { all: 0 },
     dt: 1646586617,
     sys: {
@@ -131,9 +141,17 @@ describe('WeatherWidgetViewComponent', () => {
     }
   };
 
+  advanceTo(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WeatherWidgetViewComponent]
+      imports: [WeatherWidgetViewComponent],
+      providers: [
+        DateUtilsService,
+        WeatherWidgetService,
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WeatherWidgetViewComponent);
@@ -145,6 +163,7 @@ describe('WeatherWidgetViewComponent', () => {
   });
 
   it('should create', () => {
+    component.ngOnChanges({ forecastResponse: new SimpleChange({}, forecastData.list, true) });
     expect(component.isForecastModeWeek()).toEqual(false);
     component.selectDayForecast(new Date(component.forecastDays[0]));
     const dateToSelect = new Date(component.forecastDays[1]);
