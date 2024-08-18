@@ -68,7 +68,7 @@ export class StravaWidgetComponent implements OnInit {
       if (apiCode) {
         await this.getToken(apiCode);
       }
-    }, 2500);
+    }, 1000);
   }
 
   public refreshWidget(): void {
