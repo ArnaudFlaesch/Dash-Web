@@ -1,6 +1,6 @@
 import { IPlayerDataResponse, IAchievementResponse, IGameInfoResponse } from './ISteam';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
@@ -8,11 +8,11 @@ import { IPage } from '../../model/IPage';
 
 @Injectable()
 export class SteamWidgetService {
+  private http = inject(HttpClient);
+
   private _STEAM_IMAGE_URL =
     'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/';
   private _STEAM_COMMUNITY_URL = 'https://steamcommunity.com/app/';
-
-  constructor(private http: HttpClient) {}
 
   get STEAM_IMAGE_URL(): string {
     return this._STEAM_IMAGE_URL;

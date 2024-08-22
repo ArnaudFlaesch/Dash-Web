@@ -2,19 +2,20 @@
 
 <mat-dialog-content>
   <div id="widget-types-list">
-    @for(widgetType of widgetTypeEnumKeys; track widgetType.type) {
-    <mat-card >
-      <mat-card-content>
-        <div class="widget-type-container">
-          <mat-icon>{{widgetType.icon }}</mat-icon>
-          <span> {{ widgetType.type }}</span>
-        </div>
-      </mat-card-content>
-      <mat-card-actions>
-        <button id="{{ widgetType.type }}" mat-raised-button color="primary"
-          [mat-dialog-close]="widgetType.type">Ajouter</button>
-      </mat-card-actions>
-    </mat-card>
+    @for (widgetType of widgetTypeEnumKeys; track widgetType.type) {
+      <mat-card>
+        <mat-card-content>
+          <div class="widget-type-container">
+            <mat-icon>{{ widgetType.icon }}</mat-icon>
+            <span> {{ widgetType.type }}</span>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button id="{{ widgetType.type }}" mat-raised-button color="primary" [mat-dialog-close]="widgetType.type">
+            Ajouter
+          </button>
+        </mat-card-actions>
+      </mat-card>
     }
   </div>
 </mat-dialog-content>

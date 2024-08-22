@@ -5,7 +5,8 @@ import {
   Component,
   ElementRef,
   HostListener,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
 import { SafePipe } from '../../pipes/safe.pipe';
 import { MatIcon } from '@angular/material/icon';
@@ -20,8 +21,9 @@ import { WidgetComponent } from '../widget/widget.component';
   imports: [WidgetComponent, MatIcon, SafePipe]
 })
 export class EcowattWidgetComponent implements AfterViewInit {
-  @ViewChild('iframeContainer')
-  private iframeContainer: ElementRef | undefined;
+  private changeDetectorRef = inject(ChangeDetectorRef);
+
+  @ViewChild('iframeContainer') private iframeContainer: ElementRef | undefined;
 
   public ecowattIframeUrl =
     'https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0';
@@ -30,10 +32,8 @@ export class EcowattWidgetComponent implements AfterViewInit {
   public iframeContainerHeight = 0;
   public iframeContainerWidth = 0;
 
-  constructor(private cdRef: ChangeDetectorRef) {}
-
   @HostListener('window:resize', ['$event'])
-  private onResize(): void {
+  public onResize(): void {
     this.resizeWidget();
   }
 
@@ -44,10 +44,10 @@ export class EcowattWidgetComponent implements AfterViewInit {
   public resizeWidget(): void {
     this.iframeContainerHeight = this.iframeContainer?.nativeElement.offsetHeight;
     this.iframeContainerWidth = this.iframeContainer?.nativeElement.offsetWidth;
+    this.changeDetectorRef.detectChanges();
   }
 
   public refreshWidget(): void {
-    this.cdRef.detectChanges();
     this.resizeWidget();
     if (this.iframeContainer) {
       const iframe = this.iframeContainer.nativeElement.getElementsByTagName('iframe')[0];

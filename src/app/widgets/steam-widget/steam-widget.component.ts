@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -57,11 +57,8 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
 
   private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations Steam.';
   private ERROR_GETTING_OWNED_GAMES = 'Erreur lors de la récupération de la liste des jeux.';
-
-  constructor(
-    private errorHandlerService: ErrorHandlerService,
-    private steamWidgetService: SteamWidgetService
-  ) {}
+  private errorHandlerService = inject(ErrorHandlerService);
+  private steamWidgetService = inject(SteamWidgetService);
 
   ngOnInit(): void {
     this.searchFormControl.valueChanges

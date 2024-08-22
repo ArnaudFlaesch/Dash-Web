@@ -7,7 +7,8 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
@@ -27,6 +28,8 @@ import { MatIcon } from '@angular/material/icon';
   imports: [MatIcon, MatButton]
 })
 export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
+  private airParifWidgetService = inject(AirParifWidgetService);
+
   @Input()
   public airParifCouleursIndices: IAirParifCouleur[] = [];
 
@@ -54,7 +57,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
     position: 'left'
   });
 
-  constructor(private airParifWidgetService: AirParifWidgetService) {
+  constructor() {
     this.airParifForecastTodayLayer = L.tileLayer.wms(
       this.airParifUrl + 'siteweb/wms',
       this.getAirParifWmsOptions('siteweb:vue_indice_atmo_2020_com')

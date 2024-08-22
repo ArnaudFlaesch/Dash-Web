@@ -15,7 +15,7 @@ import { WidgetService } from '../../services/widget.service/widget.service';
 @Component({
   selector: 'dash-abstract-widget',
   templateUrl: './abstract-widget.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true
 })
 export class AbstractWidgetComponent {

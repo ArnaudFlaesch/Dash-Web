@@ -1,6 +1,8 @@
-<dash-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="this.refreshWidget()"
-  [isWidgetLoaded]="isWidgetLoaded">
-
+<dash-widget
+  [widgetData]="getWidgetData()"
+  (refreshWidgetAction)="this.refreshWidget()"
+  [isWidgetLoaded]="isWidgetLoaded"
+>
   <ng-template #headerIcon>
     <mat-icon>electric_bolt</mat-icon>
   </ng-template>
@@ -11,8 +13,12 @@
 
   <ng-template #body>
     <div id="ecowatt-info-container" #iframeContainer>
-      <iframe [src]="ecowattIframeUrl | safe : 'resource_url'" title="ecowatt" [width]="iframeContainerWidth"
-        [height]="iframeContainerHeight"></iframe>
+      <iframe
+        [src]="ecowattIframeUrl | safe: 'resource_url'"
+        title="ecowatt"
+        [width]="iframeContainerWidth"
+        [height]="iframeContainerHeight"
+      ></iframe>
     </div>
   </ng-template>
 </dash-widget>

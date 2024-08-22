@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ErrorHandlerService } from '../../../../app/services/error.handler.service';
 import { IWeatherAPIResponse, IForecast, ICity } from '../IWeather';
 import { WeatherWidgetService } from '../weather.widget.service';
@@ -29,6 +29,9 @@ import { MiniWidgetComponent } from '../../mini-widget/mini-widget.component';
   ]
 })
 export class WeatherMiniWidgetComponent {
+  private weatherWidgetService = inject(WeatherWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+
   public city: string | null = null;
 
   public weather: IWeatherAPIResponse | undefined;
@@ -39,11 +42,6 @@ export class WeatherMiniWidgetComponent {
 
   private ERROR_GETTING_WEATHER_DATA =
     'Erreur lors de la récupération des données météorologiques.';
-
-  constructor(
-    private weatherWidgetService: WeatherWidgetService,
-    private errorHandlerService: ErrorHandlerService
-  ) {}
 
   public refreshWidget(): void {
     if (this.city) {
@@ -63,7 +61,7 @@ export class WeatherMiniWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return this.city !== null && this.city.length > 0;
+    return (this.city ?? '').length > 0;
   }
 
   public isWidgetLoaded(): boolean {

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../../app/services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
@@ -7,7 +7,7 @@ import { ICalendarData } from './ICalendarData';
 
 @Injectable()
 export class CalendarWidgetService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   public getCalendarEvents(calendarUrl: string): Observable<ICalendarData[]> {
     return this.http.post<ICalendarData[]>(

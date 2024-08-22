@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
@@ -20,16 +20,19 @@ import { NgTemplateOutlet } from '@angular/common';
   imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })
 export class MiniWidgetComponent extends AbstractWidgetComponent {
+  private errorHandlerService = inject(ErrorHandlerService);
+  protected override widgetService: WidgetService;
+  private miniWidgetService = inject(MiniWidgetService);
+
   private ERROR_UPDATING_WIDGET_DATA =
     'Erreur lors de la mise à jour de la configuration du widget.';
 
-  constructor(
-    private errorHandlerService: ErrorHandlerService,
-    protected override widgetService: WidgetService,
-    private miniWidgetService: MiniWidgetService,
-    @Inject('widgetId') widgetId: number
-  ) {
+  constructor() {
+    const widgetService = inject(WidgetService);
+    const widgetId = inject<number>('widgetId' as never);
+
     super(widgetService, widgetId);
+    this.widgetService = widgetService;
   }
 
   public onValidation(): void {

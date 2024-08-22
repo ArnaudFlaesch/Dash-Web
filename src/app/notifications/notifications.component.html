@@ -1,15 +1,6 @@
-<button id="display-notifications-button" matTooltip="Notifications" color="primary" mat-mini-fab
-  [matMenuTriggerFor]="notificationsMenu">
-  <mat-icon [matBadge]="unreadNotificationsForBadge" aria-hidden="false">notifications</mat-icon>
-</button>
-
-
-<mat-menu #notificationsMenu="matMenu">
-  @if(this.unreadNotificationsForBadge !== ''){
-    <button id="mark-all-notifications-as-read-button" matTooltip="Marquer tout comme lu"
-  (click)="markAllNotificationsAsRead($event)"
- mat-icon-button><mat-icon>check</mat-icon></button>
-}
-  <dash-notifications-list (onNotificationRead)="markNotificationAsRead($event)"
-    [notificationsList]="this.notificationsToDisplay"></dash-notifications-list>
-</mat-menu>
+<dash-notifications-list
+  (onNotificationRead)="markNotificationAsRead($event)"
+  (onMarkAllNotificationsAsRead)="markAllNotificationsAsRead()"
+  [unreadNotificationsForBadge]="unreadNotificationsForBadge"
+  [notificationsList]="this.notificationsToDisplay"
+></dash-notifications-list>

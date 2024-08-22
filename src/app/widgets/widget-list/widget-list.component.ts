@@ -10,7 +10,8 @@ import {
   QueryList,
   SimpleChanges,
   ViewChildren,
-  ViewContainerRef
+  ViewContainerRef,
+  inject
 } from '@angular/core';
 import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
 import { CalendarWidgetComponent } from '../calendar-widget/calendar-widget.component';
@@ -34,14 +35,14 @@ import { IncidentWidgetComponent } from '../incident-widget/incident-widget.comp
   imports: [CdkDropList, CdkDrag]
 })
 export class WidgetListComponent implements OnChanges {
+  private cdRef = inject(ChangeDetectorRef);
+
   @Input() widgetList: IWidgetConfig[] = [];
   @Input() toggleEditMode = false;
   @Output() updateWidgetsOrderEvent = new EventEmitter<IWidgetConfig[]>();
 
   @ViewChildren('dynamic', { read: ViewContainerRef })
   private widgetTargets: QueryList<ViewContainerRef> | undefined;
-
-  constructor(private cdRef: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['widgetList']) {

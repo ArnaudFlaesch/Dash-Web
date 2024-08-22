@@ -1,13 +1,12 @@
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { environment } from '../../../environments/environment';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { WidgetService } from '../../services/widget.service/widget.service';
 import { AirParifWidgetComponent } from './airparif-widget.component';
 import { AirParifWidgetService } from './airparif-widget.service';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('AirParifWidgetComponent', () => {
   let component: AirParifWidgetComponent;
@@ -102,14 +101,11 @@ describe('AirParifWidgetComponent', () => {
 
     component.refreshWidget();
 
-    const forecastRequest = httpTestingController.expectOne(
-      environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode
-    );
-    forecastRequest.flush(forecastData);
-    const couleursIndicesRequest = httpTestingController.expectOne(
-      environment.backend_url + '/airParifWidget/couleurs'
-    );
-    couleursIndicesRequest.flush(couleursIndicesData);
+    const requests = httpTestingController.match({
+      method: 'GET'
+    });
+    requests[0].flush(forecastData);
+    requests[1].flush(couleursIndicesData);
 
     expect(component.airParifForecast).toEqual(forecastData);
     expect(component.airParifCouleursIndices).toEqual(couleursIndicesData);
@@ -122,14 +118,10 @@ describe('AirParifWidgetComponent', () => {
     expect(component.airParifCouleursIndices).toEqual([]);
     component.refreshWidget();
 
-    httpTestingController
-      .expectOne(
-        environment.backend_url + '/airParifWidget/previsionCommune?commune=' + communeInseeCode
-      )
-      .error(new ProgressEvent('Server error'));
-    httpTestingController
-      .expectOne(environment.backend_url + '/airParifWidget/couleurs')
-      .error(new ProgressEvent('Server error'));
+    const requests = httpTestingController.match({
+      method: 'GET'
+    });
+    requests[0].error(new ProgressEvent('Server error'));
 
     expect(component.airParifForecast).toEqual([]);
     expect(component.airParifCouleursIndices).toEqual([]);

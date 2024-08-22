@@ -1,6 +1,9 @@
-<dash-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" (refreshWidgetAction)="this.refreshWidget()"
-  [isWidgetLoaded]="true">
-
+<dash-widget
+  [widgetData]="getWidgetData()"
+  [isFormValid]="isFormValid()"
+  (refreshWidgetAction)="this.refreshWidget()"
+  [isWidgetLoaded]="true"
+>
   <ng-template #headerIcon>
     <a href="{{ playerData?.profileurl }}" class="steam-header">
       <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
@@ -8,16 +11,23 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <div><a href="{{ playerData?.profileurl }}" class="steam-header">
+    <div>
+      <a href="{{ playerData?.profileurl }}" class="steam-header">
         {{ playerData?.personaname }}
-      </a></div>
+      </a>
+    </div>
   </ng-template>
 
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label id="steamUserIdLabel">Utilisateur Steam</mat-label>
-      <input matInput id="steamUserIdInput" name="userId" [(ngModel)]="this.steamUserId"
-        placeholder="Saisissez l'user ID du joueur Steam'" />
+      <input
+        matInput
+        id="steamUserIdInput"
+        name="userId"
+        [(ngModel)]="this.steamUserId"
+        placeholder="Saisissez l'user ID du joueur Steam'"
+      />
     </mat-form-field>
   </ng-template>
 
@@ -28,21 +38,29 @@
         <input matInput [formControl]="searchFormControl" />
       </mat-form-field>
 
-      @if(this.searchFormControl.dirty && this.searchFormControl.value) {
-      <button  mat-icon-button
-        matTooltip="Annuler la recherche" id="reset-form-button" (click)="this.resetForm()">
-        <mat-icon aria-hidden="false">close</mat-icon>
-      </button>
-    }
+      @if (this.searchFormControl.dirty && this.searchFormControl.value) {
+        <button mat-icon-button matTooltip="Annuler la recherche" id="reset-form-button" (click)="this.resetForm()">
+          <mat-icon aria-hidden="false">close</mat-icon>
+        </button>
+      }
     </form>
 
-    @for(game of this.ownedGamesDisplay; track game.appid) {
-    <dash-game-details [steamUserId]="this.steamUserId" [profileUrl]="this.playerData?.profileurl"
-      [gameInfo]="game"></dash-game-details>
+    @for (game of this.ownedGamesDisplay; track game.appid) {
+      <dash-game-details
+        [steamUserId]="this.steamUserId"
+        [profileUrl]="this.playerData?.profileurl"
+        [gameInfo]="game"
+      ></dash-game-details>
     }
 
-    <mat-paginator (page)="onPageChanged($event)" [length]="gameCount" [pageSize]="pageSize" [pageIndex]="pageNumber"
-      [pageSizeOptions]="pageSizeOptions" aria-label="Sélectionnez une page">
+    <mat-paginator
+      (page)="onPageChanged($event)"
+      [length]="gameCount"
+      [pageSize]="pageSize"
+      [pageIndex]="pageNumber"
+      [pageSizeOptions]="pageSizeOptions"
+      aria-label="Sélectionnez une page"
+    >
     </mat-paginator>
   </ng-template>
 </dash-widget>

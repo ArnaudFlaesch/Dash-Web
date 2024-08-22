@@ -1,28 +1,39 @@
-<dash-mini-widget [isFormValid]="isFormValid()" [widgetData]="getWidgetData()" [isWidgetLoaded]="isWidgetLoaded()"
-  (refreshWidgetAction)="this.refreshWidget()">
-
+<dash-mini-widget
+  [isFormValid]="isFormValid()"
+  [widgetData]="getWidgetData()"
+  [isWidgetLoaded]="isWidgetLoaded()"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Ville</mat-label>
-      <input id="cityNameInput" name="city" matInput [(ngModel)]="this.city"
-        placeholder="Saisissez de nom de la ville" />
+      <input
+        id="cityNameInput"
+        name="city"
+        matInput
+        [(ngModel)]="this.city"
+        placeholder="Saisissez de nom de la ville"
+      />
     </mat-form-field>
   </ng-template>
 
   <ng-template #body>
-    @if(weather && weather.weather) {
-    <div class="mini-widget-weather-container">
-      <img class="current-weather-icon" [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
-        [matTooltip]="weather.weather[0].description | initialUppercase" [alt]="weather.weather[0].description" />
-      <div class="weather-data-container">
-        <div>{{city}}</div>
-        <div class="temperature-container">
-          <mat-icon matTooltip="Température actuelle">device_thermostat</mat-icon>
-          <div>{{ weather.main.temp }}°</div>
+    @if (weather && weather.weather) {
+      <div class="mini-widget-weather-container">
+        <img
+          class="current-weather-icon"
+          [src]="getIconFromWeatherApi(this.weather.weather[0].icon)"
+          [matTooltip]="weather.weather[0].description | initialUppercase"
+          [alt]="weather.weather[0].description"
+        />
+        <div class="weather-data-container">
+          <div>{{ city }}</div>
+          <div class="temperature-container">
+            <mat-icon matTooltip="Température actuelle">device_thermostat</mat-icon>
+            <div>{{ weather.main.temp }}°</div>
+          </div>
         </div>
       </div>
-    </div>
     }
-
   </ng-template>
 </dash-mini-widget>

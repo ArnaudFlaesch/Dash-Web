@@ -17,57 +17,77 @@
         </div>
       </div>
 
-      @if(this.airParifForecast.length > 0){
-      <div id="forecast-indices-data">
-        <div id="forecast-select-buttons">
-          <button mat-raised-button [color]="this.isForecastModeToday() ? 'primary' : ''"
-            (click)="this.selectTodayForecast()">Aujourd'hui</button>
-            @if(this.airParifForecast.length > 1) {
-              <button mat-raised-button [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
-              (click)="this.selectTomorrowForecast()" >Demain</button>
+      @if (this.airParifForecast.length > 0) {
+        <div id="forecast-indices-data">
+          <div id="forecast-select-buttons">
+            <button
+              mat-raised-button
+              [color]="this.isForecastModeToday() ? 'primary' : ''"
+              (click)="this.selectTodayForecast()"
+            >
+              Aujourd'hui
+            </button>
+            @if (this.airParifForecast.length > 1) {
+              <button
+                mat-raised-button
+                [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
+                (click)="this.selectTomorrowForecast()"
+              >
+                Demain
+              </button>
             }
-        </div>
+          </div>
 
-        @if(this.forecastToDisplay) {
-        <div id="sidepanel-indices">
-          <div class="airparif-indice"
-            [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice) }">
-            <span>Indice global</span><span>{{this.forecastToDisplay.indice}}</span>
-          </div>
-          <div class="airparif-indice"
-            [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.no2)}">
-            <span>Dioxyde d'Azote (NO₂)</span><span>{{this.forecastToDisplay.no2}}</span>
-          </div>
-          <div class="airparif-indice"
-            [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.o3)}">
-            <span>Ozone (O₃)</span><span>{{this.forecastToDisplay.o3}}</span>
-          </div>
-          <div class="airparif-indice"
-            [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm10)}">
-            <span>Particules (diamètre inférieur à 10µm)
-              (PM₁₀)</span><span>{{this.forecastToDisplay.pm10}}</span>
-          </div>
-          <div class="airparif-indice"
-            [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm25)}">
-            <span>pm25</span><span>{{this.forecastToDisplay.pm25}}</span>
-          </div>
-          <div class="airparif-indice"
-            [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.so2)}">
-            <span>Dioxyde de soufre (SO₂)</span><span>{{this.forecastToDisplay.so2}}</span>
+          @if (this.forecastToDisplay) {
+            <div id="sidepanel-indices">
+              <div
+                class="airparif-indice"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice) }"
+              >
+                <span>Indice global</span><span>{{ this.forecastToDisplay.indice }}</span>
+              </div>
+              <div
+                class="airparif-indice"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.no2) }"
+              >
+                <span>Dioxyde d'Azote (NO₂)</span><span>{{ this.forecastToDisplay.no2 }}</span>
+              </div>
+              <div
+                class="airparif-indice"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.o3) }"
+              >
+                <span>Ozone (O₃)</span><span>{{ this.forecastToDisplay.o3 }}</span>
+              </div>
+              <div
+                class="airparif-indice"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm10) }"
+              >
+                <span>Particules (diamètre inférieur à 10µm) (PM₁₀)</span><span>{{ this.forecastToDisplay.pm10 }}</span>
+              </div>
+              <div
+                class="airparif-indice"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm25) }"
+              >
+                <span>pm25</span><span>{{ this.forecastToDisplay.pm25 }}</span>
+              </div>
+              <div
+                class="airparif-indice"
+                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.so2) }"
+              >
+                <span>Dioxyde de soufre (SO₂)</span><span>{{ this.forecastToDisplay.so2 }}</span>
+              </div>
+            </div>
+          }
+
+          <div id="indices-list">
+            @for (indice of this.airParifCouleursIndices; track indice.name) {
+              <span class="indice-label" [style]="{ 'background-color': indice.color }">
+                {{ indice.name }}
+              </span>
+            }
           </div>
         </div>
       }
-
-        <div id="indices-list">
-          @for(indice of this.airParifCouleursIndices; track indice.name) {
-            <span class="indice-label" [style]="{ 'background-color':indice.color }">
-            {{indice.name}}
-          </span>
-          }
-
-        </div>
-      </div>
-    }
     </div>
   </div>
 </div>

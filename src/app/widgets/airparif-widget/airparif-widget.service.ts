@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
 import { environment } from '../../../environments/environment';
@@ -7,7 +7,7 @@ import { IAirParifCouleur, IForecast } from './model/IAirParif';
 
 @Injectable()
 export class AirParifWidgetService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   public getAirParifWebsiteUrl(): string {
     return 'https://www.airparif.asso.fr';

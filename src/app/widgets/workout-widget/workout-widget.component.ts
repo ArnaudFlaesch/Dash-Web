@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatDatepicker,
@@ -78,6 +78,10 @@ enum WORKOUT_STATISTICS {
   ]
 })
 export class WorkoutWidgetComponent {
+  private errorHandlerService = inject(ErrorHandlerService);
+  private workoutWidgetService = inject(WorkoutWidgetService);
+  dateUtilsService = inject(DateUtilsService);
+
   public workoutTypes: IWorkoutType[] = [];
   public workoutSessions: IWorkoutSession[] = [];
   public workoutStatsByWeek: IWorkoutStatsByPeriod[] = [];
@@ -102,12 +106,6 @@ export class WorkoutWidgetComponent {
   private ERROR_CREATING_WORKOUT_TYPE = "Erreur lors de la création d'un type d'exercice.";
   private ERROR_CREATING_WORKOUT_SESSION = "Erreur lors de la création d'une session d'exercices.";
   private ERROR_GETTING_WORKOUT_STATS = 'Erreur lors de la récupération des statistiques.';
-
-  constructor(
-    private errorHandlerService: ErrorHandlerService,
-    private workoutWidgetService: WorkoutWidgetService,
-    public dateUtilsService: DateUtilsService
-  ) {}
 
   public refreshWidget(): void {
     this.workoutWidgetService.getWorkoutTypes().subscribe({

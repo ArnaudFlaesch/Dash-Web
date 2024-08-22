@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -20,9 +20,9 @@ import { format } from 'date-fns';
 
 @Injectable()
 export class WorkoutWidgetService {
-  private dateFormat = 'yyyy-MM-dd';
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private dateFormat = 'yyyy-MM-dd';
 
   public getWorkoutTypes(): Observable<IWorkoutType[]> {
     return this.http.get<IWorkoutType[]>(`${environment.backend_url}/workoutWidget/workoutTypes`, {

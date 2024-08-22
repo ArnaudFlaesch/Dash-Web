@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   MatDialogRef,
   MatDialogTitle,
@@ -30,13 +30,13 @@ import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card'
   ]
 })
 export class CreateWidgetModalComponent {
+  dialogRef = inject<MatDialogRef<CreateWidgetModalComponent>>(MatDialogRef);
+
   public widgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(WidgetTypeEnum)
     .filter((key) => isNaN(parseInt(key, 0)))
     .map((type: string) => {
       return { type: type, icon: this.getWidgetTypeEnumIconToDisplay(type) };
     });
-
-  constructor(public dialogRef: MatDialogRef<CreateWidgetModalComponent>) {}
 
   public getWidgetTypeEnumIconToDisplay(widgetType: unknown): string {
     const widgetTypeEnumKey = WidgetTypeEnum[widgetType as WidgetTypeEnum];

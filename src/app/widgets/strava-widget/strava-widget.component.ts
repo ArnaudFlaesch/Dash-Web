@@ -1,21 +1,21 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { format, isAfter } from 'date-fns';
 
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { fr } from 'date-fns/locale';
+import { firstValueFrom } from 'rxjs';
 import { ErrorHandlerService } from '../../services/error.handler.service';
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
-import { StravaWidgetService } from './strava.widget.service';
-import { firstValueFrom } from 'rxjs';
-import { fr } from 'date-fns/locale';
 import { StravaActivitiesComponent } from './strava-activities/strava-activities.component';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
+import { StravaWidgetService } from './strava.widget.service';
 
-import { WidgetComponent } from '../widget/widget.component';
 import { BaseChartDirective } from 'ng2-charts';
+import { WidgetComponent } from '../widget/widget.component';
 
 @Component({
   selector: 'dash-strava-widget',
@@ -41,7 +41,7 @@ export class StravaWidgetComponent implements OnInit {
 
   public isWidgetLoaded = true;
   public pageNumber = 1;
-  public paginationActivities = 25;
+  readonly paginationActivities = 25;
 
   private STRAVA_CLIENT_ID = 30391;
   private loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
@@ -56,32 +56,29 @@ export class StravaWidgetComponent implements OnInit {
   private ERROR_GETTING_ATHLETE_DATA = 'Erreur lors de la récupération de vos informations Strava.';
   private ERROR_GETTING_ACTIVITIES = 'Erreur lors de la récupération des activités Strava.';
 
-  constructor(
-    private stravaWidgetService: StravaWidgetService,
-    private route: ActivatedRoute,
-    private errorHandlerService: ErrorHandlerService,
-    private router: Router
-  ) {}
+  private stravaWidgetService = inject(StravaWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   public async ngOnInit(): Promise<void> {
-    const apiCode = this.route.snapshot.queryParamMap.get('code');
-    if (apiCode) {
-      await this.getToken(apiCode);
-    }
+    setTimeout(async () => {
+      this.getAthleteData();
+      const apiCode = this.route.snapshot.queryParamMap.get('code');
+      if (apiCode) {
+        await this.getToken(apiCode);
+      }
+    }, 1000);
   }
 
   public refreshWidget(): void {
-    if (this.getTokenValue()) {
-      this.getUserData();
-    }
+    this.getUserData();
   }
 
   public getUserData(): void {
     if (this.isUserLoggedIn()) {
-      if (this.getTokenValue()) {
-        this.activities = [];
-        this.getAthleteData();
-      }
+      this.activities = [];
+      this.getAthleteData();
     } else if (this.getRefreshTokenValue()) {
       this.refreshTokenFromApi();
     }
@@ -100,7 +97,7 @@ export class StravaWidgetComponent implements OnInit {
     }
   }
 
-  public getAthleteData(): void {
+  private getAthleteData(): void {
     const token = this.getTokenValue();
     if (token) {
       this.isWidgetLoaded = false;
@@ -157,7 +154,7 @@ export class StravaWidgetComponent implements OnInit {
     );
   }
 
-  public getChartData(): void {
+  private getChartData(): void {
     const activitiesStats = this.getStatsFromActivities();
     this.activitiesChartData = {
       labels: activitiesStats.map((data: IActivitiesStatsByMonth) =>

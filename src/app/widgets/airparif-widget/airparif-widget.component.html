@@ -1,6 +1,9 @@
-<dash-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
-  (refreshWidgetAction)="this.refreshWidget()">
-
+<dash-widget
+  [widgetData]="getWidgetData()"
+  [isFormValid]="isFormValid()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #headerIcon>
     <mat-icon>air</mat-icon>
   </ng-template>
@@ -14,19 +17,30 @@
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label id="airParifApiKeyLabel">Clé d'API</mat-label>
-      <input matInput id="airParifApiKey" [(ngModel)]="this.airParifApiKey"
-        placeholder="Saisissez la clé d'API AirParif" />
+      <input
+        matInput
+        id="airParifApiKey"
+        [(ngModel)]="this.airParifApiKey"
+        placeholder="Saisissez la clé d'API AirParif"
+      />
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label id="communeInseeCodeLabel">Code commune</mat-label>
-      <input matInput id="communeInseeCode" [(ngModel)]="this.communeInseeCode"
-        placeholder="Saisissez le code commune" />
+      <input
+        matInput
+        id="communeInseeCode"
+        [(ngModel)]="this.communeInseeCode"
+        placeholder="Saisissez le code commune"
+      />
     </mat-form-field>
   </ng-template>
 
   <ng-template #body>
-    <dash-airparif-map class="airparif-map" [airParifApiKey]="this.airParifApiKey"
+    <dash-airparif-map
+      class="airparif-map"
+      [airParifApiKey]="this.airParifApiKey"
       [airParifForecast]="this.airParifForecast"
-      [airParifCouleursIndices]="this.airParifCouleursIndices"></dash-airparif-map>
+      [airParifCouleursIndices]="this.airParifCouleursIndices"
+    ></dash-airparif-map>
   </ng-template>
 </dash-widget>

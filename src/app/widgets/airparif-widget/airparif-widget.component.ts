@@ -1,21 +1,22 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { AirParifWidgetService } from './airparif-widget.service';
-import { IAirParifCouleur, IForecast } from './model/IAirParif';
-import { SafePipe } from '../../pipes/safe.pipe';
-import { AirParifMapComponent } from './airparif-map/airparif-map.component';
 import { FormsModule } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { forkJoin } from 'rxjs';
+import { SafePipe } from '../../pipes/safe.pipe';
 import { WidgetComponent } from '../widget/widget.component';
+import { ErrorHandlerService } from './../../services/error.handler.service';
+import { AirParifMapComponent } from './airparif-map/airparif-map.component';
+import { AirParifWidgetService } from './airparif-widget.service';
+import { IAirParifCouleur, IForecast } from './model/IAirParif';
 
 @Component({
   selector: 'dash-airparif-widget',
   templateUrl: './airparif-widget.component.html',
   styleUrls: ['./airparif-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -38,35 +39,25 @@ export class AirParifWidgetComponent {
 
   public isWidgetLoaded = true;
 
-  public airParifWebsiteUrl = this.airParifWidgetService.getAirParifWebsiteUrl();
-
   private ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
-  private ERROR_GETTING_AIRPARIF_COLOR_INDICES =
-    "Erreur lors de la récupération des couleurs d'indices d'AirParif.";
 
-  constructor(
-    private airParifWidgetService: AirParifWidgetService,
-    private errorHandlerService: ErrorHandlerService
-  ) {}
+  private airParifWidgetService = inject(AirParifWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  public airParifWebsiteUrl = this.airParifWidgetService.getAirParifWebsiteUrl();
 
   public refreshWidget(): void {
     if (this.airParifApiKey && this.communeInseeCode) {
-      this.airParifWidgetService.getCommunePrevision(this.communeInseeCode).subscribe({
-        next: (forecast) => {
+      forkJoin([
+        this.airParifWidgetService.getCommunePrevision(this.communeInseeCode),
+        this.airParifWidgetService.getColors()
+      ]).subscribe({
+        next: ([forecast, airParifColors]) => {
           this.airParifForecast = forecast;
+          this.airParifCouleursIndices = airParifColors;
         },
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_AIRPARIF_FORECAST)
-      });
-
-      this.airParifWidgetService.getColors().subscribe({
-        next: (airParifColors) => (this.airParifCouleursIndices = airParifColors),
-        error: (error) =>
-          this.errorHandlerService.handleError(
-            error.message,
-            this.ERROR_GETTING_AIRPARIF_COLOR_INDICES
-          )
       });
     }
   }

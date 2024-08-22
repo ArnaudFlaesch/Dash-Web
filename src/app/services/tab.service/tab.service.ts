@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ITab } from '../../../app/model/Tab';
 import { environment } from '../../../environments/environment';
@@ -7,7 +7,7 @@ import authorizationBearer from '../authorizationBearer/authorizationBearer';
 
 @Injectable()
 export class TabService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   public getTabs(): Observable<ITab[]> {
     return this.http.get<ITab[]>(`${environment.backend_url}/tab/`, {

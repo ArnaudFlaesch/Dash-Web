@@ -1,27 +1,28 @@
 <mat-accordion>
-  @for(article of feed; track article.link) {
-  <mat-expansion-panel hideToggle class="rss-article" (opened)="onOpenDetail(article.guid)" (closed)="onClosePanel()">
-    <mat-expansion-panel-header>
-      <mat-panel-title [ngClass]="{ 'article-opened': isArticleOpened(article.guid),
-        'is-read': isArticleRead(article.guid) }" class="article-title">
-        <p>{{ this.formatTitleForArticle(article) }}
-        </p>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <ng-template matExpansionPanelContent>
-      <div class="rss-feed-content">
-        <a [href]="article.link | safe: 'url'">
-          <div class="article-content">
-            {{ stripHtmlFromContent(article.description) }}
-          </div>
-          <div class="article-pubdate">
-            Publié le
-            {{ (article.pubDate ? article.pubDate : article.updated) || '' | dateFormat }}
-            {{ article.author && 'par ' + article.author }}
-          </div>
-        </a>
-      </div>
-    </ng-template>
-  </mat-expansion-panel>
+  @for (article of feed; track article.link) {
+    <mat-expansion-panel hideToggle class="rss-article" (opened)="onOpenDetail(article.guid)" (closed)="onClosePanel()">
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          [ngClass]="{ 'article-opened': isArticleOpened(article.guid), 'is-read': isArticleRead(article.guid) }"
+          class="article-title"
+        >
+          <p>{{ this.formatTitleForArticle(article) }}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div class="rss-feed-content">
+          <a [href]="article.link | safe: 'url'">
+            <div class="article-content">
+              {{ stripHtmlFromContent(article.description) }}
+            </div>
+            <div class="article-pubdate">
+              Publié le
+              {{ (article.pubDate ? article.pubDate : article.updated) || '' | dateFormat }}
+              {{ article.author && 'par ' + article.author }}
+            </div>
+          </a>
+        </div>
+      </ng-template>
+    </mat-expansion-panel>
   }
 </mat-accordion>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, LOCALE_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, LOCALE_ID, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
   CalendarEvent,
@@ -44,6 +44,10 @@ import { WidgetComponent } from '../widget/widget.component';
   ]
 })
 export class CalendarWidgetComponent {
+  dialog = inject(MatDialog);
+  private calendarWidgetService = inject(CalendarWidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
+
   public calendarUrls: string[] = [];
   public isWidgetLoaded = true;
 
@@ -72,12 +76,9 @@ export class CalendarWidgetComponent {
   private readonly MILLISECONDS_IN_A_DAY = 86400000;
   private ERROR_PARSING_EVENTS = 'Erreur lors de la récupération des évènements.';
 
-  constructor(
-    @Inject(LOCALE_ID) locale: string,
-    public dialog: MatDialog,
-    private calendarWidgetService: CalendarWidgetService,
-    private errorHandlerService: ErrorHandlerService
-  ) {
+  constructor() {
+    const locale = inject(LOCALE_ID);
+
     this.locale = locale;
   }
 

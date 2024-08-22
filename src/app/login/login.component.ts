@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -12,7 +12,7 @@ import { ErrorHandlerService } from './../services/error.handler.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, FormsModule, MatButton, MatProgressSpinner]
 })
 export class LoginComponent {
@@ -21,11 +21,9 @@ export class LoginComponent {
   public inputUsername = '';
   public inputPassword = '';
 
-  constructor(
-    public authService: AuthService,
-    private errorHandlerService: ErrorHandlerService,
-    private router: Router
-  ) {}
+  public authService = inject(AuthService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private router = inject(Router);
 
   public async handleLogin(): Promise<void> {
     if (this.inputUsername && this.inputPassword) {
@@ -38,8 +36,6 @@ export class LoginComponent {
         this.isLoading = false;
         this.errorHandlerService.handleLoginError(error as Error);
       }
-    } else {
-      this.isLoading = false;
     }
   }
 

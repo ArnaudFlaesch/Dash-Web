@@ -1,15 +1,19 @@
-<dash-widget [widgetData]="getWidgetData()" [isFormValid]="isFormValid()" [isWidgetLoaded]="isWidgetLoaded"
-  (refreshWidgetAction)="this.refreshWidget()">
-
+<dash-widget
+  [widgetData]="getWidgetData()"
+  [isFormValid]="isFormValid()"
+  [isWidgetLoaded]="isWidgetLoaded"
+  (refreshWidgetAction)="this.refreshWidget()"
+>
   <ng-template #headerIcon>
-    @if(this.image) {<img class="rss-widget-header"  src="{{ image.url }}" alt="logo" />}
+    <img class="rss-widget-header" src="{{ this.rssFeedResult?.image?.url }}" alt="logo" />
   </ng-template>
 
   <ng-template #headerTitle>
-    @if(this.image) {
-    <a  [href]="this.image.link | safe: 'url'">
-      <div class="rss-title">{{ this.title }}</div>
-    </a> }
+    @if (this.rssFeedResult && this.rssFeedResult.image && this.rssFeedResult.image.link !== undefined) {
+      <a [href]="this.rssFeedResult.image.link | safe: 'url'">
+        <div class="rss-title">{{ this.rssFeedResult.title }}</div>
+      </a>
+    }
   </ng-template>
 
   <ng-template #editComponent>
@@ -20,18 +24,26 @@
   </ng-template>
 
   <ng-template #additionalActions>
-    <button mat-icon-button matTooltip="Marquer tout le flux comme lu" class="markAllArticlesAsReadButton"
-      (click)="markAllFeedAsRead()">
+    <button
+      mat-icon-button
+      matTooltip="Marquer tout le flux comme lu"
+      class="markAllArticlesAsReadButton"
+      (click)="markAllFeedAsRead()"
+    >
       <mat-icon>check</mat-icon>
     </button>
   </ng-template>
 
   <ng-template #body>
-    @if(this.urlFeed) {
-    <div class="rss-widget-body" >
-      <div class="rss-widget-description">{{ this.description }}</div>
-      <dash-rss-feed [feed]="this.feed" [readArticles]="this.readArticles"
-        (markArticleAsReadEvent)="this.markArticleAsRead($event)"></dash-rss-feed>
-    </div>}
+    @if (this.urlFeed) {
+      <div class="rss-widget-body">
+        <div class="rss-widget-description">{{ this.rssFeedResult?.description }}</div>
+        <dash-rss-feed
+          [feed]="this.rssFeedResult?.item ?? []"
+          [readArticles]="this.readArticles"
+          (markArticleAsReadEvent)="this.markArticleAsRead($event)"
+        ></dash-rss-feed>
+      </div>
+    }
   </ng-template>
 </dash-widget>

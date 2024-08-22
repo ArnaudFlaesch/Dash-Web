@@ -1,26 +1,26 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { isToday } from 'date-fns';
+import { Subject, takeUntil } from 'rxjs';
 import {
   INotification,
   INotificationToDisplay,
   NotificationTypeEnum
 } from '../model/INotification';
-import { isToday } from 'date-fns';
-import { NotificationService } from '../services/notification.service/NotificationService';
 import { ErrorHandlerService } from '../services/error.handler.service';
-import { Subject, takeUntil } from 'rxjs';
+import { NotificationService } from '../services/notification.service/NotificationService';
 import { WidgetService } from '../services/widget.service/widget.service';
 import { NotificationsListComponent } from './notifications-list/notifications-list.component';
 
 import { MatBadge } from '@angular/material/badge';
+import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MatMiniFabButton, MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'dash-notifications',
   templateUrl: './notifications.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
     MatMiniFabButton,
@@ -36,18 +36,16 @@ import { MatMiniFabButton, MatIconButton } from '@angular/material/button';
 export class NotificationsComponent implements OnInit, OnDestroy {
   public notificationsFromDatabase: INotification[] = [];
   public notificationsToDisplay: INotificationToDisplay[] = [];
-  public unreadNotificationsForBadge = '';
+  public unreadNotificationsForBadge = 0;
   public notificationTypeEnum = NotificationTypeEnum;
 
   private destroy$: Subject<unknown> = new Subject();
 
-  private ERROR_MARKING_NOTIFICATION_AS_READ = 'Erreur lors du traitement de la requête.';
+  private notificationService = inject(NotificationService);
+  private widgetService = inject(WidgetService);
+  private errorHandlerService = inject(ErrorHandlerService);
 
-  constructor(
-    private notificationService: NotificationService,
-    private widgetService: WidgetService,
-    private errorHandlerService: ErrorHandlerService
-  ) {}
+  private ERROR_MARKING_NOTIFICATION_AS_READ = 'Erreur lors du traitement de la requête.';
 
   ngOnInit(): void {
     this.fetchNotificationsFromDatabase();
@@ -65,8 +63,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.markNotificationsAsRead([notificationId]);
   }
 
-  public markAllNotificationsAsRead(event: Event): void {
-    event.stopPropagation();
+  public markAllNotificationsAsRead(): void {
     this.markNotificationsAsRead(this.notificationsFromDatabase.map((notif) => notif.id));
   }
 
@@ -83,7 +80,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           if (timeA === timeB) return 0;
           return Date.parse(timeB.notificationDate) - Date.parse(timeA.notificationDate);
         });
-        this.computeNotificationsToDisplay();
+        this.notificationsToDisplay = this.computeNotificationsToDisplay();
         this.unreadNotificationsForBadge = this.computeUnreadNotificationsBadge();
       },
       error: (error) =>
@@ -137,10 +134,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private computeUnreadNotificationsBadge(): string {
-    const unreadNotificationsCount = this.notificationsFromDatabase.filter(
-      (notif) => !notif.isRead
-    ).length;
-    return unreadNotificationsCount > 0 ? unreadNotificationsCount.toString() : '';
+  private computeUnreadNotificationsBadge(): number {
+    return this.notificationsFromDatabase.filter((notif) => !notif.isRead).length;
   }
 }

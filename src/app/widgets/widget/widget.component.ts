@@ -2,8 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
-  Inject,
-  TemplateRef
+  TemplateRef,
+  inject
 } from '@angular/core';
 
 import { ErrorHandlerService } from '../../../app/services/error.handler.service';
@@ -33,6 +33,9 @@ import { NgTemplateOutlet } from '@angular/common';
   ]
 })
 export class WidgetComponent extends AbstractWidgetComponent {
+  private errorHandlerService = inject(ErrorHandlerService);
+  protected override widgetService: WidgetService;
+
   @ContentChild('headerIcon', { static: false })
   headerIcon: TemplateRef<unknown> | null = null;
 
@@ -45,12 +48,12 @@ export class WidgetComponent extends AbstractWidgetComponent {
   private ERROR_UPDATING_WIDGET_DATA =
     'Erreur lors de la mise à jour de la configuration du widget.';
 
-  constructor(
-    private errorHandlerService: ErrorHandlerService,
-    protected override widgetService: WidgetService,
-    @Inject('widgetId') widgetId: number
-  ) {
+  constructor() {
+    const widgetService = inject(WidgetService);
+    const widgetId = inject<number>('widgetId' as never);
+
     super(widgetService, widgetId);
+    this.widgetService = widgetService;
   }
 
   public onValidation(): void {

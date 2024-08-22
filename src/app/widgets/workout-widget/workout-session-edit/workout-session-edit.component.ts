@@ -1,5 +1,5 @@
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './../model/Workout';
-import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, SimpleChanges, inject } from '@angular/core';
 import { ErrorHandlerService } from '../../../services/error.handler.service';
 import { WorkoutWidgetService } from '../workout.widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -30,10 +30,8 @@ export class WorkoutSessionEditComponent {
   private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
   private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
 
-  constructor(
-    private errorHandlerService: ErrorHandlerService,
-    private workoutWidgetService: WorkoutWidgetService
-  ) {}
+  private errorHandlerService = inject(ErrorHandlerService);
+  private workoutWidgetService = inject(WorkoutWidgetService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentWorkoutSessionToEdit'].currentValue)
@@ -52,9 +50,7 @@ export class WorkoutSessionEditComponent {
     const workoutType = this.workoutExercises.find(
       (workoutExercise) => workoutExercise.workoutTypeId === workoutTypeId
     );
-    if (workoutType) {
-      return workoutType.numberOfReps;
-    } else return 0;
+    return workoutType ? workoutType.numberOfReps : 0;
   }
 
   public toggleSessionEditMode(): void {

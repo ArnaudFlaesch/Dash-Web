@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service/auth.service';
 import { ThemeService } from './services/theme.service/theme.service';
@@ -16,13 +16,11 @@ export interface IMenu {
   imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
-  title = 'Dash';
+  private authService = inject(AuthService);
+  private themeService = inject(ThemeService);
+  private router = inject(Router);
 
-  constructor(
-    private authService: AuthService,
-    private themeService: ThemeService,
-    private router: Router
-  ) {}
+  title = 'Dash';
 
   public async ngOnInit(): Promise<void> {
     if (!this.authService.userHasValidToken()) {

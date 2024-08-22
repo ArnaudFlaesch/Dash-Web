@@ -1,7 +1,7 @@
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { Location, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -58,6 +58,17 @@ import { TabComponent } from '../tab/tab.component';
   ]
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  dialog = inject(MatDialog);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private location = inject(Location);
+  private authService = inject(AuthService);
+  private tabService = inject(TabService);
+  private widgetService = inject(WidgetService);
+  private configService = inject(ConfigService);
+  private themeService = inject(ThemeService);
+  private errorHandlerService = inject(ErrorHandlerService);
+
   public tabs: ITab[] = [];
   public activeWidgets: IWidgetConfig[] = [];
   public activeTab = -1;
@@ -87,18 +98,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
   private readonly refreshTimeout = 600000; // 10 minutes
 
-  constructor(
-    public dialog: MatDialog,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private location: Location,
-    private authService: AuthService,
-    private tabService: TabService,
-    private widgetService: WidgetService,
-    private configService: ConfigService,
-    private themeService: ThemeService,
-    private errorHandlerService: ErrorHandlerService
-  ) {
+  constructor() {
     this.initDashboard();
   }
 
