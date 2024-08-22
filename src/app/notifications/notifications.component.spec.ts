@@ -91,7 +91,7 @@ describe('NotificationsComponent', () => {
     );
     notificationsRequest.flush(notificationsData);
 
-    component.markAllNotificationsAsRead(new Event('click'));
+    component.markAllNotificationsAsRead();
 
     const markNotificationAsReadRequest = httpTestingController.expectOne(
       environment.backend_url + '/notifications/markNotificationAsRead'

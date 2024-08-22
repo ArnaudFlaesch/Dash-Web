@@ -63,8 +63,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.markNotificationsAsRead([notificationId]);
   }
 
-  public markAllNotificationsAsRead(event: Event): void {
-    event.stopPropagation();
+  public markAllNotificationsAsRead(): void {
     this.markNotificationsAsRead(this.notificationsFromDatabase.map((notif) => notif.id));
   }
 

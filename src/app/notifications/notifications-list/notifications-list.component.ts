@@ -34,7 +34,7 @@ export class NotificationsListComponent {
   @Input() public unreadNotificationsForBadge: number = 0;
 
   @Output() private onNotificationRead = new EventEmitter<number>();
-  @Output() private onMarkAllNotificationsAsRead = new EventEmitter<number>();
+  @Output() private onMarkAllNotificationsAsRead = new EventEmitter();
 
   public notificationTypeEnum = NotificationTypeEnum;
 

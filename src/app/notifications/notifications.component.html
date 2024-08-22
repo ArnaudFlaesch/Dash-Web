@@ -1,5 +1,6 @@
 <dash-notifications-list
   (onNotificationRead)="markNotificationAsRead($event)"
+  (onMarkAllNotificationsAsRead)="markAllNotificationsAsRead()"
   [unreadNotificationsForBadge]="unreadNotificationsForBadge"
   [notificationsList]="this.notificationsToDisplay"
 ></dash-notifications-list>
