@@ -60,7 +60,7 @@
     "cypress": "13.14.2",
     "cypress-file-upload": "5.0.8",
     "cypress-multi-reporters": "1.6.4",
-    "eslint": "9.10.0",
+    "eslint": "9.11.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-cypress": "3.5.0",
     "globals": "15.9.0",
