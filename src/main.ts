@@ -34,8 +34,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from 'date-fns/locale/fr';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { AppComponent } from './app/app.component';
-import { HomeComponent } from './app/home/home.component';
-import { LoginComponent } from './app/login/login.component';
+
 import { AuthService } from './app/services/auth.service/auth.service';
 import { ConfigService } from './app/services/config.service/config.service';
 import { DateUtilsService } from './app/services/date.utils.service/date.utils.service';
@@ -62,10 +61,13 @@ if (environment.production) {
 registerLocaleData(localeFr);
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  {
+    path: 'login',
+    loadComponent: () => import('./app/login/login.component').then((m) => m.LoginComponent)
+  },
   {
     path: 'home',
-    component: HomeComponent,
+    loadComponent: () => import('./app/home/home.component').then((m) => m.HomeComponent),
     canActivate: [() => inject(AuthService).userHasValidToken()]
   },
   { path: '**', redirectTo: 'home' }

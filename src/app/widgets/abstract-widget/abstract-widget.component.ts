@@ -3,10 +3,10 @@ import {
   Component,
   ContentChild,
   EventEmitter,
-  Inject,
   Input,
   Output,
-  TemplateRef
+  TemplateRef,
+  inject
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { ModeEnum } from '../../enums/ModeEnum';
@@ -19,6 +19,8 @@ import { WidgetService } from '../../services/widget.service/widget.service';
   standalone: true
 })
 export class AbstractWidgetComponent {
+  protected widgetService = inject(WidgetService);
+
   @ContentChild('body', { static: false })
   body: TemplateRef<unknown> | null = null;
 
@@ -35,10 +37,9 @@ export class AbstractWidgetComponent {
 
   private destroy$: Subject<unknown> = new Subject();
 
-  constructor(
-    protected widgetService: WidgetService,
-    @Inject('widgetId') widgetId: number
-  ) {
+  constructor() {
+    const widgetId = inject<number>('widgetId' as never);
+
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.widgetId = widgetId;
   }

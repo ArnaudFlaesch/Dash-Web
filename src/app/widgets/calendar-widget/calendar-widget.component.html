@@ -91,37 +91,40 @@
       <h3>{{ viewDate | calendarDate: view + 'ViewTitle' : 'fr' | initialUppercase }}</h3>
     </div>
 
-    <div [ngSwitch]="view">
-      <mwl-calendar-month-view
-        *ngSwitchCase="calendarView.Month"
-        [locale]="locale"
-        [viewDate]="viewDate"
-        [events]="events"
-        [weekStartsOn]="weekStartsOn"
-        [refresh]="refresh"
-        [activeDayIsOpen]="activeDayIsOpen"
-        (eventClicked)="handleEvent('Clicked', $event.event)"
-      >
-      </mwl-calendar-month-view>
-
-      <mwl-calendar-week-view
-        *ngSwitchCase="calendarView.Week"
-        [viewDate]="viewDate"
-        [weekStartsOn]="weekStartsOn"
-        [locale]="locale"
-        [events]="events"
-        [refresh]="refresh"
-        (eventClicked)="handleEvent('Clicked', $event.event)"
-      >
-      </mwl-calendar-week-view>
-
-      <mwl-calendar-day-view
-        *ngSwitchCase="calendarView.Day"
-        [viewDate]="viewDate"
-        [locale]="locale"
-        [events]="events"
-        [refresh]="refresh"
-      ></mwl-calendar-day-view>
+    <div>
+      @switch (view) {
+        @case (calendarView.Month) {
+          <mwl-calendar-month-view
+            [locale]="locale"
+            [viewDate]="viewDate"
+            [events]="events"
+            [weekStartsOn]="weekStartsOn"
+            [refresh]="refresh"
+            [activeDayIsOpen]="activeDayIsOpen"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+          >
+          </mwl-calendar-month-view>
+        }
+        @case (calendarView.Week) {
+          <mwl-calendar-week-view
+            [viewDate]="viewDate"
+            [weekStartsOn]="weekStartsOn"
+            [locale]="locale"
+            [events]="events"
+            [refresh]="refresh"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+          >
+          </mwl-calendar-week-view>
+        }
+        @case (calendarView.Day) {
+          <mwl-calendar-day-view
+            [viewDate]="viewDate"
+            [locale]="locale"
+            [events]="events"
+            [refresh]="refresh"
+          ></mwl-calendar-day-view>
+        }
+      }
     </div>
   </ng-template>
 </dash-widget>

@@ -16,7 +16,6 @@ import {
   subMonths
 } from 'date-fns';
 
-import { NgSwitch, NgSwitchCase } from '@angular/common';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -58,8 +57,6 @@ enum WORKOUT_STATISTICS {
   imports: [
     WidgetComponent,
     MatIcon,
-    NgSwitch,
-    NgSwitchCase,
     MatButton,
     MatFormField,
     MatLabel,
