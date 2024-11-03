@@ -28,11 +28,9 @@ export class MiniWidgetComponent extends AbstractWidgetComponent {
     'Erreur lors de la mise à jour de la configuration du widget.';
 
   constructor() {
-    const widgetService = inject(WidgetService);
-    const widgetId = inject<number>('widgetId' as never);
-
-    super(widgetService, widgetId);
-    this.widgetService = widgetService;
+    super();
+    this.widgetService = inject(WidgetService);
+    this.widgetId = inject<number>('widgetId' as never);
   }
 
   public onValidation(): void {

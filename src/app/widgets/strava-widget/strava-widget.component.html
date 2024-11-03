@@ -28,22 +28,16 @@
         <div>
           <div id="strava-activities-container">
             <div id="activities-pagination-container">
-              <button
-                (click)="this.getNextActivitiesPage()"
-                matTooltip="Page suivante"
-                mat-icon-button
-                *ngIf="this.pageNumber > 1"
-              >
-                <mat-icon>arrow_forward</mat-icon>
-              </button>
-              <button
-                (click)="this.getPreviousActivitiesPage()"
-                matTooltip="Page précédente"
-                mat-icon-button
-                *ngIf="this.activities.length === this.paginationActivities"
-              >
-                <mat-icon>arrow_back</mat-icon>
-              </button>
+              @if (this.pageNumber > 1) {
+                <button (click)="this.getNextActivitiesPage()" matTooltip="Page suivante" mat-icon-button>
+                  <mat-icon>arrow_forward</mat-icon>
+                </button>
+              }
+              @if (this.activities.length === this.paginationActivities) {
+                <button (click)="this.getPreviousActivitiesPage()" matTooltip="Page précédente" mat-icon-button>
+                  <mat-icon>arrow_back</mat-icon>
+                </button>
+              }
             </div>
             <dash-strava-activities [activities]="this.activities"></dash-strava-activities>
           </div>

@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+import { displayBrowserInFullSize } from './cypress/plugins';
 
 export default defineConfig({
   watchForFileChanges: false,
@@ -20,7 +21,7 @@ export default defineConfig({
       runMode: 2
     },
     setupNodeEvents(on, config) {
-      return require('./cypress/plugins/index.ts')(on, config);
+      on('before:browser:launch', displayBrowserInFullSize);
     },
     baseUrl: 'http://localhost:4200/',
     specPattern: 'cypress/e2e/**/**/*.spec.ts'
