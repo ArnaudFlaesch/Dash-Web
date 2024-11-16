@@ -22,8 +22,8 @@ export class LoginComponent {
   public inputPassword = "";
 
   public authService = inject(AuthService);
-  private errorHandlerService = inject(ErrorHandlerService);
-  private router = inject(Router);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly router = inject(Router);
 
   public async handleLogin(): Promise<void> {
     if (this.inputUsername && this.inputPassword) {

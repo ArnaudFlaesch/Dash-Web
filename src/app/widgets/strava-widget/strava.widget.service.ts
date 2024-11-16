@@ -7,7 +7,7 @@ import { IActivity, IAthlete, ITokenData } from "./IStrava";
 
 @Injectable()
 export class StravaWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public getToken(apiCode: string): Observable<ITokenData> {
     return this.http.post<ITokenData>(

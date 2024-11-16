@@ -41,11 +41,11 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<unknown> = new Subject();
 
-  private notificationService = inject(NotificationService);
-  private widgetService = inject(WidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly widgetService = inject(WidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  private ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
+  private readonly ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
 
   ngOnInit(): void {
     this.fetchNotificationsFromDatabase();

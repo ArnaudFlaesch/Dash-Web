@@ -59,15 +59,15 @@ import { TabComponent } from "../tab/tab.component";
 })
 export class HomeComponent implements OnInit, OnDestroy {
   dialog = inject(MatDialog);
-  private router = inject(Router);
-  private activatedRoute = inject(ActivatedRoute);
-  private location = inject(Location);
-  private authService = inject(AuthService);
-  private tabService = inject(TabService);
-  private widgetService = inject(WidgetService);
-  private configService = inject(ConfigService);
-  private themeService = inject(ThemeService);
-  private errorHandlerService = inject(ErrorHandlerService);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly location = inject(Location);
+  private readonly authService = inject(AuthService);
+  private readonly tabService = inject(TabService);
+  private readonly widgetService = inject(WidgetService);
+  private readonly configService = inject(ConfigService);
+  private readonly themeService = inject(ThemeService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public tabs: ITab[] = [];
   public activeWidgets: IWidgetConfig[] = [];
@@ -85,17 +85,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<unknown> = new Subject();
 
-  private ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
-  private ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
+  private readonly ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
+  private readonly ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
 
-  private ERROR_MESSAGE_GET_WIDGETS = "Erreur lors de la récupération des widgets.";
-  private ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
-  private ERROR_MESSAGE_UPDATE_WIDGETS_ORDER = "Erreur lors de la mise à jour des widgets.";
-  private ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
+  private readonly ERROR_MESSAGE_GET_WIDGETS = "Erreur lors de la récupération des widgets.";
+  private readonly ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
+  private readonly ERROR_MESSAGE_UPDATE_WIDGETS_ORDER =
+    "Erreur lors de la mise à jour des widgets.";
+  private readonly ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
 
-  private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
-  private ERROR_UPDATING_TABS = "Erreurs lors de la mise à jour des onglets";
-  private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
+  private readonly ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
+  private readonly ERROR_UPDATING_TABS = "Erreurs lors de la mise à jour des onglets";
+  private readonly ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
   private readonly refreshTimeout = 600000; // 10 minutes
 
   constructor() {

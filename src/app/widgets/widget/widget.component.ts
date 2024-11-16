@@ -33,7 +33,7 @@ import { NgTemplateOutlet } from "@angular/common";
   ]
 })
 export class WidgetComponent extends AbstractWidgetComponent {
-  private errorHandlerService = inject(ErrorHandlerService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
   protected override widgetService: WidgetService;
 
   @ContentChild("headerIcon", { static: false })
@@ -45,7 +45,7 @@ export class WidgetComponent extends AbstractWidgetComponent {
   @ContentChild("additionalActions", { static: false })
   additionalActions: TemplateRef<unknown> | null = null;
 
-  private ERROR_UPDATING_WIDGET_DATA =
+  private readonly ERROR_UPDATING_WIDGET_DATA =
     "Erreur lors de la mise à jour de la configuration du widget.";
 
   constructor() {

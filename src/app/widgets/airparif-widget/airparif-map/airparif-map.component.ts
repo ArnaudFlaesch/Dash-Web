@@ -28,7 +28,7 @@ import { MatIcon } from "@angular/material/icon";
   imports: [MatIcon, MatButton]
 })
 export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
-  private airParifWidgetService = inject(AirParifWidgetService);
+  private readonly airParifWidgetService = inject(AirParifWidgetService);
 
   @Input()
   public airParifCouleursIndices: IAirParifCouleur[] = [];
@@ -45,10 +45,10 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   public forecastToDisplay: IForecast | undefined;
   public forecastMode: ForecastMode = ForecastMode.TODAY;
 
-  private airParifUrl = "https://magellan.airparif.asso.fr/geoserver/";
+  private readonly airParifUrl = "https://magellan.airparif.asso.fr/geoserver/";
   private map: L.Map | undefined;
-  private airParifForecastTodayLayer: L.Layer;
-  private airParifForecastTomorrowLayer: L.Layer;
+  private readonly airParifForecastTodayLayer: L.Layer;
+  private readonly airParifForecastTomorrowLayer: L.Layer;
 
   private sidebarControl = L.control.sidebar({
     autopan: false,

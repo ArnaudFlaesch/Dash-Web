@@ -39,11 +39,11 @@ export class AirParifWidgetComponent {
 
   public isWidgetLoaded = true;
 
-  private ERROR_GETTING_AIRPARIF_FORECAST =
+  private readonly ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
 
-  private airParifWidgetService = inject(AirParifWidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
+  private readonly airParifWidgetService = inject(AirParifWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
   public airParifWebsiteUrl = this.airParifWidgetService.getAirParifWebsiteUrl();
 
   public refreshWidget(): void {
