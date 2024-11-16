@@ -42,15 +42,15 @@ export class IncidentWidgetComponent {
 
   private widgetView: IIncidentViewEnum = IIncidentViewEnum.CURRENT_STREAK;
 
-  private ERROR_STARTING_NEW_STREAK = "Erreur lors du démarrage de la série.";
-  private ERROR_ENDING_NEW_STREAK = "Erreur lors de la clôture de la série.";
-  private ERROR_GETTING_INCIDENT_STREAKS = "Erreur lors de la récupération des séries.";
+  private readonly ERROR_STARTING_NEW_STREAK = "Erreur lors du démarrage de la série.";
+  private readonly ERROR_ENDING_NEW_STREAK = "Erreur lors de la clôture de la série.";
+  private readonly ERROR_GETTING_INCIDENT_STREAKS = "Erreur lors de la récupération des séries.";
 
-  private dialog = inject(MatDialog);
-  private incidentWidgetService = inject(IncidentWidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
-  private changeDetectorRef = inject(ChangeDetectorRef);
-  private widgetId = inject<number>("widgetId" as never);
+  private readonly dialog = inject(MatDialog);
+  private readonly incidentWidgetService = inject(IncidentWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly widgetId = inject<number>("widgetId" as never);
 
   public refreshWidget(): void {
     this.isWidgetLoaded = false;

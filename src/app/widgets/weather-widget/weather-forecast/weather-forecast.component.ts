@@ -15,8 +15,8 @@ import { MatTooltip } from "@angular/material/tooltip";
   imports: [MatTooltip, MatIcon, InitialUppercasePipe]
 })
 export class WeatherForecastComponent {
-  private weatherWidgetService = inject(WeatherWidgetService);
-  private dateUtils = inject(DateUtilsService);
+  private readonly weatherWidgetService = inject(WeatherWidgetService);
+  private readonly dateUtils = inject(DateUtilsService);
 
   @Input()
   public forecast: IForecast[] = [];

@@ -20,9 +20,9 @@ import { format } from "date-fns";
 
 @Injectable()
 export class WorkoutWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  private dateFormat = "yyyy-MM-dd";
+  private readonly dateFormat = "yyyy-MM-dd";
 
   public getWorkoutTypes(): Observable<IWorkoutType[]> {
     return this.http.get<IWorkoutType[]>(`${environment.backend_url}/workoutWidget/workoutTypes`, {

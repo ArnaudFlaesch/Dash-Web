@@ -43,8 +43,8 @@ import { WidgetComponent } from "../widget/widget.component";
 })
 export class CalendarWidgetComponent {
   dialog = inject(MatDialog);
-  private calendarWidgetService = inject(CalendarWidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
+  private readonly calendarWidgetService = inject(CalendarWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public calendarUrls: string[] = [];
   public isWidgetLoaded = true;
@@ -72,7 +72,7 @@ export class CalendarWidgetComponent {
   nextBtnDisabled = false;
 
   private readonly MILLISECONDS_IN_A_DAY = 86400000;
-  private ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
+  private readonly ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
   constructor() {
     const locale = inject(LOCALE_ID);

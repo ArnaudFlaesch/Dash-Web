@@ -27,11 +27,12 @@ export class WorkoutSessionEditComponent {
   public isWidgetUpdating = false;
   public workoutExercisesLoaded = false;
 
-  private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
-  private ERROR_GETTING_WORKOUT_EXERCISES = "Erreur lors de la récupération des exercices.";
+  private readonly ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
+  private readonly ERROR_GETTING_WORKOUT_EXERCISES =
+    "Erreur lors de la récupération des exercices.";
 
-  private errorHandlerService = inject(ErrorHandlerService);
-  private workoutWidgetService = inject(WorkoutWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly workoutWidgetService = inject(WorkoutWidgetService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["currentWorkoutSessionToEdit"].currentValue)

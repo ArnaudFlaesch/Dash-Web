@@ -43,13 +43,13 @@ export class RssWidgetComponent {
   public rssFeedResult: IRSSHeader | undefined;
   public readArticles: string[] = [];
 
-  private ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
-  private ERROR_MARKING_FEED_AS_READ = "Erreur pendant la mise à jour du widget RSS.";
+  private readonly ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
+  private readonly ERROR_MARKING_FEED_AS_READ = "Erreur pendant la mise à jour du widget RSS.";
 
-  private widgetId = inject<number>("widgetId" as never);
-  private rssWidgetService = inject(RssWidgetService);
-  private widgetService = inject(WidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
+  private readonly widgetId = inject<number>("widgetId" as never);
+  private readonly rssWidgetService = inject(RssWidgetService);
+  private readonly widgetService = inject(WidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public refreshWidget(): void {
     if (this.urlFeed) {

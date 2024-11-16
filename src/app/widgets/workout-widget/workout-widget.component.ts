@@ -75,8 +75,8 @@ enum WORKOUT_STATISTICS {
   ]
 })
 export class WorkoutWidgetComponent {
-  private errorHandlerService = inject(ErrorHandlerService);
-  private workoutWidgetService = inject(WorkoutWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly workoutWidgetService = inject(WorkoutWidgetService);
   dateUtilsService = inject(DateUtilsService);
 
   public workoutTypes: IWorkoutType[] = [];
@@ -96,13 +96,14 @@ export class WorkoutWidgetComponent {
   public workoutDateFormControl = new FormControl("");
   public selectedMonthFormControl = new FormControl(startOfMonth(new Date()));
 
-  private ERROR_GETTING_WORKOUT_TYPES =
+  private readonly ERROR_GETTING_WORKOUT_TYPES =
     "Erreur lors de la récupération de la liste des types d'exercices.";
-  private ERROR_GETTING_WORKOUT_SESSIONS =
+  private readonly ERROR_GETTING_WORKOUT_SESSIONS =
     "Erreur lors de la récupération de la liste des sessions d'exercices.";
-  private ERROR_CREATING_WORKOUT_TYPE = "Erreur lors de la création d'un type d'exercice.";
-  private ERROR_CREATING_WORKOUT_SESSION = "Erreur lors de la création d'une session d'exercices.";
-  private ERROR_GETTING_WORKOUT_STATS = "Erreur lors de la récupération des statistiques.";
+  private readonly ERROR_CREATING_WORKOUT_TYPE = "Erreur lors de la création d'un type d'exercice.";
+  private readonly ERROR_CREATING_WORKOUT_SESSION =
+    "Erreur lors de la création d'une session d'exercices.";
+  private readonly ERROR_GETTING_WORKOUT_STATS = "Erreur lors de la récupération des statistiques.";
 
   public refreshWidget(): void {
     this.workoutWidgetService.getWorkoutTypes().subscribe({

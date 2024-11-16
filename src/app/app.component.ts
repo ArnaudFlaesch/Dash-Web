@@ -16,9 +16,9 @@ export interface IMenu {
   imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
-  private authService = inject(AuthService);
-  private themeService = inject(ThemeService);
-  private router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly themeService = inject(ThemeService);
+  private readonly router = inject(Router);
 
   title = "Dash";
 

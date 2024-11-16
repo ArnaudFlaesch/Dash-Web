@@ -22,7 +22,7 @@ import { FormsModule } from "@angular/forms";
   imports: [FormsModule, MatIcon]
 })
 export class TabComponent {
-  private tabService = inject(TabService);
+  private readonly tabService = inject(TabService);
   errorHandlerService = inject(ErrorHandlerService);
 
   @Input()
@@ -31,7 +31,7 @@ export class TabComponent {
 
   public editMode = false;
 
-  private ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
+  private readonly ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
 
   public deleteTabFromDash(): void {
     if (this.tab) {

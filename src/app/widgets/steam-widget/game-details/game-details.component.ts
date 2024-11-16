@@ -40,11 +40,11 @@ export class GameDetailsComponent {
   public completedAchievements: IAchievement[] = [];
   public completionStatus: number | undefined;
 
-  private ERROR_GETTING_ACHIEVEMENTS_DATA = "Erreur lors de la récupération des succès.";
+  private readonly ERROR_GETTING_ACHIEVEMENTS_DATA = "Erreur lors de la récupération des succès.";
 
-  private errorHandlerService = inject(ErrorHandlerService);
-  private steamWidgetService = inject(SteamWidgetService);
-  private changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly steamWidgetService = inject(SteamWidgetService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   public loadAchievementsData(steamUserId: string, gameInfo: IGameInfoDisplay): void {
     this.steamWidgetService.getAchievementList(steamUserId, gameInfo.appid).subscribe({

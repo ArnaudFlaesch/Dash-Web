@@ -45,21 +45,23 @@ export class StravaWidgetComponent implements OnInit {
 
   private STRAVA_CLIENT_ID = 30391;
   private loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
-  private STRAVA_ATHLETE_URL = "https://www.strava.com/athletes/";
+  private readonly STRAVA_ATHLETE_URL = "https://www.strava.com/athletes/";
 
-  private STORAGE_STRAVA_TOKEN_KEY = "strava_token";
-  private STORAGE_STRAVA_REFRESH_TOKEN_KEY = "strava_refresh_token";
-  private STORAGE_TOKEN_EXPIRATION_DATE_KEY = "strava_token_expires_at";
+  private readonly STORAGE_STRAVA_TOKEN_KEY = "strava_token";
+  private readonly STORAGE_STRAVA_REFRESH_TOKEN_KEY = "strava_refresh_token";
+  private readonly STORAGE_TOKEN_EXPIRATION_DATE_KEY = "strava_token_expires_at";
 
-  private ERROR_GETTING_TOKEN = "Erreur lors de la connexion à Strava.";
-  private ERROR_NO_REFRESH_TOKEN = "Vous n'êtes pas connecté à Strava.";
-  private ERROR_GETTING_ATHLETE_DATA = "Erreur lors de la récupération de vos informations Strava.";
-  private ERROR_GETTING_ACTIVITIES = "Erreur lors de la récupération des activités Strava.";
+  private readonly ERROR_GETTING_TOKEN = "Erreur lors de la connexion à Strava.";
+  private readonly ERROR_NO_REFRESH_TOKEN = "Vous n'êtes pas connecté à Strava.";
+  private readonly ERROR_GETTING_ATHLETE_DATA =
+    "Erreur lors de la récupération de vos informations Strava.";
+  private readonly ERROR_GETTING_ACTIVITIES =
+    "Erreur lors de la récupération des activités Strava.";
 
   private stravaWidgetService = inject(StravaWidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   public async ngOnInit(): Promise<void> {
     setTimeout(async () => {

@@ -55,10 +55,12 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   private ownedGames: IGameInfoResponse[] = [];
   private destroy$: Subject<unknown> = new Subject();
 
-  private ERROR_GETTING_PLAYER_DATA = "Erreur lors de la récupération de vos informations Steam.";
-  private ERROR_GETTING_OWNED_GAMES = "Erreur lors de la récupération de la liste des jeux.";
-  private errorHandlerService = inject(ErrorHandlerService);
-  private steamWidgetService = inject(SteamWidgetService);
+  private readonly ERROR_GETTING_PLAYER_DATA =
+    "Erreur lors de la récupération de vos informations Steam.";
+  private readonly ERROR_GETTING_OWNED_GAMES =
+    "Erreur lors de la récupération de la liste des jeux.";
+  private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly steamWidgetService = inject(SteamWidgetService);
 
   ngOnInit(): void {
     this.searchFormControl.valueChanges

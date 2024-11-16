@@ -40,11 +40,11 @@ export class WeatherWidgetComponent {
   public isWeatherLoaded = false;
   public isForecastLoaded = false;
 
-  private ERROR_GETTING_WEATHER_DATA =
+  private readonly ERROR_GETTING_WEATHER_DATA =
     "Erreur lors de la récupération des données météorologiques.";
 
-  private weatherWidgetService = inject(WeatherWidgetService);
-  private errorHandlerService = inject(ErrorHandlerService);
+  private readonly weatherWidgetService = inject(WeatherWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public refreshWidget(): void {
     if (this.city) {
