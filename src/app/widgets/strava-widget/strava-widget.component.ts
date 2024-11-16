@@ -43,8 +43,8 @@ export class StravaWidgetComponent implements OnInit {
   public pageNumber = 1;
   readonly paginationActivities = 25;
 
-  private STRAVA_CLIENT_ID = 30391;
-  private loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
+  private readonly STRAVA_CLIENT_ID = 30391;
+  private readonly loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
   private readonly STRAVA_ATHLETE_URL = "https://www.strava.com/athletes/";
 
   private readonly STORAGE_STRAVA_TOKEN_KEY = "strava_token";
@@ -58,9 +58,9 @@ export class StravaWidgetComponent implements OnInit {
   private readonly ERROR_GETTING_ACTIVITIES =
     "Erreur lors de la récupération des activités Strava.";
 
-  private stravaWidgetService = inject(StravaWidgetService);
+  private readonly stravaWidgetService = inject(StravaWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private route = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   public async ngOnInit(): Promise<void> {

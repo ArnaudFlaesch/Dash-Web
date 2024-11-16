@@ -35,7 +35,7 @@ import { IncidentWidgetComponent } from "../incident-widget/incident-widget.comp
   imports: [CdkDropList, CdkDrag]
 })
 export class WidgetListComponent implements OnChanges {
-  private cdRef = inject(ChangeDetectorRef);
+  private readonly cdRef = inject(ChangeDetectorRef);
 
   @Input() widgetList: IWidgetConfig[] = [];
   @Input() toggleEditMode = false;

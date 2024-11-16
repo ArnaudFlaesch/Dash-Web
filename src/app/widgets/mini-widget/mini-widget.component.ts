@@ -20,11 +20,11 @@ import { NgTemplateOutlet } from "@angular/common";
   imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })
 export class MiniWidgetComponent extends AbstractWidgetComponent {
-  private errorHandlerService = inject(ErrorHandlerService);
   protected override widgetService: WidgetService;
-  private miniWidgetService = inject(MiniWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly miniWidgetService = inject(MiniWidgetService);
 
-  private ERROR_UPDATING_WIDGET_DATA =
+  private readonly ERROR_UPDATING_WIDGET_DATA =
     "Erreur lors de la mise à jour de la configuration du widget.";
 
   constructor() {

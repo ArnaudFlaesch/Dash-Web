@@ -83,7 +83,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private refreshInterval: NodeJS.Timeout | null = null;
 
-  private destroy$: Subject<unknown> = new Subject();
+  private readonly destroy$: Subject<unknown> = new Subject();
 
   private readonly ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
   private readonly ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";

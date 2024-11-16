@@ -7,7 +7,7 @@ import { IAirParifCouleur, IForecast } from "./model/IAirParif";
 
 @Injectable()
 export class AirParifWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public getAirParifWebsiteUrl(): string {
     return "https://www.airparif.asso.fr";

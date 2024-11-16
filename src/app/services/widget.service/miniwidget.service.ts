@@ -8,7 +8,7 @@ import authorizationBearer from "../authorizationBearer/authorizationBearer";
 
 @Injectable()
 export class MiniWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public _miniWidgetDeletedEvent: ReplaySubject<number> = new ReplaySubject(0);
   public readonly miniWidgetDeleted: Observable<number> =

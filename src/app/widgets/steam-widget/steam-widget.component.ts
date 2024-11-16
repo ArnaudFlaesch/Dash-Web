@@ -53,7 +53,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   public areGamesLoaded = false;
 
   private ownedGames: IGameInfoResponse[] = [];
-  private destroy$: Subject<unknown> = new Subject();
+  private readonly destroy$: Subject<unknown> = new Subject();
 
   private readonly ERROR_GETTING_PLAYER_DATA =
     "Erreur lors de la récupération de vos informations Steam.";

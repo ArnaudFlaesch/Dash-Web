@@ -8,11 +8,11 @@ import { IPage } from "../../model/IPage";
 
 @Injectable()
 export class SteamWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  private _STEAM_IMAGE_URL =
+  private readonly _STEAM_IMAGE_URL =
     "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/";
-  private _STEAM_COMMUNITY_URL = "https://steamcommunity.com/app/";
+  private readonly _STEAM_COMMUNITY_URL = "https://steamcommunity.com/app/";
 
   get STEAM_IMAGE_URL(): string {
     return this._STEAM_IMAGE_URL;
