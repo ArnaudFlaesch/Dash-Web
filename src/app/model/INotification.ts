@@ -12,6 +12,6 @@ export interface INotificationToDisplay extends INotification {
 }
 
 export enum NotificationTypeEnum {
-  INFO = 'INFO',
-  WARN = 'WARN'
+  INFO = "INFO",
+  WARN = "WARN"
 }

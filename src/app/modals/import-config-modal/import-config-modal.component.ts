@@ -1,19 +1,19 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { HttpErrorResponse } from "@angular/common/http";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { MatButton } from "@angular/material/button";
 import {
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
   MatDialogTitle
-} from '@angular/material/dialog';
-import { ConfigService } from './../../services/config.service/config.service';
-import { ErrorHandlerService } from './../../services/error.handler.service';
+} from "@angular/material/dialog";
+import { ConfigService } from "./../../services/config.service/config.service";
+import { ErrorHandlerService } from "./../../services/error.handler.service";
 
 @Component({
-  selector: 'dash-import-config-modal',
-  templateUrl: './import-config-modal.component.html',
+  selector: "dash-import-config-modal",
+  templateUrl: "./import-config-modal.component.html",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]

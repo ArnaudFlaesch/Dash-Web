@@ -5,23 +5,23 @@ import {
   Input,
   OnChanges,
   SimpleChanges
-} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { format, isToday, startOfDay } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import { InitialUppercasePipe } from '../../../pipes/initial.uppercase.pipe';
-import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
-import { ForecastMode, ICity, IForecast, IWeatherAPIResponse } from '../IWeather';
-import { WeatherForecastComponent } from '../weather-forecast/weather-forecast.component';
-import { WeatherTodayComponent } from '../weather-today/weather-today.component';
+} from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatButton } from "@angular/material/button";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatIcon } from "@angular/material/icon";
+import { MatInput } from "@angular/material/input";
+import { MatSlideToggle } from "@angular/material/slide-toggle";
+import { format, isToday, startOfDay } from "date-fns";
+import { fr } from "date-fns/locale";
+import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
+import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
+import { ForecastMode, ICity, IForecast, IWeatherAPIResponse } from "../IWeather";
+import { WeatherForecastComponent } from "../weather-forecast/weather-forecast.component";
+import { WeatherTodayComponent } from "../weather-today/weather-today.component";
 
 @Component({
-  selector: 'dash-weather-widget-view',
+  selector: "dash-weather-widget-view",
   standalone: true,
   imports: [
     InitialUppercasePipe,
@@ -37,8 +37,8 @@ import { WeatherTodayComponent } from '../weather-today/weather-today.component'
     InitialUppercasePipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './weather-widget-view.component.html',
-  styleUrl: './weather-widget-view.component.scss'
+  templateUrl: "./weather-widget-view.component.html",
+  styleUrl: "./weather-widget-view.component.scss"
 })
 export class WeatherWidgetViewComponent implements OnChanges {
   @Input() public weather: IWeatherAPIResponse | undefined;
@@ -55,10 +55,10 @@ export class WeatherWidgetViewComponent implements OnChanges {
   private dateUtils = inject(DateUtilsService);
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['forecastResponse']) {
+    if (changes["forecastResponse"]) {
       this.forecastDays = [
         ...new Set(
-          (changes['forecastResponse'].currentValue as IForecast[]).map((data) =>
+          (changes["forecastResponse"].currentValue as IForecast[]).map((data) =>
             startOfDay(data.dt * 1000).getTime()
           )
         )
@@ -68,7 +68,7 @@ export class WeatherWidgetViewComponent implements OnChanges {
   }
 
   public formatDate(date: Date): string {
-    return format(date, 'eee dd', { locale: fr });
+    return format(date, "eee dd", { locale: fr });
   }
 
   public isSelectedDay(date: Date): boolean {

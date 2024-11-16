@@ -1,6 +1,6 @@
 @if (this.currentWorkoutSessionToEdit && this.workoutExercisesLoaded) {
   <div id="workout-widget-header">
-    <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat: 'short' }}</h3>
+    <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit.workoutDate | dateFormat: "short" }}</h3>
 
     @if (this.sessionEditMode) {
       <button id="validate-session-button" mat-icon-button (click)="toggleSessionEditMode()">

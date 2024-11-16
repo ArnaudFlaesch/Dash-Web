@@ -1,34 +1,34 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable } from "rxjs";
 
-import { environment } from '../../../environments/environment';
-import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
+import { environment } from "../../../environments/environment";
+import authorizationBearer from "../../services/authorizationBearer/authorizationBearer";
 import {
   IWorkoutExercise,
   IWorkoutSession,
   IWorkoutStatByMonth,
   IWorkoutStatsByPeriod,
   IWorkoutType
-} from './model/Workout';
+} from "./model/Workout";
 import {
   IAddWorkoutTypePayload,
   ICreateWorkoutSessionPayload,
   IUpdateWorkoutExercisePayload
-} from './payload/WorkoutPayload';
-import { format } from 'date-fns';
+} from "./payload/WorkoutPayload";
+import { format } from "date-fns";
 
 @Injectable()
 export class WorkoutWidgetService {
   private http = inject(HttpClient);
 
-  private dateFormat = 'yyyy-MM-dd';
+  private dateFormat = "yyyy-MM-dd";
 
   public getWorkoutTypes(): Observable<IWorkoutType[]> {
     return this.http.get<IWorkoutType[]>(`${environment.backend_url}/workoutWidget/workoutTypes`, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       }
     });
   }
@@ -42,7 +42,7 @@ export class WorkoutWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         },
         params: {
           dateIntervalStart: format(dateIntervalStart, this.dateFormat),
@@ -58,7 +58,7 @@ export class WorkoutWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -73,7 +73,7 @@ export class WorkoutWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         },
         params: {
           dateIntervalStart: format(dateIntervalStart, this.dateFormat),
@@ -92,7 +92,7 @@ export class WorkoutWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         },
         params: {
           dateIntervalStart: format(dateIntervalStart, this.dateFormat),
@@ -112,7 +112,7 @@ export class WorkoutWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -128,7 +128,7 @@ export class WorkoutWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -151,7 +151,7 @@ export class WorkoutWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );

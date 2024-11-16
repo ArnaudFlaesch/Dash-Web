@@ -1,15 +1,15 @@
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { ErrorHandlerService } from '../../../services/error.handler.service';
-import { IGameInfoDisplay } from '../ISteam';
-import { SteamWidgetService } from '../steam.widget.service';
-import { environment } from './../../../../environments/environment';
-import { GameDetailsComponent } from './game-details.component';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { IGameInfoDisplay } from "../ISteam";
+import { SteamWidgetService } from "../steam.widget.service";
+import { environment } from "./../../../../environments/environment";
+import { GameDetailsComponent } from "./game-details.component";
+import { provideHttpClient } from "@angular/common/http";
 
-describe('GameDetailsComponent', () => {
+describe("GameDetailsComponent", () => {
   let component: GameDetailsComponent;
   let httpTestingController: HttpTestingController;
 
@@ -33,37 +33,37 @@ describe('GameDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  describe('Normal cases', () => {
-    it('should create', () => {
-      const steamUserId = '1237';
-      const appId = '1337';
+  describe("Normal cases", () => {
+    it("should create", () => {
+      const steamUserId = "1237";
+      const appId = "1337";
       const achievementsData = {
         playerstats: {
-          steamID: '76561198046131373',
-          gameName: 'Half-Life 2: Episode Two',
+          steamID: "76561198046131373",
+          gameName: "Half-Life 2: Episode Two",
           achievements: [
             {
-              apiname: 'EP2_KILL_POISONANTLION',
+              apiname: "EP2_KILL_POISONANTLION",
               achieved: 1,
               unlocktime: 1352488322
             },
             {
-              apiname: 'EP2_KILL_ALLGRUBS',
+              apiname: "EP2_KILL_ALLGRUBS",
               achieved: 0,
               unlocktime: 0
             },
             {
-              apiname: 'EP2_BREAK_ALLWEBS',
+              apiname: "EP2_BREAK_ALLWEBS",
               achieved: 1,
               unlocktime: 1446892109
             },
             {
-              apiname: 'EP2_BEAT_ANTLIONINVASION',
+              apiname: "EP2_BEAT_ANTLIONINVASION",
               achieved: 1,
               unlocktime: 1352489474
             },
             {
-              apiname: 'EP2_BEAT_ANTLIONGUARDS',
+              apiname: "EP2_BEAT_ANTLIONGUARDS",
               achieved: 1,
               unlocktime: 1352492128
             }
@@ -75,15 +75,15 @@ describe('GameDetailsComponent', () => {
       expect(component.completedAchievements).toEqual([]);
       component.gameInfo = {
         appid: appId,
-        name: 'Super Game'
+        name: "Super Game"
       } as IGameInfoDisplay;
 
       component.loadAchievementsData(steamUserId, component.gameInfo);
       const getAchievementsRequest = httpTestingController.expectOne(
         environment.backend_url +
-          '/steamWidget/achievementList?steamUserId=' +
+          "/steamWidget/achievementList?steamUserId=" +
           steamUserId +
-          '&appId=' +
+          "&appId=" +
           appId
       );
       getAchievementsRequest.flush(achievementsData);
@@ -93,24 +93,24 @@ describe('GameDetailsComponent', () => {
     });
   });
 
-  describe('Error cases', () => {
-    it('should display error messages', () => {
-      const steamUserId = '1237';
-      const appId = '1337';
+  describe("Error cases", () => {
+    it("should display error messages", () => {
+      const steamUserId = "1237";
+      const appId = "1337";
       component.gameInfo = {
         appid: appId,
-        name: 'Super Game'
+        name: "Super Game"
       } as IGameInfoDisplay;
       component.loadAchievementsData(steamUserId, component.gameInfo);
       httpTestingController
         .expectOne(
           environment.backend_url +
-            '/steamWidget/achievementList?steamUserId=' +
+            "/steamWidget/achievementList?steamUserId=" +
             steamUserId +
-            '&appId=' +
+            "&appId=" +
             appId
         )
-        .error(new ProgressEvent('Server error'));
+        .error(new ProgressEvent("Server error"));
     });
   });
 });

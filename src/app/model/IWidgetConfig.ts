@@ -1,4 +1,4 @@
-import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
+import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
 
 export interface IWidgetConfig {
   id: number;

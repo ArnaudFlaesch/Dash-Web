@@ -1,28 +1,28 @@
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { ThemeService } from '../../services/theme.service/theme.service';
-import { WidgetService } from '../../services/widget.service/widget.service';
-import { AirParifWidgetService } from '../airparif-widget/airparif-widget.service';
-import { CalendarWidgetService } from '../calendar-widget/calendar-widget.service';
-import { IncidentWidgetService } from '../incident-widget/incident.widget.service';
-import { RssWidgetService } from '../rss-widget/rss.widget.service';
-import { SteamWidgetService } from '../steam-widget/steam.widget.service';
-import { StravaWidgetService } from '../strava-widget/strava.widget.service';
-import { WeatherWidgetService } from '../weather-widget/weather.widget.service';
-import { WorkoutWidgetService } from '../workout-widget/workout.widget.service';
-import { WidgetListComponent } from './widget-list.component';
-import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
-import { SimpleChange } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
-import { HomeComponent } from '../../home/home.component';
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { TestBed, ComponentFixture } from "@angular/core/testing";
+import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { ThemeService } from "../../services/theme.service/theme.service";
+import { WidgetService } from "../../services/widget.service/widget.service";
+import { AirParifWidgetService } from "../airparif-widget/airparif-widget.service";
+import { CalendarWidgetService } from "../calendar-widget/calendar-widget.service";
+import { IncidentWidgetService } from "../incident-widget/incident.widget.service";
+import { RssWidgetService } from "../rss-widget/rss.widget.service";
+import { SteamWidgetService } from "../steam-widget/steam.widget.service";
+import { StravaWidgetService } from "../strava-widget/strava.widget.service";
+import { WeatherWidgetService } from "../weather-widget/weather.widget.service";
+import { WorkoutWidgetService } from "../workout-widget/workout.widget.service";
+import { WidgetListComponent } from "./widget-list.component";
+import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
+import { SimpleChange } from "@angular/core";
+import { provideHttpClient } from "@angular/common/http";
+import { provideRouter } from "@angular/router";
+import { HomeComponent } from "../../home/home.component";
 
-describe('WidgetListComponent', () => {
+describe("WidgetListComponent", () => {
   let component: WidgetListComponent;
   let fixture: ComponentFixture<WidgetListComponent>;
 
@@ -32,7 +32,7 @@ describe('WidgetListComponent', () => {
       providers: [
         provideRouter([
           {
-            path: 'home',
+            path: "home",
             component: HomeComponent
           }
         ]),
@@ -57,7 +57,7 @@ describe('WidgetListComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('Should display the widgets', () => {
+  it("Should display the widgets", () => {
     const widgetListConfig = [
       {
         id: 43,

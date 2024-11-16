@@ -12,24 +12,24 @@ import {
   ViewChildren,
   ViewContainerRef,
   inject
-} from '@angular/core';
-import { WidgetTypeEnum } from '../../enums/WidgetTypeEnum';
-import { CalendarWidgetComponent } from '../calendar-widget/calendar-widget.component';
-import { RssWidgetComponent } from '../rss-widget/rss-widget.component';
-import { SteamWidgetComponent } from '../steam-widget/steam-widget.component';
-import { WeatherWidgetComponent } from '../weather-widget/weather-widget.component';
-import { IWidgetConfig } from './../../model/IWidgetConfig';
-import { StravaWidgetComponent } from '../strava-widget/strava-widget.component';
-import { WorkoutWidgetComponent } from '../workout-widget/workout-widget.component';
-import { AirParifWidgetComponent } from '../airparif-widget/airparif-widget.component';
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
-import { EcowattWidgetComponent } from '../ecowatt-widget/ecowatt-widget.component';
-import { IncidentWidgetComponent } from '../incident-widget/incident-widget.component';
+} from "@angular/core";
+import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
+import { CalendarWidgetComponent } from "../calendar-widget/calendar-widget.component";
+import { RssWidgetComponent } from "../rss-widget/rss-widget.component";
+import { SteamWidgetComponent } from "../steam-widget/steam-widget.component";
+import { WeatherWidgetComponent } from "../weather-widget/weather-widget.component";
+import { IWidgetConfig } from "./../../model/IWidgetConfig";
+import { StravaWidgetComponent } from "../strava-widget/strava-widget.component";
+import { WorkoutWidgetComponent } from "../workout-widget/workout-widget.component";
+import { AirParifWidgetComponent } from "../airparif-widget/airparif-widget.component";
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
+import { EcowattWidgetComponent } from "../ecowatt-widget/ecowatt-widget.component";
+import { IncidentWidgetComponent } from "../incident-widget/incident-widget.component";
 
 @Component({
-  selector: 'dash-widget-list',
-  templateUrl: './widget-list.component.html',
-  styleUrls: ['./widget-list.component.scss'],
+  selector: "dash-widget-list",
+  templateUrl: "./widget-list.component.html",
+  styleUrls: ["./widget-list.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [CdkDropList, CdkDrag]
@@ -41,11 +41,11 @@ export class WidgetListComponent implements OnChanges {
   @Input() toggleEditMode = false;
   @Output() updateWidgetsOrderEvent = new EventEmitter<IWidgetConfig[]>();
 
-  @ViewChildren('dynamic', { read: ViewContainerRef })
+  @ViewChildren("dynamic", { read: ViewContainerRef })
   private widgetTargets: QueryList<ViewContainerRef> | undefined;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['widgetList']) {
+    if (changes["widgetList"]) {
       this.cdRef.detectChanges();
       this.createWidgets();
     }
@@ -68,7 +68,7 @@ export class WidgetListComponent implements OnChanges {
         const injector: Injector = Injector.create({
           providers: [
             {
-              provide: 'widgetId',
+              provide: "widgetId",
               useValue: this.widgetList[index].id
             }
           ]
@@ -79,22 +79,22 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector
             });
-            component.instance.city = widgetData?.['city'] as string;
+            component.instance.city = widgetData?.["city"] as string;
             break;
           }
           case WidgetTypeEnum.RSS: {
             component = target.createComponent(RssWidgetComponent, {
               injector: injector
             });
-            component.instance.urlFeed = widgetData?.['url'] as string;
-            component.instance.readArticles = (widgetData?.['readArticlesGuids'] as string[]) ?? [];
+            component.instance.urlFeed = widgetData?.["url"] as string;
+            component.instance.readArticles = (widgetData?.["readArticlesGuids"] as string[]) ?? [];
             break;
           }
           case WidgetTypeEnum.CALENDAR: {
             component = target.createComponent(CalendarWidgetComponent, {
               injector: injector
             });
-            component.instance.calendarUrls = (widgetData?.['calendarUrls'] as string[]) ?? [];
+            component.instance.calendarUrls = (widgetData?.["calendarUrls"] as string[]) ?? [];
             break;
           }
           case WidgetTypeEnum.STRAVA: {
@@ -107,7 +107,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(SteamWidgetComponent, {
               injector: injector
             });
-            component.instance.steamUserId = widgetData?.['steamUserId'] as string;
+            component.instance.steamUserId = widgetData?.["steamUserId"] as string;
             break;
           }
           case WidgetTypeEnum.WORKOUT: {
@@ -120,8 +120,8 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(AirParifWidgetComponent, {
               injector: injector
             });
-            component.instance.airParifApiKey = widgetData?.['airParifApiKey'] as string;
-            component.instance.communeInseeCode = widgetData?.['communeInseeCode'] as string;
+            component.instance.airParifApiKey = widgetData?.["airParifApiKey"] as string;
+            component.instance.communeInseeCode = widgetData?.["communeInseeCode"] as string;
             break;
           }
           case WidgetTypeEnum.ECOWATT: {
@@ -134,7 +134,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(IncidentWidgetComponent, {
               injector: injector
             });
-            component.instance.incidentName = widgetData?.['incidentName'] as string;
+            component.instance.incidentName = widgetData?.["incidentName"] as string;
             break;
           }
         }

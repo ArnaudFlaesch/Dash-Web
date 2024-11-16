@@ -1,7 +1,7 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Router } from "@angular/router";
 
 @Injectable()
 export class ErrorHandlerService {
@@ -20,7 +20,7 @@ export class ErrorHandlerService {
     switch (error.status) {
       case 401: {
         this.router
-          .navigate(['login'])
+          .navigate(["login"])
           .then(() => this.displayErrorMessage(error.message, this.ERROR_UNAUTHORIZED_CODE))
           .catch((error) => console.log(error));
         break;

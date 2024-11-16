@@ -1,11 +1,11 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpErrorResponse } from "@angular/common/http";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
   MatDatepicker,
   MatDatepickerInput,
   MatDatepickerToggle
-} from '@angular/material/datepicker';
+} from "@angular/material/datepicker";
 import {
   endOfMonth,
   endOfWeek,
@@ -14,26 +14,26 @@ import {
   startOfMonth,
   startOfYear,
   subMonths
-} from 'date-fns';
+} from "date-fns";
 
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { ErrorHandlerService } from '../../../app/services/error.handler.service';
-import { DEFAULT_DATE_FORMAT } from '../../../app/utils/Constants';
-import { DateFormatPipe } from '../../pipes/date-format.pipe';
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
-import { WidgetComponent } from '../widget/widget.component';
+import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/form-field";
+import { MatIcon } from "@angular/material/icon";
+import { MatInput } from "@angular/material/input";
+import { ErrorHandlerService } from "../../../app/services/error.handler.service";
+import { DEFAULT_DATE_FORMAT } from "../../../app/utils/Constants";
+import { DateFormatPipe } from "../../pipes/date-format.pipe";
+import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
+import { WidgetComponent } from "../widget/widget.component";
 import {
   IWorkoutSession,
   IWorkoutStatByMonth,
   IWorkoutStatsByPeriod,
   IWorkoutType
-} from './model/Workout';
-import { WorkoutSessionEditComponent } from './workout-session-edit/workout-session-edit.component';
-import { WorkoutStatisticsComponent } from './workout-statistics/workout-statistics.component';
-import { WorkoutWidgetService } from './workout.widget.service';
+} from "./model/Workout";
+import { WorkoutSessionEditComponent } from "./workout-session-edit/workout-session-edit.component";
+import { WorkoutStatisticsComponent } from "./workout-statistics/workout-statistics.component";
+import { WorkoutWidgetService } from "./workout.widget.service";
 
 enum WORKOUT_WIDGET_VIEW {
   WORKOUT_SESSIONS_LIST_VIEW = 1,
@@ -49,9 +49,9 @@ enum WORKOUT_STATISTICS {
 }
 
 @Component({
-  selector: 'dash-workout-widget',
-  templateUrl: './workout-widget.component.html',
-  styleUrls: ['./workout-widget.component.scss'],
+  selector: "dash-workout-widget",
+  templateUrl: "./workout-widget.component.html",
+  styleUrls: ["./workout-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
@@ -93,7 +93,7 @@ export class WorkoutWidgetComponent {
   public isWidgetLoaded = false;
 
   public workoutNameInput: string | null = null;
-  public workoutDateFormControl = new FormControl('');
+  public workoutDateFormControl = new FormControl("");
   public selectedMonthFormControl = new FormControl(startOfMonth(new Date()));
 
   private ERROR_GETTING_WORKOUT_TYPES =
@@ -102,7 +102,7 @@ export class WorkoutWidgetComponent {
     "Erreur lors de la récupération de la liste des sessions d'exercices.";
   private ERROR_CREATING_WORKOUT_TYPE = "Erreur lors de la création d'un type d'exercice.";
   private ERROR_CREATING_WORKOUT_SESSION = "Erreur lors de la création d'une session d'exercices.";
-  private ERROR_GETTING_WORKOUT_STATS = 'Erreur lors de la récupération des statistiques.';
+  private ERROR_GETTING_WORKOUT_STATS = "Erreur lors de la récupération des statistiques.";
 
   public refreshWidget(): void {
     this.workoutWidgetService.getWorkoutTypes().subscribe({
@@ -137,7 +137,7 @@ export class WorkoutWidgetComponent {
       this.workoutWidgetService.addWorkoutType(this.workoutNameInput).subscribe({
         next: (addedWorkoutType) => {
           this.workoutTypes = [...this.workoutTypes, addedWorkoutType];
-          this.workoutNameInput = '';
+          this.workoutNameInput = "";
         },
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_TYPE)

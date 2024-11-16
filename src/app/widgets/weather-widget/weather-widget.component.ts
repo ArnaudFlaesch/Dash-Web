@@ -1,22 +1,22 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { MatButton } from '@angular/material/button';
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { ICity, IForecast, IWeatherAPIResponse } from './IWeather';
-import { WeatherWidgetService } from './weather.widget.service';
+import { MatButton } from "@angular/material/button";
+import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { ICity, IForecast, IWeatherAPIResponse } from "./IWeather";
+import { WeatherWidgetService } from "./weather.widget.service";
 
-import { FormsModule } from '@angular/forms';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { forkJoin } from 'rxjs';
-import { WidgetComponent } from '../widget/widget.component';
-import { WeatherWidgetViewComponent } from './weather-widget-view/weather-widget-view.component';
+import { FormsModule } from "@angular/forms";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatIcon } from "@angular/material/icon";
+import { MatInput } from "@angular/material/input";
+import { forkJoin } from "rxjs";
+import { WidgetComponent } from "../widget/widget.component";
+import { WeatherWidgetViewComponent } from "./weather-widget-view/weather-widget-view.component";
 
 @Component({
-  selector: 'dash-weather-widget',
-  templateUrl: './weather-widget.component.html',
-  styleUrls: ['./weather-widget.component.scss'],
+  selector: "dash-weather-widget",
+  templateUrl: "./weather-widget.component.html",
+  styleUrls: ["./weather-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
@@ -41,7 +41,7 @@ export class WeatherWidgetComponent {
   public isForecastLoaded = false;
 
   private ERROR_GETTING_WEATHER_DATA =
-    'Erreur lors de la récupération des données météorologiques.';
+    "Erreur lors de la récupération des données météorologiques.";
 
   private weatherWidgetService = inject(WeatherWidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
@@ -76,6 +76,6 @@ export class WeatherWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return (this.city ?? '').length > 0;
+    return (this.city ?? "").length > 0;
   }
 }

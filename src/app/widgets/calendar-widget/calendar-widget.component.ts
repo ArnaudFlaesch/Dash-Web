@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, LOCALE_ID, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, LOCALE_ID, inject } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import {
   CalendarEvent,
   CalendarView,
@@ -7,26 +7,26 @@ import {
   CalendarMonthModule,
   CalendarWeekModule,
   CalendarDayModule
-} from 'angular-calendar';
-import { addMonths, endOfDay, format, startOfDay } from 'date-fns';
-import { Subject } from 'rxjs';
+} from "angular-calendar";
+import { addMonths, endOfDay, format, startOfDay } from "date-fns";
+import { Subject } from "rxjs";
 
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { CalendarWidgetService } from './calendar-widget.service';
-import { EventDetailModalComponent } from './event-detail-modal/event-detail-modal.component';
-import { ICalendarData } from './ICalendarData';
-import { fr } from 'date-fns/locale';
-import { InitialUppercasePipe } from '../../pipes/initial.uppercase.pipe';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatButton } from '@angular/material/button';
+import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { CalendarWidgetService } from "./calendar-widget.service";
+import { EventDetailModalComponent } from "./event-detail-modal/event-detail-modal.component";
+import { ICalendarData } from "./ICalendarData";
+import { fr } from "date-fns/locale";
+import { InitialUppercasePipe } from "../../pipes/initial.uppercase.pipe";
+import { MatTooltip } from "@angular/material/tooltip";
+import { MatButton } from "@angular/material/button";
 
-import { MatIcon } from '@angular/material/icon';
-import { WidgetComponent } from '../widget/widget.component';
+import { MatIcon } from "@angular/material/icon";
+import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
-  selector: 'dash-calendar-widget',
-  templateUrl: './calendar-widget.component.html',
-  styleUrls: ['./calendar-widget.component.scss'],
+  selector: "dash-calendar-widget",
+  templateUrl: "./calendar-widget.component.html",
+  styleUrls: ["./calendar-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
@@ -55,7 +55,7 @@ export class CalendarWidgetComponent {
   view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
   refresh: Subject<unknown> = new Subject();
-  locale = 'fr';
+  locale = "fr";
   hourSegments: 1 | 2 | 4 | 6 = 1;
   weekStartsOn = 1;
   startsWithToday = true;
@@ -72,7 +72,7 @@ export class CalendarWidgetComponent {
   nextBtnDisabled = false;
 
   private readonly MILLISECONDS_IN_A_DAY = 86400000;
-  private ERROR_PARSING_EVENTS = 'Erreur lors de la récupération des évènements.';
+  private ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
   constructor() {
     const locale = inject(LOCALE_ID);
@@ -98,7 +98,7 @@ export class CalendarWidgetComponent {
   }
 
   public onCalendarUrlAdded(): void {
-    this.calendarUrls = [...this.calendarUrls, ''];
+    this.calendarUrls = [...this.calendarUrls, ""];
   }
 
   public removeCalendarUrl(calendarUrl: string): void {
@@ -106,7 +106,7 @@ export class CalendarWidgetComponent {
   }
 
   public displayTodaysDate(): string {
-    return format(new Date(), 'eee dd', { locale: fr });
+    return format(new Date(), "eee dd", { locale: fr });
   }
 
   public onCalendarUrlUpdated(event: Event): void {
@@ -142,8 +142,8 @@ export class CalendarWidgetComponent {
 
   public handleEvent(action: string, event: CalendarEvent): void {
     this.dialog.open(EventDetailModalComponent, {
-      height: '300px',
-      width: '500px',
+      height: "300px",
+      width: "500px",
       data: event
     });
   }

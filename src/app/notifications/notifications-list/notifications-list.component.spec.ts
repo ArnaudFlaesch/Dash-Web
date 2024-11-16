@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { NotificationsListComponent } from './notifications-list.component';
+import { TestBed } from "@angular/core/testing";
+import { NotificationsListComponent } from "./notifications-list.component";
 
-describe('NotificationsListComponent', () => {
+describe("NotificationsListComponent", () => {
   let component: NotificationsListComponent;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('NotificationsListComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

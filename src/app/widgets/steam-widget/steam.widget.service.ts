@@ -1,18 +1,18 @@
-import { IPlayerDataResponse, IAchievementResponse, IGameInfoResponse } from './ISteam';
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
-import { environment } from '../../../environments/environment';
-import { IPage } from '../../model/IPage';
+import { IPlayerDataResponse, IAchievementResponse, IGameInfoResponse } from "./ISteam";
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable } from "rxjs";
+import authorizationBearer from "../../services/authorizationBearer/authorizationBearer";
+import { environment } from "../../../environments/environment";
+import { IPage } from "../../model/IPage";
 
 @Injectable()
 export class SteamWidgetService {
   private http = inject(HttpClient);
 
   private _STEAM_IMAGE_URL =
-    'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/';
-  private _STEAM_COMMUNITY_URL = 'https://steamcommunity.com/app/';
+    "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/";
+  private _STEAM_COMMUNITY_URL = "https://steamcommunity.com/app/";
 
   get STEAM_IMAGE_URL(): string {
     return this._STEAM_IMAGE_URL;
@@ -28,7 +28,7 @@ export class SteamWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -51,7 +51,7 @@ export class SteamWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         },
         params: params
       }
@@ -64,7 +64,7 @@ export class SteamWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         },
         params: {
           steamUserId: steamUserId,

@@ -1,6 +1,6 @@
 name: Node.js CI
 
-on: ['push', 'workflow_dispatch']
+on: ["push", "workflow_dispatch"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.11.0
-          cache: 'npm'
+          cache: "npm"
 
       - name: Cache node modules
         uses: actions/cache@v4
@@ -77,7 +77,7 @@ jobs:
           browser: firefox
           config-file: cypress-test.config.ts
           start: npm start
-          wait-on: 'http://localhost:4200'
+          wait-on: "http://localhost:4200"
 
       - name: Generate test report
         id: generate-e2e-report

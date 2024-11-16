@@ -1,21 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { FormsModule } from '@angular/forms';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { forkJoin } from 'rxjs';
-import { SafePipe } from '../../pipes/safe.pipe';
-import { WidgetComponent } from '../widget/widget.component';
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { AirParifMapComponent } from './airparif-map/airparif-map.component';
-import { AirParifWidgetService } from './airparif-widget.service';
-import { IAirParifCouleur, IForecast } from './model/IAirParif';
+import { FormsModule } from "@angular/forms";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatIcon } from "@angular/material/icon";
+import { MatInput } from "@angular/material/input";
+import { forkJoin } from "rxjs";
+import { SafePipe } from "../../pipes/safe.pipe";
+import { WidgetComponent } from "../widget/widget.component";
+import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { AirParifMapComponent } from "./airparif-map/airparif-map.component";
+import { AirParifWidgetService } from "./airparif-widget.service";
+import { IAirParifCouleur, IForecast } from "./model/IAirParif";
 
 @Component({
-  selector: 'dash-airparif-widget',
-  templateUrl: './airparif-widget.component.html',
-  styleUrls: ['./airparif-widget.component.scss'],
+  selector: "dash-airparif-widget",
+  templateUrl: "./airparif-widget.component.html",
+  styleUrls: ["./airparif-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -63,7 +63,7 @@ export class AirParifWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return (this.airParifApiKey ?? '').length > 0 && (this.communeInseeCode ?? '').length > 0;
+    return (this.airParifApiKey ?? "").length > 0 && (this.communeInseeCode ?? "").length > 0;
   }
 
   public getWidgetData():

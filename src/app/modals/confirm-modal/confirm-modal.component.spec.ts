@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ConfirmModalComponent } from './confirm-modal.component';
+import { TestBed } from "@angular/core/testing";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { ConfirmModalComponent } from "./confirm-modal.component";
 
-describe('ConfirmModalComponent', () => {
+describe("ConfirmModalComponent", () => {
   let component: ConfirmModalComponent;
 
   beforeEach(async () => {
@@ -10,7 +10,7 @@ describe('ConfirmModalComponent', () => {
       imports: [],
       providers: [
         { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: { confirmMessage: 'test' } }
+        { provide: MAT_DIALOG_DATA, useValue: { confirmMessage: "test" } }
       ]
     }).compileComponents();
 
@@ -18,7 +18,7 @@ describe('ConfirmModalComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('Should create the component', () => {
+  it("Should create the component", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ITab } from '../../../app/model/Tab';
-import { environment } from '../../../environments/environment';
-import authorizationBearer from '../authorizationBearer/authorizationBearer';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable } from "rxjs";
+import { ITab } from "../../../app/model/Tab";
+import { environment } from "../../../environments/environment";
+import authorizationBearer from "../authorizationBearer/authorizationBearer";
 
 @Injectable()
 export class TabService {
@@ -13,7 +13,7 @@ export class TabService {
     return this.http.get<ITab[]>(`${environment.backend_url}/tab/`, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       }
     });
   }
@@ -25,7 +25,7 @@ export class TabService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -38,7 +38,7 @@ export class TabService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -48,7 +48,7 @@ export class TabService {
     return this.http.post<ITab[]>(`${environment.backend_url}/tab/updateTabs`, tabs, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       }
     });
   }
@@ -57,7 +57,7 @@ export class TabService {
     return this.http.delete<void>(`${environment.backend_url}/tab/deleteTab?id=${id}`, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       }
     });
   }

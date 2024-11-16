@@ -1,4 +1,4 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 @include mat.core;
 
 // Define a dark theme
@@ -53,7 +53,7 @@ mat-expansion-panel {
 
 body {
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: var(--dash-light-mode-background-color);
 
   .widget {

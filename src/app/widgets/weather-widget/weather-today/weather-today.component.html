@@ -25,7 +25,7 @@
             {{
               this.dateUtils
                 .formatDateFromTimestamp(weather.sys.sunrise, this.dateUtils.adjustTimeWithOffset(weather.timezone))
-                .toLocaleTimeString('fr')
+                .toLocaleTimeString("fr")
             }}
           </div>
         </div>
@@ -36,7 +36,7 @@
             {{
               this.dateUtils
                 .formatDateFromTimestamp(weather.sys.sunset, this.dateUtils.adjustTimeWithOffset(weather.timezone))
-                .toLocaleTimeString('fr')
+                .toLocaleTimeString("fr")
             }}
           </div>
         </div>
@@ -48,7 +48,7 @@
           {{
             this.dateUtils
               .formatDateFromTimestamp(weather.dt, this.dateUtils.adjustTimeWithOffset(weather.timezone))
-              .toLocaleTimeString('fr')
+              .toLocaleTimeString("fr")
           }}
         </div>
       </div>

@@ -7,15 +7,15 @@ import {
   HostListener,
   ViewChild,
   inject
-} from '@angular/core';
-import { SafePipe } from '../../pipes/safe.pipe';
-import { MatIcon } from '@angular/material/icon';
-import { WidgetComponent } from '../widget/widget.component';
+} from "@angular/core";
+import { SafePipe } from "../../pipes/safe.pipe";
+import { MatIcon } from "@angular/material/icon";
+import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
-  selector: 'dash-ecowatt-widget',
-  templateUrl: './ecowatt-widget.component.html',
-  styleUrls: ['./ecowatt-widget.component.scss'],
+  selector: "dash-ecowatt-widget",
+  templateUrl: "./ecowatt-widget.component.html",
+  styleUrls: ["./ecowatt-widget.component.scss"],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [WidgetComponent, MatIcon, SafePipe]
@@ -23,16 +23,16 @@ import { WidgetComponent } from '../widget/widget.component';
 export class EcowattWidgetComponent implements AfterViewInit {
   private changeDetectorRef = inject(ChangeDetectorRef);
 
-  @ViewChild('iframeContainer') private iframeContainer: ElementRef | undefined;
+  @ViewChild("iframeContainer") private iframeContainer: ElementRef | undefined;
 
   public ecowattIframeUrl =
-    'https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0';
+    "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
 
   public isWidgetLoaded = true;
   public iframeContainerHeight = 0;
   public iframeContainerWidth = 0;
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener("window:resize", ["$event"])
   public onResize(): void {
     this.resizeWidget();
   }
@@ -50,7 +50,7 @@ export class EcowattWidgetComponent implements AfterViewInit {
   public refreshWidget(): void {
     this.resizeWidget();
     if (this.iframeContainer) {
-      const iframe = this.iframeContainer.nativeElement.getElementsByTagName('iframe')[0];
+      const iframe = this.iframeContainer.nativeElement.getElementsByTagName("iframe")[0];
       if (iframe) {
         const src = iframe.src;
         iframe.src = src;

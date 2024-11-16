@@ -1,16 +1,16 @@
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { environment } from '../../../environments/environment';
-import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
-import { MiniWidgetListComponent } from './miniwidget-list.component';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { environment } from "../../../environments/environment";
+import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { MiniWidgetService } from "../../services/widget.service/miniwidget.service";
+import { MiniWidgetListComponent } from "./miniwidget-list.component";
+import { provideHttpClient } from "@angular/common/http";
 
-describe('MiniWidgetListComponent', () => {
+describe("MiniWidgetListComponent", () => {
   let component: MiniWidgetListComponent;
   let httpTestingController: HttpTestingController;
 
@@ -34,9 +34,9 @@ describe('MiniWidgetListComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should have no widgets', () => {
+  it("should have no widgets", () => {
     component.ngOnInit();
-    const request = httpTestingController.expectOne(environment.backend_url + '/miniWidget/');
+    const request = httpTestingController.expectOne(environment.backend_url + "/miniWidget/");
     request.flush([
       {
         id: 70,

@@ -1,5 +1,5 @@
-import { ErrorHandlerService } from './../services/error.handler.service';
-import { TabService } from './../services/tab.service/tab.service';
+import { ErrorHandlerService } from "./../services/error.handler.service";
+import { TabService } from "./../services/tab.service/tab.service";
 import {
   Component,
   Input,
@@ -7,16 +7,16 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   inject
-} from '@angular/core';
-import { ITab } from '../model/Tab';
-import { HttpErrorResponse } from '@angular/common/http';
-import { MatIcon } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
+} from "@angular/core";
+import { ITab } from "../model/Tab";
+import { HttpErrorResponse } from "@angular/common/http";
+import { MatIcon } from "@angular/material/icon";
+import { FormsModule } from "@angular/forms";
 
 @Component({
-  selector: 'dash-tab',
-  templateUrl: './tab.component.html',
-  styleUrls: ['./tab.component.scss'],
+  selector: "dash-tab",
+  templateUrl: "./tab.component.html",
+  styleUrls: ["./tab.component.scss"],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [FormsModule, MatIcon]
@@ -52,7 +52,7 @@ export class TabComponent {
   }
 
   public enterSaveTabName(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       if (this.tab) {
         this.saveTabName(this.tab.id, this.tab.label, this.tab.tabOrder);
       }

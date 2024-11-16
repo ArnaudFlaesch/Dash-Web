@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable, ReplaySubject } from "rxjs";
 
-import { environment } from '../../../environments/environment';
-import { IMiniWidgetConfig } from '../../model/IMiniWidgetConfig';
-import authorizationBearer from '../authorizationBearer/authorizationBearer';
+import { environment } from "../../../environments/environment";
+import { IMiniWidgetConfig } from "../../model/IMiniWidgetConfig";
+import authorizationBearer from "../authorizationBearer/authorizationBearer";
 
 @Injectable()
 export class MiniWidgetService {
@@ -18,7 +18,7 @@ export class MiniWidgetService {
     return this.http.get<IMiniWidgetConfig[]>(`${environment.backend_url}/miniWidget/`, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       }
     });
   }
@@ -30,7 +30,7 @@ export class MiniWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -43,7 +43,7 @@ export class MiniWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -55,7 +55,7 @@ export class MiniWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );

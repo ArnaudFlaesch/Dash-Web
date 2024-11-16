@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable } from "rxjs";
 
-import { environment } from '../../../environments/environment';
-import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
-import { IIncident, IIncidentStreak } from './IIncident';
+import { environment } from "../../../environments/environment";
+import authorizationBearer from "../../services/authorizationBearer/authorizationBearer";
+import { IIncident, IIncidentStreak } from "./IIncident";
 
 @Injectable()
 export class IncidentWidgetService {
@@ -16,7 +16,7 @@ export class IncidentWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         },
         params: {
           widgetId: widgetId
@@ -32,7 +32,7 @@ export class IncidentWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -45,7 +45,7 @@ export class IncidentWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -55,7 +55,7 @@ export class IncidentWidgetService {
     return this.http.get<IIncidentStreak[]>(`${environment.backend_url}/incidentWidget/streaks`, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       },
       params: {
         incidentId: incidentId

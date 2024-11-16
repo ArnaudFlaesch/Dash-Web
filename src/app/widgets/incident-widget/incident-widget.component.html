@@ -29,7 +29,7 @@
     @if (this.lastIncidentDate) {
       @if (this.isWidgetViewCurrentStreak()) {
         <div id="incident-widget-body-header">
-          <div>Dernier incident le {{ lastIncidentDate | dateFormat: 'short' }}</div>
+          <div>Dernier incident le {{ lastIncidentDate | dateFormat: "short" }}</div>
           @if (this.streaks.length > 0) {
             <button (click)="this.goToPastStreaksView()" mat-raised-button>Séries précédentes</button>
           }

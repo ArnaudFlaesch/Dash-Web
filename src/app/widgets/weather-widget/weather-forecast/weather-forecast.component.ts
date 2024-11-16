@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
-import { DateUtilsService } from '../../../services/date.utils.service/date.utils.service';
-import { ForecastMode, IForecast } from '../IWeather';
-import { WeatherWidgetService } from '../weather.widget.service';
-import { InitialUppercasePipe } from '../../../pipes/initial.uppercase.pipe';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
+import { ChangeDetectionStrategy, Component, Input, inject } from "@angular/core";
+import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
+import { ForecastMode, IForecast } from "../IWeather";
+import { WeatherWidgetService } from "../weather.widget.service";
+import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
-  selector: 'dash-weather-forecast',
-  templateUrl: './weather-forecast.component.html',
-  styleUrls: ['./weather-forecast.component.scss'],
+  selector: "dash-weather-forecast",
+  templateUrl: "./weather-forecast.component.html",
+  styleUrls: ["./weather-forecast.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MatTooltip, MatIcon, InitialUppercasePipe]
@@ -31,12 +31,12 @@ export class WeatherForecastComponent {
     const options: Intl.DateTimeFormatOptions =
       this.forecastMode === ForecastMode.DAY
         ? {
-            hour: '2-digit'
+            hour: "2-digit"
           }
-        : { weekday: 'short', day: 'numeric' };
+        : { weekday: "short", day: "numeric" };
     return this.dateUtils
       .formatDateFromTimestamp(dateTime, this.dateUtils.adjustTimeWithOffset(timezone))
-      .toLocaleString('fr', options);
+      .toLocaleString("fr", options);
   }
 
   public getIconFromWeatherApi(icon: string): string {

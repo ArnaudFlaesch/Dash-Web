@@ -1,17 +1,17 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { format } from 'date-fns';
-import { IActivity } from '../IStrava';
-import { fr } from 'date-fns/locale/fr';
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { format } from "date-fns";
+import { IActivity } from "../IStrava";
+import { fr } from "date-fns/locale/fr";
 import {
   MatExpansionPanel,
   MatExpansionPanelHeader,
   MatExpansionPanelTitle,
   MatExpansionPanelContent
-} from '@angular/material/expansion';
+} from "@angular/material/expansion";
 
 @Component({
-  selector: 'dash-strava-activities',
-  templateUrl: './strava-activities.component.html',
+  selector: "dash-strava-activities",
+  templateUrl: "./strava-activities.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -26,13 +26,13 @@ export class StravaActivitiesComponent {
   public activities: IActivity[] = [];
 
   public getTitleToDisplay(activity: IActivity): string {
-    return `${format(new Date(activity.startDateLocal), 'dd MMMM', { locale: fr })}  ${activity.name}  ${
+    return `${format(new Date(activity.startDateLocal), "dd MMMM", { locale: fr })}  ${activity.name}  ${
       Math.round(activity.distance * 1000) / 1000000
     } kms`;
   }
 
   public formatDate(date: string): string {
-    return format(new Date(date), 'dd MMMM', { locale: fr });
+    return format(new Date(date), "dd MMMM", { locale: fr });
   }
 
   public roundDistance(distance: number): number {

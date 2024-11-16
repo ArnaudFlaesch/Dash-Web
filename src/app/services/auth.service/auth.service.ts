@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { jwtDecode } from 'jwt-decode';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { jwtDecode } from "jwt-decode";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
-import { RoleEnum } from '../../../app/model/RoleEnum';
-import { environment } from '../../../environments/environment';
-import { IUser } from './../../model/User';
+import { RoleEnum } from "../../../app/model/RoleEnum";
+import { environment } from "../../../environments/environment";
+import { IUser } from "./../../model/User";
 
 interface IJwt {
   sub: string;
@@ -19,7 +19,7 @@ export class AuthService {
   private http = inject(HttpClient);
 
   private headers = {
-    'Content-type': 'application/json'
+    "Content-type": "application/json"
   };
 
   public login(username: string, password: string): Observable<IUser> {
@@ -37,7 +37,7 @@ export class AuthService {
       .pipe(
         map((response) => {
           if (response.accessToken) {
-            localStorage.setItem('user', JSON.stringify(response));
+            localStorage.setItem("user", JSON.stringify(response));
           }
           return response;
         })
@@ -45,7 +45,7 @@ export class AuthService {
   }
 
   public logout(): void {
-    localStorage.removeItem('user');
+    localStorage.removeItem("user");
   }
 
   public userHasValidToken(): boolean {
@@ -67,7 +67,7 @@ export class AuthService {
   }
 
   private getCurrentUserData(): IUser | null {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     if (!userData) {
       return null;
     } else {

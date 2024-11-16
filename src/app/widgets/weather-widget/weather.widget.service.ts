@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import authorizationBearer from '../../../app/services/authorizationBearer/authorizationBearer';
-import { environment } from './../../../environments/environment';
-import { IForecastAPIResponse, IWeatherAPIResponse } from './IWeather';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable } from "rxjs";
+import authorizationBearer from "../../../app/services/authorizationBearer/authorizationBearer";
+import { environment } from "./../../../environments/environment";
+import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
 
 @Injectable()
 export class WeatherWidgetService {
@@ -13,7 +13,7 @@ export class WeatherWidgetService {
     return this.http.get<IWeatherAPIResponse>(`${environment.backend_url}/weatherWidget/weather`, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       },
       params: {
         city: cityName
@@ -27,7 +27,7 @@ export class WeatherWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         },
         params: {
           city: cityName

@@ -1,11 +1,11 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { AuthService } from './services/auth.service/auth.service';
-import { ThemeService } from './services/theme.service/theme.service';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppComponent } from "./app.component";
+import { AuthService } from "./services/auth.service/auth.service";
+import { ThemeService } from "./services/theme.service/theme.service";
+import { provideHttpClient } from "@angular/common/http";
 
-describe('AppComponent', () => {
+describe("AppComponent", () => {
   let component: AppComponent;
 
   beforeEach(async () => {
@@ -16,8 +16,8 @@ describe('AppComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create the app', () => {
+  it("should create the app", () => {
     expect(component).toBeTruthy();
-    expect(component.title).toEqual('Dash');
+    expect(component.title).toEqual("Dash");
   });
 });

@@ -1,25 +1,25 @@
-import { ChangeDetectionStrategy, Component, inject, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ChangeDetectorRef } from "@angular/core";
 
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IIncidentStreak, IIncidentViewEnum } from './IIncident';
-import { IncidentWidgetService } from './incident.widget.service';
-import { differenceInDays } from 'date-fns';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmModalComponent } from '../../modals/confirm-modal/confirm-modal.component';
-import { DateFormatPipe } from '../../pipes/date-format.pipe';
-import { MatButton } from '@angular/material/button';
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { IIncidentStreak, IIncidentViewEnum } from "./IIncident";
+import { IncidentWidgetService } from "./incident.widget.service";
+import { differenceInDays } from "date-fns";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmModalComponent } from "../../modals/confirm-modal/confirm-modal.component";
+import { DateFormatPipe } from "../../pipes/date-format.pipe";
+import { MatButton } from "@angular/material/button";
 
-import { FormsModule } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { WidgetComponent } from '../widget/widget.component';
-import { switchMap } from 'rxjs';
+import { FormsModule } from "@angular/forms";
+import { MatInput } from "@angular/material/input";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatIcon } from "@angular/material/icon";
+import { WidgetComponent } from "../widget/widget.component";
+import { switchMap } from "rxjs";
 
 @Component({
-  selector: 'dash-incident-widget',
-  templateUrl: './incident-widget.component.html',
-  styleUrls: ['./incident-widget.component.scss'],
+  selector: "dash-incident-widget",
+  templateUrl: "./incident-widget.component.html",
+  styleUrls: ["./incident-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -42,15 +42,15 @@ export class IncidentWidgetComponent {
 
   private widgetView: IIncidentViewEnum = IIncidentViewEnum.CURRENT_STREAK;
 
-  private ERROR_STARTING_NEW_STREAK = 'Erreur lors du démarrage de la série.';
-  private ERROR_ENDING_NEW_STREAK = 'Erreur lors de la clôture de la série.';
-  private ERROR_GETTING_INCIDENT_STREAKS = 'Erreur lors de la récupération des séries.';
+  private ERROR_STARTING_NEW_STREAK = "Erreur lors du démarrage de la série.";
+  private ERROR_ENDING_NEW_STREAK = "Erreur lors de la clôture de la série.";
+  private ERROR_GETTING_INCIDENT_STREAKS = "Erreur lors de la récupération des séries.";
 
   private dialog = inject(MatDialog);
   private incidentWidgetService = inject(IncidentWidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
   private changeDetectorRef = inject(ChangeDetectorRef);
-  private widgetId = inject<number>('widgetId' as never);
+  private widgetId = inject<number>("widgetId" as never);
 
   public refreshWidget(): void {
     this.isWidgetLoaded = false;
@@ -88,13 +88,13 @@ export class IncidentWidgetComponent {
 
   public openEndStreakModal(): void {
     const dialogRef = this.dialog.open(ConfirmModalComponent, {
-      height: '400px',
-      width: '600px',
-      data: { confirmMessage: 'Êtes-vous sûr de vouloir clôturer cette série ?' }
+      height: "400px",
+      width: "600px",
+      data: { confirmMessage: "Êtes-vous sûr de vouloir clôturer cette série ?" }
     });
 
     dialogRef.afterClosed().subscribe((choice: string) => {
-      if (choice === 'ok') {
+      if (choice === "ok") {
         this.endCurrentStreak();
       }
     });
@@ -134,7 +134,7 @@ export class IncidentWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return (this.incidentName ?? '').length > 0;
+    return (this.incidentName ?? "").length > 0;
   }
 
   private endCurrentStreak(): void {

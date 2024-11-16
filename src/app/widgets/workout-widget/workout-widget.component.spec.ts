@@ -1,4 +1,4 @@
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 import {
   endOfMonth,
   endOfWeek,
@@ -9,25 +9,25 @@ import {
   startOfYear,
   subMonths,
   subYears
-} from 'date-fns';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IWorkoutSession, IWorkoutType } from './model/Workout';
+} from "date-fns";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { IWorkoutSession, IWorkoutType } from "./model/Workout";
 
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { environment } from '../../../environments/environment';
-import { AuthService } from '../../services/auth.service/auth.service';
-import { DateUtilsService } from '../../services/date.utils.service/date.utils.service';
-import { WidgetService } from '../../services/widget.service/widget.service';
-import { WorkoutWidgetComponent } from './workout-widget.component';
-import { WorkoutWidgetService } from './workout.widget.service';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { environment } from "../../../environments/environment";
+import { AuthService } from "../../services/auth.service/auth.service";
+import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
+import { WidgetService } from "../../services/widget.service/widget.service";
+import { WorkoutWidgetComponent } from "./workout-widget.component";
+import { WorkoutWidgetService } from "./workout.widget.service";
+import { provideHttpClient } from "@angular/common/http";
 
-describe('WorkoutWidgetComponent', () => {
+describe("WorkoutWidgetComponent", () => {
   let component: WorkoutWidgetComponent;
   let httpTestingController: HttpTestingController;
   const userId = 2;
-  const dateFormat = 'yyyy-MM-dd';
+  const dateFormat = "yyyy-MM-dd";
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -40,7 +40,7 @@ describe('WorkoutWidgetComponent', () => {
         AuthService,
         ErrorHandlerService,
         WidgetService,
-        { provide: 'widgetId', useValue: 1 }
+        { provide: "widgetId", useValue: 1 }
       ]
     }).compileComponents();
 
@@ -56,22 +56,22 @@ describe('WorkoutWidgetComponent', () => {
 
   beforeEach(() => {
     const userData = {
-      accessToken: 'accessToken',
+      accessToken: "accessToken",
       id: userId,
-      username: 'admintest',
-      email: 'admin@email.com',
-      roles: ['ROLE_ADMIN'],
-      tokenType: 'Bearer'
+      username: "admintest",
+      email: "admin@email.com",
+      roles: ["ROLE_ADMIN"],
+      tokenType: "Bearer"
     };
-    window.localStorage.setItem('user', JSON.stringify(userData));
+    window.localStorage.setItem("user", JSON.stringify(userData));
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component.workoutTypes).toEqual([]);
     expect(component.workoutSessions).toEqual([]);
     expect(component.isWidgetLoaded).toEqual(false);
 
-    const workoutTypesFromDB = [{ id: 1, name: 'Abdos' }];
+    const workoutTypesFromDB = [{ id: 1, name: "Abdos" }];
 
     component.refreshWidget();
 
@@ -109,13 +109,13 @@ describe('WorkoutWidgetComponent', () => {
     expect(component.workoutSessions.length).toEqual(0);
   });
 
-  it('should add a new workout type', () => {
-    const newWorkoutTypeName = 'Haltères';
+  it("should add a new workout type", () => {
+    const newWorkoutTypeName = "Haltères";
     component.workoutNameInput = newWorkoutTypeName;
     component.addWorkoutType();
 
     const addWorkoutTypeRequest = httpTestingController.expectOne(
-      environment.backend_url + '/workoutWidget/addWorkoutType'
+      environment.backend_url + "/workoutWidget/addWorkoutType"
     );
 
     const addWorkoutTypeResponse = {
@@ -126,7 +126,7 @@ describe('WorkoutWidgetComponent', () => {
     expect(component.workoutTypes).toEqual([addWorkoutTypeResponse]);
   });
 
-  it('Should create widget with errors from webservices', () => {
+  it("Should create widget with errors from webservices", () => {
     expect(component.workoutTypes).toEqual([]);
     expect(component.workoutSessions).toEqual([]);
 
@@ -134,7 +134,7 @@ describe('WorkoutWidgetComponent', () => {
 
     httpTestingController
       .expectOne(environment.backend_url + `/workoutWidget/workoutTypes`)
-      .error(new ProgressEvent('Server error'));
+      .error(new ProgressEvent("Server error"));
 
     httpTestingController
       .expectOne(
@@ -144,7 +144,7 @@ describe('WorkoutWidgetComponent', () => {
             dateFormat
           )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
       )
-      .error(new ProgressEvent('Server error'));
+      .error(new ProgressEvent("Server error"));
 
     httpTestingController
       .expectOne(
@@ -154,7 +154,7 @@ describe('WorkoutWidgetComponent', () => {
             dateFormat
           )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`
       )
-      .error(new ProgressEvent('Server error'));
+      .error(new ProgressEvent("Server error"));
 
     httpTestingController
       .expectOne(
@@ -164,18 +164,18 @@ describe('WorkoutWidgetComponent', () => {
             dateFormat
           )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
       )
-      .error(new ProgressEvent('Server error'));
+      .error(new ProgressEvent("Server error"));
   });
 
-  it('Should create a new workout session', () => {
-    const alreadyExistingWorkoutType = { id: 1, name: 'Abdos' } as IWorkoutType;
+  it("Should create a new workout session", () => {
+    const alreadyExistingWorkoutType = { id: 1, name: "Abdos" } as IWorkoutType;
     component.workoutTypes = [alreadyExistingWorkoutType];
     const newWorkoutSessionDate = new Date(2022, 8, 1, 0, 0, 0).toString();
     component.workoutDateFormControl.setValue(newWorkoutSessionDate);
     component.createWorkoutSession();
 
     const addNewWorkoutSessionRequest = httpTestingController.expectOne(
-      environment.backend_url + '/workoutWidget/createWorkoutSession'
+      environment.backend_url + "/workoutWidget/createWorkoutSession"
     );
 
     const mockedAddNewWorkoutSessionResponse = {
@@ -192,7 +192,7 @@ describe('WorkoutWidgetComponent', () => {
     expect(component.currentWorkoutSessionToEdit).toEqual(undefined);
   });
 
-  it('Should check month selected', () => {
+  it("Should check month selected", () => {
     const selectedMonth = new Date(2022, 10, 20);
     component.selectMonth(selectedMonth);
 
@@ -216,7 +216,7 @@ describe('WorkoutWidgetComponent', () => {
     expect(component.selectedMonthFormControl.value).toEqual(selectedMonth);
   });
 
-  it('Should switch between statistics views', () => {
+  it("Should switch between statistics views", () => {
     component.goToStatisticsView();
     const today = startOfMonth(new Date());
     const lastThreeMonthsStatsRequest = httpTestingController.expectOne(

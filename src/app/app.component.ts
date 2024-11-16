@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-import { AuthService } from './services/auth.service/auth.service';
-import { ThemeService } from './services/theme.service/theme.service';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
+import { Router, RouterOutlet } from "@angular/router";
+import { AuthService } from "./services/auth.service/auth.service";
+import { ThemeService } from "./services/theme.service/theme.service";
 
 export interface IMenu {
   link: string;
@@ -9,8 +9,8 @@ export interface IMenu {
 }
 
 @Component({
-  selector: 'dash-root',
-  templateUrl: './app.component.html',
+  selector: "dash-root",
+  templateUrl: "./app.component.html",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [RouterOutlet]
@@ -20,11 +20,11 @@ export class AppComponent implements OnInit {
   private themeService = inject(ThemeService);
   private router = inject(Router);
 
-  title = 'Dash';
+  title = "Dash";
 
   public async ngOnInit(): Promise<void> {
     if (!this.authService.userHasValidToken()) {
-      await this.router.navigate(['/login']);
+      await this.router.navigate(["/login"]);
     }
     this.themeService.selectDarkMode(this.themeService.isPreferredThemeDarkMode());
   }

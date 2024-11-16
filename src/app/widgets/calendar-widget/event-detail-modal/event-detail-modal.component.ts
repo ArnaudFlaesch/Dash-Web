@@ -1,18 +1,18 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import {
   MAT_DIALOG_DATA,
   MatDialogTitle,
   MatDialogContent,
   MatDialogActions,
   MatDialogClose
-} from '@angular/material/dialog';
-import { CalendarEvent } from 'angular-calendar';
-import { DateFormatPipe } from '../../../pipes/date-format.pipe';
-import { MatButton } from '@angular/material/button';
+} from "@angular/material/dialog";
+import { CalendarEvent } from "angular-calendar";
+import { DateFormatPipe } from "../../../pipes/date-format.pipe";
+import { MatButton } from "@angular/material/button";
 
 @Component({
-  selector: 'dash-event-detail-modal',
-  templateUrl: './event-detail-modal.component.html',
+  selector: "dash-event-detail-modal",
+  templateUrl: "./event-detail-modal.component.html",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
