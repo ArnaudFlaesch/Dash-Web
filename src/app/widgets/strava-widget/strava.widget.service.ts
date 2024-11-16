@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import authorizationBearer from '../../services/authorizationBearer/authorizationBearer';
-import { environment } from '../../../environments/environment';
-import { IActivity, IAthlete, ITokenData } from './IStrava';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable } from "rxjs";
+import authorizationBearer from "../../services/authorizationBearer/authorizationBearer";
+import { environment } from "../../../environments/environment";
+import { IActivity, IAthlete, ITokenData } from "./IStrava";
 
 @Injectable()
 export class StravaWidgetService {
@@ -16,7 +16,7 @@ export class StravaWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -29,7 +29,7 @@ export class StravaWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -41,7 +41,7 @@ export class StravaWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -57,7 +57,7 @@ export class StravaWidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );

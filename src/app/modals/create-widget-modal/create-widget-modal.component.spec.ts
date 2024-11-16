@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { MatDialogRef } from '@angular/material/dialog';
-import { CreateWidgetModalComponent } from './create-widget-modal.component';
+import { TestBed } from "@angular/core/testing";
+import { MatDialogRef } from "@angular/material/dialog";
+import { CreateWidgetModalComponent } from "./create-widget-modal.component";
 
-describe('CreateWidgetModalComponent', () => {
+describe("CreateWidgetModalComponent", () => {
   let component: CreateWidgetModalComponent;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('CreateWidgetModalComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('Should create the component', () => {
+  it("Should create the component", () => {
     expect(component).toBeTruthy();
   });
 });

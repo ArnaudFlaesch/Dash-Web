@@ -1,25 +1,25 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { isToday } from 'date-fns';
-import { Subject, takeUntil } from 'rxjs';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { isToday } from "date-fns";
+import { Subject, takeUntil } from "rxjs";
 import {
   INotification,
   INotificationToDisplay,
   NotificationTypeEnum
-} from '../model/INotification';
-import { ErrorHandlerService } from '../services/error.handler.service';
-import { NotificationService } from '../services/notification.service/NotificationService';
-import { WidgetService } from '../services/widget.service/widget.service';
-import { NotificationsListComponent } from './notifications-list/notifications-list.component';
+} from "../model/INotification";
+import { ErrorHandlerService } from "../services/error.handler.service";
+import { NotificationService } from "../services/notification.service/NotificationService";
+import { WidgetService } from "../services/widget.service/widget.service";
+import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
 
-import { MatBadge } from '@angular/material/badge';
-import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
-import { MatTooltip } from '@angular/material/tooltip';
+import { MatBadge } from "@angular/material/badge";
+import { MatIconButton, MatMiniFabButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
-  selector: 'dash-notifications',
-  templateUrl: './notifications.component.html',
+  selector: "dash-notifications",
+  templateUrl: "./notifications.component.html",
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
@@ -45,7 +45,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private widgetService = inject(WidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
 
-  private ERROR_MARKING_NOTIFICATION_AS_READ = 'Erreur lors du traitement de la requête.';
+  private ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
 
   ngOnInit(): void {
     this.fetchNotificationsFromDatabase();
@@ -113,14 +113,14 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private computeDateToDisplay(date: string): string {
     const parsedDate = new Date(Date.parse(date));
     if (isToday(parsedDate)) {
-      return parsedDate.toLocaleTimeString('fr', {
-        hour: '2-digit',
-        minute: '2-digit'
+      return parsedDate.toLocaleTimeString("fr", {
+        hour: "2-digit",
+        minute: "2-digit"
       });
     } else {
-      return parsedDate.toLocaleString('fr', {
-        day: '2-digit',
-        month: '2-digit'
+      return parsedDate.toLocaleString("fr", {
+        day: "2-digit",
+        month: "2-digit"
       });
     }
   }
@@ -128,9 +128,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private computeTypeToDisplay(notificationType: NotificationTypeEnum): string {
     switch (notificationType) {
       case NotificationTypeEnum.INFO:
-        return 'info';
+        return "info";
       case NotificationTypeEnum.WARN:
-        return 'warning';
+        return "warning";
     }
   }
 

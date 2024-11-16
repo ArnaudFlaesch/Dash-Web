@@ -1,39 +1,39 @@
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
-import { Location, NgClass } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
+import { Location, NgClass } from "@angular/common";
+import { HttpErrorResponse } from "@angular/common/http";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 
-import { WidgetTypeEnum } from '../enums/WidgetTypeEnum';
-import { ErrorHandlerService } from '../services/error.handler.service';
-import { TabService } from '../services/tab.service/tab.service';
-import { ThemeService } from '../services/theme.service/theme.service';
-import { WidgetService } from '../services/widget.service/widget.service';
-import { CreateWidgetModalComponent } from './../modals/create-widget-modal/create-widget-modal.component';
-import { ImportConfigModalComponent } from './../modals/import-config-modal/import-config-modal.component';
-import { IWidgetConfig } from './../model/IWidgetConfig';
-import { ITab } from './../model/Tab';
-import { AuthService } from './../services/auth.service/auth.service';
-import { ConfigService } from './../services/config.service/config.service';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { WidgetListComponent } from '../widgets/widget-list/widget-list.component';
-import { MiniWidgetListComponent } from '../widgets/miniwidget-list/miniwidget-list.component';
-import { MatDivider } from '@angular/material/divider';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { NotificationsComponent } from '../notifications/notifications.component';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatMiniFabButton } from '@angular/material/button';
-import { TabComponent } from '../tab/tab.component';
+import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
+import { ErrorHandlerService } from "../services/error.handler.service";
+import { TabService } from "../services/tab.service/tab.service";
+import { ThemeService } from "../services/theme.service/theme.service";
+import { WidgetService } from "../services/widget.service/widget.service";
+import { CreateWidgetModalComponent } from "./../modals/create-widget-modal/create-widget-modal.component";
+import { ImportConfigModalComponent } from "./../modals/import-config-modal/import-config-modal.component";
+import { IWidgetConfig } from "./../model/IWidgetConfig";
+import { ITab } from "./../model/Tab";
+import { AuthService } from "./../services/auth.service/auth.service";
+import { ConfigService } from "./../services/config.service/config.service";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { WidgetListComponent } from "../widgets/widget-list/widget-list.component";
+import { MiniWidgetListComponent } from "../widgets/miniwidget-list/miniwidget-list.component";
+import { MatDivider } from "@angular/material/divider";
+import { MatSlideToggle } from "@angular/material/slide-toggle";
+import { NotificationsComponent } from "../notifications/notifications.component";
+import { MatMenuTrigger, MatMenu, MatMenuItem } from "@angular/material/menu";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
+import { MatMiniFabButton } from "@angular/material/button";
+import { TabComponent } from "../tab/tab.component";
 
 @Component({
-  selector: 'dash-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  selector: "dash-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.scss"],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [
@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public toggleControl = new FormControl(false);
 
-  public cashManagerApplicationUrl = 'https://arnaudflaesch.github.io/CashManager/';
+  public cashManagerApplicationUrl = "https://arnaudflaesch.github.io/CashManager/";
 
   private refreshInterval: NodeJS.Timeout | null = null;
 
@@ -88,13 +88,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   private ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
   private ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
 
-  private ERROR_MESSAGE_GET_WIDGETS = 'Erreur lors de la récupération des widgets.';
+  private ERROR_MESSAGE_GET_WIDGETS = "Erreur lors de la récupération des widgets.";
   private ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
-  private ERROR_MESSAGE_UPDATE_WIDGETS_ORDER = 'Erreur lors de la mise à jour des widgets.';
+  private ERROR_MESSAGE_UPDATE_WIDGETS_ORDER = "Erreur lors de la mise à jour des widgets.";
   private ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
 
   private ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
-  private ERROR_UPDATING_TABS = 'Erreurs lors de la mise à jour des onglets';
+  private ERROR_UPDATING_TABS = "Erreurs lors de la mise à jour des onglets";
   private ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
   private readonly refreshTimeout = 600000; // 10 minutes
 
@@ -127,7 +127,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public addNewTab(): void {
-    const newTabLabel = 'Nouvel onglet';
+    const newTabLabel = "Nouvel onglet";
     this.tabService.addTab(newTabLabel).subscribe({
       next: (insertedTab: ITab) => {
         this.tabs = [...this.tabs, insertedTab];
@@ -174,8 +174,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public openCreateWidgetModal(): void {
     const dialogRef = this.dialog.open(CreateWidgetModalComponent, {
-      height: '400px',
-      width: '600px'
+      height: "400px",
+      width: "600px"
     });
 
     dialogRef.afterClosed().subscribe((result: WidgetTypeEnum) => {
@@ -198,19 +198,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public openImportConfigModal(): void {
     this.dialog.open(ImportConfigModalComponent, {
-      height: '400px',
-      width: '600px'
+      height: "400px",
+      width: "600px"
     });
   }
 
   public downloadConfig(): void {
     this.configService.exportConfig().subscribe({
       next: (response) => {
-        console.info('Configuration exportée');
+        console.info("Configuration exportée");
         const url = window.URL.createObjectURL(new Blob([response]));
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
-        link.setAttribute('download', 'dashboardConfig.json');
+        link.setAttribute("download", "dashboardConfig.json");
         document.body.innerText += link;
         link.click();
       },
@@ -221,7 +221,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public async logout(): Promise<void> {
     this.authService.logout();
-    await this.router.navigate(['login']);
+    await this.router.navigate(["login"]);
   }
 
   public updateWidgetOrder(updatedWidgets: IWidgetConfig[]): void {
@@ -261,7 +261,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.tabs = tabs;
         if (tabs.length) {
           this.activatedRoute.queryParams.subscribe((params) => {
-            const tabIdParam = params['tabId'];
+            const tabIdParam = params["tabId"];
             if (tabIdParam && tabs.find((tab) => tab.id === Number.parseInt(tabIdParam))) {
               this.activeTab = Number.parseInt(tabIdParam);
             } else {

@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import authorizationBearer from '../authorizationBearer/authorizationBearer';
-import { IWidgetConfig } from './../../model/IWidgetConfig';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable, ReplaySubject } from "rxjs";
+import { environment } from "../../../environments/environment";
+import authorizationBearer from "../authorizationBearer/authorizationBearer";
+import { IWidgetConfig } from "./../../model/IWidgetConfig";
 
 @Injectable()
 export class WidgetService {
@@ -19,7 +19,7 @@ export class WidgetService {
     return this.http.get<IWidgetConfig[]>(`${environment.backend_url}/widget/?tabId=${tabId}`, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       }
     });
   }
@@ -31,7 +31,7 @@ export class WidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -44,7 +44,7 @@ export class WidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -57,7 +57,7 @@ export class WidgetService {
       {
         headers: {
           Authorization: authorizationBearer(),
-          'Content-type': 'application/json'
+          "Content-type": "application/json"
         }
       }
     );
@@ -67,7 +67,7 @@ export class WidgetService {
     return this.http.delete<void>(`${environment.backend_url}/widget/deleteWidget?id=${id}`, {
       headers: {
         Authorization: authorizationBearer(),
-        'Content-type': 'application/json'
+        "Content-type": "application/json"
       }
     });
   }

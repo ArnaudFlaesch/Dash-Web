@@ -9,20 +9,20 @@ import {
   SimpleChanges,
   ViewChild,
   inject
-} from '@angular/core';
-import * as L from 'leaflet';
-import 'leaflet-sidebar-v2';
+} from "@angular/core";
+import * as L from "leaflet";
+import "leaflet-sidebar-v2";
 
-import { AirParifWidgetService } from '../airparif-widget.service';
-import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from '../model/IAirParif';
-import { MatButton } from '@angular/material/button';
+import { AirParifWidgetService } from "../airparif-widget.service";
+import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from "../model/IAirParif";
+import { MatButton } from "@angular/material/button";
 
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
-  selector: 'dash-airparif-map',
-  templateUrl: './airparif-map.component.html',
-  styleUrls: ['./airparif-map.component.scss'],
+  selector: "dash-airparif-map",
+  templateUrl: "./airparif-map.component.html",
+  styleUrls: ["./airparif-map.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MatIcon, MatButton]
@@ -39,13 +39,13 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   @Input()
   public airParifApiKey: string | undefined;
 
-  @ViewChild('map')
+  @ViewChild("map")
   private mapContainer: ElementRef | undefined;
 
   public forecastToDisplay: IForecast | undefined;
   public forecastMode: ForecastMode = ForecastMode.TODAY;
 
-  private airParifUrl = 'https://magellan.airparif.asso.fr/geoserver/';
+  private airParifUrl = "https://magellan.airparif.asso.fr/geoserver/";
   private map: L.Map | undefined;
   private airParifForecastTodayLayer: L.Layer;
   private airParifForecastTomorrowLayer: L.Layer;
@@ -53,18 +53,18 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   private sidebarControl = L.control.sidebar({
     autopan: false,
     closeButton: true,
-    container: 'sidebar',
-    position: 'left'
+    container: "sidebar",
+    position: "left"
   });
 
   constructor() {
     this.airParifForecastTodayLayer = L.tileLayer.wms(
-      this.airParifUrl + 'siteweb/wms',
-      this.getAirParifWmsOptions('siteweb:vue_indice_atmo_2020_com')
+      this.airParifUrl + "siteweb/wms",
+      this.getAirParifWmsOptions("siteweb:vue_indice_atmo_2020_com")
     );
     this.airParifForecastTomorrowLayer = L.tileLayer.wms(
-      this.airParifUrl + 'siteweb/wms',
-      this.getAirParifWmsOptions('siteweb:vue_indice_atmo_2020_com_jp1')
+      this.airParifUrl + "siteweb/wms",
+      this.getAirParifWmsOptions("siteweb:vue_indice_atmo_2020_com_jp1")
     );
   }
 
@@ -73,7 +73,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['airParifForecast'] && !this.forecastToDisplay) {
+    if (changes["airParifForecast"] && !this.forecastToDisplay) {
       this.selectTodayForecast();
     }
   }
@@ -109,7 +109,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   public getColorFromIndice(indice: AirParifIndiceEnum): string {
     return (
       this.airParifCouleursIndices.find((couleurIndice) => couleurIndice.name === indice)?.color ??
-      ''
+      ""
     );
   }
 
@@ -118,7 +118,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
       northEast = L.latLng(49.24, 3.56),
       bounds = L.latLngBounds(southWest, northEast);
 
-    const openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const openStreetMapLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
       attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
@@ -139,13 +139,13 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
 
   private getAirParifWmsOptions(layer: string) {
     return {
-      service: 'WMS',
-      version: '1.3',
+      service: "WMS",
+      version: "1.3",
       layers: layer,
       tiled: true,
       transparent: true,
-      format: 'image/png8',
-      styles: 'nouvel_indice_polygones',
+      format: "image/png8",
+      styles: "nouvel_indice_polygones",
       opacity: 0.5,
       attribution: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`,
       authkey: this.airParifApiKey

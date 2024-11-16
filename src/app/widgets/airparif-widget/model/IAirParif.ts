@@ -4,12 +4,12 @@ export enum ForecastMode {
 }
 
 export enum AirParifIndiceEnum {
-  BON = 'Bon',
-  MOYEN = 'Moyen',
-  DEGRADE = 'Dégradé',
-  MAUVAIS = 'Mauvais',
-  TRES_MAUVAIS = 'Très mauvais',
-  EXTREMEMENT_MAUVAIS = 'Extrêmement mauvais'
+  BON = "Bon",
+  MOYEN = "Moyen",
+  DEGRADE = "Dégradé",
+  MAUVAIS = "Mauvais",
+  TRES_MAUVAIS = "Très mauvais",
+  EXTREMEMENT_MAUVAIS = "Extrêmement mauvais"
 }
 
 export interface IForecast {

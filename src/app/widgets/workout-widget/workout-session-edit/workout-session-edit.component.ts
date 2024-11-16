@@ -1,18 +1,18 @@
-import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from './../model/Workout';
-import { ChangeDetectionStrategy, Component, Input, SimpleChanges, inject } from '@angular/core';
-import { ErrorHandlerService } from '../../../services/error.handler.service';
-import { WorkoutWidgetService } from '../workout.widget.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { DateFormatPipe } from '../../../pipes/date-format.pipe';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { NgClass } from '@angular/common';
+import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "./../model/Workout";
+import { ChangeDetectionStrategy, Component, Input, SimpleChanges, inject } from "@angular/core";
+import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { WorkoutWidgetService } from "../workout.widget.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { DateFormatPipe } from "../../../pipes/date-format.pipe";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatIcon } from "@angular/material/icon";
+import { MatIconButton } from "@angular/material/button";
+import { NgClass } from "@angular/common";
 
 @Component({
-  selector: 'dash-workout-session-edit',
-  templateUrl: './workout-session-edit.component.html',
-  styleUrls: ['./workout-session-edit.component.scss'],
+  selector: "dash-workout-session-edit",
+  templateUrl: "./workout-session-edit.component.html",
+  styleUrls: ["./workout-session-edit.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
@@ -28,14 +28,14 @@ export class WorkoutSessionEditComponent {
   public workoutExercisesLoaded = false;
 
   private ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
-  private ERROR_GETTING_WORKOUT_EXERCISES = 'Erreur lors de la récupération des exercices.';
+  private ERROR_GETTING_WORKOUT_EXERCISES = "Erreur lors de la récupération des exercices.";
 
   private errorHandlerService = inject(ErrorHandlerService);
   private workoutWidgetService = inject(WorkoutWidgetService);
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['currentWorkoutSessionToEdit'].currentValue)
-      this.fetchWorkoutExercisesBySessionId(changes['currentWorkoutSessionToEdit'].currentValue.id);
+    if (changes["currentWorkoutSessionToEdit"].currentValue)
+      this.fetchWorkoutExercisesBySessionId(changes["currentWorkoutSessionToEdit"].currentValue.id);
   }
 
   public decrementExerciceNumberOfReps(workoutTypeId: number): void {

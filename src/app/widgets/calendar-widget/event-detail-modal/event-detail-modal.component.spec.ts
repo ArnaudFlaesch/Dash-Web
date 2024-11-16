@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { CalendarEvent } from 'angular-calendar';
-import { DateFormatPipe } from './../../../pipes/date-format.pipe';
-import { EventDetailModalComponent } from './event-detail-modal.component';
+import { TestBed } from "@angular/core/testing";
+import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
+import { CalendarEvent } from "angular-calendar";
+import { DateFormatPipe } from "./../../../pipes/date-format.pipe";
+import { EventDetailModalComponent } from "./event-detail-modal.component";
 
-describe('EventDetailModalComponent', () => {
+describe("EventDetailModalComponent", () => {
   let component: EventDetailModalComponent;
 
   const calendarEvent: CalendarEvent = {
@@ -24,7 +24,7 @@ describe('EventDetailModalComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('Should display the data in the modal', () => {
+  it("Should display the data in the modal", () => {
     expect(component).toBeTruthy();
   });
 });

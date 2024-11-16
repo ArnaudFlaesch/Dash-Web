@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from "@angular/common/http";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -10,24 +10,24 @@ import {
   ViewChildren,
   ViewContainerRef,
   inject
-} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+} from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 
-import { Subject, takeUntil } from 'rxjs';
-import { MiniWidgetTypeEnum } from '../../enums/MiniWidgetTypeEnum';
-import { CreateMiniWidgetModalComponent } from '../../modals/create-mini-widget-modal/create-mini-widget-modal.component';
-import { IMiniWidgetConfig } from '../../model/IMiniWidgetConfig';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { MiniWidgetService } from '../../services/widget.service/miniwidget.service';
-import { WeatherMiniWidgetComponent } from '../weather-widget/weather-mini-widget/weather-miniwidget.component';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatMiniFabButton } from '@angular/material/button';
+import { Subject, takeUntil } from "rxjs";
+import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
+import { CreateMiniWidgetModalComponent } from "../../modals/create-mini-widget-modal/create-mini-widget-modal.component";
+import { IMiniWidgetConfig } from "../../model/IMiniWidgetConfig";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { MiniWidgetService } from "../../services/widget.service/miniwidget.service";
+import { WeatherMiniWidgetComponent } from "../weather-widget/weather-mini-widget/weather-miniwidget.component";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
+import { MatMiniFabButton } from "@angular/material/button";
 
 @Component({
-  selector: 'dash-miniwidget-list',
-  templateUrl: './miniwidget-list.component.html',
-  styleUrls: ['./miniwidget-list.component.scss'],
+  selector: "dash-miniwidget-list",
+  templateUrl: "./miniwidget-list.component.html",
+  styleUrls: ["./miniwidget-list.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [MatMiniFabButton, MatTooltip, MatIcon]
@@ -38,15 +38,15 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
   private miniWidgetService = inject(MiniWidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
 
-  @ViewChildren('dynamic', { read: ViewContainerRef })
+  @ViewChildren("dynamic", { read: ViewContainerRef })
   private miniWidgetTargets: QueryList<ViewContainerRef> | undefined;
 
   public miniWidgetList: IMiniWidgetConfig[] = [];
   private destroy$: Subject<unknown> = new Subject();
 
-  private ERROR_MESSAGE_GET_MINI_WIDGETS = 'Erreur lors de la récupération des mini widgets.';
+  private ERROR_MESSAGE_GET_MINI_WIDGETS = "Erreur lors de la récupération des mini widgets.";
   private ERROR_MESSAGE_ADD_MINI_WIDGET = "Erreur lors de l'ajout d'un mini widget.";
-  private ERROR_MESSAGE_DELETE_MINI_WIDGET = 'Erreur lors de la suppression du mini widget.';
+  private ERROR_MESSAGE_DELETE_MINI_WIDGET = "Erreur lors de la suppression du mini widget.";
 
   ngOnInit(): void {
     this.miniWidgetService.getMiniWidgets().subscribe({
@@ -79,8 +79,8 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
 
   public openCreateMiniWidgetModal(): void {
     const dialogRef = this.dialog.open(CreateMiniWidgetModalComponent, {
-      height: '400px',
-      width: '600px'
+      height: "400px",
+      width: "600px"
     });
 
     dialogRef.afterClosed().subscribe((result: MiniWidgetTypeEnum) => {
@@ -107,7 +107,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
         const injector: Injector = Injector.create({
           providers: [
             {
-              provide: 'widgetId',
+              provide: "widgetId",
               useValue: this.miniWidgetList[index].id
             }
           ]
@@ -117,7 +117,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
           component = target.createComponent(WeatherMiniWidgetComponent, {
             injector: injector
           });
-          component.instance.city = widgetData?.['city'] as string;
+          component.instance.city = widgetData?.["city"] as string;
         }
       });
     }

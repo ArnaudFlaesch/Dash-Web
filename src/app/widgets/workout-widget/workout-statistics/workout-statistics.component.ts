@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
-import { ChartData, ChartTypeRegistry } from 'chart.js';
-import { format, startOfMonth } from 'date-fns';
-import { fr } from 'date-fns/locale/fr';
-import { BaseChartDirective } from 'ng2-charts';
-import { IWorkoutStatByMonth, IWorkoutType } from '../model/Workout';
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
+import { ChartData, ChartTypeRegistry } from "chart.js";
+import { format, startOfMonth } from "date-fns";
+import { fr } from "date-fns/locale/fr";
+import { BaseChartDirective } from "ng2-charts";
+import { IWorkoutStatByMonth, IWorkoutType } from "../model/Workout";
 
 @Component({
-  selector: 'dash-workout-statistics',
-  templateUrl: './workout-statistics.component.html',
-  styleUrls: ['./workout-statistics.component.scss'],
+  selector: "dash-workout-statistics",
+  templateUrl: "./workout-statistics.component.html",
+  styleUrls: ["./workout-statistics.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [BaseChartDirective],
   standalone: true
@@ -30,7 +30,7 @@ export class WorkoutStatisticsComponent implements OnChanges {
       )
     ].sort((timeA, timeB) => timeA - timeB);
     this.workoutStatsChartData = {
-      labels: labels.map((label) => format(new Date(label), 'MMM', { locale: fr })),
+      labels: labels.map((label) => format(new Date(label), "MMM", { locale: fr })),
       datasets: this.workoutTypes.map((workoutType) => {
         return {
           label: workoutType.name,

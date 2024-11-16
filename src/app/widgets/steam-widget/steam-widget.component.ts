@@ -1,27 +1,27 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PageEvent, MatPaginator } from '@angular/material/paginator';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { HttpErrorResponse } from "@angular/common/http";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { PageEvent, MatPaginator } from "@angular/material/paginator";
+import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 
-import { ErrorHandlerService } from './../../services/error.handler.service';
-import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from './ISteam';
-import { SteamWidgetService } from './steam.widget.service';
-import { Subject } from 'rxjs';
-import { IPage } from '../../../app/model/IPage';
-import { GameDetailsComponent } from './game-details/game-details.component';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIconButton } from '@angular/material/button';
+import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
+import { SteamWidgetService } from "./steam.widget.service";
+import { Subject } from "rxjs";
+import { IPage } from "../../../app/model/IPage";
+import { GameDetailsComponent } from "./game-details/game-details.component";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
+import { MatIconButton } from "@angular/material/button";
 
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { WidgetComponent } from '../widget/widget.component';
+import { MatInput } from "@angular/material/input";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
-  selector: 'dash-steam-widget',
-  templateUrl: './steam-widget.component.html',
-  styleUrls: ['./steam-widget.component.scss', '../widget/widget.component.scss'],
+  selector: "dash-steam-widget",
+  templateUrl: "./steam-widget.component.html",
+  styleUrls: ["./steam-widget.component.scss", "../widget/widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
@@ -48,15 +48,15 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   public pageNumber = 0;
 
   public steamUserId?: string;
-  public searchFormControl = new FormControl('');
+  public searchFormControl = new FormControl("");
   public isPlayerDataLoaded = false;
   public areGamesLoaded = false;
 
   private ownedGames: IGameInfoResponse[] = [];
   private destroy$: Subject<unknown> = new Subject();
 
-  private ERROR_GETTING_PLAYER_DATA = 'Erreur lors de la récupération de vos informations Steam.';
-  private ERROR_GETTING_OWNED_GAMES = 'Erreur lors de la récupération de la liste des jeux.';
+  private ERROR_GETTING_PLAYER_DATA = "Erreur lors de la récupération de vos informations Steam.";
+  private ERROR_GETTING_OWNED_GAMES = "Erreur lors de la récupération de la liste des jeux.";
   private errorHandlerService = inject(ErrorHandlerService);
   private steamWidgetService = inject(SteamWidgetService);
 
@@ -125,7 +125,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   }
 
   public isFormValid(): boolean {
-    return (this.steamUserId ?? '').length > 0;
+    return (this.steamUserId ?? "").length > 0;
   }
 
   private getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {

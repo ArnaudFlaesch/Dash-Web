@@ -1,44 +1,44 @@
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
-import { provideHttpClient } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { environment } from '../../environments/environment';
-import { WidgetTypeEnum } from './../enums/WidgetTypeEnum';
-import { IWidgetConfig } from './../model/IWidgetConfig';
-import { AuthService } from './../services/auth.service/auth.service';
-import { ConfigService } from './../services/config.service/config.service';
-import { ErrorHandlerService } from './../services/error.handler.service';
-import { TabService } from './../services/tab.service/tab.service';
-import { ThemeService } from './../services/theme.service/theme.service';
-import { WidgetService } from './../services/widget.service/widget.service';
-import { HomeComponent } from './home.component';
+import { provideHttpClient } from "@angular/common/http";
+import { TestBed } from "@angular/core/testing";
+import { provideRouter } from "@angular/router";
+import { environment } from "../../environments/environment";
+import { WidgetTypeEnum } from "./../enums/WidgetTypeEnum";
+import { IWidgetConfig } from "./../model/IWidgetConfig";
+import { AuthService } from "./../services/auth.service/auth.service";
+import { ConfigService } from "./../services/config.service/config.service";
+import { ErrorHandlerService } from "./../services/error.handler.service";
+import { TabService } from "./../services/tab.service/tab.service";
+import { ThemeService } from "./../services/theme.service/theme.service";
+import { WidgetService } from "./../services/widget.service/widget.service";
+import { HomeComponent } from "./home.component";
 
-describe('HomeComponent', () => {
+describe("HomeComponent", () => {
   let component: HomeComponent;
   let httpTestingController: HttpTestingController;
 
-  const tabPath = '/tab/';
+  const tabPath = "/tab/";
 
   const tabData = [
-    { id: 1, label: 'Flux RSS', tabOrder: 1 },
-    { id: 2, label: 'Météo', tabOrder: 2 }
+    { id: 1, label: "Flux RSS", tabOrder: 1 },
+    { id: 2, label: "Météo", tabOrder: 2 }
   ];
 
   const firstTabWidgetData = [
     {
       id: 1,
       type: WidgetTypeEnum.RSS,
-      data: { url: 'url.rss.xml' },
+      data: { url: "url.rss.xml" },
       tabId: 1,
       widgetOrder: 1
     },
     {
       id: 2,
       type: WidgetTypeEnum.RSS,
-      data: { url: 'url.rss.xml' },
+      data: { url: "url.rss.xml" },
       tabId: 1,
       widgetOrder: 2
     }
@@ -50,7 +50,7 @@ describe('HomeComponent', () => {
       providers: [
         provideRouter([
           {
-            path: 'home',
+            path: "home",
             component: HomeComponent
           }
         ]),
@@ -74,7 +74,7 @@ describe('HomeComponent', () => {
     httpTestingController.verify();
   });
 
-  it('Should display two tabs with two widgets on the first one', () => {
+  it("Should display two tabs with two widgets on the first one", () => {
     expect(component.tabs).toEqual([]);
     const request = httpTestingController.expectOne(environment.backend_url + tabPath);
     request.flush(tabData);
@@ -96,7 +96,7 @@ describe('HomeComponent', () => {
     getSecondTabWidgetsRequest.flush([]);
   });
 
-  it('Should display two tabs then delete a widget and the second tab', () => {
+  it("Should display two tabs then delete a widget and the second tab", () => {
     const request = httpTestingController.expectOne(environment.backend_url + tabPath);
     request.flush(tabData);
     expect(component.tabs).toEqual(tabData);
@@ -113,7 +113,7 @@ describe('HomeComponent', () => {
     const deleteWidgetRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/deleteWidget?id=${widgetIdToDelete}`
     );
-    deleteWidgetRequest.flush(null, { status: 200, statusText: 'OK' });
+    deleteWidgetRequest.flush(null, { status: 200, statusText: "OK" });
     expect(component.activeWidgets.length).toEqual(1);
 
     // Delete second tab
@@ -122,18 +122,18 @@ describe('HomeComponent', () => {
     const deleteTabRequest = httpTestingController.expectOne(
       `${environment.backend_url}/tab/deleteTab?id=${tabIdToDelete}`
     );
-    deleteTabRequest.flush(null, { status: 200, statusText: 'OK' });
+    deleteTabRequest.flush(null, { status: 200, statusText: "OK" });
     expect(component.tabs.length).toEqual(1);
   });
 
-  it('Should delete the last tab and select the first after', () => {
+  it("Should delete the last tab and select the first after", () => {
     const tabsFromDatabase = [
-      { id: 1, label: 'Home', tabOrder: 1 },
-      { id: 2, label: 'RSS', tabOrder: 2 },
-      { id: 3, label: 'Weather', tabOrder: 3 }
+      { id: 1, label: "Home", tabOrder: 1 },
+      { id: 2, label: "RSS", tabOrder: 2 },
+      { id: 3, label: "Weather", tabOrder: 3 }
     ];
 
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + '/tab/');
+    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush(tabsFromDatabase);
 
     const getWidgetsRequest = httpTestingController.expectOne(
@@ -143,14 +143,14 @@ describe('HomeComponent', () => {
     expect(component.activeTab).toEqual(tabsFromDatabase[0].id);
   });
 
-  it('Should delete the first tab and select the second after', () => {
+  it("Should delete the first tab and select the second after", () => {
     const tabsFromDatabase = [
-      { id: 1, label: 'Home', tabOrder: 1 },
-      { id: 2, label: 'RSS', tabOrder: 2 },
-      { id: 3, label: 'Weather', tabOrder: 3 }
+      { id: 1, label: "Home", tabOrder: 1 },
+      { id: 2, label: "RSS", tabOrder: 2 },
+      { id: 3, label: "Weather", tabOrder: 3 }
     ];
 
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + '/tab/');
+    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush(tabsFromDatabase);
 
     const getWidgetsRequest = httpTestingController.expectOne(
@@ -173,14 +173,14 @@ describe('HomeComponent', () => {
     expect(component.activeTab).toEqual(component.tabs[0].id);
   });
 
-  it('Should delete the active tab and select the first one after', () => {
+  it("Should delete the active tab and select the first one after", () => {
     const tabsFromDatabase = [
-      { id: 1, label: 'Home', tabOrder: 1 },
-      { id: 2, label: 'RSS', tabOrder: 2 },
-      { id: 3, label: 'Weather', tabOrder: 3 }
+      { id: 1, label: "Home", tabOrder: 1 },
+      { id: 2, label: "RSS", tabOrder: 2 },
+      { id: 3, label: "Weather", tabOrder: 3 }
     ];
 
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + '/tab/');
+    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush(tabsFromDatabase);
 
     const getWidgetsRequest = httpTestingController.expectOne(
@@ -210,10 +210,10 @@ describe('HomeComponent', () => {
     expect(component.activeTab).toEqual(tabsFromDatabase[0].id);
   });
 
-  it('Should delete a tab', () => {
-    const tabsFromDatabase = [{ id: 1, label: 'Home', tabOrder: 1 }];
+  it("Should delete a tab", () => {
+    const tabsFromDatabase = [{ id: 1, label: "Home", tabOrder: 1 }];
 
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + '/tab/');
+    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush(tabsFromDatabase);
 
     const getWidgetsRequest = httpTestingController.expectOne(
@@ -229,14 +229,14 @@ describe('HomeComponent', () => {
     deleteLastTabRequest.flush(null);
   });
 
-  it('Should switch between light and dark mode', () => {
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + '/tab/');
+  it("Should switch between light and dark mode", () => {
+    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush([]);
     component.toggleTheme(true);
-    expect(localStorage.getItem('preferredTheme')).toEqual('dark');
+    expect(localStorage.getItem("preferredTheme")).toEqual("dark");
     component.toggleTheme(true);
-    expect(localStorage.getItem('preferredTheme')).toEqual('dark');
+    expect(localStorage.getItem("preferredTheme")).toEqual("dark");
     component.toggleTheme(false);
-    expect(localStorage.getItem('preferredTheme')).toEqual('light');
+    expect(localStorage.getItem("preferredTheme")).toEqual("light");
   });
 });

@@ -1,26 +1,26 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ChartData, ChartTypeRegistry } from 'chart.js';
-import { format, isAfter } from 'date-fns';
+import { HttpErrorResponse } from "@angular/common/http";
+import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ChartData, ChartTypeRegistry } from "chart.js";
+import { format, isAfter } from "date-fns";
 
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { fr } from 'date-fns/locale';
-import { firstValueFrom } from 'rxjs';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from './IStrava';
-import { StravaActivitiesComponent } from './strava-activities/strava-activities.component';
-import { StravaWidgetService } from './strava.widget.service';
+import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
+import { fr } from "date-fns/locale";
+import { firstValueFrom } from "rxjs";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from "./IStrava";
+import { StravaActivitiesComponent } from "./strava-activities/strava-activities.component";
+import { StravaWidgetService } from "./strava.widget.service";
 
-import { BaseChartDirective } from 'ng2-charts';
-import { WidgetComponent } from '../widget/widget.component';
+import { BaseChartDirective } from "ng2-charts";
+import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
-  selector: 'dash-strava-widget',
-  templateUrl: './strava-widget.component.html',
-  styleUrls: ['./strava-widget.component.scss'],
+  selector: "dash-strava-widget",
+  templateUrl: "./strava-widget.component.html",
+  styleUrls: ["./strava-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
@@ -45,16 +45,16 @@ export class StravaWidgetComponent implements OnInit {
 
   private STRAVA_CLIENT_ID = 30391;
   private loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
-  private STRAVA_ATHLETE_URL = 'https://www.strava.com/athletes/';
+  private STRAVA_ATHLETE_URL = "https://www.strava.com/athletes/";
 
-  private STORAGE_STRAVA_TOKEN_KEY = 'strava_token';
-  private STORAGE_STRAVA_REFRESH_TOKEN_KEY = 'strava_refresh_token';
-  private STORAGE_TOKEN_EXPIRATION_DATE_KEY = 'strava_token_expires_at';
+  private STORAGE_STRAVA_TOKEN_KEY = "strava_token";
+  private STORAGE_STRAVA_REFRESH_TOKEN_KEY = "strava_refresh_token";
+  private STORAGE_TOKEN_EXPIRATION_DATE_KEY = "strava_token_expires_at";
 
-  private ERROR_GETTING_TOKEN = 'Erreur lors de la connexion à Strava.';
+  private ERROR_GETTING_TOKEN = "Erreur lors de la connexion à Strava.";
   private ERROR_NO_REFRESH_TOKEN = "Vous n'êtes pas connecté à Strava.";
-  private ERROR_GETTING_ATHLETE_DATA = 'Erreur lors de la récupération de vos informations Strava.';
-  private ERROR_GETTING_ACTIVITIES = 'Erreur lors de la récupération des activités Strava.';
+  private ERROR_GETTING_ATHLETE_DATA = "Erreur lors de la récupération de vos informations Strava.";
+  private ERROR_GETTING_ACTIVITIES = "Erreur lors de la récupération des activités Strava.";
 
   private stravaWidgetService = inject(StravaWidgetService);
   private errorHandlerService = inject(ErrorHandlerService);
@@ -64,7 +64,7 @@ export class StravaWidgetComponent implements OnInit {
   public async ngOnInit(): Promise<void> {
     setTimeout(async () => {
       this.getAthleteData();
-      const apiCode = this.route.snapshot.queryParamMap.get('code');
+      const apiCode = this.route.snapshot.queryParamMap.get("code");
       if (apiCode) {
         await this.getToken(apiCode);
       }
@@ -118,7 +118,7 @@ export class StravaWidgetComponent implements OnInit {
     return [...this.activities]
       .sort((activityA, activityB) => this.sortByActivityDate(activityA, activityB, false))
       .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
-        const month = format(new Date(activity.startDateLocal), 'yyyy-MM');
+        const month = format(new Date(activity.startDateLocal), "yyyy-MM");
         if (!activitiesByMonth[month]) {
           activitiesByMonth[month] = [];
         }
@@ -158,15 +158,15 @@ export class StravaWidgetComponent implements OnInit {
     const activitiesStats = this.getStatsFromActivities();
     this.activitiesChartData = {
       labels: activitiesStats.map((data: IActivitiesStatsByMonth) =>
-        format(data.x, 'MMM yyyy', { locale: fr })
+        format(data.x, "MMM yyyy", { locale: fr })
       ),
       datasets: [
         {
-          label: 'Distance (kms)',
+          label: "Distance (kms)",
           data: activitiesStats.map((act) => act.y)
         },
         {
-          label: 'Activités',
+          label: "Activités",
           data: Object.keys(this.getActivitiesByMonth()).map(
             (month) => this.getActivitiesByMonth()[month].length
           )
@@ -176,7 +176,7 @@ export class StravaWidgetComponent implements OnInit {
   }
 
   public loginToStrava(): void {
-    window.open(this.loginToStravaUrl, '_self');
+    window.open(this.loginToStravaUrl, "_self");
   }
 
   public getNextActivitiesPage(): void {
@@ -198,7 +198,7 @@ export class StravaWidgetComponent implements OnInit {
   }
 
   private async refreshPage(): Promise<void> {
-    await this.router.navigate(['/']);
+    await this.router.navigate(["/"]);
   }
 
   private getActivities(): void {

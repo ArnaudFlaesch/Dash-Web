@@ -7,24 +7,24 @@ import {
   Output,
   TemplateRef,
   inject
-} from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { ModeEnum } from '../../enums/ModeEnum';
-import { WidgetService } from '../../services/widget.service/widget.service';
+} from "@angular/core";
+import { Subject, takeUntil } from "rxjs";
+import { ModeEnum } from "../../enums/ModeEnum";
+import { WidgetService } from "../../services/widget.service/widget.service";
 
 @Component({
-  selector: 'dash-abstract-widget',
-  templateUrl: './abstract-widget.component.html',
+  selector: "dash-abstract-widget",
+  templateUrl: "./abstract-widget.component.html",
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true
 })
 export class AbstractWidgetComponent {
   protected widgetService = inject(WidgetService);
 
-  @ContentChild('body', { static: false })
+  @ContentChild("body", { static: false })
   body: TemplateRef<unknown> | null = null;
 
-  @ContentChild('editComponent', { static: false })
+  @ContentChild("editComponent", { static: false })
   editComponent: TemplateRef<unknown> | null = null;
 
   @Input() isFormValid = false;
@@ -38,7 +38,7 @@ export class AbstractWidgetComponent {
   private destroy$: Subject<unknown> = new Subject();
 
   constructor() {
-    const widgetId = inject<number>('widgetId' as never);
+    const widgetId = inject<number>("widgetId" as never);
 
     this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
     this.widgetId = widgetId;

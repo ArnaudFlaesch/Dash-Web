@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { DeleteWidgetComponent } from './delete-widget.component';
+import { TestBed } from "@angular/core/testing";
+import { DeleteWidgetComponent } from "./delete-widget.component";
 
-describe('DeleteWidgetComponent', () => {
+describe("DeleteWidgetComponent", () => {
   let component: DeleteWidgetComponent;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('DeleteWidgetComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('Should create the component', () => {
+  it("Should create the component", () => {
     expect(component).toBeTruthy();
   });
 });

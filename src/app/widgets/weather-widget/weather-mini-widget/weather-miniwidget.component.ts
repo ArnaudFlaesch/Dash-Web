@@ -1,20 +1,20 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ErrorHandlerService } from '../../../../app/services/error.handler.service';
-import { IWeatherAPIResponse, IForecast, ICity } from '../IWeather';
-import { WeatherWidgetService } from '../weather.widget.service';
-import { InitialUppercasePipe } from '../../../pipes/initial.uppercase.pipe';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ErrorHandlerService } from "../../../../app/services/error.handler.service";
+import { IWeatherAPIResponse, IForecast, ICity } from "../IWeather";
+import { WeatherWidgetService } from "../weather.widget.service";
+import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
 
-import { FormsModule } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MiniWidgetComponent } from '../../mini-widget/mini-widget.component';
+import { FormsModule } from "@angular/forms";
+import { MatInput } from "@angular/material/input";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
 
 @Component({
-  selector: 'dash-weather-miniwidget',
-  templateUrl: './weather-miniwidget.component.html',
-  styleUrls: ['./weather-miniwidget.component.scss'],
+  selector: "dash-weather-miniwidget",
+  templateUrl: "./weather-miniwidget.component.html",
+  styleUrls: ["./weather-miniwidget.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
@@ -41,7 +41,7 @@ export class WeatherMiniWidgetComponent {
   public selectedDayForecast: Date = new Date();
 
   private ERROR_GETTING_WEATHER_DATA =
-    'Erreur lors de la récupération des données météorologiques.';
+    "Erreur lors de la récupération des données météorologiques.";
 
   public refreshWidget(): void {
     if (this.city) {
@@ -61,7 +61,7 @@ export class WeatherMiniWidgetComponent {
   }
 
   public isFormValid(): boolean {
-    return (this.city ?? '').length > 0;
+    return (this.city ?? "").length > 0;
   }
 
   public isWidgetLoaded(): boolean {

@@ -1,18 +1,18 @@
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from "@angular/forms";
 
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
-import { environment } from '../../environments/environment';
-import { HomeComponent } from '../home/home.component';
-import { AuthService } from './../services/auth.service/auth.service';
-import { ErrorHandlerService } from './../services/error.handler.service';
-import { LoginComponent } from './login.component';
+import { provideHttpClient } from "@angular/common/http";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { provideRouter } from "@angular/router";
+import { environment } from "../../environments/environment";
+import { HomeComponent } from "../home/home.component";
+import { AuthService } from "./../services/auth.service/auth.service";
+import { ErrorHandlerService } from "./../services/error.handler.service";
+import { LoginComponent } from "./login.component";
 
-describe('LoginComponent', () => {
+describe("LoginComponent", () => {
   let component: LoginComponent;
   let httpTestingController: HttpTestingController;
 
@@ -22,11 +22,11 @@ describe('LoginComponent', () => {
       providers: [
         provideRouter([
           {
-            path: 'login',
+            path: "login",
             component: LoginComponent
           },
           {
-            path: 'home',
+            path: "home",
             component: HomeComponent
           }
         ]),
@@ -46,40 +46,40 @@ describe('LoginComponent', () => {
     httpTestingController.verify();
   });
 
-  it('Should prevent login', () => {
-    const loginSpy = jest.spyOn(component.authService, 'login');
-    expect(component.inputUsername).toBe('');
-    expect(component.inputPassword).toBe('');
+  it("Should prevent login", () => {
+    const loginSpy = jest.spyOn(component.authService, "login");
+    expect(component.inputUsername).toBe("");
+    expect(component.inputPassword).toBe("");
     component.handleLogin();
     expect(loginSpy).toHaveBeenCalledTimes(0);
   });
 
-  it('Should login as demo', () => {
+  it("Should login as demo", () => {
     const userData = {
-      accessToken: 'accessToken',
+      accessToken: "accessToken",
       id: 2,
-      username: 'admintest',
-      email: 'admin@email.com',
-      roles: ['ROLE_ADMIN'],
-      tokenType: 'Bearer'
+      username: "admintest",
+      email: "admin@email.com",
+      roles: ["ROLE_ADMIN"],
+      tokenType: "Bearer"
     };
-    const loginSpy = jest.spyOn(component.authService, 'login');
+    const loginSpy = jest.spyOn(component.authService, "login");
     component.loginAsDemoAccount();
-    const request = httpTestingController.expectOne(environment.backend_url + '/auth/login');
+    const request = httpTestingController.expectOne(environment.backend_url + "/auth/login");
     request.flush(userData);
-    expect(loginSpy).toHaveBeenCalledWith('demo', 'demo');
+    expect(loginSpy).toHaveBeenCalledWith("demo", "demo");
   });
 
-  it('Should fail to login with wrong credentials', () => {
-    const userName = 'userName';
+  it("Should fail to login with wrong credentials", () => {
+    const userName = "userName";
 
     component.inputUsername = userName;
-    component.inputPassword = 'password';
+    component.inputPassword = "password";
     component.handleLogin();
-    const request = httpTestingController.expectOne(environment.backend_url + '/auth/login');
-    request.flush('Bad credentials', {
+    const request = httpTestingController.expectOne(environment.backend_url + "/auth/login");
+    request.flush("Bad credentials", {
       status: 400,
-      statusText: 'Bad Request'
+      statusText: "Bad Request"
     });
   });
 });

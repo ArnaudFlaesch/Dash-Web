@@ -1,20 +1,20 @@
-import { provideHttpClient } from '@angular/common/http';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { addDays, getTime } from 'date-fns';
-import { advanceTo } from 'jest-date-mock';
+import { provideHttpClient } from "@angular/common/http";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { addDays, getTime } from "date-fns";
+import { advanceTo } from "jest-date-mock";
 
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { environment } from '../../../environments/environment';
-import { ErrorHandlerService } from '../../services/error.handler.service';
-import { IActivity, IAthlete, ITokenData } from './IStrava';
-import { StravaWidgetComponent } from './strava-widget.component';
-import { StravaWidgetService } from './strava.widget.service';
-import { WidgetService } from '../../services/widget.service/widget.service';
-import { HomeComponent } from '../../home/home.component';
-import { provideRouter } from '@angular/router';
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { environment } from "../../../environments/environment";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { IActivity, IAthlete, ITokenData } from "./IStrava";
+import { StravaWidgetComponent } from "./strava-widget.component";
+import { StravaWidgetService } from "./strava.widget.service";
+import { WidgetService } from "../../services/widget.service/widget.service";
+import { HomeComponent } from "../../home/home.component";
+import { provideRouter } from "@angular/router";
 
-describe('StravaWidgetComponent', () => {
+describe("StravaWidgetComponent", () => {
   let component: StravaWidgetComponent;
   let httpTestingController: HttpTestingController;
 
@@ -24,7 +24,7 @@ describe('StravaWidgetComponent', () => {
       providers: [
         provideRouter([
           {
-            path: 'home',
+            path: "home",
             component: HomeComponent
           }
         ]),
@@ -33,7 +33,7 @@ describe('StravaWidgetComponent', () => {
         StravaWidgetService,
         ErrorHandlerService,
         WidgetService,
-        { provide: 'widgetId', useValue: 1 }
+        { provide: "widgetId", useValue: 1 }
       ]
     }).compileComponents();
 
@@ -50,53 +50,53 @@ describe('StravaWidgetComponent', () => {
     httpTestingController.verify();
   });
 
-  const STRAVA_TOKEN = 'FAKE_TOKEN';
-  const STRAVA_REFRESH_TOKEN = 'FAKE_REFRESH_TOKEN';
+  const STRAVA_TOKEN = "FAKE_TOKEN";
+  const STRAVA_REFRESH_TOKEN = "FAKE_REFRESH_TOKEN";
   const TOKEN_EXPIRATION_DATE = getTime(addDays(new Date(), 4)).toString();
 
-  const STRAVA_TOKEN_KEY = 'strava_token';
-  const STRAVA_REFRESH_TOKEN_KEY = 'strava_refresh_token';
-  const STRAVA_TOKEN_EXPIRATION_DATE_KEY = 'strava_token_expires_at';
+  const STRAVA_TOKEN_KEY = "strava_token";
+  const STRAVA_REFRESH_TOKEN_KEY = "strava_refresh_token";
+  const STRAVA_TOKEN_EXPIRATION_DATE_KEY = "strava_token_expires_at";
 
   advanceTo(new Date(1644882400)); // 15/02/2022
 
   const athleteData = {
     id: 25345795,
-    username: 'aflaesch',
+    username: "aflaesch",
     resourceState: 2,
-    firstname: 'Arnaud',
-    lastname: 'Flaesch',
-    city: 'Paris',
-    state: '',
-    country: 'France',
-    sex: 'M',
+    firstname: "Arnaud",
+    lastname: "Flaesch",
+    city: "Paris",
+    state: "",
+    country: "France",
+    sex: "M",
     profileMedium:
-      'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg',
-    profile: 'https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg'
+      "https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/medium.jpg",
+    profile: "https://dgalywyr863hv.cloudfront.net/pictures/athletes/25345795/20393158/1/large.jpg"
   } as IAthlete;
 
   const activitiesData: IActivity[] = Array(25).fill({
     resourceState: 2,
     athlete: { id: 25345795, resourceState: 0 },
-    name: 'Evening Run',
+    name: "Evening Run",
     distance: 10704.7,
     movingTime: 2958,
     elapsedTime: 3118,
     totalElevationGain: 49.2,
-    type: 'Run',
+    type: "Run",
     workoutType: 0,
     id: 7.993416249e9,
-    externalId: 'ad38998a-3d06-41ee-9e9d-b6bb7c143edf-activity.fit',
+    externalId: "ad38998a-3d06-41ee-9e9d-b6bb7c143edf-activity.fit",
     uploadId: 8.550990828e9,
-    startDate: '2022-10-20T16:34:39Z',
-    startDateLocal: '2022-10-20T18:34:39Z',
-    timezone: '(GMT+01:00) Europe/Paris',
+    startDate: "2022-10-20T16:34:39Z",
+    startDateLocal: "2022-10-20T18:34:39Z",
+    timezone: "(GMT+01:00) Europe/Paris",
     utcOffset: 7200.0,
     startLatlng: [48, 2],
     endLatlng: [48, 2],
     locationCity: undefined,
     locationState: undefined,
-    locationCountry: 'France',
+    locationCountry: "France",
     startLatitude: 0,
     startLongitude: 0,
     achievementCount: 1,
@@ -104,14 +104,14 @@ describe('StravaWidgetComponent', () => {
     commentCount: 0,
     athleteCount: 1,
     photoCount: 0,
-    map: { id: 'a7993416249', summaryPolyline: '', resourceState: 0 },
+    map: { id: "a7993416249", summaryPolyline: "", resourceState: 0 },
     trainer: false,
     commute: false,
     manual: false,
     private: false,
-    visibility: 'everyone',
+    visibility: "everyone",
     flagged: false,
-    gearId: 'g11571174',
+    gearId: "g11571174",
     fromAcceptedTag: false,
     uploadIdStr: 8.550990828e9,
     averageSpeed: 3.619,
@@ -126,11 +126,11 @@ describe('StravaWidgetComponent', () => {
     hasKudoed: false
   });
 
-  it('Should display the interface to log in', () => {
+  it("Should display the interface to log in", () => {
     expect(component.isUserLoggedIn()).toBe(false);
   });
 
-  it('should create a widget with a token and a refresh token', () => {
+  it("should create a widget with a token and a refresh token", () => {
     window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
     window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
@@ -151,7 +151,7 @@ describe('StravaWidgetComponent', () => {
     expect(component.isWidgetLoaded).toEqual(true);
     expect(component.activities.length).toEqual(25);
     expect(component.getActivitiesByMonth()).toEqual({
-      '2022-10': [
+      "2022-10": [
         10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047,
         10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047,
         10.7047, 10.7047, 10.7047, 10.7047, 10.7047
@@ -176,28 +176,28 @@ describe('StravaWidgetComponent', () => {
     expect(component.pageNumber).toEqual(1);
   });
 
-  it('Should display athlete url', () => {
+  it("Should display athlete url", () => {
     expect(component.getAthleteProfileUrl(athleteData.id)).toEqual(
-      'https://www.strava.com/athletes/' + athleteData.id
+      "https://www.strava.com/athletes/" + athleteData.id
     );
   });
 
-  it('Should get refresh token', () => {
+  it("Should get refresh token", () => {
     window.localStorage.removeItem(STRAVA_TOKEN_KEY);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
     component.getUserData();
     const response = {
-      token_type: 'Bearer',
-      expiresAt: '1644882561',
+      token_type: "Bearer",
+      expiresAt: "1644882561",
       expiresIn: 10384,
-      refreshToken: 'REFRESH_TOKEN',
-      accessToken: 'TOKEN',
+      refreshToken: "REFRESH_TOKEN",
+      accessToken: "TOKEN",
       athlete: {
         id: 25345795,
-        username: 'af',
+        username: "af",
         resource_state: 2,
-        firstname: 'A',
-        lastname: 'F'
+        firstname: "A",
+        lastname: "F"
       }
     } as unknown as ITokenData;
 

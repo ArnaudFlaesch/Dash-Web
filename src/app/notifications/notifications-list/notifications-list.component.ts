@@ -1,17 +1,17 @@
-import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { INotificationToDisplay, NotificationTypeEnum } from '../../model/INotification';
-import { DateFormatPipe } from '../../pipes/date-format.pipe';
-import { MatBadge } from '@angular/material/badge';
-import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
+import { NgClass } from "@angular/common";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import { MatIconButton, MatMiniFabButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
+import { INotificationToDisplay, NotificationTypeEnum } from "../../model/INotification";
+import { DateFormatPipe } from "../../pipes/date-format.pipe";
+import { MatBadge } from "@angular/material/badge";
+import { MatMenuTrigger, MatMenu } from "@angular/material/menu";
 
 @Component({
-  selector: 'dash-notifications-list',
-  templateUrl: './notifications-list.component.html',
-  styleUrl: './notifications-list.component.scss',
+  selector: "dash-notifications-list",
+  templateUrl: "./notifications-list.component.html",
+  styleUrl: "./notifications-list.component.scss",
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   imports: [
