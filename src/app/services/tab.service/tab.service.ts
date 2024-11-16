@@ -7,7 +7,7 @@ import authorizationBearer from "../authorizationBearer/authorizationBearer";
 
 @Injectable()
 export class TabService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public getTabs(): Observable<ITab[]> {
     return this.http.get<ITab[]>(`${environment.backend_url}/tab/`, {

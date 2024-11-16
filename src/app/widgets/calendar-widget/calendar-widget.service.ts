@@ -7,7 +7,7 @@ import { ICalendarData } from "./ICalendarData";
 
 @Injectable()
 export class CalendarWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public getCalendarEvents(calendarUrl: string): Observable<ICalendarData[]> {
     return this.http.post<ICalendarData[]>(

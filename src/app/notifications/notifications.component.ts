@@ -39,7 +39,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   public unreadNotificationsForBadge = 0;
   public notificationTypeEnum = NotificationTypeEnum;
 
-  private destroy$: Subject<unknown> = new Subject();
+  private readonly destroy$: Subject<unknown> = new Subject();
 
   private readonly notificationService = inject(NotificationService);
   private readonly widgetService = inject(WidgetService);

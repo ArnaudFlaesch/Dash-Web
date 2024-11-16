@@ -35,7 +35,7 @@ export class AbstractWidgetComponent {
   public widgetId: number;
   public mode: ModeEnum;
 
-  private destroy$: Subject<unknown> = new Subject();
+  private readonly destroy$: Subject<unknown> = new Subject();
 
   constructor() {
     const widgetId = inject<number>("widgetId" as never);

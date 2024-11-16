@@ -42,7 +42,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
   private miniWidgetTargets: QueryList<ViewContainerRef> | undefined;
 
   public miniWidgetList: IMiniWidgetConfig[] = [];
-  private destroy$: Subject<unknown> = new Subject();
+  private readonly destroy$: Subject<unknown> = new Subject();
 
   private readonly ERROR_MESSAGE_GET_MINI_WIDGETS =
     "Erreur lors de la récupération des mini widgets.";

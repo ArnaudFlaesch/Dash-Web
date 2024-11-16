@@ -6,7 +6,7 @@ import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class RssWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public fetchDataFromRssFeed(url: string): Observable<string> {
     return this.http.get<string>(`${environment.backend_url}/rssWidget/?url=${url}`, {

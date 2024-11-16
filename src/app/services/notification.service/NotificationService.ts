@@ -8,7 +8,7 @@ import { IPage } from "../../../app/model/IPage";
 
 @Injectable()
 export class NotificationService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public getNotifications(): Observable<IPage<INotification>> {
     return this.http.get<IPage<INotification>>(`${environment.backend_url}/notifications/`, {

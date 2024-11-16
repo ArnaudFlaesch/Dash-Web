@@ -7,7 +7,7 @@ import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
 
 @Injectable()
 export class WeatherWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public fetchWeatherData(cityName: string): Observable<IWeatherAPIResponse> {
     return this.http.get<IWeatherAPIResponse>(`${environment.backend_url}/weatherWidget/weather`, {

@@ -7,7 +7,7 @@ import { IWidgetConfig } from "./../../model/IWidgetConfig";
 
 @Injectable()
 export class WidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public _widgetDeletedEvent: ReplaySubject<number> = new ReplaySubject(0);
   public _refreshWidgetsAction: ReplaySubject<unknown> = new ReplaySubject(0);

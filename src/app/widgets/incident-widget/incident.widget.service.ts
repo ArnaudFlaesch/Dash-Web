@@ -8,7 +8,7 @@ import { IIncident, IIncidentStreak } from "./IIncident";
 
 @Injectable()
 export class IncidentWidgetService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   public getIncidentConfigForWidget(widgetId: number): Observable<IIncident> {
     return this.http.get<IIncident>(
