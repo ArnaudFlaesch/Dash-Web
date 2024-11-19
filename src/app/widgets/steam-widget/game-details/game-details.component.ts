@@ -3,8 +3,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
-  inject
+  inject,
+  input
 } from "@angular/core";
 import {
   MatExpansionPanel,
@@ -32,9 +32,9 @@ import { SteamWidgetService } from "./../steam.widget.service";
   ]
 })
 export class GameDetailsComponent {
-  @Input() public gameInfo: IGameInfoDisplay | undefined;
-  @Input() public steamUserId: string | undefined;
-  @Input() public profileUrl: string | undefined;
+  public readonly gameInfo = input.required<IGameInfoDisplay>();
+  public readonly steamUserId = input.required<string>();
+  public readonly profileUrl = input.required<string>();
 
   public achievements: IAchievement[] = [];
   public completedAchievements: IAchievement[] = [];

@@ -209,11 +209,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (response) => {
         console.info("Configuration exportée");
         const url = window.URL.createObjectURL(new Blob([response]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "dashboardConfig.json");
-        document.body.innerText += link;
-        link.click();
+        const downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.setAttribute("download", "dashboardConfig.json");
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        URL.revokeObjectURL(downloadLink.href);
+        downloadLink.remove();
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_EXPORT_CONFIGURATION)

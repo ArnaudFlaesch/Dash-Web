@@ -1,6 +1,6 @@
 <div id="widget-list" cdkDropList (cdkDropListDropped)="drop($event)">
-  @for (widget of this.widgetList; track widget.id) {
-    <div class="widget-container" cdkDrag cdkDragBoundary="#widget-list" [cdkDragDisabled]="!toggleEditMode">
+  @for (widget of this.widgetList(); track widget.id) {
+    <div class="widget-container" cdkDrag cdkDragBoundary="#widget-list" [cdkDragDisabled]="!toggleEditMode()">
       <ng-template #dynamic></ng-template>
     </div>
   }

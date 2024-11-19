@@ -1,5 +1,5 @@
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "./../model/Workout";
-import { ChangeDetectionStrategy, Component, Input, SimpleChanges, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, SimpleChanges, inject, input } from "@angular/core";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { WorkoutWidgetService } from "../workout.widget.service";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -18,8 +18,8 @@ import { NgClass } from "@angular/common";
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
-  @Input() public workoutTypes: IWorkoutType[] = [];
-  @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
+  public readonly workoutTypes = input.required<IWorkoutType[]>();
+  public readonly currentWorkoutSessionToEdit = input.required<IWorkoutSession>();
 
   public workoutExercises: IWorkoutExercise[] = [];
 
@@ -93,9 +93,10 @@ export class WorkoutSessionEditComponent {
 
   private updateNumberOfReps(workoutTypeId: number, numberOfRepsToAdd: number): void {
     const oldNumberOfReps = this.getExerciceNumberOfReps(workoutTypeId);
-    if (this.currentWorkoutSessionToEdit) {
+    const currentWorkoutSessionToEdit = this.currentWorkoutSessionToEdit();
+    if (currentWorkoutSessionToEdit) {
       this.updateWorkoutExercise(
-        this.currentWorkoutSessionToEdit.id,
+        currentWorkoutSessionToEdit.id,
         workoutTypeId,
         oldNumberOfReps + numberOfRepsToAdd
       );

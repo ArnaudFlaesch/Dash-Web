@@ -2,15 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  input
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { MatFormField, MatLabel } from "@angular/material/form-field";
-import { MatIcon } from "@angular/material/icon";
-import { MatInput } from "@angular/material/input";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { format, isToday, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -25,10 +22,6 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   standalone: true,
   imports: [
     InitialUppercasePipe,
-    MatIcon,
-    MatFormField,
-    MatLabel,
-    MatInput,
     FormsModule,
     WeatherTodayComponent,
     MatButton,
@@ -41,9 +34,9 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   styleUrl: "./weather-widget-view.component.scss"
 })
 export class WeatherWidgetViewComponent implements OnChanges {
-  @Input() public weather: IWeatherAPIResponse | undefined;
-  @Input() public forecastResponse: IForecast[] = [];
-  @Input() public cityData: ICity | undefined;
+  public readonly weather = input.required<IWeatherAPIResponse>();
+  public readonly forecastResponse = input<IForecast[]>([]);
+  public readonly cityData = input.required<ICity>();
 
   public displayAllForecast = false;
   public forecastToDisplay: IForecast[] = [];
@@ -52,7 +45,7 @@ export class WeatherWidgetViewComponent implements OnChanges {
   public forecastMode = ForecastMode.DAY;
   private selectedDayForecast: Date = new Date();
 
-  private dateUtils = inject(DateUtilsService);
+  private readonly dateUtils = inject(DateUtilsService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["forecastResponse"]) {
@@ -72,9 +65,6 @@ export class WeatherWidgetViewComponent implements OnChanges {
   }
 
   public isSelectedDay(date: Date): boolean {
-    console.log(this.forecastMode);
-    console.log(this.selectedDayForecast.getDay());
-    console.log(date.getDay());
     return (
       this.forecastMode === ForecastMode.DAY && this.selectedDayForecast.getDay() === date.getDay()
     );
@@ -98,8 +88,9 @@ export class WeatherWidgetViewComponent implements OnChanges {
   }
 
   public updateForecastData(): void {
-    if (this.cityData) {
-      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse);
+    const cityData = this.cityData();
+    if (cityData) {
+      this.forecastToDisplay = this.filterForecastByMode(cityData, this.forecastResponse());
     }
   }
 

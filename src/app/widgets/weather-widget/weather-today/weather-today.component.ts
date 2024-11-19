@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
 import { IWeatherAPIResponse } from "../IWeather";
 import { WeatherWidgetService } from "../weather.widget.service";
@@ -15,11 +15,10 @@ import { MatTooltip } from "@angular/material/tooltip";
   imports: [MatTooltip, MatIcon, InitialUppercasePipe]
 })
 export class WeatherTodayComponent {
-  private weatherWidgetService = inject(WeatherWidgetService);
+  private readonly weatherWidgetService = inject(WeatherWidgetService);
   dateUtils = inject(DateUtilsService);
 
-  @Input()
-  public weather: IWeatherAPIResponse | undefined;
+  public readonly weather = input.required<IWeatherAPIResponse>();
 
   public getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getIconFromWeatherApi(icon);

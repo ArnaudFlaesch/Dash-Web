@@ -1,12 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ContentChild,
-  EventEmitter,
-  Input,
-  Output,
   TemplateRef,
-  inject
+  inject,
+  input,
+  output,
+  contentChild
 } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 import { ModeEnum } from "../../enums/ModeEnum";
@@ -21,16 +20,14 @@ import { WidgetService } from "../../services/widget.service/widget.service";
 export class AbstractWidgetComponent {
   protected widgetService = inject(WidgetService);
 
-  @ContentChild("body", { static: false })
-  body: TemplateRef<unknown> | null = null;
+  readonly body = contentChild.required<TemplateRef<unknown> | null>("body");
 
-  @ContentChild("editComponent", { static: false })
-  editComponent: TemplateRef<unknown> | null = null;
+  readonly editComponent = contentChild.required<TemplateRef<unknown> | null>("editComponent");
 
-  @Input() isFormValid = false;
-  @Input() isWidgetLoaded = false;
-  @Input() widgetData: Record<string, unknown> | undefined;
-  @Output() refreshWidgetAction = new EventEmitter();
+  readonly isFormValid = input(false);
+  readonly isWidgetLoaded = input(false);
+  readonly widgetData = input<Record<string, unknown>>();
+  readonly refreshWidgetAction = output();
 
   public widgetId: number;
   public mode: ModeEnum;
@@ -40,12 +37,12 @@ export class AbstractWidgetComponent {
   constructor() {
     const widgetId = inject<number>("widgetId" as never);
 
-    this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
+    this.mode = this.widgetData() ? ModeEnum.READ : ModeEnum.EDIT;
     this.widgetId = widgetId;
   }
 
   ngOnInit(): void {
-    this.mode = this.widgetData ? ModeEnum.READ : ModeEnum.EDIT;
+    this.mode = this.widgetData() ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
     this.widgetService.refreshWidgetsAction.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => this.refreshWidget()
@@ -58,17 +55,17 @@ export class AbstractWidgetComponent {
   }
 
   public refreshWidget(): void {
-    if (this.isFormValid) {
+    if (this.isFormValid()) {
       this.refreshWidgetAction.emit();
     }
   }
 
   public toEditMode(): void {
-    this.mode = this.editComponent ? ModeEnum.EDIT : this.mode;
+    this.mode = this.editComponent() ? ModeEnum.EDIT : this.mode;
   }
 
   public toReadMode(): void {
-    if (this.widgetData) {
+    if (this.widgetData()) {
       this.mode = ModeEnum.READ;
     } else {
       this.toEditMode();

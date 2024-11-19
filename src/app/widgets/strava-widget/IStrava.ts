@@ -1,16 +1,16 @@
-export interface IActivitiesStatsByMonth {
+export type IActivitiesStatsByMonth = {
   x: Date;
   y: number;
-}
+};
 
-export interface ITokenData {
+export type ITokenData = {
   accessToken: string;
   refreshToken: string;
   expiresAt: string;
   athlete: IAthlete;
-}
+};
 
-export interface IAthlete {
+export type IAthlete = {
   id: number;
   username: string;
   resourceState: number;
@@ -27,9 +27,9 @@ export interface IAthlete {
   badgeTypeId: number;
   profileMedium: string;
   profile: string;
-}
+};
 
-export interface IActivity {
+export type IActivity = {
   resourceState: number;
   athlete: {
     id: number;
@@ -85,4 +85,4 @@ export interface IActivity {
   prCount: number;
   totalPhotoCount: number;
   hasKudoed: boolean;
-}
+};

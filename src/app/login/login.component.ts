@@ -12,7 +12,7 @@ import { ErrorHandlerService } from "./../services/error.handler.service";
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   imports: [RouterLink, FormsModule, MatButton, MatProgressSpinner]
 })
 export class LoginComponent {
