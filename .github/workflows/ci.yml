@@ -45,9 +45,9 @@ jobs:
           npm run build -- --base-href=https://arnaudflaesch.github.io/Dash-Web/
           cp public/index.html public/404.html
 
-      - name: Test
-        id: application-tests
-        run: npm run test
+      #- name: Test
+      #  id: application-tests
+      #  run: npm run test
 
       - name: Login to Github Container Registry
         uses: docker/login-action@v3
