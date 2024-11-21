@@ -6,9 +6,10 @@ import {
   Injector,
   OnDestroy,
   OnInit,
+  QueryList,
+  ViewChildren,
   ViewContainerRef,
-  inject,
-  viewChildren
+  inject
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 
@@ -37,7 +38,8 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
   private readonly miniWidgetService = inject(MiniWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  readonly miniWidgetTargets = viewChildren("dynamic", { read: ViewContainerRef });
+  @ViewChildren("dynamic", { read: ViewContainerRef })
+  private miniWidgetTargets: QueryList<ViewContainerRef> | undefined;
 
   public miniWidgetList: IMiniWidgetConfig[] = [];
   private readonly destroy$: Subject<unknown> = new Subject();
@@ -100,9 +102,8 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
 
   private createMiniWidgets(): void {
     this.cdRef.detectChanges();
-    const miniWidgetTargets = this.miniWidgetTargets();
-    if (miniWidgetTargets) {
-      miniWidgetTargets.forEach((target, index) => {
+    if (this.miniWidgetTargets) {
+      this.miniWidgetTargets.forEach((target, index) => {
         target.detach();
         let component;
         const injector: Injector = Injector.create({

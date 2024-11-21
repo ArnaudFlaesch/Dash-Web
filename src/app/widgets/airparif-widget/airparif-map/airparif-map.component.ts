@@ -3,12 +3,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Input,
   OnChanges,
   OnDestroy,
   SimpleChanges,
-  inject,
-  viewChild,
-  input
+  ViewChild,
+  inject
 } from "@angular/core";
 import * as L from "leaflet";
 import "leaflet-sidebar-v2";
@@ -30,13 +30,17 @@ import { MatIcon } from "@angular/material/icon";
 export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private readonly airParifWidgetService = inject(AirParifWidgetService);
 
-  public readonly airParifCouleursIndices = input<IAirParifCouleur[]>([]);
+  @Input()
+  public airParifCouleursIndices: IAirParifCouleur[] = [];
 
-  public readonly airParifForecast = input<IForecast[]>([]);
+  @Input()
+  public airParifForecast: IForecast[] = [];
 
-  public readonly airParifApiKey = input<string>();
+  @Input()
+  public airParifApiKey: string | undefined;
 
-  readonly mapContainer = viewChild<ElementRef>("map");
+  @ViewChild("map")
+  private mapContainer: ElementRef | undefined;
 
   public forecastToDisplay: IForecast | undefined;
   public forecastMode: ForecastMode = ForecastMode.TODAY;
@@ -83,14 +87,14 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   public selectTodayForecast(): void {
     this.map?.removeLayer(this.airParifForecastTomorrowLayer);
     this.forecastMode = ForecastMode.TODAY;
-    this.forecastToDisplay = this.airParifForecast()[0];
+    this.forecastToDisplay = this.airParifForecast[0];
     this.map?.addLayer(this.airParifForecastTodayLayer);
   }
 
   public selectTomorrowForecast(): void {
     this.map?.removeLayer(this.airParifForecastTodayLayer);
     this.forecastMode = ForecastMode.TOMORROW;
-    this.forecastToDisplay = this.airParifForecast()[1];
+    this.forecastToDisplay = this.airParifForecast[1];
     this.map?.addLayer(this.airParifForecastTomorrowLayer);
   }
 
@@ -104,8 +108,8 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
 
   public getColorFromIndice(indice: AirParifIndiceEnum): string {
     return (
-      this.airParifCouleursIndices().find((couleurIndice) => couleurIndice.name === indice)
-        ?.color ?? ""
+      this.airParifCouleursIndices.find((couleurIndice) => couleurIndice.name === indice)?.color ??
+      ""
     );
   }
 
@@ -119,9 +123,8 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
       attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
-    const mapContainer = this.mapContainer();
-    if (mapContainer) {
-      this.map = L.map(mapContainer.nativeElement, {
+    if (this.mapContainer) {
+      this.map = L.map(this.mapContainer.nativeElement, {
         center: [48.8502, 2.3488],
         zoom: 11,
         maxBounds: bounds,
@@ -145,7 +148,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
       styles: "nouvel_indice_polygones",
       opacity: 0.5,
       attribution: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`,
-      authkey: this.airParifApiKey()
+      authkey: this.airParifApiKey
     };
   }
 }

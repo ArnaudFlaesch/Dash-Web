@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnChanges, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
 import { ChartData, ChartTypeRegistry } from "chart.js";
 import { format, startOfMonth } from "date-fns";
 import { fr } from "date-fns/locale/fr";
@@ -14,9 +14,11 @@ import { IWorkoutStatByMonth, IWorkoutType } from "../model/Workout";
   standalone: true
 })
 export class WorkoutStatisticsComponent implements OnChanges {
-  public readonly workoutStatsByMonth = input<IWorkoutStatByMonth[]>([]);
+  @Input()
+  public workoutStatsByMonth: IWorkoutStatByMonth[] = [];
 
-  public readonly workoutTypes = input<IWorkoutType[]>([]);
+  @Input()
+  public workoutTypes: IWorkoutType[] = [];
 
   public workoutStatsChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
     undefined;
@@ -24,12 +26,12 @@ export class WorkoutStatisticsComponent implements OnChanges {
   ngOnChanges(): void {
     const labels = [
       ...new Set(
-        this.workoutStatsByMonth().map((stat) => startOfMonth(new Date(stat.monthPeriod)).getTime())
+        this.workoutStatsByMonth.map((stat) => startOfMonth(new Date(stat.monthPeriod)).getTime())
       )
     ].sort((timeA, timeB) => timeA - timeB);
     this.workoutStatsChartData = {
       labels: labels.map((label) => format(new Date(label), "MMM", { locale: fr })),
-      datasets: this.workoutTypes().map((workoutType) => {
+      datasets: this.workoutTypes.map((workoutType) => {
         return {
           label: workoutType.name,
           data: this.getRepsListOfWorkoutTypeByMonth(workoutType.id, labels)
@@ -39,7 +41,7 @@ export class WorkoutStatisticsComponent implements OnChanges {
   }
 
   private getRepsListOfWorkoutTypeByMonth(workoutTypeId: number, monthsTimes: number[]): number[] {
-    return this.workoutStatsByMonth().reduce(
+    return this.workoutStatsByMonth.reduce(
       (repListOfPeriod: number[], workoutStatByMonth: IWorkoutStatByMonth) => {
         if (workoutStatByMonth.workoutTypeId === workoutTypeId) {
           repListOfPeriod[

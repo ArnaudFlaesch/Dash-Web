@@ -1,4 +1,4 @@
-@for (activity of this.activities(); track activity.id) {
+@for (activity of this.activities; track activity.id) {
   <mat-expansion-panel class="stravaActivity" hideToggle>
     <mat-expansion-panel-header>
       <mat-panel-title> {{ getTitleToDisplay(activity) }} </mat-panel-title>

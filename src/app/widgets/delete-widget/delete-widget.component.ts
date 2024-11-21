@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 
 @Component({
@@ -10,8 +10,8 @@ import { MatButton } from "@angular/material/button";
   imports: [MatButton]
 })
 export class DeleteWidgetComponent {
-  readonly validateWidgetDeletion = output();
-  readonly cancelWidgetDeletion = output();
+  @Output() validateWidgetDeletion = new EventEmitter();
+  @Output() cancelWidgetDeletion = new EventEmitter();
 
   cancelButtonClicked(): void {
     this.cancelWidgetDeletion.emit();

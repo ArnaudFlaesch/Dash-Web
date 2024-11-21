@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
+import { MatButton } from "@angular/material/button";
 import { ErrorHandlerService } from "./../../services/error.handler.service";
 import { ICity, IForecast, IWeatherAPIResponse } from "./IWeather";
 import { WeatherWidgetService } from "./weather.widget.service";
@@ -25,6 +26,7 @@ import { WeatherWidgetViewComponent } from "./weather-widget-view/weather-widget
     MatLabel,
     MatInput,
     FormsModule,
+    MatButton,
     WeatherWidgetViewComponent
   ]
 })

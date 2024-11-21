@@ -2,9 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  Input,
   OnChanges,
-  SimpleChanges,
-  input
+  SimpleChanges
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
@@ -34,9 +34,9 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   styleUrl: "./weather-widget-view.component.scss"
 })
 export class WeatherWidgetViewComponent implements OnChanges {
-  public readonly weather = input.required<IWeatherAPIResponse>();
-  public readonly forecastResponse = input<IForecast[]>([]);
-  public readonly cityData = input.required<ICity>();
+  @Input() public weather: IWeatherAPIResponse | undefined;
+  @Input() public forecastResponse: IForecast[] = [];
+  @Input() public cityData: ICity | undefined;
 
   public displayAllForecast = false;
   public forecastToDisplay: IForecast[] = [];
@@ -45,7 +45,7 @@ export class WeatherWidgetViewComponent implements OnChanges {
   public forecastMode = ForecastMode.DAY;
   private selectedDayForecast: Date = new Date();
 
-  private readonly dateUtils = inject(DateUtilsService);
+  private dateUtils = inject(DateUtilsService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["forecastResponse"]) {
@@ -65,6 +65,9 @@ export class WeatherWidgetViewComponent implements OnChanges {
   }
 
   public isSelectedDay(date: Date): boolean {
+    console.log(this.forecastMode);
+    console.log(this.selectedDayForecast.getDay());
+    console.log(date.getDay());
     return (
       this.forecastMode === ForecastMode.DAY && this.selectedDayForecast.getDay() === date.getDay()
     );
@@ -88,9 +91,8 @@ export class WeatherWidgetViewComponent implements OnChanges {
   }
 
   public updateForecastData(): void {
-    const cityData = this.cityData();
-    if (cityData) {
-      this.forecastToDisplay = this.filterForecastByMode(cityData, this.forecastResponse());
+    if (this.cityData) {
+      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse);
     }
   }
 

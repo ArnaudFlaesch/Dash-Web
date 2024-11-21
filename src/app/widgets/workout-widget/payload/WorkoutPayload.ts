@@ -1,13 +1,13 @@
-export type IAddWorkoutTypePayload = {
+export interface IAddWorkoutTypePayload {
   workoutType: string;
-};
+}
 
-export type ICreateWorkoutSessionPayload = {
+export interface ICreateWorkoutSessionPayload {
   workoutDate: Date;
-};
+}
 
-export type IUpdateWorkoutExercisePayload = {
+export interface IUpdateWorkoutExercisePayload {
   workoutSessionId: number;
   workoutTypeId: number;
   numberOfReps: number;
-};
+}

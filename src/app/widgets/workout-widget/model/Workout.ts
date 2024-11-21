@@ -1,28 +1,28 @@
-export type IWorkoutType = {
+export interface IWorkoutType {
   id: number;
   name: string;
   userId: number;
-};
+}
 
-export type IWorkoutSession = {
+export interface IWorkoutSession {
   id: number;
   workoutDate: string;
   userId: number;
-};
+}
 
-export type IWorkoutExercise = {
+export interface IWorkoutExercise {
   workoutTypeId: number;
   numberOfReps: number;
-};
+}
 
-export type IWorkoutStatsByPeriod = {
+export interface IWorkoutStatsByPeriod {
   workoutTypeName: string;
   totalNumberOfReps: number;
-};
+}
 
-export type IWorkoutStatByMonth = {
+export interface IWorkoutStatByMonth {
   totalNumberOfReps: number;
   workoutTypeId: number;
   monthPeriod: string;
   workoutTypeName: string;
-};
+}

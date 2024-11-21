@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      @if (this.airParifForecast().length > 0) {
+      @if (this.airParifForecast.length > 0) {
         <div id="forecast-indices-data">
           <div id="forecast-select-buttons">
             <button
@@ -27,7 +27,7 @@
             >
               Aujourd'hui
             </button>
-            @if (this.airParifForecast().length > 1) {
+            @if (this.airParifForecast.length > 1) {
               <button
                 mat-raised-button
                 [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
@@ -80,7 +80,7 @@
           }
 
           <div id="indices-list">
-            @for (indice of this.airParifCouleursIndices(); track indice.name) {
+            @for (indice of this.airParifCouleursIndices; track indice.name) {
               <span class="indice-label" [style]="{ 'background-color': indice.color }">
                 {{ indice.name }}
               </span>

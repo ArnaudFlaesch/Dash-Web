@@ -1,10 +1,10 @@
 <div class="forecast-row">
-  @for (forecastDay of this.forecast(); track forecastDay.dt) {
+  @for (forecastDay of this.forecast; track forecastDay.dt) {
     <div class="forecast-container">
       <div class="forecast">
         @if (forecastDay) {
           <div class="forecast-time">
-            {{ getDateToDisplay(forecastDay.dt, this.timezone()) }}
+            {{ getDateToDisplay(forecastDay.dt, this.timezone) }}
           </div>
         }
         <div>

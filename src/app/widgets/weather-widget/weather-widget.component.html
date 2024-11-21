@@ -26,7 +26,7 @@
   </ng-template>
 
   <ng-template #body>
-    @if (cityData && weather && weather.weather) {
+    @if (city && weather && weather.weather) {
       <dash-weather-widget-view
         [weather]="weather"
         [cityData]="cityData"

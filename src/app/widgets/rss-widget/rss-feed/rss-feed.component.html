@@ -1,5 +1,5 @@
 <mat-accordion>
-  @for (article of feed(); track article.link) {
+  @for (article of feed; track article.link) {
     <mat-expansion-panel hideToggle class="rss-article" (opened)="onOpenDetail(article.guid)" (closed)="onClosePanel()">
       <mat-expansion-panel-header>
         <mat-panel-title
