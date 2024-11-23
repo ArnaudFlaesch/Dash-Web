@@ -67,7 +67,7 @@ describe("AirParifMapComponent", () => {
       }
     ] as unknown as IForecast[];
 
-    component.airParifForecast = forecastData;
+    fixture.componentRef.setInput("airParifForecast", forecastData);
     fixture.componentRef.setInput("airParifCouleursIndices", couleursIndicesData);
     component.ngAfterViewInit();
 

@@ -1,6 +1,6 @@
 import { ErrorHandlerService } from "./../services/error.handler.service";
 import { TabService } from "./../services/tab.service/tab.service";
-import { Component, Input, ChangeDetectionStrategy, inject, output } from "@angular/core";
+import { Component, ChangeDetectionStrategy, inject, output, input } from "@angular/core";
 import { ITab } from "../model/Tab";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MatIcon } from "@angular/material/icon";
@@ -16,10 +16,9 @@ import { FormsModule } from "@angular/forms";
 })
 export class TabComponent {
   private readonly tabService = inject(TabService);
-  errorHandlerService = inject(ErrorHandlerService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  @Input()
-  public tab: ITab | undefined;
+  public readonly tab = input.required<ITab>();
   readonly tabDeletedEvent = output<number>();
 
   public editMode = false;
@@ -27,8 +26,8 @@ export class TabComponent {
   private readonly ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
 
   public deleteTabFromDash(): void {
-    if (this.tab) {
-      this.tabDeletedEvent.emit(this.tab.id);
+    if (this.tab()) {
+      this.tabDeletedEvent.emit(this.tab().id);
     }
   }
 
@@ -46,8 +45,9 @@ export class TabComponent {
 
   public enterSaveTabName(event: KeyboardEvent): void {
     if (event.key === "Enter") {
-      if (this.tab) {
-        this.saveTabName(this.tab.id, this.tab.label, this.tab.tabOrder);
+      const tab = this.tab();
+      if (tab) {
+        this.saveTabName(tab.id, tab.label, tab.tabOrder);
       }
     }
   }

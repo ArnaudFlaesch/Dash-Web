@@ -21,7 +21,7 @@ import { WidgetComponent } from "../widget/widget.component";
   imports: [WidgetComponent, MatIcon, SafePipe]
 })
 export class EcowattWidgetComponent implements AfterViewInit {
-  private changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   readonly iframeContainer = viewChild<ElementRef>("iframeContainer");
 
@@ -43,9 +43,11 @@ export class EcowattWidgetComponent implements AfterViewInit {
 
   public resizeWidget(): void {
     const iframeContainer = this.iframeContainer();
-    this.iframeContainerHeight = iframeContainer?.nativeElement.offsetHeight;
-    this.iframeContainerWidth = iframeContainer?.nativeElement.offsetWidth;
-    this.changeDetectorRef.detectChanges();
+    if (iframeContainer) {
+      this.iframeContainerHeight = iframeContainer?.nativeElement.offsetHeight;
+      this.iframeContainerWidth = iframeContainer?.nativeElement.offsetWidth;
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   public refreshWidget(): void {

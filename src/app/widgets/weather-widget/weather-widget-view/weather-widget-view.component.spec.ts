@@ -30,7 +30,7 @@ describe("WeatherWidgetViewComponent", () => {
     fixture = TestBed.createComponent(WeatherWidgetViewComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput("weather", weatherData);
-    component.cityData = forecastData.city;
+    fixture.componentRef.setInput("cityData", forecastData.city);
     fixture.componentRef.setInput("forecastResponse", forecastData.list);
     fixture.detectChanges();
   });

@@ -77,7 +77,7 @@ enum WORKOUT_STATISTICS {
 export class WorkoutWidgetComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
-  dateUtilsService = inject(DateUtilsService);
+  private readonly dateUtilsService = inject(DateUtilsService);
 
   public workoutTypes: IWorkoutType[] = [];
   public workoutSessions: IWorkoutSession[] = [];

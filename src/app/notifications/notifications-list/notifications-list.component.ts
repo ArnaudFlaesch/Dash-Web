@@ -30,7 +30,7 @@ import { MatMenuTrigger, MatMenu } from "@angular/material/menu";
   ]
 })
 export class NotificationsListComponent {
-  public readonly notificationsList = input<INotificationToDisplay[]>([]);
+  public readonly notificationsList = input.required<INotificationToDisplay[]>();
   public readonly unreadNotificationsForBadge = input<number>(0);
 
   readonly onNotificationRead = output<number>();

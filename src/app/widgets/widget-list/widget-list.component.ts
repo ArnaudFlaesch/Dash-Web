@@ -35,7 +35,7 @@ import { IncidentWidgetComponent } from "../incident-widget/incident-widget.comp
 export class WidgetListComponent implements OnChanges {
   private readonly cdRef = inject(ChangeDetectorRef);
 
-  readonly widgetList = input<IWidgetConfig[]>([]);
+  readonly widgetList = input.required<IWidgetConfig[]>();
   readonly toggleEditMode = input(false);
   readonly updateWidgetsOrderEvent = output<IWidgetConfig[]>();
 

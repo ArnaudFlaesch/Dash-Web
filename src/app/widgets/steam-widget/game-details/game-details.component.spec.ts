@@ -1,7 +1,7 @@
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { IGameInfoDisplay } from "../ISteam";
 import { SteamWidgetService } from "../steam.widget.service";
@@ -11,6 +11,7 @@ import { provideHttpClient } from "@angular/common/http";
 
 describe("GameDetailsComponent", () => {
   let component: GameDetailsComponent;
+  let fixture: ComponentFixture<GameDetailsComponent>;
   let httpTestingController: HttpTestingController;
 
   beforeEach(async () => {
@@ -24,7 +25,7 @@ describe("GameDetailsComponent", () => {
       ]
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(GameDetailsComponent);
+    fixture = TestBed.createComponent(GameDetailsComponent);
     component = fixture.componentInstance;
     httpTestingController = TestBed.inject(HttpTestingController);
   });
@@ -73,12 +74,12 @@ describe("GameDetailsComponent", () => {
       };
       expect(component.achievements).toEqual([]);
       expect(component.completedAchievements).toEqual([]);
-      component.gameInfo = {
+      fixture.componentRef.setInput("gameInfo", {
         appid: appId,
         name: "Super Game"
-      } as IGameInfoDisplay;
+      } as IGameInfoDisplay);
 
-      component.loadAchievementsData(steamUserId, component.gameInfo);
+      component.loadAchievementsData(steamUserId, component.gameInfo());
       const getAchievementsRequest = httpTestingController.expectOne(
         environment.backend_url +
           "/steamWidget/achievementList?steamUserId=" +
@@ -97,11 +98,13 @@ describe("GameDetailsComponent", () => {
     it("should display error messages", () => {
       const steamUserId = "1237";
       const appId = "1337";
-      component.gameInfo = {
+
+      fixture.componentRef.setInput("gameInfo", {
         appid: appId,
         name: "Super Game"
-      } as IGameInfoDisplay;
-      component.loadAchievementsData(steamUserId, component.gameInfo);
+      } as IGameInfoDisplay);
+
+      component.loadAchievementsData(steamUserId, component.gameInfo());
       httpTestingController
         .expectOne(
           environment.backend_url +

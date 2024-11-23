@@ -18,7 +18,7 @@ export class WeatherForecastComponent {
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly dateUtils = inject(DateUtilsService);
 
-  public readonly forecast = input<IForecast[]>([]);
+  public readonly forecast = input.required<IForecast[]>();
 
   public readonly timezone = input(0);
 

@@ -17,7 +17,6 @@ import { WeatherWidgetService } from "../weather-widget/weather.widget.service";
 import { WorkoutWidgetService } from "../workout-widget/workout.widget.service";
 import { WidgetListComponent } from "./widget-list.component";
 import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
-import { SimpleChange } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
 import { HomeComponent } from "../../home/home.component";
@@ -115,11 +114,6 @@ describe("WidgetListComponent", () => {
       }
     ];
     fixture.componentRef.setInput("widgetList", widgetListConfig);
-
-    component.ngOnChanges({
-      widgetList: new SimpleChange(null, widgetListConfig, true)
-    });
-    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });

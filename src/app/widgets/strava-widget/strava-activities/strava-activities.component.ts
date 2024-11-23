@@ -22,7 +22,7 @@ import {
   ]
 })
 export class StravaActivitiesComponent {
-  public readonly activities = input<IActivity[]>([]);
+  public readonly activities = input.required<IActivity[]>();
 
   public getTitleToDisplay(activity: IActivity): string {
     return `${format(new Date(activity.startDateLocal), "dd MMMM", { locale: fr })}  ${activity.name}  ${
