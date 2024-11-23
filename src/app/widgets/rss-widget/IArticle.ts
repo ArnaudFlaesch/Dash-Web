@@ -1,4 +1,4 @@
-export interface IRSSHeader {
+export type IRSSHeader = {
   feedUrl: string;
   image?: ImageContent;
   title: string;
@@ -11,9 +11,9 @@ export interface IRSSHeader {
   docs: string;
   ttl: string;
   item: [IArticle];
-}
+};
 
-export interface IArticle {
+export type IArticle = {
   guid: string;
   title?: string;
   link: string;
@@ -22,10 +22,10 @@ export interface IArticle {
   author?: string;
   pubDate: string;
   updated?: string;
-}
+};
 
-export interface ImageContent {
+export type ImageContent = {
   link: string;
   url: string;
   title: string;
-}
+};

@@ -14,7 +14,7 @@
   </div>
 
   <div id="workout-sessions-grid">
-    @for (workoutType of this.workoutTypes; track workoutType.id) {
+    @for (workoutType of this.workoutTypes(); track workoutType.id) {
       <div class="workout-exercise-container" [ngClass]="{ 'edit-mode': this.sessionEditMode }">
         <span class="workout-type-name">{{ workoutType.name }}</span>
         <div class="edit-reps-container">

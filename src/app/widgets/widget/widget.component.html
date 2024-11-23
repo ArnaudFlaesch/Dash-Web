@@ -13,7 +13,7 @@
           <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
         </div>
         <div class="edit-component-actions">
-          @if (this.isWidgetLoaded && this.widgetData) {
+          @if (this.isWidgetLoaded() && this.widgetData()) {
             <button class="cancelButton" mat-raised-button (click)="cancelEdition()">Annuler</button>
           }
           <button
@@ -21,7 +21,7 @@
             mat-raised-button
             (click)="onValidation()"
             color="primary"
-            [disabled]="!this.isFormValid"
+            [disabled]="!this.isFormValid()"
           >
             Valider
           </button>
@@ -68,7 +68,7 @@
         </div>
       </div>
       <div class="widget-body">
-        @if (this.isWidgetLoaded) {
+        @if (this.isWidgetLoaded()) {
           <ng-container *ngTemplateOutlet="body"> </ng-container>
         } @else {
           <div class="widget-loading-spinner">

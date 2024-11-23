@@ -1,5 +1,5 @@
-export interface ICalendarData {
+export type ICalendarData = {
   startDate: string;
   endDate: string;
   description: string;
-}
+};

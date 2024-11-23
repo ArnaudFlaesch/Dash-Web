@@ -1,5 +1,5 @@
 import { NgClass } from "@angular/common";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 import { MatIconButton, MatMiniFabButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -30,11 +30,11 @@ import { MatMenuTrigger, MatMenu } from "@angular/material/menu";
   ]
 })
 export class NotificationsListComponent {
-  @Input() public notificationsList: INotificationToDisplay[] = [];
-  @Input() public unreadNotificationsForBadge: number = 0;
+  public readonly notificationsList = input<INotificationToDisplay[]>([]);
+  public readonly unreadNotificationsForBadge = input<number>(0);
 
-  @Output() private onNotificationRead = new EventEmitter<number>();
-  @Output() private onMarkAllNotificationsAsRead = new EventEmitter();
+  readonly onNotificationRead = output<number>();
+  readonly onMarkAllNotificationsAsRead = output();
 
   public notificationTypeEnum = NotificationTypeEnum;
 

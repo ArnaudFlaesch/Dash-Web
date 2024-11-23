@@ -4,13 +4,11 @@ import {
   inject,
   Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  input
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { MatFormField, MatLabel } from "@angular/material/form-field";
-import { MatIcon } from "@angular/material/icon";
-import { MatInput } from "@angular/material/input";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { format, isToday, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -25,10 +23,6 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   standalone: true,
   imports: [
     InitialUppercasePipe,
-    MatIcon,
-    MatFormField,
-    MatLabel,
-    MatInput,
     FormsModule,
     WeatherTodayComponent,
     MatButton,
@@ -41,8 +35,8 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   styleUrl: "./weather-widget-view.component.scss"
 })
 export class WeatherWidgetViewComponent implements OnChanges {
-  @Input() public weather: IWeatherAPIResponse | undefined;
-  @Input() public forecastResponse: IForecast[] = [];
+  public readonly weather = input<IWeatherAPIResponse>();
+  public readonly forecastResponse = input<IForecast[]>([]);
   @Input() public cityData: ICity | undefined;
 
   public displayAllForecast = false;
@@ -99,7 +93,7 @@ export class WeatherWidgetViewComponent implements OnChanges {
 
   public updateForecastData(): void {
     if (this.cityData) {
-      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse);
+      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse());
     }
   }
 

@@ -3,15 +3,15 @@ export enum ForecastMode {
   WEEK
 }
 
-export interface IForecastAPIResponse {
+export type IForecastAPIResponse = {
   cod: string;
   message: number;
   cnt: number;
   list: IForecast[];
   city: ICity;
-}
+};
 
-export interface IWeatherAPIResponse {
+export type IWeatherAPIResponse = {
   coord: LatLng;
   weather: IWeather[];
   base: string;
@@ -44,9 +44,9 @@ export interface IWeatherAPIResponse {
   id: number;
   name: string;
   cod: number;
-}
+};
 
-export interface ICity {
+export type ICity = {
   id: number;
   name: string;
   coord: LatLng;
@@ -55,9 +55,9 @@ export interface ICity {
   timezone: number;
   sunrise: number;
   sunset: number;
-}
+};
 
-export interface IForecast {
+export type IForecast = {
   dt: number;
   dtText: string;
   main: {
@@ -82,16 +82,16 @@ export interface IForecast {
   sys: {
     pod: string;
   };
-}
+};
 
-interface IWeather {
+type IWeather = {
   id: number;
   main: string;
   description: string;
   icon: string;
-}
+};
 
-interface LatLng {
+type LatLng = {
   lon: number;
   lat: number;
-}
+};

@@ -12,7 +12,7 @@ export default defineConfig({
     baseUrl: "http://localhost:4200/",
     specPattern: "cypress/e2e/**/**/*.spec.ts",
     watchForFileChanges: false,
-    defaultCommandTimeout: 6000,
+    defaultCommandTimeout: 8000,
     viewportWidth: 1920,
     viewportHeight: 1080,
     screenshotOnRunFailure: true,

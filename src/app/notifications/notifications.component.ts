@@ -11,27 +11,12 @@ import { NotificationService } from "../services/notification.service/Notificati
 import { WidgetService } from "../services/widget.service/widget.service";
 import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
 
-import { MatBadge } from "@angular/material/badge";
-import { MatIconButton, MatMiniFabButton } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
-import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
-import { MatTooltip } from "@angular/material/tooltip";
-
 @Component({
   selector: "dash-notifications",
   templateUrl: "./notifications.component.html",
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
-  imports: [
-    MatMiniFabButton,
-    MatTooltip,
-    MatMenuTrigger,
-    MatIcon,
-    MatBadge,
-    MatMenu,
-    MatIconButton,
-    NotificationsListComponent
-  ]
+  imports: [NotificationsListComponent]
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
   public notificationsFromDatabase: INotification[] = [];

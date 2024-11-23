@@ -1,5 +1,5 @@
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "./../model/Workout";
-import { ChangeDetectionStrategy, Component, Input, SimpleChanges, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, SimpleChanges, inject, input } from "@angular/core";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { WorkoutWidgetService } from "../workout.widget.service";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -18,7 +18,7 @@ import { NgClass } from "@angular/common";
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
-  @Input() public workoutTypes: IWorkoutType[] = [];
+  public readonly workoutTypes = input<IWorkoutType[]>([]);
   @Input() public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
 
   public workoutExercises: IWorkoutExercise[] = [];

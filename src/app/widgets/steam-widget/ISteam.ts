@@ -1,17 +1,17 @@
-export interface IPlayerDataResponse {
+export type IPlayerDataResponse = {
   personaname: string;
   profileurl: string;
   avatar: string;
-}
+};
 
-export interface IGameInfoResponse {
+export type IGameInfoResponse = {
   appid: string;
   name: string;
   imgIconUrl: string;
   imgLogoUrl: string;
-}
+};
 
-export interface IGameInfoDisplay {
+export type IGameInfoDisplay = {
   appid: string;
   name: string;
   imgIconUrl: string;
@@ -19,16 +19,16 @@ export interface IGameInfoDisplay {
   gameImgSrc: string;
   appIdLink: string;
   playerAchievementUrl: string;
-}
+};
 
-export interface IAchievementResponse {
+export type IAchievementResponse = {
   playerstats: {
     achievements: IAchievement[];
   };
-}
+};
 
-export interface IAchievement {
+export type IAchievement = {
   apiname: string;
   achieved: number;
   unlocktime: number;
-}
+};

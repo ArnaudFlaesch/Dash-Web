@@ -24,10 +24,6 @@ $light-theme: mat.define-theme(
 
 html,
 body {
-  // Apply the light theme by default
-  @include mat.core-theme($light-theme);
-  @include mat.button-color($light-theme);
-
   height: 100%;
 
   // Light mode
@@ -41,6 +37,10 @@ body {
   --widget-dark-mode-header-color: #2b5182;
   --widget-dark-mode-header-text-color: #000;
   --widget-dark-mode-background-color: hsl(208.4deg 17.6% 42.4%);
+
+  // Apply the light theme by default
+  @include mat.core-theme($light-theme);
+  @include mat.button-color($light-theme);
 }
 
 mat-expansion-panel {
@@ -71,9 +71,9 @@ body {
   }
 
   &.dark-mode {
-    @include mat.all-component-themes($dark-theme);
-
     background-color: var(--dash-dark-mode-background-color);
+
+    @include mat.all-component-themes($dark-theme);
 
     .widget {
       background-color: var(--widget-dark-mode-background-color);

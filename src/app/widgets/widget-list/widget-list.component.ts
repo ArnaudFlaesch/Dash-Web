@@ -2,16 +2,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Injector,
-  Input,
   OnChanges,
-  Output,
-  QueryList,
   SimpleChanges,
-  ViewChildren,
   ViewContainerRef,
-  inject
+  inject,
+  input,
+  viewChildren,
+  output
 } from "@angular/core";
 import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 import { CalendarWidgetComponent } from "../calendar-widget/calendar-widget.component";
@@ -37,12 +35,11 @@ import { IncidentWidgetComponent } from "../incident-widget/incident-widget.comp
 export class WidgetListComponent implements OnChanges {
   private readonly cdRef = inject(ChangeDetectorRef);
 
-  @Input() widgetList: IWidgetConfig[] = [];
-  @Input() toggleEditMode = false;
-  @Output() updateWidgetsOrderEvent = new EventEmitter<IWidgetConfig[]>();
+  readonly widgetList = input<IWidgetConfig[]>([]);
+  readonly toggleEditMode = input(false);
+  readonly updateWidgetsOrderEvent = output<IWidgetConfig[]>();
 
-  @ViewChildren("dynamic", { read: ViewContainerRef })
-  private widgetTargets: QueryList<ViewContainerRef> | undefined;
+  readonly widgetTargets = viewChildren("dynamic", { read: ViewContainerRef });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["widgetList"]) {
@@ -52,8 +49,9 @@ export class WidgetListComponent implements OnChanges {
   }
 
   public drop(event: CdkDragDrop<IWidgetConfig[]>): void {
-    moveItemInArray(this.widgetList, event.previousIndex, event.currentIndex);
-    const updatedWidgets = this.widgetList.map((widget: IWidgetConfig, index: number) => {
+    const widgetList = this.widgetList();
+    moveItemInArray(widgetList, event.previousIndex, event.currentIndex);
+    const updatedWidgets = widgetList.map((widget: IWidgetConfig, index: number) => {
       widget.widgetOrder = index;
       return widget;
     });
@@ -61,20 +59,21 @@ export class WidgetListComponent implements OnChanges {
   }
 
   private createWidgets(): void {
-    if (this.widgetTargets) {
-      this.widgetTargets.forEach((target, index) => {
+    const widgetTargets = this.widgetTargets();
+    if (widgetTargets) {
+      widgetTargets.forEach((target, index) => {
         target.detach();
         let component;
         const injector: Injector = Injector.create({
           providers: [
             {
               provide: "widgetId",
-              useValue: this.widgetList[index].id
+              useValue: this.widgetList()[index].id
             }
           ]
         });
-        const widgetData = this.widgetList[index].data;
-        switch (this.widgetList[index].type) {
+        const widgetData = this.widgetList()[index].data;
+        switch (this.widgetList()[index].type) {
           case WidgetTypeEnum.WEATHER: {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector

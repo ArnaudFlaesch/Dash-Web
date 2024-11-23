@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { format } from "date-fns";
 import { IActivity } from "../IStrava";
 import { fr } from "date-fns/locale/fr";
@@ -22,8 +22,7 @@ import {
   ]
 })
 export class StravaActivitiesComponent {
-  @Input()
-  public activities: IActivity[] = [];
+  public readonly activities = input<IActivity[]>([]);
 
   public getTitleToDisplay(activity: IActivity): string {
     return `${format(new Date(activity.startDateLocal), "dd MMMM", { locale: fr })}  ${activity.name}  ${

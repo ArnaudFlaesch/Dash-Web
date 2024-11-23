@@ -12,7 +12,7 @@ export enum AirParifIndiceEnum {
   EXTREMEMENT_MAUVAIS = "Extrêmement mauvais"
 }
 
-export interface IForecast {
+export type IForecast = {
   date: string;
   no2: AirParifIndiceEnum;
   o3: AirParifIndiceEnum;
@@ -20,9 +20,9 @@ export interface IForecast {
   pm25: AirParifIndiceEnum;
   so2: AirParifIndiceEnum;
   indice: AirParifIndiceEnum;
-}
+};
 
-export interface IAirParifCouleur {
+export type IAirParifCouleur = {
   name: AirParifIndiceEnum;
   color: string;
-}
+};

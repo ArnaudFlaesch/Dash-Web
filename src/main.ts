@@ -1,15 +1,19 @@
-import { LOCALE_ID, enableProdMode, importProvidersFrom, inject, isDevMode } from "@angular/core";
+import { enableProdMode, importProvidersFrom, inject, isDevMode, LOCALE_ID } from "@angular/core";
 
-import { DragDropModule } from "@angular/cdk/drag-drop";
 import { registerLocaleData } from "@angular/common";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import localeFr from "@angular/common/locales/fr";
+import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
+import { AppComponent } from "./app/app.component";
+
+import { environment } from "./environments/environment";
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDateFnsModule, provideDateFnsAdapter } from "@angular/material-date-fns-adapter";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
-import { MAT_DATE_LOCALE, MatNativeDateModule } from "@angular/material/core";
+import { MatNativeDateModule, MAT_DATE_LOCALE } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatDividerModule } from "@angular/material/divider";
@@ -25,23 +29,19 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { BrowserModule, bootstrapApplication } from "@angular/platform-browser";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { Routes, provideRouter } from "@angular/router";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { CalendarModule, DateAdapter } from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
-import { fr } from "date-fns/locale/fr";
+import { fr } from "date-fns/locale";
 import { provideCharts, withDefaultRegisterables } from "ng2-charts";
-import { AppComponent } from "./app/app.component";
-
 import { AuthService } from "./app/services/auth.service/auth.service";
 import { ConfigService } from "./app/services/config.service/config.service";
 import { DateUtilsService } from "./app/services/date.utils.service/date.utils.service";
 import { ErrorHandlerService } from "./app/services/error.handler.service";
 import { NotificationService } from "./app/services/notification.service/NotificationService";
 import { TabService } from "./app/services/tab.service/tab.service";
-import { ThemeService } from "./app/services/theme.service/theme.service";
 import { MiniWidgetService } from "./app/services/widget.service/miniwidget.service";
 import { WidgetService } from "./app/services/widget.service/widget.service";
 import { AirParifWidgetService } from "./app/widgets/airparif-widget/airparif-widget.service";
@@ -52,7 +52,7 @@ import { SteamWidgetService } from "./app/widgets/steam-widget/steam.widget.serv
 import { StravaWidgetService } from "./app/widgets/strava-widget/strava.widget.service";
 import { WeatherWidgetService } from "./app/widgets/weather-widget/weather.widget.service";
 import { WorkoutWidgetService } from "./app/widgets/workout-widget/workout.widget.service";
-import { environment } from "./environments/environment";
+import { ThemeService } from "./app/services/theme.service/theme.service";
 
 if (environment.production) {
   enableProdMode();
