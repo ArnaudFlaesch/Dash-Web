@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
 import { ForecastMode, IForecast } from "../IWeather";
 import { WeatherWidgetService } from "../weather.widget.service";
@@ -18,18 +18,15 @@ export class WeatherForecastComponent {
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly dateUtils = inject(DateUtilsService);
 
-  @Input()
-  public forecast: IForecast[] = [];
+  public readonly forecast = input<IForecast[]>([]);
 
-  @Input()
-  public timezone = 0;
+  public readonly timezone = input(0);
 
-  @Input()
-  public forecastMode: ForecastMode = ForecastMode.DAY;
+  public readonly forecastMode = input<ForecastMode>(ForecastMode.DAY);
 
   public getDateToDisplay(dateTime: number, timezone: number): string {
     const options: Intl.DateTimeFormatOptions =
-      this.forecastMode === ForecastMode.DAY
+      this.forecastMode() === ForecastMode.DAY
         ? {
             hour: "2-digit"
           }

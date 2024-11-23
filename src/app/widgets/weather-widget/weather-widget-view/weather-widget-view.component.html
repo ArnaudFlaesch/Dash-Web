@@ -1,6 +1,6 @@
 <div class="weather-forecast-container">
-  <dash-weather-today [weather]="this.weather"></dash-weather-today>
-  @if (cityData && forecastResponse) {
+  <dash-weather-today [weather]="this.weather()"></dash-weather-today>
+  @if (cityData && forecastResponse()) {
     <div class="forecast-data-container">
       <div class="forecast-selector">
         @for (date of forecastDays; track date.getTime()) {

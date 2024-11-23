@@ -57,7 +57,7 @@ export class WidgetComponent extends AbstractWidgetComponent {
   public onValidation(): void {
     this.widgetService
       .updateWidgetData(this.widgetId, {
-        ...this.widgetData
+        ...this.widgetData()
       })
       .subscribe({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -36,7 +36,7 @@ export class MiniWidgetComponent extends AbstractWidgetComponent {
   public onValidation(): void {
     this.miniWidgetService
       .updateWidgetData(this.widgetId, {
-        ...this.widgetData
+        ...this.widgetData()
       })
       .subscribe({
         next: (data: unknown) => {

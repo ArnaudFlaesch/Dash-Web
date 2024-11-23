@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from "@angular/core";
+import { Component, ChangeDetectionStrategy, input, output } from "@angular/core";
 import { isToday, isThisYear } from "date-fns";
 import { IArticle } from "../IArticle";
 import { SafePipe } from "../../../pipes/safe.pipe";
@@ -30,14 +30,11 @@ import {
   ]
 })
 export class RssFeedComponent {
-  @Input()
-  public feed: IArticle[] = [];
+  public readonly feed = input<IArticle[]>([]);
 
-  @Input()
-  public readArticles: string[] = [];
+  public readonly readArticles = input<string[]>([]);
 
-  @Output()
-  public markArticleAsReadEvent = new EventEmitter<string>();
+  public readonly markArticleAsReadEvent = output<string>();
 
   private currentOpenedArticle: string | undefined;
 
@@ -55,7 +52,7 @@ export class RssFeedComponent {
   }
 
   public isArticleRead(guid: string): boolean {
-    return this.readArticles.includes(guid);
+    return this.readArticles().includes(guid);
   }
 
   public isArticleOpened(guid: string): boolean {

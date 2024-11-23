@@ -4,7 +4,8 @@ import {
   inject,
   Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  input
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
@@ -34,8 +35,8 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   styleUrl: "./weather-widget-view.component.scss"
 })
 export class WeatherWidgetViewComponent implements OnChanges {
-  @Input() public weather: IWeatherAPIResponse | undefined;
-  @Input() public forecastResponse: IForecast[] = [];
+  public readonly weather = input<IWeatherAPIResponse>();
+  public readonly forecastResponse = input<IForecast[]>([]);
   @Input() public cityData: ICity | undefined;
 
   public displayAllForecast = false;
@@ -92,7 +93,7 @@ export class WeatherWidgetViewComponent implements OnChanges {
 
   public updateForecastData(): void {
     if (this.cityData) {
-      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse);
+      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse());
     }
   }
 

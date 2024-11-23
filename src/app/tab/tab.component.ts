@@ -3,10 +3,9 @@ import { TabService } from "./../services/tab.service/tab.service";
 import {
   Component,
   Input,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  output
 } from "@angular/core";
 import { ITab } from "../model/Tab";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -27,7 +26,7 @@ export class TabComponent {
 
   @Input()
   public tab: ITab | undefined;
-  @Output() tabDeletedEvent = new EventEmitter<number>();
+  readonly tabDeletedEvent = output<number>();
 
   public editMode = false;
 

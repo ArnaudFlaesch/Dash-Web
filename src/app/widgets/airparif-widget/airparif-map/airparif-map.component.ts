@@ -7,8 +7,9 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
-  ViewChild,
-  inject
+  inject,
+  input,
+  viewChild
 } from "@angular/core";
 import * as L from "leaflet";
 import "leaflet-sidebar-v2";
@@ -30,17 +31,14 @@ import { MatIcon } from "@angular/material/icon";
 export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private readonly airParifWidgetService = inject(AirParifWidgetService);
 
-  @Input()
-  public airParifCouleursIndices: IAirParifCouleur[] = [];
+  public readonly airParifCouleursIndices = input<IAirParifCouleur[]>([]);
 
   @Input()
   public airParifForecast: IForecast[] = [];
 
-  @Input()
-  public airParifApiKey: string | undefined;
+  public readonly airParifApiKey = input<string>();
 
-  @ViewChild("map")
-  private mapContainer: ElementRef | undefined;
+  readonly mapContainer = viewChild<ElementRef>("map");
 
   public forecastToDisplay: IForecast | undefined;
   public forecastMode: ForecastMode = ForecastMode.TODAY;
@@ -108,7 +106,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
 
   public getColorFromIndice(indice: AirParifIndiceEnum): string {
     return (
-      this.airParifCouleursIndices.find((couleurIndice) => couleurIndice.name === indice)?.color ??
+      this.airParifCouleursIndices().find((couleurIndice) => couleurIndice.name === indice)?.color ??
       ""
     );
   }
@@ -123,8 +121,9 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
       attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
-    if (this.mapContainer) {
-      this.map = L.map(this.mapContainer.nativeElement, {
+    const mapContainer = this.mapContainer();
+    if (mapContainer) {
+      this.map = L.map(mapContainer.nativeElement, {
         center: [48.8502, 2.3488],
         zoom: 11,
         maxBounds: bounds,
@@ -148,7 +147,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
       styles: "nouvel_indice_polygones",
       opacity: 0.5,
       attribution: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`,
-      authkey: this.airParifApiKey
+      authkey: this.airParifApiKey()
     };
   }
 }

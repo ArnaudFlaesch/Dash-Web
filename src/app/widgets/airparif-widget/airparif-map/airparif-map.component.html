@@ -80,7 +80,7 @@
           }
 
           <div id="indices-list">
-            @for (indice of this.airParifCouleursIndices; track indice.name) {
+            @for (indice of this.airParifCouleursIndices(); track indice.name) {
               <span class="indice-label" [style]="{ 'background-color': indice.color }">
                 {{ indice.name }}
               </span>
