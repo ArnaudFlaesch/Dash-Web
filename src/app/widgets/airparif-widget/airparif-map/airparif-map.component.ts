@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnChanges,
   OnDestroy,
   SimpleChanges,
