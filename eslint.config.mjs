@@ -13,6 +13,6 @@ export default [
   pluginCypress.configs.recommended,
   eslintConfigPrettier,
   {
-    ignores: ["public/", "cypress.config.ts", "cypress-test.config.ts"]
+    ignores: ["public/", ".angular/", "cypress.config.ts", "cypress-test.config.ts"]
   }
 ];

@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AirParifWidgetService } from "../airparif-widget.service";
 import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from "../model/IAirParif";
 import { AirParifMapComponent } from "./airparif-map.component";
@@ -7,13 +7,14 @@ import { provideHttpClient } from "@angular/common/http";
 
 describe("AirParifMapComponent", () => {
   let component: AirParifMapComponent;
+  let fixture: ComponentFixture<AirParifMapComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), AirParifWidgetService]
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(AirParifMapComponent);
+    fixture = TestBed.createComponent(AirParifMapComponent);
     component = fixture.componentInstance;
   });
 
@@ -67,7 +68,7 @@ describe("AirParifMapComponent", () => {
     ] as unknown as IForecast[];
 
     component.airParifForecast = forecastData;
-    component.airParifCouleursIndices = couleursIndicesData;
+    fixture.componentRef.setInput("airParifCouleursIndices", couleursIndicesData);
     component.ngAfterViewInit();
 
     expect(component.getColorFromIndice("BON" as AirParifIndiceEnum)).toEqual("#50f0e6");

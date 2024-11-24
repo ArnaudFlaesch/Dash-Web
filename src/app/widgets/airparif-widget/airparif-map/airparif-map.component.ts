@@ -106,8 +106,8 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
 
   public getColorFromIndice(indice: AirParifIndiceEnum): string {
     return (
-      this.airParifCouleursIndices().find((couleurIndice) => couleurIndice.name === indice)?.color ??
-      ""
+      this.airParifCouleursIndices().find((couleurIndice) => couleurIndice.name === indice)
+        ?.color ?? ""
     );
   }
 
