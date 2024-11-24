@@ -1,11 +1,12 @@
 import { advanceTo } from "jest-date-mock";
 import { IArticle } from "../IArticle";
 
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RssFeedComponent } from "./rss-feed.component";
 
 describe("RssFeedComponent", () => {
   let component: RssFeedComponent;
+  let fixture: ComponentFixture<RssFeedComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -13,7 +14,7 @@ describe("RssFeedComponent", () => {
       providers: []
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(RssFeedComponent);
+    fixture = TestBed.createComponent(RssFeedComponent);
     component = fixture.componentInstance;
   });
 
@@ -57,14 +58,14 @@ describe("RssFeedComponent", () => {
   });
 
   it("Should check if an article is already read", () => {
-    component.readArticles = ["1", "2"];
+    fixture.componentRef.setInput("readArticles", ["1", "2"]);
     expect(component.isArticleRead("3")).toEqual(false);
     expect(component.isArticleOpened("3")).toEqual(false);
   });
 
   it("Should mark article as read", () => {
     const markArticleAsReadEventSpy = jest.spyOn(component.markArticleAsReadEvent, "emit");
-    component.readArticles = ["1", "2"];
+    fixture.componentRef.setInput("readArticles", ["1", "2"]);
     component.onOpenDetail("3");
     expect(component.isArticleOpened("3")).toEqual(true);
     expect(markArticleAsReadEventSpy).toHaveBeenCalledTimes(1);

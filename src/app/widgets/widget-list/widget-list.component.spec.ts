@@ -114,7 +114,8 @@ describe("WidgetListComponent", () => {
         tabId: 1
       }
     ];
-    component.widgetList = widgetListConfig;
+    fixture.componentRef.setInput("widgetList", widgetListConfig);
+
     component.ngOnChanges({
       widgetList: new SimpleChange(null, widgetListConfig, true)
     });

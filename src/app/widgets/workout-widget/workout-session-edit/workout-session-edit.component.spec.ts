@@ -1,7 +1,6 @@
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { SimpleChange } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { DateFormatPipe } from "../../../pipes/date-format.pipe";
@@ -36,7 +35,7 @@ describe("WorkoutSessionEditComponent", () => {
 
     fixture = TestBed.createComponent(WorkoutSessionEditComponent);
     component = fixture.componentInstance;
-    component.workoutTypes = workoutTypes;
+    fixture.componentRef.setInput("workoutTypes", workoutTypes);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
@@ -45,10 +44,7 @@ describe("WorkoutSessionEditComponent", () => {
   });
 
   it("should add a rep to an exercise", () => {
-    component.currentWorkoutSessionToEdit = currentWorkoutSessionToEdit;
-    component.ngOnChanges({
-      currentWorkoutSessionToEdit: new SimpleChange(null, currentWorkoutSessionToEdit, true)
-    });
+    fixture.componentRef.setInput("currentWorkoutSessionToEdit", currentWorkoutSessionToEdit);
     fixture.detectChanges();
     const getWorkoutExercisesRequest = httpTestingController.expectOne(
       environment.backend_url +

@@ -17,8 +17,8 @@ describe("WorkoutStatisticsComponent", () => {
 
     const fixture = TestBed.createComponent(WorkoutStatisticsComponent);
     component = fixture.componentInstance;
-    component.workoutTypes = workoutTypes;
-    component.workoutStatsByMonth = workoutStatsByMonth;
+    fixture.componentRef.setInput("workoutTypes", workoutTypes);
+    fixture.componentRef.setInput("workoutStatsByMonth", workoutStatsByMonth);
   });
 
   const workoutTypes = [{ id: 1, name: "Abdos" } as IWorkoutType];

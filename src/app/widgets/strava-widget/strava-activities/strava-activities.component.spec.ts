@@ -1,10 +1,11 @@
 import { IActivity } from "../IStrava";
 
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { StravaActivitiesComponent } from "./strava-activities.component";
 
 describe("StravaActivitiesComponent", () => {
   let component: StravaActivitiesComponent;
+  let fixture: ComponentFixture<StravaActivitiesComponent>;
 
   const activitiesData: IActivity[] = [
     {
@@ -215,12 +216,12 @@ describe("StravaActivitiesComponent", () => {
       providers: []
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(StravaActivitiesComponent);
+    fixture = TestBed.createComponent(StravaActivitiesComponent);
     component = fixture.componentInstance;
   });
 
   it("Should convert a time", () => {
-    component.activities = activitiesData;
+    fixture.componentRef.setInput("activities", activitiesData);
     expect(component.convertDecimalTimeToTime(60000)).toEqual(1000);
     expect(component.convertDecimalTimeToTime(620.4)).toEqual(10.2);
     expect(component.convertDecimalTimeToTime(108)).toEqual(1.5);
@@ -237,7 +238,7 @@ describe("StravaActivitiesComponent", () => {
 
   it("Should display activity title", () => {
     const activity = activitiesData[0];
-    component.activities = activitiesData;
+    fixture.componentRef.setInput("activities", activitiesData);
     const actual = component.getTitleToDisplay(activity);
     expect(actual).toEqual("20 octobre  Evening Run  10.7047 kms");
   });

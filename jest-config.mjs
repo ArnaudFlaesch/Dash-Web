@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-undef
-module.exports = {
+const jestConfig = {
   preset: "jest-preset-angular",
   setupFilesAfterEnv: ["./setup-jest.ts", "jest-date-mock"],
   testPathIgnorePatterns: ["./cypress/"],
@@ -10,3 +9,5 @@ module.exports = {
   },
   coverageDirectory: "coverage-jest/"
 };
+
+export default jestConfig;
