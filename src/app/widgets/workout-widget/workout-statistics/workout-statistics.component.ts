@@ -14,9 +14,9 @@ import { IWorkoutStatByMonth, IWorkoutType } from "../model/Workout";
   standalone: true
 })
 export class WorkoutStatisticsComponent implements OnChanges {
-  public readonly workoutStatsByMonth = input<IWorkoutStatByMonth[]>([]);
+  public readonly workoutStatsByMonth = input.required<IWorkoutStatByMonth[]>();
 
-  public readonly workoutTypes = input<IWorkoutType[]>([]);
+  public readonly workoutTypes = input.required<IWorkoutType[]>();
 
   public workoutStatsChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
     undefined;

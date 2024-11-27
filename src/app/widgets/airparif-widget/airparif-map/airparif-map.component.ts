@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
   SimpleChanges,
@@ -31,10 +30,8 @@ import { MatIcon } from "@angular/material/icon";
 export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private readonly airParifWidgetService = inject(AirParifWidgetService);
 
-  public readonly airParifCouleursIndices = input<IAirParifCouleur[]>([]);
-
-  @Input()
-  public airParifForecast: IForecast[] = [];
+  public readonly airParifCouleursIndices = input.required<IAirParifCouleur[]>();
+  public readonly airParifForecast = input.required<IForecast[]>();
 
   public readonly airParifApiKey = input<string>();
 
@@ -48,7 +45,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   private readonly airParifForecastTodayLayer: L.Layer;
   private readonly airParifForecastTomorrowLayer: L.Layer;
 
-  private sidebarControl = L.control.sidebar({
+  private readonly sidebarControl = L.control.sidebar({
     autopan: false,
     closeButton: true,
     container: "sidebar",
@@ -85,14 +82,14 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   public selectTodayForecast(): void {
     this.map?.removeLayer(this.airParifForecastTomorrowLayer);
     this.forecastMode = ForecastMode.TODAY;
-    this.forecastToDisplay = this.airParifForecast[0];
+    this.forecastToDisplay = this.airParifForecast()[0];
     this.map?.addLayer(this.airParifForecastTodayLayer);
   }
 
   public selectTomorrowForecast(): void {
     this.map?.removeLayer(this.airParifForecastTodayLayer);
     this.forecastMode = ForecastMode.TOMORROW;
-    this.forecastToDisplay = this.airParifForecast[1];
+    this.forecastToDisplay = this.airParifForecast()[1];
     this.map?.addLayer(this.airParifForecastTomorrowLayer);
   }
 

@@ -45,12 +45,14 @@
       }
     </form>
 
-    @for (game of this.ownedGamesDisplay; track game.appid) {
-      <dash-game-details
-        [steamUserId]="this.steamUserId"
-        [profileUrl]="this.playerData?.profileurl"
-        [gameInfo]="game"
-      ></dash-game-details>
+    @if (this.steamUserId && this.playerData) {
+      @for (game of this.ownedGamesDisplay; track game.appid) {
+        <dash-game-details
+          [steamUserId]="this.steamUserId"
+          [profileUrl]="this.playerData.profileurl"
+          [gameInfo]="game"
+        />
+      }
     }
 
     <mat-paginator

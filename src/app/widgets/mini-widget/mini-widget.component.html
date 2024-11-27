@@ -1,7 +1,7 @@
 <div class="mini-widget">
   @if (isModeEdit()) {
     <div class="edit-mini-widget">
-      <ng-container *ngTemplateOutlet="editComponent"> </ng-container>
+      <ng-container *ngTemplateOutlet="editComponent() ?? null"> </ng-container>
 
       @if (this.isWidgetLoaded() && this.widgetData()) {
         <button class="cancelButton" matTooltip="Annuler" mat-icon-button (click)="cancelEdition()">
@@ -40,7 +40,7 @@
     <div (dblclick)="this.toEditMode()">
       <div class="read-mini-widget-body-container">
         @if (this.isWidgetLoaded()) {
-          <ng-container *ngTemplateOutlet="body"> </ng-container>
+          <ng-container *ngTemplateOutlet="body()"> </ng-container>
         } @else {
           <div class="loading-spinner">
             <mat-spinner></mat-spinner>

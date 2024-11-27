@@ -18,8 +18,8 @@ import { NgClass } from "@angular/common";
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
-  public readonly workoutTypes = input<IWorkoutType[]>([]);
-  public currentWorkoutSessionToEdit = input.required<IWorkoutSession>();
+  public readonly workoutTypes = input.required<IWorkoutType[]>();
+  public readonly currentWorkoutSessionToEdit = input.required<IWorkoutSession>();
 
   public workoutExercises: IWorkoutExercise[] = [];
 
@@ -93,7 +93,8 @@ export class WorkoutSessionEditComponent {
 
   private updateNumberOfReps(workoutTypeId: number, numberOfRepsToAdd: number): void {
     const oldNumberOfReps = this.getExerciceNumberOfReps(workoutTypeId);
-    if (this.currentWorkoutSessionToEdit) {
+    const currentWorkoutSessionToEdit = this.currentWorkoutSessionToEdit();
+    if (currentWorkoutSessionToEdit) {
       this.updateWorkoutExercise(
         this.currentWorkoutSessionToEdit().id,
         workoutTypeId,

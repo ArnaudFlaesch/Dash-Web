@@ -1,5 +1,5 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { environment } from "../../environments/environment";
 import { TabService } from "../services/tab.service/tab.service";
@@ -10,6 +10,7 @@ import { provideHttpClient } from "@angular/common/http";
 
 describe("TabComponent", () => {
   let component: TabComponent;
+  let fixture: ComponentFixture<TabComponent>;
   let httpTestingController: HttpTestingController;
 
   const tabData: ITab = {
@@ -24,7 +25,7 @@ describe("TabComponent", () => {
       providers: [ErrorHandlerService, provideHttpClient(), provideHttpClientTesting(), TabService]
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(TabComponent);
+    fixture = TestBed.createComponent(TabComponent);
     component = fixture.componentInstance;
     httpTestingController = TestBed.inject(HttpTestingController);
   });
@@ -35,13 +36,13 @@ describe("TabComponent", () => {
 
   describe("Simple cases", () => {
     it("Should display and edit a tab", () => {
-      expect(component.tab).toEqual(undefined);
-      component.tab = tabData;
       expect(component.editMode).toEqual(false);
+      fixture.componentRef.setInput("tab", tabData);
       component.toggleEditMode();
       expect(component.editMode).toEqual(true);
       const updatedTabLabel = "Journaux";
-      component.tab.label = updatedTabLabel;
+      fixture.componentRef.setInput("tab", { ...component.tab, label: updatedTabLabel });
+
       component.enterSaveTabName(new KeyboardEvent("keydown", { key: "Enter" }));
       const updatedTabData = {
         id: 1,
@@ -54,7 +55,7 @@ describe("TabComponent", () => {
     });
 
     it("Should not update a tab because of server error", () => {
-      component.tab = tabData;
+      fixture.componentRef.setInput("tab", tabData);
       expect(component.editMode).toEqual(false);
       component.toggleEditMode();
       expect(component.editMode).toEqual(true);
@@ -68,13 +69,12 @@ describe("TabComponent", () => {
 
     it("Should delete a tab when it exists", () => {
       const deletedEventSpy = jest.spyOn(component.tabDeletedEvent, "emit");
-      component.deleteTabFromDash();
       expect(deletedEventSpy).toHaveBeenCalledTimes(0);
-      component.tab = {
+      fixture.componentRef.setInput("tab", {
         id: 1,
         label: "Nouvel onglet",
         tabOrder: 1
-      } as ITab;
+      } as ITab);
       component.deleteTabFromDash();
       expect(deletedEventSpy).toHaveBeenCalledTimes(1);
     });

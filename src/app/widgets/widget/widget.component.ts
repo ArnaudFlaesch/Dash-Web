@@ -1,9 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ContentChild,
   TemplateRef,
-  inject
+  inject,
+  contentChild
 } from "@angular/core";
 
 import { ErrorHandlerService } from "../../../app/services/error.handler.service";
@@ -36,14 +36,9 @@ export class WidgetComponent extends AbstractWidgetComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   protected override widgetService: WidgetService;
 
-  @ContentChild("headerIcon", { static: false })
-  headerIcon: TemplateRef<unknown> | null = null;
-
-  @ContentChild("headerTitle", { static: false })
-  headerTitle: TemplateRef<unknown> | null = null;
-
-  @ContentChild("additionalActions", { static: false })
-  additionalActions: TemplateRef<unknown> | null = null;
+  readonly headerIcon = contentChild.required<TemplateRef<unknown> | null>("headerIcon");
+  readonly headerTitle = contentChild.required<TemplateRef<unknown> | null>("headerTitle");
+  readonly additionalActions = contentChild<TemplateRef<unknown>>("additionalActions");
 
   private readonly ERROR_UPDATING_WIDGET_DATA =
     "Erreur lors de la mise à jour de la configuration du widget.";

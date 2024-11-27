@@ -1,11 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ContentChild,
   TemplateRef,
   inject,
   input,
-  output
+  output,
+  contentChild
 } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 import { ModeEnum } from "../../enums/ModeEnum";
@@ -20,11 +20,8 @@ import { WidgetService } from "../../services/widget.service/widget.service";
 export class AbstractWidgetComponent {
   protected widgetService = inject(WidgetService);
 
-  @ContentChild("body", { static: false })
-  body: TemplateRef<unknown> | null = null;
-
-  @ContentChild("editComponent", { static: false })
-  editComponent: TemplateRef<unknown> | null = null;
+  readonly body = contentChild.required<TemplateRef<unknown> | null>("body");
+  readonly editComponent = contentChild<TemplateRef<unknown> | null>("editComponent");
 
   readonly isFormValid = input(false);
   readonly isWidgetLoaded = input(false);
@@ -63,7 +60,7 @@ export class AbstractWidgetComponent {
   }
 
   public toEditMode(): void {
-    this.mode = this.editComponent ? ModeEnum.EDIT : this.mode;
+    this.mode = this.editComponent() ? ModeEnum.EDIT : this.mode;
   }
 
   public toReadMode(): void {

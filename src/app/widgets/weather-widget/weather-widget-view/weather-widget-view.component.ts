@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  Input,
   OnChanges,
   SimpleChanges,
   input
@@ -35,9 +34,9 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   styleUrl: "./weather-widget-view.component.scss"
 })
 export class WeatherWidgetViewComponent implements OnChanges {
-  public readonly weather = input<IWeatherAPIResponse>();
-  public readonly forecastResponse = input<IForecast[]>([]);
-  @Input() public cityData: ICity | undefined;
+  public readonly weather = input.required<IWeatherAPIResponse>();
+  public readonly forecastResponse = input.required<IForecast[]>();
+  public readonly cityData = input.required<ICity>();
 
   public displayAllForecast = false;
   public forecastToDisplay: IForecast[] = [];
@@ -89,8 +88,9 @@ export class WeatherWidgetViewComponent implements OnChanges {
   }
 
   public updateForecastData(): void {
-    if (this.cityData) {
-      this.forecastToDisplay = this.filterForecastByMode(this.cityData, this.forecastResponse());
+    const cityData = this.cityData();
+    if (cityData) {
+      this.forecastToDisplay = this.filterForecastByMode(cityData, this.forecastResponse());
     }
   }
 
