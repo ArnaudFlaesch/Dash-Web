@@ -64,7 +64,7 @@
     "cypress-file-upload": "5.0.8",
     "cypress-multi-reporters": "2.0.4",
     "esbuild-visualizer": "0.6.0",
-    "eslint": "9.15.0",
+    "eslint": "9.16.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-cypress": "4.1.0",
     "globals": "15.12.0",
