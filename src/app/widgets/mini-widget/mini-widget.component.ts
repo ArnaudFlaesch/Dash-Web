@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
