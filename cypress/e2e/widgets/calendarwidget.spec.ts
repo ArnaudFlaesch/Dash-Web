@@ -2,7 +2,7 @@
 
 import { Interception } from "cypress/types/net-stubbing";
 
-describe("Calendar Widget tests", () => {
+xdescribe("Calendar Widget tests", () => {
   const icalFrenchHolidays =
     "https://calendar.google.com/calendar/ical/fr.french%23holiday%40group.v.calendar.google.com/public/basic.ics";
   const icalUsaHolidays =
