@@ -62,7 +62,7 @@
     "angular-calendar": "0.31.1",
     "cypress": "14.0.0",
     "cypress-file-upload": "5.0.8",
-    "cypress-multi-reporters": "2.0.4",
+    "cypress-multi-reporters": "2.0.5",
     "esbuild-visualizer": "0.7.0",
     "eslint": "9.19.0",
     "eslint-config-prettier": "10.0.1",
