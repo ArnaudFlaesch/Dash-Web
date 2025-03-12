@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, input, output } from "@angular/core";
-import { isToday, isThisYear } from "date-fns";
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { isThisYear, isToday } from "date-fns";
 import { IArticle } from "../IArticle";
 import { SafePipe } from "../../../pipes/safe.pipe";
 import { DateFormatPipe } from "../../../pipes/date-format.pipe";
@@ -7,9 +7,9 @@ import { NgClass } from "@angular/common";
 import {
   MatAccordion,
   MatExpansionPanel,
+  MatExpansionPanelContent,
   MatExpansionPanelHeader,
-  MatExpansionPanelTitle,
-  MatExpansionPanelContent
+  MatExpansionPanelTitle
 } from "@angular/material/expansion";
 
 @Component({
@@ -70,7 +70,7 @@ export class RssFeedComponent {
     this.currentOpenedArticle = undefined;
   }
 
-  private getPublicationDateToDisplay(articleDate: Date) {
+  private getPublicationDateToDisplay(articleDate: Date): string {
     if (isToday(articleDate)) {
       return articleDate.toLocaleTimeString("fr", {
         hour: "2-digit",

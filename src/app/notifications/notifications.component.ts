@@ -32,14 +32,14 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   private readonly ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.fetchNotificationsFromDatabase();
     this.widgetService.refreshWidgetsAction.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => this.fetchNotificationsFromDatabase()
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
   }

@@ -1,15 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import {
-  MatDialogRef,
-  MatDialogTitle,
-  MatDialogContent,
+  MatDialogActions,
   MatDialogClose,
-  MatDialogActions
+  MatDialogContent,
+  MatDialogTitle
 } from "@angular/material/dialog";
 import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { MatCard, MatCardContent, MatCardActions } from "@angular/material/card";
+import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
 
 @Component({
   selector: "dash-create-widget-modal",
@@ -30,8 +29,6 @@ import { MatCard, MatCardContent, MatCardActions } from "@angular/material/card"
   ]
 })
 export class CreateWidgetModalComponent {
-  dialogRef = inject<MatDialogRef<CreateWidgetModalComponent>>(MatDialogRef);
-
   public widgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(WidgetTypeEnum)
     .filter((key) => isNaN(parseInt(key, 0)))
     .map((type: string) => {

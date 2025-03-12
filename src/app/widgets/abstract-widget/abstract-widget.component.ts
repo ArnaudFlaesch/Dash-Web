@@ -1,11 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  TemplateRef,
+  contentChild,
   inject,
   input,
   output,
-  contentChild
+  TemplateRef
 } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 import { ModeEnum } from "../../enums/ModeEnum";
@@ -18,29 +18,27 @@ import { WidgetService } from "../../services/widget.service/widget.service";
   standalone: true
 })
 export class AbstractWidgetComponent {
-  protected widgetService = inject(WidgetService);
-
-  readonly body = contentChild.required<TemplateRef<unknown> | null>("body");
-  readonly editComponent = contentChild<TemplateRef<unknown> | null>("editComponent");
-
-  readonly isFormValid = input(false);
-  readonly isWidgetLoaded = input(false);
-  readonly widgetData = input<Record<string, unknown>>();
-  readonly refreshWidgetAction = output();
+  public readonly body = contentChild.required<TemplateRef<unknown> | null>("body");
+  public readonly editComponent = contentChild<TemplateRef<unknown> | null>("editComponent");
+  public readonly isFormValid = input(false);
+  public readonly isWidgetLoaded = input(false);
+  public readonly widgetData = input<Record<string, unknown>>();
+  public readonly refreshWidgetAction = output();
 
   public widgetId: number;
   public mode: ModeEnum;
 
+  protected readonly widgetService = inject(WidgetService);
   private readonly destroy$: Subject<unknown> = new Subject();
 
-  constructor() {
+  public constructor() {
     const widgetId = inject<number>("widgetId" as never);
 
     this.mode = this.widgetData() ? ModeEnum.READ : ModeEnum.EDIT;
     this.widgetId = widgetId;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.mode = this.widgetData() ? ModeEnum.READ : ModeEnum.EDIT;
     this.refreshWidget();
     this.widgetService.refreshWidgetsAction.pipe(takeUntil(this.destroy$)).subscribe({
@@ -48,7 +46,7 @@ export class AbstractWidgetComponent {
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
   }

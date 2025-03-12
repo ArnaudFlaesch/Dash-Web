@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { AuthService } from "./services/auth.service/auth.service";
 import { ThemeService } from "./services/theme.service/theme.service";
@@ -16,11 +16,11 @@ export type IMenu = {
   imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
+  public readonly title = "Dash";
+
   private readonly authService = inject(AuthService);
   private readonly themeService = inject(ThemeService);
   private readonly router = inject(Router);
-
-  title = "Dash";
 
   public async ngOnInit(): Promise<void> {
     if (!this.authService.userHasValidToken()) {

@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Observable, ReplaySubject } from "rxjs";
 
 import { environment } from "../../../environments/environment";
@@ -8,11 +8,10 @@ import authorizationBearer from "../authorizationBearer/authorizationBearer";
 
 @Injectable()
 export class MiniWidgetService {
-  private readonly http = inject(HttpClient);
-
   public _miniWidgetDeletedEvent: ReplaySubject<number> = new ReplaySubject(0);
   public readonly miniWidgetDeleted: Observable<number> =
     this._miniWidgetDeletedEvent.asObservable();
+  private readonly http = inject(HttpClient);
 
   public getMiniWidgets(): Observable<IMiniWidgetConfig[]> {
     return this.http.get<IMiniWidgetConfig[]>(`${environment.backend_url}/miniWidget/`, {

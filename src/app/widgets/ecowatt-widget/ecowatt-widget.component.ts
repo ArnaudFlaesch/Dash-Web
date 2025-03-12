@@ -21,9 +21,7 @@ import { WidgetComponent } from "../widget/widget.component";
   imports: [WidgetComponent, MatIcon, SafePipe]
 })
 export class EcowattWidgetComponent implements AfterViewInit {
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
-
-  readonly iframeContainer = viewChild<ElementRef>("iframeContainer");
+  public readonly iframeContainer = viewChild<ElementRef>("iframeContainer");
 
   public ecowattIframeUrl =
     "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
@@ -31,6 +29,7 @@ export class EcowattWidgetComponent implements AfterViewInit {
   public isWidgetLoaded = true;
   public iframeContainerHeight = 0;
   public iframeContainerWidth = 0;
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   @HostListener("window:resize", ["$event"])
   public onResize(): void {

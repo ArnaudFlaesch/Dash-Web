@@ -13,7 +13,7 @@ import { MatDateFnsModule, provideDateFnsAdapter } from "@angular/material-date-
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
-import { MatNativeDateModule, MAT_DATE_LOCALE } from "@angular/material/core";
+import { MAT_DATE_LOCALE, MatNativeDateModule } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatDividerModule } from "@angular/material/divider";
@@ -30,7 +30,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { provideAnimations } from "@angular/platform-browser/animations";
-import { Routes, provideRouter } from "@angular/router";
+import { provideRouter, Routes } from "@angular/router";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { CalendarModule, DateAdapter } from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
@@ -68,7 +68,7 @@ const routes: Routes = [
   {
     path: "home",
     loadComponent: () => import("./app/home/home.component").then((m) => m.HomeComponent),
-    canActivate: [() => inject(AuthService).userHasValidToken()]
+    canActivate: [(): boolean => inject(AuthService).userHasValidToken()]
   },
   { path: "**", redirectTo: "home" }
 ];

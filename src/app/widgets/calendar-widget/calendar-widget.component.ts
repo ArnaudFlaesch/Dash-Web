@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, LOCALE_ID, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, LOCALE_ID } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import {
-  CalendarEvent,
-  CalendarView,
   CalendarCommonModule,
+  CalendarDayModule,
+  CalendarEvent,
   CalendarMonthModule,
-  CalendarWeekModule,
-  CalendarDayModule
+  CalendarView,
+  CalendarWeekModule
 } from "angular-calendar";
 import { addMonths, endOfDay, format, startOfDay } from "date-fns";
 import { Subject } from "rxjs";
@@ -42,39 +42,38 @@ import { WidgetComponent } from "../widget/widget.component";
   ]
 })
 export class CalendarWidgetComponent {
-  dialog = inject(MatDialog);
-  private readonly calendarWidgetService = inject(CalendarWidgetService);
-  private readonly errorHandlerService = inject(ErrorHandlerService);
-
   public calendarUrls: string[] = [];
   public isWidgetLoaded = true;
 
-  calendarView = CalendarView;
-  events: CalendarEvent[] = [];
+  public calendarView = CalendarView;
+  public events: CalendarEvent[] = [];
 
-  view: CalendarView = CalendarView.Month;
-  viewDate: Date = new Date();
-  refresh: Subject<unknown> = new Subject();
-  locale = "fr";
-  hourSegments: 1 | 2 | 4 | 6 = 1;
-  weekStartsOn = 1;
-  startsWithToday = true;
-  activeDayIsOpen = true;
-  excludeDays: number[] = [];
-  weekendDays: number[] = [0, 6];
-  dayStartHour = 6;
-  dayEndHour = 24;
+  public view: CalendarView = CalendarView.Month;
+  public viewDate: Date = new Date();
+  public refresh: Subject<unknown> = new Subject();
+  public locale = "fr";
+  public hourSegments: 1 | 2 | 4 | 6 = 1;
+  public weekStartsOn = 1;
+  public startsWithToday = true;
+  public activeDayIsOpen = true;
+  public excludeDays: number[] = [];
+  public weekendDays: number[] = [0, 6];
+  public dayStartHour = 6;
+  public dayEndHour = 24;
 
-  minDate: Date = new Date();
-  maxDate: Date = endOfDay(addMonths(new Date(), 1));
+  public minDate: Date = new Date();
+  public maxDate: Date = endOfDay(addMonths(new Date(), 1));
 
-  prevBtnDisabled = false;
-  nextBtnDisabled = false;
+  public prevBtnDisabled = false;
+  public nextBtnDisabled = false;
 
+  private readonly dialog = inject(MatDialog);
+  private readonly calendarWidgetService = inject(CalendarWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly MILLISECONDS_IN_A_DAY = 86400000;
   private readonly ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
-  constructor() {
+  public constructor() {
     const locale = inject(LOCALE_ID);
 
     this.locale = locale;

@@ -19,11 +19,12 @@ import { ErrorHandlerService } from "./../../services/error.handler.service";
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ImportConfigModalComponent {
+  public fileToUpload: File | null = null;
+
   private readonly configService = inject(ConfigService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  dialogRef = inject<MatDialogRef<ImportConfigModalComponent>>(MatDialogRef);
+  private readonly dialogRef = inject<MatDialogRef<ImportConfigModalComponent>>(MatDialogRef);
 
-  public fileToUpload: File | null = null;
   private readonly ERROR_IMPORT_CONFIGURATION = "Erreur lors de l'import de la configuration.";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

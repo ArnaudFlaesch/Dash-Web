@@ -1,5 +1,5 @@
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "./../model/Workout";
-import { ChangeDetectionStrategy, Component, SimpleChanges, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, SimpleChanges } from "@angular/core";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { WorkoutWidgetService } from "../workout.widget.service";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -34,7 +34,7 @@ export class WorkoutSessionEditComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes["currentWorkoutSessionToEdit"].currentValue)
       this.fetchWorkoutExercisesBySessionId(changes["currentWorkoutSessionToEdit"].currentValue.id);
   }

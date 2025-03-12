@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import {
   MAT_DIALOG_DATA,
-  MatDialogTitle,
-  MatDialogContent,
   MatDialogActions,
-  MatDialogClose
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle
 } from "@angular/material/dialog";
 import { CalendarEvent } from "angular-calendar";
 import { DateFormatPipe } from "../../../pipes/date-format.pipe";
@@ -25,12 +25,10 @@ import { MatButton } from "@angular/material/button";
   ]
 })
 export class EventDetailModalComponent {
-  data = inject(MAT_DIALOG_DATA);
+  public readonly eventDetail: CalendarEvent;
+  public readonly data = inject(MAT_DIALOG_DATA);
 
-  public eventDetail: CalendarEvent;
-  constructor() {
-    const data = this.data;
-
-    this.eventDetail = data;
+  public constructor() {
+    this.eventDetail = this.data;
   }
 }

@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { PageEvent, MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 
 import { ErrorHandlerService } from "./../../services/error.handler.service";
@@ -62,7 +62,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.searchFormControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .pipe(debounceTime(500), distinctUntilChanged())
@@ -74,7 +74,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
   }

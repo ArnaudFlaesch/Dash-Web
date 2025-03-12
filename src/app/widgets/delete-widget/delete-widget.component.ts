@@ -10,10 +10,10 @@ import { MatButton } from "@angular/material/button";
   imports: [MatButton]
 })
 export class DeleteWidgetComponent {
-  readonly validateWidgetDeletion = output();
-  readonly cancelWidgetDeletion = output();
+  public readonly validateWidgetDeletion = output();
+  public readonly cancelWidgetDeletion = output();
 
-  cancelButtonClicked(): void {
+  public cancelButtonClicked(): void {
     this.cancelWidgetDeletion.emit();
   }
 

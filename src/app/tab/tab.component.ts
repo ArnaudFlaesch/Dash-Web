@@ -1,6 +1,6 @@
 import { ErrorHandlerService } from "./../services/error.handler.service";
 import { TabService } from "./../services/tab.service/tab.service";
-import { Component, ChangeDetectionStrategy, inject, output, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { ITab } from "../model/Tab";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MatIcon } from "@angular/material/icon";
@@ -15,15 +15,13 @@ import { FormsModule } from "@angular/forms";
   imports: [FormsModule, MatIcon]
 })
 export class TabComponent {
-  private readonly tabService = inject(TabService);
-  private readonly errorHandlerService = inject(ErrorHandlerService);
-
   public readonly tab = input.required<ITab>();
-  readonly tabDeletedEvent = output<number>();
-
+  public readonly tabDeletedEvent = output<number>();
   public editMode = false;
 
   private readonly ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
+  private readonly tabService = inject(TabService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public deleteTabFromDash(): void {
     if (this.tab()) {

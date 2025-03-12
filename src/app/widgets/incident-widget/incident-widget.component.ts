@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from "@angular/core";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { IIncidentStreak, IIncidentViewEnum } from "./IIncident";

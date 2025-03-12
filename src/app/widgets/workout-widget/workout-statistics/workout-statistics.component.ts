@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnChanges, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, OnChanges } from "@angular/core";
 import { ChartData, ChartTypeRegistry } from "chart.js";
 import { format, startOfMonth } from "date-fns";
 import { fr } from "date-fns/locale/fr";
@@ -21,7 +21,7 @@ export class WorkoutStatisticsComponent implements OnChanges {
   public workoutStatsChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
     undefined;
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     const labels = [
       ...new Set(
         this.workoutStatsByMonth().map((stat) => startOfMonth(new Date(stat.monthPeriod)).getTime())

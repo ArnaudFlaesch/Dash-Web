@@ -1,10 +1,10 @@
-import { Component, ChangeDetectionStrategy, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import {
   MAT_DIALOG_DATA,
-  MatDialogTitle,
-  MatDialogContent,
   MatDialogActions,
-  MatDialogClose
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle
 } from "@angular/material/dialog";
 import { MatButton } from "@angular/material/button";
 
@@ -16,5 +16,5 @@ import { MatButton } from "@angular/material/button";
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ConfirmModalComponent {
-  data = inject(MAT_DIALOG_DATA);
+  public readonly data = inject(MAT_DIALOG_DATA);
 }

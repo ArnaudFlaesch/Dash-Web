@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { ErrorHandlerService } from "../../../../app/services/error.handler.service";
+import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
 import { ICity, IForecast, IWeatherAPIResponse } from "../IWeather";
 import { WeatherWidgetService } from "../weather.widget.service";
@@ -29,19 +29,16 @@ import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
   ]
 })
 export class WeatherMiniWidgetComponent {
-  private readonly weatherWidgetService = inject(WeatherWidgetService);
-  private readonly errorHandlerService = inject(ErrorHandlerService);
-
   public city: string | null = null;
-
   public weather: IWeatherAPIResponse | undefined;
   public forecastResponse: IForecast[] = [];
   public cityData: ICity | undefined;
-
   public selectedDayForecast: Date = new Date();
 
   private readonly ERROR_GETTING_WEATHER_DATA =
     "Erreur lors de la récupération des données météorologiques.";
+  private readonly weatherWidgetService = inject(WeatherWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public refreshWidget(): void {
     if (this.city) {
@@ -52,6 +49,7 @@ export class WeatherMiniWidgetComponent {
       });
     }
   }
+
   public getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getIconFromWeatherApi(icon);
   }

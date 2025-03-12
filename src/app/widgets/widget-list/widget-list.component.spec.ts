@@ -2,7 +2,7 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { TestBed, ComponentFixture } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { ThemeService } from "../../services/theme.service/theme.service";

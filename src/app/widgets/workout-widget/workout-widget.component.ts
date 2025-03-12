@@ -75,10 +75,6 @@ enum WORKOUT_STATISTICS {
   ]
 })
 export class WorkoutWidgetComponent {
-  private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly workoutWidgetService = inject(WorkoutWidgetService);
-  private readonly dateUtilsService = inject(DateUtilsService);
-
   public workoutTypes: IWorkoutType[] = [];
   public workoutSessions: IWorkoutSession[] = [];
   public workoutStatsByWeek: IWorkoutStatsByPeriod[] = [];
@@ -104,6 +100,10 @@ export class WorkoutWidgetComponent {
   private readonly ERROR_CREATING_WORKOUT_SESSION =
     "Erreur lors de la création d'une session d'exercices.";
   private readonly ERROR_GETTING_WORKOUT_STATS = "Erreur lors de la récupération des statistiques.";
+
+  private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly workoutWidgetService = inject(WorkoutWidgetService);
+  private readonly dateUtilsService = inject(DateUtilsService);
 
   public refreshWidget(): void {
     this.workoutWidgetService.getWorkoutTypes().subscribe({

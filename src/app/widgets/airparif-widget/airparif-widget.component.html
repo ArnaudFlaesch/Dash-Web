@@ -9,7 +9,7 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <a [href]="[airParifWebsiteUrl | safe: 'url']">
+    <a [href]="[this.airParifWidgetService.getAirParifWebsiteUrl() | safe: 'url']">
       <div>AirParif</div>
     </a>
   </ng-template>

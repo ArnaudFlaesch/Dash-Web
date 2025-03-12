@@ -3,11 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  inject,
+  input,
   OnChanges,
   OnDestroy,
   SimpleChanges,
-  inject,
-  input,
   viewChild
 } from "@angular/core";
 import * as L from "leaflet";
@@ -28,17 +28,14 @@ import { MatIcon } from "@angular/material/icon";
   imports: [MatIcon, MatButton]
 })
 export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
-  private readonly airParifWidgetService = inject(AirParifWidgetService);
-
+  public readonly mapContainer = viewChild<ElementRef>("map");
   public readonly airParifCouleursIndices = input.required<IAirParifCouleur[]>();
   public readonly airParifForecast = input.required<IForecast[]>();
-
   public readonly airParifApiKey = input<string>();
-
-  readonly mapContainer = viewChild<ElementRef>("map");
 
   public forecastToDisplay: IForecast | undefined;
   public forecastMode: ForecastMode = ForecastMode.TODAY;
+  private readonly airParifWidgetService = inject(AirParifWidgetService);
 
   private readonly airParifUrl = "https://magellan.airparif.asso.fr/geoserver/";
   private map: L.Map | undefined;
@@ -52,7 +49,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
     position: "left"
   });
 
-  constructor() {
+  public constructor() {
     this.airParifForecastTodayLayer = L.tileLayer.wms(
       this.airParifUrl + "siteweb/wms",
       this.getAirParifWmsOptions("siteweb:vue_indice_atmo_2020_com")
@@ -63,17 +60,17 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
     );
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.initMap();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes["airParifForecast"] && !this.forecastToDisplay) {
       this.selectTodayForecast();
     }
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.map?.removeControl(this.sidebarControl);
     this.map?.off();
     this.map?.remove();
@@ -133,6 +130,7 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private getAirParifWmsOptions(layer: string) {
     return {
       service: "WMS",
