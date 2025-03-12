@@ -7,7 +7,7 @@
     "start:dev": "npm run start -- -c=dev",
     "build": "ng build --configuration=production",
     "build:bundle-stats": "npm run build -- --stats-json",
-    "test": "jest --config jest-config.mjs",
+    "test": "jest --config jest-config.ts",
     "test:watch": "npm run test -- --watch",
     "cy:open": "cypress open",
     "cy:verify": "npx cypress verify",
@@ -25,7 +25,7 @@
   },
   "engines": {
     "node": "22.x",
-    "npm": "11.x"
+    "npm": "10.x"
   },
   "dependencies": {
     "@angular/animations": "19.2.1",
@@ -77,6 +77,7 @@
     "prettier": "3.5.3",
     "stylelint": "16.15.0",
     "stylelint-config-standard-scss": "14.0.0",
+    "ts-node": "10.9.2",
     "typescript": "5.8.2",
     "typescript-eslint": "8.26.1"
   }

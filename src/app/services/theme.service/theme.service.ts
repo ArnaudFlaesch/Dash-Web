@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class ThemeService {
-  readonly DARK_MODE_CLASS_NAME = "dark-mode";
-  readonly PREFERRED_THEME_LOCALSTORAGE_KEY = "preferredTheme";
+  public readonly DARK_MODE_CLASS_NAME = "dark-mode";
+  public readonly PREFERRED_THEME_LOCALSTORAGE_KEY = "preferredTheme";
 
   private isDarkModeEnabled = false;
 

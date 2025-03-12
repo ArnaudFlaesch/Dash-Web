@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>{{ data.title }}</h1>
+<h1 mat-dialog-title>{{ eventDetail.title }}</h1>
 <mat-dialog-content>
-  <div>Début {{ data.start | dateFormat }}</div>
-  @if (data.end) {
-    <div>Fin {{ data.end | dateFormat }}</div>
+  <div>Début {{ eventDetail.start | dateFormat }}</div>
+  @if (eventDetail.end) {
+    <div>Fin {{ eventDetail.end | dateFormat }}</div>
   }
 </mat-dialog-content>
 <mat-dialog-actions>

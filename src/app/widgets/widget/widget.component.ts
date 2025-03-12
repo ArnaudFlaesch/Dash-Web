@@ -1,9 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  TemplateRef,
+  contentChild,
   inject,
-  contentChild
+  TemplateRef
 } from "@angular/core";
 
 import { ErrorHandlerService } from "../../../app/services/error.handler.service";
@@ -13,7 +13,7 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { DeleteWidgetComponent } from "../delete-widget/delete-widget.component";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { MatIconButton, MatButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { NgTemplateOutlet } from "@angular/common";
 
 @Component({
@@ -33,17 +33,15 @@ import { NgTemplateOutlet } from "@angular/common";
   ]
 })
 export class WidgetComponent extends AbstractWidgetComponent {
-  private readonly errorHandlerService = inject(ErrorHandlerService);
+  public readonly headerIcon = contentChild.required<TemplateRef<unknown> | null>("headerIcon");
+  public readonly headerTitle = contentChild.required<TemplateRef<unknown> | null>("headerTitle");
+  public readonly additionalActions = contentChild<TemplateRef<unknown>>("additionalActions");
   protected override widgetService: WidgetService;
-
-  readonly headerIcon = contentChild.required<TemplateRef<unknown> | null>("headerIcon");
-  readonly headerTitle = contentChild.required<TemplateRef<unknown> | null>("headerTitle");
-  readonly additionalActions = contentChild<TemplateRef<unknown>>("additionalActions");
-
+  private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly ERROR_UPDATING_WIDGET_DATA =
     "Erreur lors de la mise à jour de la configuration du widget.";
 
-  constructor() {
+  public constructor() {
     super();
     this.widgetService = inject(WidgetService);
     this.widgetId = inject<number>("widgetId" as never);

@@ -2,6 +2,7 @@
 
 import { Interception } from "cypress/types/net-stubbing";
 import { format } from "date-fns";
+
 describe("Workout Widget tests", () => {
   const mockedDate = new Date(2023, 6, 22, 0, 0, 0);
   const tabName = "Workout";

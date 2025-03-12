@@ -96,7 +96,10 @@
           "url": "https://i.f1g.fr/media/cms/1280x852_crop/2022/03/05/e0282ee2534e01d6dbd03e5958ce1611b0c8c0cf62ef41e12c27e4587c28702f.jpg",
           "width": "1280",
           "height": "852",
-          "description": { "type": "plain", "": "Des soldats ukrainiens utilisant un Javelin." },
+          "description": {
+            "type": "plain",
+            "": "Des soldats ukrainiens utilisant un Javelin."
+          },
           "credit": "Handout / Ukrainian Defence ministry press-service / AFP"
         }
       },
@@ -111,7 +114,10 @@
           "url": "https://i.f1g.fr/media/cms/3000x2001_crop/2022/03/05/9263822b557029791a7919f8fdd8e4ff61b5db712e66a774e4ff780173672fbe.jpg",
           "width": "3000",
           "height": "2001",
-          "description": { "type": "plain", "": "Le port de Marioupol, le 20 février." },
+          "description": {
+            "type": "plain",
+            "": "Le port de Marioupol, le 20 février."
+          },
           "credit": "CARLOS BARRIA / REUTERS"
         }
       },

@@ -3,12 +3,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  inject,
   Injector,
   OnDestroy,
   OnInit,
-  ViewContainerRef,
-  inject,
-  viewChildren
+  viewChildren,
+  ViewContainerRef
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 
@@ -32,14 +32,13 @@ import { MatMiniFabButton } from "@angular/material/button";
   imports: [MatMiniFabButton, MatTooltip, MatIcon]
 })
 export class MiniWidgetListComponent implements OnInit, OnDestroy {
+  public readonly miniWidgetTargets = viewChildren("dynamic", { read: ViewContainerRef });
+  public miniWidgetList: IMiniWidgetConfig[] = [];
+
   private readonly cdRef = inject(ChangeDetectorRef);
-  dialog = inject(MatDialog);
+  private readonly dialog = inject(MatDialog);
   private readonly miniWidgetService = inject(MiniWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-
-  readonly miniWidgetTargets = viewChildren("dynamic", { read: ViewContainerRef });
-
-  public miniWidgetList: IMiniWidgetConfig[] = [];
   private readonly destroy$: Subject<unknown> = new Subject();
 
   private readonly ERROR_MESSAGE_GET_MINI_WIDGETS =
@@ -48,7 +47,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
   private readonly ERROR_MESSAGE_DELETE_MINI_WIDGET =
     "Erreur lors de la suppression du mini widget.";
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.miniWidgetService.getMiniWidgets().subscribe({
       next: (miniWidgets) => {
         this.miniWidgetList = miniWidgets;
@@ -72,7 +71,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
   }

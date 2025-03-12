@@ -15,14 +15,11 @@ import { MatTooltip } from "@angular/material/tooltip";
   imports: [MatTooltip, MatIcon, InitialUppercasePipe]
 })
 export class WeatherForecastComponent {
+  public readonly forecast = input.required<IForecast[]>();
+  public readonly timezone = input(0);
+  public readonly forecastMode = input<ForecastMode>(ForecastMode.DAY);
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly dateUtils = inject(DateUtilsService);
-
-  public readonly forecast = input.required<IForecast[]>();
-
-  public readonly timezone = input(0);
-
-  public readonly forecastMode = input<ForecastMode>(ForecastMode.DAY);
 
   public getDateToDisplay(dateTime: number, timezone: number): string {
     const options: Intl.DateTimeFormatOptions =

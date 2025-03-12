@@ -38,13 +38,12 @@ export class AirParifWidgetComponent {
   public forecastToDisplay: IForecast | undefined;
 
   public isWidgetLoaded = true;
+  public readonly airParifWidgetService = inject(AirParifWidgetService);
 
   private readonly ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
 
-  private readonly airParifWidgetService = inject(AirParifWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  public airParifWebsiteUrl = this.airParifWidgetService.getAirParifWebsiteUrl();
 
   public refreshWidget(): void {
     if (this.airParifApiKey && this.communeInseeCode) {

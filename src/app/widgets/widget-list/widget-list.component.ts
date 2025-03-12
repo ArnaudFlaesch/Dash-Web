@@ -2,14 +2,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Injector,
-  OnChanges,
-  SimpleChanges,
-  ViewContainerRef,
   inject,
+  Injector,
   input,
+  OnChanges,
+  output,
+  SimpleChanges,
   viewChildren,
-  output
+  ViewContainerRef
 } from "@angular/core";
 import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 import { CalendarWidgetComponent } from "../calendar-widget/calendar-widget.component";
@@ -20,7 +20,7 @@ import { IWidgetConfig } from "./../../model/IWidgetConfig";
 import { StravaWidgetComponent } from "../strava-widget/strava-widget.component";
 import { WorkoutWidgetComponent } from "../workout-widget/workout-widget.component";
 import { AirParifWidgetComponent } from "../airparif-widget/airparif-widget.component";
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
 import { EcowattWidgetComponent } from "../ecowatt-widget/ecowatt-widget.component";
 import { IncidentWidgetComponent } from "../incident-widget/incident-widget.component";
 
@@ -33,15 +33,14 @@ import { IncidentWidgetComponent } from "../incident-widget/incident-widget.comp
   imports: [CdkDropList, CdkDrag]
 })
 export class WidgetListComponent implements OnChanges {
+  public readonly widgetList = input.required<IWidgetConfig[]>();
+  public readonly toggleEditMode = input(false);
+  public readonly updateWidgetsOrderEvent = output<IWidgetConfig[]>();
+
+  public readonly widgetTargets = viewChildren("dynamic", { read: ViewContainerRef });
   private readonly cdRef = inject(ChangeDetectorRef);
 
-  readonly widgetList = input.required<IWidgetConfig[]>();
-  readonly toggleEditMode = input(false);
-  readonly updateWidgetsOrderEvent = output<IWidgetConfig[]>();
-
-  readonly widgetTargets = viewChildren("dynamic", { read: ViewContainerRef });
-
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes["widgetList"]) {
       this.cdRef.detectChanges();
       this.createWidgets();

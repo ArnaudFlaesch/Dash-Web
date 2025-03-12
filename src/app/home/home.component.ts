@@ -1,7 +1,7 @@
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
 import { Location, NgClass } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -12,19 +12,19 @@ import { ErrorHandlerService } from "../services/error.handler.service";
 import { TabService } from "../services/tab.service/tab.service";
 import { ThemeService } from "../services/theme.service/theme.service";
 import { WidgetService } from "../services/widget.service/widget.service";
-import { CreateWidgetModalComponent } from "./../modals/create-widget-modal/create-widget-modal.component";
-import { ImportConfigModalComponent } from "./../modals/import-config-modal/import-config-modal.component";
-import { IWidgetConfig } from "./../model/IWidgetConfig";
-import { ITab } from "./../model/Tab";
-import { AuthService } from "./../services/auth.service/auth.service";
-import { ConfigService } from "./../services/config.service/config.service";
+import { CreateWidgetModalComponent } from "../modals/create-widget-modal/create-widget-modal.component";
+import { ImportConfigModalComponent } from "../modals/import-config-modal/import-config-modal.component";
+import { IWidgetConfig } from "../model/IWidgetConfig";
+import { ITab } from "../model/Tab";
+import { AuthService } from "../services/auth.service/auth.service";
+import { ConfigService } from "../services/config.service/config.service";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { WidgetListComponent } from "../widgets/widget-list/widget-list.component";
 import { MiniWidgetListComponent } from "../widgets/miniwidget-list/miniwidget-list.component";
 import { MatDivider } from "@angular/material/divider";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { NotificationsComponent } from "../notifications/notifications.component";
-import { MatMenuTrigger, MatMenu, MatMenuItem } from "@angular/material/menu";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatMiniFabButton } from "@angular/material/button";
@@ -58,8 +58,32 @@ import { TabComponent } from "../tab/tab.component";
   ]
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  dialog = inject(MatDialog);
+  public tabs: ITab[] = [];
+  public activeWidgets: IWidgetConfig[] = [];
+  public activeTab = -1;
+  public isDashboardLoaded = false;
+  public areWidgetsLoaded = false;
+  public editModeEnabled = false;
+  public toggleControl = new FormControl(false);
+  public cashManagerApplicationUrl = "https://arnaudflaesch.github.io/CashManager/";
+
+  private refreshInterval: NodeJS.Timeout | null = null;
+
+  private readonly destroy$: Subject<unknown> = new Subject();
+  private readonly ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
+  private readonly ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
+  private readonly ERROR_MESSAGE_GET_WIDGETS = "Erreur lors de la récupération des widgets.";
+  private readonly ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
+  private readonly ERROR_MESSAGE_UPDATE_WIDGETS_ORDER =
+    "Erreur lors de la mise à jour des widgets.";
+  private readonly ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
+  private readonly ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
+  private readonly ERROR_UPDATING_TABS = "Erreurs lors de la mise à jour des onglets";
+  private readonly ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
+  private readonly refreshTimeout = 600000; // 10 minutes
+
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly authService = inject(AuthService);
@@ -69,41 +93,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly themeService = inject(ThemeService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  public tabs: ITab[] = [];
-  public activeWidgets: IWidgetConfig[] = [];
-  public activeTab = -1;
-
-  public isDashboardLoaded = false;
-  public areWidgetsLoaded = false;
-  public editModeEnabled = false;
-
-  public toggleControl = new FormControl(false);
-
-  public cashManagerApplicationUrl = "https://arnaudflaesch.github.io/CashManager/";
-
-  private refreshInterval: NodeJS.Timeout | null = null;
-
-  private readonly destroy$: Subject<unknown> = new Subject();
-
-  private readonly ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
-  private readonly ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
-
-  private readonly ERROR_MESSAGE_GET_WIDGETS = "Erreur lors de la récupération des widgets.";
-  private readonly ERROR_MESSAGE_ADD_WIDGET = "Erreur lors de l'ajout d'un widget.";
-  private readonly ERROR_MESSAGE_UPDATE_WIDGETS_ORDER =
-    "Erreur lors de la mise à jour des widgets.";
-  private readonly ERROR_MESSAGE_DELETE_WIDGET = "Erreur lors de la suppression d'un widget.";
-
-  private readonly ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
-  private readonly ERROR_UPDATING_TABS = "Erreurs lors de la mise à jour des onglets";
-  private readonly ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
-  private readonly refreshTimeout = 600000; // 10 minutes
-
-  constructor() {
+  public constructor() {
     this.initDashboard();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.widgetService.widgetDeleted.pipe(takeUntil(this.destroy$)).subscribe({
       next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
     });
@@ -111,7 +105,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.toggleControl.setValue(this.themeService.isPreferredThemeDarkMode());
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.clearWidgetAutoRefresh();
     this.destroy$.next(null);
     this.destroy$.complete();

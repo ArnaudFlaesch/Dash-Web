@@ -4,9 +4,9 @@ import { IActivity } from "../IStrava";
 import { fr } from "date-fns/locale/fr";
 import {
   MatExpansionPanel,
+  MatExpansionPanelContent,
   MatExpansionPanelHeader,
-  MatExpansionPanelTitle,
-  MatExpansionPanelContent
+  MatExpansionPanelTitle
 } from "@angular/material/expansion";
 
 @Component({

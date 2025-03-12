@@ -2,9 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  input,
   OnChanges,
-  SimpleChanges,
-  input
+  SimpleChanges
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
@@ -47,7 +47,7 @@ export class WeatherWidgetViewComponent implements OnChanges {
 
   private readonly dateUtils = inject(DateUtilsService);
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes["forecastResponse"]) {
       this.forecastDays = [
         ...new Set(

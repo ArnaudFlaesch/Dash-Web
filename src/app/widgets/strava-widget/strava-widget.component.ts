@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ChartData, ChartTypeRegistry } from "chart.js";
 import { format, isAfter } from "date-fns";
@@ -41,7 +41,7 @@ export class StravaWidgetComponent implements OnInit {
 
   public isWidgetLoaded = true;
   public pageNumber = 1;
-  readonly paginationActivities = 25;
+  public readonly paginationActivities = 25;
 
   private readonly STRAVA_CLIENT_ID = 30391;
   private readonly loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${location.href}/&response_type=code&scope=read,activity:read`;
@@ -99,23 +99,6 @@ export class StravaWidgetComponent implements OnInit {
     }
   }
 
-  private getAthleteData(): void {
-    const token = this.getTokenValue();
-    if (token) {
-      this.isWidgetLoaded = false;
-      this.stravaWidgetService.getAthleteData(token).subscribe({
-        next: (response) => {
-          this.athlete = response;
-          this.getActivities();
-          this.isWidgetLoaded = true;
-        },
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ATHLETE_DATA),
-        complete: () => (this.isWidgetLoaded = true)
-      });
-    }
-  }
-
   public getActivitiesByMonth(): Record<string, number[]> {
     return [...this.activities]
       .sort((activityA, activityB) => this.sortByActivityDate(activityA, activityB, false))
@@ -156,27 +139,6 @@ export class StravaWidgetComponent implements OnInit {
     );
   }
 
-  private getChartData(): void {
-    const activitiesStats = this.getStatsFromActivities();
-    this.activitiesChartData = {
-      labels: activitiesStats.map((data: IActivitiesStatsByMonth) =>
-        format(data.x, "MMM yyyy", { locale: fr })
-      ),
-      datasets: [
-        {
-          label: "Distance (kms)",
-          data: activitiesStats.map((act) => act.y)
-        },
-        {
-          label: "Activités",
-          data: Object.keys(this.getActivitiesByMonth()).map(
-            (month) => this.getActivitiesByMonth()[month].length
-          )
-        }
-      ]
-    };
-  }
-
   public loginToStrava(): void {
     window.open(this.loginToStravaUrl, "_self");
   }
@@ -197,6 +159,44 @@ export class StravaWidgetComponent implements OnInit {
 
   public getAthleteProfileUrl(athleteId: number): string {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
+  }
+
+  private getAthleteData(): void {
+    const token = this.getTokenValue();
+    if (token) {
+      this.isWidgetLoaded = false;
+      this.stravaWidgetService.getAthleteData(token).subscribe({
+        next: (response) => {
+          this.athlete = response;
+          this.getActivities();
+          this.isWidgetLoaded = true;
+        },
+        error: (error: HttpErrorResponse) =>
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ATHLETE_DATA),
+        complete: () => (this.isWidgetLoaded = true)
+      });
+    }
+  }
+
+  private getChartData(): void {
+    const activitiesStats = this.getStatsFromActivities();
+    this.activitiesChartData = {
+      labels: activitiesStats.map((data: IActivitiesStatsByMonth) =>
+        format(data.x, "MMM yyyy", { locale: fr })
+      ),
+      datasets: [
+        {
+          label: "Distance (kms)",
+          data: activitiesStats.map((act) => act.y)
+        },
+        {
+          label: "Activités",
+          data: Object.keys(this.getActivitiesByMonth()).map(
+            (month) => this.getActivitiesByMonth()[month].length
+          )
+        }
+      ]
+    };
   }
 
   private async refreshPage(): Promise<void> {

@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { jwtDecode } from "jwt-decode";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";

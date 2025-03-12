@@ -8,7 +8,7 @@ import { AbstractWidgetComponent } from "../abstract-widget/abstract-widget.comp
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { MatIconButton, MatButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { NgTemplateOutlet } from "@angular/common";
 
 @Component({
@@ -27,7 +27,7 @@ export class MiniWidgetComponent extends AbstractWidgetComponent {
   private readonly ERROR_UPDATING_WIDGET_DATA =
     "Erreur lors de la mise à jour de la configuration du widget.";
 
-  constructor() {
+  public constructor() {
     super();
     this.widgetService = inject(WidgetService);
     this.widgetId = inject<number>("widgetId" as never);
