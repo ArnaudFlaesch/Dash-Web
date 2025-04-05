@@ -13,6 +13,7 @@
               [ngClass]="{ 'selected-item': activeTab === tab.id }"
               [tab]="tab"
               cdkDrag
+              cdkDropListOrientation="horizontal"
               cdkDragBoundary="#tab-list"
             ></dash-tab>
           }
@@ -127,7 +128,7 @@
       <dash-miniwidget-list></dash-miniwidget-list>
     </div>
   </div>
-  @if (this.areWidgetsLoaded && this.activeWidgets.length) {
+  @if (this.areWidgetsLoaded) {
     <dash-widget-list
       [widgetList]="this.activeWidgets"
       [toggleEditMode]="editModeEnabled"
