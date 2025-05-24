@@ -24,8 +24,8 @@
     "bundle:analyze": "esbuild-visualizer --metadata ./public/stats.json --filename ./bundle-stats/index.html"
   },
   "engines": {
-    "node": "22.x",
-    "npm": "10.x"
+    "node": "24.x",
+    "npm": "11.x"
   },
   "dependencies": {
     "@angular/animations": "19.2.13",
