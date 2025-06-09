@@ -1,12 +1,4 @@
-import {
-  enableProdMode,
-  importProvidersFrom,
-  inject,
-  isDevMode,
-  LOCALE_ID,
-  provideBrowserGlobalErrorListeners,
-  provideZonelessChangeDetection
-} from "@angular/core";
+import { enableProdMode, importProvidersFrom, inject, isDevMode, LOCALE_ID } from "@angular/core";
 
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
@@ -139,8 +131,6 @@ bootstrapApplication(AppComponent, {
     ThemeService,
     { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: "fr-FR" },
-    provideBrowserGlobalErrorListeners(),
-    provideZonelessChangeDetection(),
     provideRouter(routes),
     provideCharts(withDefaultRegisterables()),
     provideDateFnsAdapter(),
