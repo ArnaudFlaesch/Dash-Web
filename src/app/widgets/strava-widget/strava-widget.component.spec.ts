@@ -136,7 +136,7 @@ describe("StravaWidgetComponent", () => {
     window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
     expect(component.isUserLoggedIn()).toBe(true);
     expect(component.isWidgetLoaded).toEqual(true);
-    expect(component.activities).toEqual([]);
+    expect(component.activities()).toEqual([]);
     component.refreshWidget();
     const getAthleteDataRequest = httpTestingController.expectOne(
       `${environment.backend_url}/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`
@@ -149,7 +149,7 @@ describe("StravaWidgetComponent", () => {
     getActivitiesRequest.flush(activitiesData);
 
     expect(component.isWidgetLoaded).toEqual(true);
-    expect(component.activities.length).toEqual(25);
+    expect(component.activities().length).toEqual(25);
     expect(component.getActivitiesByMonth()).toEqual({
       "2022-10": [
         10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047,

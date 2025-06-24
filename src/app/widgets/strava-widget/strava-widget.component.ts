@@ -1,5 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ChartData, ChartTypeRegistry } from "chart.js";
 import { format, isAfter } from "date-fns";
@@ -34,7 +41,7 @@ import { WidgetComponent } from "../widget/widget.component";
   ]
 })
 export class StravaWidgetComponent implements OnInit {
-  public activities: IActivity[] = [];
+  public activities: WritableSignal<IActivity[]> = signal([]);
   public athlete: IAthlete | undefined;
   public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
     undefined;
@@ -79,7 +86,7 @@ export class StravaWidgetComponent implements OnInit {
 
   public getUserData(): void {
     if (this.isUserLoggedIn()) {
-      this.activities = [];
+      this.activities.set([]);
       this.getAthleteData();
     } else if (this.getRefreshTokenValue()) {
       this.refreshTokenFromApi();
@@ -100,7 +107,7 @@ export class StravaWidgetComponent implements OnInit {
   }
 
   public getActivitiesByMonth(): Record<string, number[]> {
-    return [...this.activities]
+    return [...this.activities()]
       .sort((activityA, activityB) => this.sortByActivityDate(activityA, activityB, false))
       .reduce((activitiesByMonth: Record<string, number[]>, activity: IActivity) => {
         const month = format(new Date(activity.startDateLocal), "yyyy-MM");
@@ -151,7 +158,7 @@ export class StravaWidgetComponent implements OnInit {
   }
 
   public getPreviousActivitiesPage(): void {
-    if (this.activities.length === this.paginationActivities) {
+    if (this.activities().length === this.paginationActivities) {
       this.pageNumber++;
       this.getActivities();
     }
@@ -211,7 +218,7 @@ export class StravaWidgetComponent implements OnInit {
         .getActivities(token, this.pageNumber, this.paginationActivities)
         .subscribe({
           next: (response) => {
-            this.activities = [...response].sort(this.sortByActivityDate);
+            this.activities.set([...response].sort(this.sortByActivityDate));
             this.getChartData();
             this.isWidgetLoaded = true;
           },

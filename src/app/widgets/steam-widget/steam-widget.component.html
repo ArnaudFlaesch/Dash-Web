@@ -46,7 +46,7 @@
     </form>
 
     @if (this.steamUserId && this.playerData) {
-      @for (game of this.ownedGamesDisplay; track game.appid) {
+      @for (game of this.ownedGamesDisplay(); track game.appid) {
         <dash-game-details
           [steamUserId]="this.steamUserId"
           [profileUrl]="this.playerData.profileurl"

@@ -123,7 +123,7 @@ describe("RssWidgetComponent", () => {
     markAllFeedAsReadRequest.flush(updatedWidgetData);
 
     expect(component.isWidgetLoaded).toEqual(true);
-    expect(component.readArticles.length).toEqual(feedLength);
+    expect(component.readArticles().length).toEqual(feedLength);
   });
 
   it("Should get widget data and check form", () => {
@@ -150,6 +150,6 @@ describe("RssWidgetComponent", () => {
       .error(new ProgressEvent("Server error"));
 
     expect(component.isWidgetLoaded).toEqual(true);
-    expect(component.readArticles.length).toEqual(0);
+    expect(component.readArticles().length).toEqual(0);
   });
 });

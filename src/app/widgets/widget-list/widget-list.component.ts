@@ -85,7 +85,9 @@ export class WidgetListComponent implements OnChanges {
               injector: injector
             });
             component.instance.urlFeed = widgetData?.["url"] as string;
-            component.instance.readArticles = (widgetData?.["readArticlesGuids"] as string[]) ?? [];
+            component.instance.readArticles.set(
+              (widgetData?.["readArticlesGuids"] as string[]) ?? []
+            );
             break;
           }
           case WidgetTypeEnum.CALENDAR: {

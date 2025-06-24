@@ -1,14 +1,22 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal
+} from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
-import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
 import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
 import { SteamWidgetService } from "./steam.widget.service";
 import { Subject } from "rxjs";
-import { IPage } from "../../../app/model/IPage";
+import { IPage } from "../../model/IPage";
 import { GameDetailsComponent } from "./game-details/game-details.component";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -17,6 +25,7 @@ import { MatIconButton } from "@angular/material/button";
 import { MatInput } from "@angular/material/input";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { WidgetComponent } from "../widget/widget.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "dash-steam-widget",
@@ -38,9 +47,9 @@ import { WidgetComponent } from "../widget/widget.component";
     MatPaginator
   ]
 })
-export class SteamWidgetComponent implements OnInit, OnDestroy {
+export class SteamWidgetComponent implements OnInit {
   public playerData: IPlayerDataResponse | undefined;
-  public ownedGamesDisplay: IGameInfoDisplay[] = [];
+  public ownedGamesDisplay: WritableSignal<IGameInfoDisplay[]> = signal([]);
 
   public gameCount = 0;
   public pageSize = 25;
@@ -52,19 +61,19 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   public isPlayerDataLoaded = false;
   public areGamesLoaded = false;
 
-  private ownedGames: IGameInfoResponse[] = [];
-  private readonly destroy$: Subject<unknown> = new Subject();
+  private ownedGames: WritableSignal<IGameInfoResponse[]> = signal([]);
 
   private readonly ERROR_GETTING_PLAYER_DATA =
     "Erreur lors de la récupération de vos informations Steam.";
   private readonly ERROR_GETTING_OWNED_GAMES =
     "Erreur lors de la récupération de la liste des jeux.";
+  private readonly destroyRef = inject(DestroyRef);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
   public ngOnInit(): void {
     this.searchFormControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
         if (this.steamUserId) {
@@ -72,11 +81,6 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
           this.getOwnedGames(this.steamUserId, searchValue ?? undefined);
         }
       });
-  }
-
-  public ngOnDestroy(): void {
-    this.destroy$.next(null);
-    this.destroy$.complete();
   }
 
   public refreshWidget(): void {
@@ -135,9 +139,9 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
     this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).subscribe({
       next: (response: IPage<IGameInfoResponse>) => {
         this.gameCount = response.totalElements;
-        this.ownedGames = response.content;
-        this.ownedGamesDisplay = this.ownedGames.map((game) =>
-          this.gameInfoResponseToGameInfoDisplay(game)
+        this.ownedGames.set(response.content);
+        this.ownedGamesDisplay.set(
+          this.ownedGames().map((game) => this.gameInfoResponseToGameInfoDisplay(game))
         );
         this.areGamesLoaded = true;
       },

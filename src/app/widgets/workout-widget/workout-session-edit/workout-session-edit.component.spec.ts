@@ -52,7 +52,7 @@ describe("WorkoutSessionEditComponent", () => {
     );
     getWorkoutExercisesRequest.flush([]);
     const workoutTypeIdToEdit = workoutTypes[0].id;
-    expect(component.workoutExercises).toEqual([]);
+    expect(component.workoutExercises()).toEqual([]);
 
     expect(component.getExerciceNumberOfReps(workoutTypeIdToEdit)).toEqual(0);
     component.incrementExerciceNumberOfReps(workoutTypeIdToEdit);
