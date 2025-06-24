@@ -1,6 +1,6 @@
-import { ErrorHandlerService } from "./../services/error.handler.service";
-import { TabService } from "./../services/tab.service/tab.service";
-import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
+import { ErrorHandlerService } from "../services/error.handler.service";
+import { TabService } from "../services/tab.service/tab.service";
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from "@angular/core";
 import { ITab } from "../model/Tab";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MatIcon } from "@angular/material/icon";
@@ -11,13 +11,13 @@ import { FormsModule } from "@angular/forms";
   templateUrl: "./tab.component.html",
   styleUrls: ["./tab.component.scss"],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, MatIcon]
 })
 export class TabComponent {
   public readonly tab = input.required<ITab>();
   public readonly tabDeletedEvent = output<number>();
-  public editMode = false;
+  public readonly editMode = signal(false);
 
   private readonly ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
   private readonly tabService = inject(TabService);
@@ -38,7 +38,7 @@ export class TabComponent {
   }
 
   public toggleEditMode(): void {
-    this.editMode = !this.editMode;
+    this.editMode.set(!this.editMode());
   }
 
   public enterSaveTabName(event: KeyboardEvent): void {

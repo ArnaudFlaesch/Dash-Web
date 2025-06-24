@@ -10,7 +10,7 @@
       </div>
       <div class="widget-body">
         <div class="widget-edit-component-container">
-          <ng-container *ngTemplateOutlet="editComponent() ?? null"> </ng-container>
+          <ng-container *ngTemplateOutlet="editComponent() ?? null"></ng-container>
         </div>
         <div class="edit-component-actions">
           @if (this.isWidgetLoaded() && this.widgetData()) {
@@ -34,7 +34,7 @@
     <dash-delete-widget
       (cancelWidgetDeletion)="toReadMode()"
       (validateWidgetDeletion)="deleteWidget()"
-    ></dash-delete-widget>
+    />
   }
 
   @if (this.isModeRead()) {
@@ -69,10 +69,10 @@
       </div>
       <div class="widget-body">
         @if (this.isWidgetLoaded()) {
-          <ng-container *ngTemplateOutlet="body()"> </ng-container>
+          <ng-container *ngTemplateOutlet="body()"></ng-container>
         } @else {
           <div class="widget-loading-spinner">
-            <mat-spinner></mat-spinner>
+            <mat-spinner />
           </div>
         }
       </div>

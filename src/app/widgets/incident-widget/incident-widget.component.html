@@ -45,7 +45,7 @@
         </button>
 
         <div id="past-streaks-list">
-          @for (streak of this.streaks; track streak.streakStartDate) {
+          @for (streak of this.streaks(); track streak.streakStartDate) {
             <div>{{ this.getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate) }} jours</div>
           }
         </div>

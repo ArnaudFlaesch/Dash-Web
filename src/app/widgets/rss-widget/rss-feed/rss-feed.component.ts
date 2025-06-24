@@ -31,11 +31,8 @@ import {
 })
 export class RssFeedComponent {
   public readonly feed = input.required<IArticle[]>();
-
   public readonly readArticles = input.required<string[]>();
-
   public readonly markArticleAsReadEvent = output<string>();
-
   private currentOpenedArticle: string | undefined;
 
   public stripHtmlFromContent(content?: string): string {

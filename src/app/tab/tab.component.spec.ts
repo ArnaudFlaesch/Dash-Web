@@ -36,10 +36,10 @@ describe("TabComponent", () => {
 
   describe("Simple cases", () => {
     it("Should display and edit a tab", () => {
-      expect(component.editMode).toEqual(false);
+      expect(component.editMode()).toEqual(false);
       fixture.componentRef.setInput("tab", tabData);
       component.toggleEditMode();
-      expect(component.editMode).toEqual(true);
+      expect(component.editMode()).toEqual(true);
       const updatedTabLabel = "Journaux";
       fixture.componentRef.setInput("tab", { ...component.tab, label: updatedTabLabel });
 
@@ -51,20 +51,20 @@ describe("TabComponent", () => {
       };
       const request = httpTestingController.expectOne(environment.backend_url + "/tab/updateTab");
       request.flush(updatedTabData);
-      expect(component.editMode).toEqual(false);
+      expect(component.editMode()).toEqual(false);
     });
 
     it("Should not update a tab because of server error", () => {
       fixture.componentRef.setInput("tab", tabData);
-      expect(component.editMode).toEqual(false);
+      expect(component.editMode()).toEqual(false);
       component.toggleEditMode();
-      expect(component.editMode).toEqual(true);
+      expect(component.editMode()).toEqual(true);
       component.enterSaveTabName(new KeyboardEvent("keydown", { key: "Enter" }));
 
       httpTestingController
         .expectOne(environment.backend_url + "/tab/updateTab")
         .error(new ProgressEvent("Server error"));
-      expect(component.editMode).toEqual(true);
+      expect(component.editMode()).toEqual(true);
     });
 
     it("Should delete a tab when it exists", () => {

@@ -12,7 +12,7 @@ import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
   selector: "dash-notifications-list",
   templateUrl: "./notifications-list.component.html",
   styleUrl: "./notifications-list.component.scss",
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     NgClass,

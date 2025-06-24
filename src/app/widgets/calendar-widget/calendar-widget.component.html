@@ -1,7 +1,7 @@
 <dash-widget
   [widgetData]="getWidgetConfig()"
   [isFormValid]="isFormValid()"
-  [isWidgetLoaded]="isWidgetLoaded"
+  [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="this.refreshWidget()"
 >
   <ng-template #headerIcon>
@@ -14,7 +14,7 @@
 
   <ng-template #editComponent>
     <div id="calendar-urls-list-container">
-      @for (calendarUrl of this.calendarUrls; track calendarUrl; let index = $index) {
+      @for (calendarUrl of this.calendarUrls(); track calendarUrl; let index = $index) {
         <div class="calendar-url-container">
           <input
             id="{{ index.toString() }}"
@@ -39,7 +39,7 @@
           mat-raised-button
           matTooltip="Précédent"
           mwlCalendarPreviousView
-          [view]="view"
+          [view]="view()"
           [(viewDate)]="viewDate"
           color="primary"
           (viewDateChange)="closeOpenMonthViewDay()"
@@ -53,7 +53,7 @@
           mat-raised-button
           matTooltip="Suivant"
           mwlCalendarNextView
-          [view]="view"
+          [view]="view()"
           [(viewDate)]="viewDate"
           color="primary"
           (viewDateChange)="closeOpenMonthViewDay()"
@@ -88,19 +88,19 @@
     </div>
 
     <div id="calendar-selected-date">
-      <h3>{{ viewDate | calendarDate: view + "ViewTitle" : "fr" | initialUppercase }}</h3>
+      <h3>{{ viewDate | calendarDate: view() + "ViewTitle" : "fr" | initialUppercase }}</h3>
     </div>
 
     <div>
-      @switch (view) {
+      @switch (view()) {
         @case (calendarView.Month) {
           <mwl-calendar-month-view
             [locale]="locale"
             [viewDate]="viewDate"
-            [events]="events"
+            [events]="events()"
             [weekStartsOn]="weekStartsOn"
             [refresh]="refresh"
-            [activeDayIsOpen]="activeDayIsOpen"
+            [activeDayIsOpen]="activeDayIsOpen()"
             (eventClicked)="handleEvent('Clicked', $event.event)"
           >
           </mwl-calendar-month-view>
@@ -110,7 +110,7 @@
             [viewDate]="viewDate"
             [weekStartsOn]="weekStartsOn"
             [locale]="locale"
-            [events]="events"
+            [events]="events()"
             [refresh]="refresh"
             (eventClicked)="handleEvent('Clicked', $event.event)"
           >
@@ -120,7 +120,7 @@
           <mwl-calendar-day-view
             [viewDate]="viewDate"
             [locale]="locale"
-            [events]="events"
+            [events]="events()"
             [refresh]="refresh"
           ></mwl-calendar-day-view>
         }

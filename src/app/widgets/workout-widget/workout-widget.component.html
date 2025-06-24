@@ -1,7 +1,7 @@
 <dash-widget
   [widgetData]="getWidgetData()"
   [isFormValid]="true"
-  [isWidgetLoaded]="isWidgetLoaded"
+  [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="this.refreshWidget()"
 >
   <ng-template #headerIcon>
@@ -32,7 +32,7 @@
                 ></mat-datepicker>
               </mat-form-field>
               <div id="workout-sessions-grid">
-                @for (workoutSession of this.workoutSessions; track workoutSession.id) {
+                @for (workoutSession of this.workoutSessions(); track workoutSession.id) {
                   <button
                     class="workout-session"
                     (keydown)="editWorkoutSession(workoutSession)"
@@ -63,7 +63,7 @@
               <div id="workout-stats-by-week-container">
                 <div class="workout-stats-header">Cette semaine :</div>
                 <div class="stats-container">
-                  @for (workoutStat of this.workoutStatsByWeek; track workoutStat.workoutTypeName) {
+                  @for (workoutStat of this.workoutStatsByWeek(); track workoutStat.workoutTypeName) {
                     <div>{{ workoutStat.workoutTypeName }} : {{ workoutStat.totalNumberOfReps }}</div>
                   }
                 </div>
@@ -73,7 +73,7 @@
               <div id="workout-stats-by-month-container">
                 <div class="workout-stats-header">Ce mois-ci</div>
                 <div class="stats-container">
-                  @for (workoutStat of this.workoutStatsByMonth; track workoutStat.workoutTypeName) {
+                  @for (workoutStat of this.workoutStatsByMonth(); track workoutStat.workoutTypeName) {
                     <div>{{ workoutStat.workoutTypeName }} :{{ workoutStat.totalNumberOfReps }}</div>
                   }
                 </div>
@@ -81,7 +81,7 @@
             }
             <h2>Types d'exercices</h2>
             <div id="workout-types-grid">
-              @for (workoutType of this.workoutTypes; track workoutType.id) {
+              @for (workoutType of this.workoutTypes(); track workoutType.id) {
                 <span class="workoutTypeName"> {{ workoutType.name }}</span>
               }
             </div>
@@ -101,7 +101,9 @@
         }
         @case (widgetViewEnum.WORKOUT_STATISTICS_VIEW) {
           <div>
-            <button mat-icon-button (click)="backToWorkoutSessionsList()"><mat-icon>arrow_back</mat-icon></button>
+            <button mat-icon-button (click)="backToWorkoutSessionsList()">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
             <div>
               <button
                 mat-raised-button
@@ -135,17 +137,19 @@
               </button>
             </div>
             <dash-workout-statistics
-              [workoutTypes]="this.workoutTypes"
-              [workoutStatsByMonth]="this.workoutStatsOfMonths"
+              [workoutTypes]="this.workoutTypes()"
+              [workoutStatsByMonth]="this.workoutStatsOfMonths()"
             ></dash-workout-statistics>
           </div>
         }
         @case (widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW) {
           @if (this.currentWorkoutSessionToEdit) {
             <div>
-              <button mat-icon-button (click)="backToWorkoutSessionsList()"><mat-icon>arrow_back</mat-icon></button>
+              <button mat-icon-button (click)="backToWorkoutSessionsList()">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
               <dash-workout-session-edit
-                [workoutTypes]="this.workoutTypes"
+                [workoutTypes]="this.workoutTypes()"
                 [currentWorkoutSessionToEdit]="this.currentWorkoutSessionToEdit"
               ></dash-workout-session-edit>
             </div>

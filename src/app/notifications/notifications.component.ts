@@ -1,6 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal
+} from "@angular/core";
 import { isToday } from "date-fns";
-import { Subject, takeUntil } from "rxjs";
 import {
   INotification,
   INotificationToDisplay,
@@ -10,38 +16,33 @@ import { ErrorHandlerService } from "../services/error.handler.service";
 import { NotificationService } from "../services/notification.service/NotificationService";
 import { WidgetService } from "../services/widget.service/widget.service";
 import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "dash-notifications",
   templateUrl: "./notifications.component.html",
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NotificationsListComponent]
 })
-export class NotificationsComponent implements OnInit, OnDestroy {
-  public notificationsFromDatabase: INotification[] = [];
-  public notificationsToDisplay: INotificationToDisplay[] = [];
-  public unreadNotificationsForBadge = 0;
-  public notificationTypeEnum = NotificationTypeEnum;
-
-  private readonly destroy$: Subject<unknown> = new Subject();
+export class NotificationsComponent implements OnInit {
+  public readonly notificationsFromDatabase: WritableSignal<INotification[]> = signal([]);
+  public readonly notificationsToDisplay: WritableSignal<INotificationToDisplay[]> = signal([]);
+  public readonly unreadNotificationsForBadge = signal(0);
 
   private readonly notificationService = inject(NotificationService);
   private readonly widgetService = inject(WidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-
   private readonly ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
 
-  public ngOnInit(): void {
-    this.fetchNotificationsFromDatabase();
-    this.widgetService.refreshWidgetsAction.pipe(takeUntil(this.destroy$)).subscribe({
+  public constructor() {
+    this.widgetService.refreshWidgetsAction.pipe(takeUntilDestroyed()).subscribe({
       next: () => this.fetchNotificationsFromDatabase()
     });
   }
 
-  public ngOnDestroy(): void {
-    this.destroy$.next(null);
-    this.destroy$.complete();
+  public ngOnInit(): void {
+    this.fetchNotificationsFromDatabase();
   }
 
   public markNotificationAsRead(notificationId: number): void {
@@ -49,24 +50,26 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   public markAllNotificationsAsRead(): void {
-    this.markNotificationsAsRead(this.notificationsFromDatabase.map((notif) => notif.id));
+    this.markNotificationsAsRead(this.notificationsFromDatabase().map((notif) => notif.id));
   }
 
   private markNotificationsAsRead(notificationIds: number[]): void {
     this.notificationService.markNotificationAsRead(notificationIds).subscribe({
       next: (updatedNotifications) => {
-        this.notificationsFromDatabase = this.notificationsFromDatabase.filter(
-          (notification) => !updatedNotifications.map((notif) => notif.id).includes(notification.id)
-        );
-        this.notificationsFromDatabase = [
-          ...this.notificationsFromDatabase,
-          ...updatedNotifications
-        ].sort((timeA, timeB) => {
-          if (timeA === timeB) return 0;
-          return Date.parse(timeB.notificationDate) - Date.parse(timeA.notificationDate);
+        this.notificationsFromDatabase.update((oldNotifications) => {
+          return [
+            ...oldNotifications.filter(
+              (notification) =>
+                !updatedNotifications.map((notif) => notif.id).includes(notification.id)
+            ),
+            ...updatedNotifications
+          ].sort((timeA, timeB) => {
+            if (timeA === timeB) return 0;
+            return Date.parse(timeB.notificationDate) - Date.parse(timeA.notificationDate);
+          });
         });
-        this.notificationsToDisplay = this.computeNotificationsToDisplay();
-        this.unreadNotificationsForBadge = this.computeUnreadNotificationsBadge();
+        this.notificationsToDisplay.set(this.computeNotificationsToDisplay());
+        this.unreadNotificationsForBadge.set(this.computeUnreadNotificationsBadge());
       },
       error: (error) =>
         this.errorHandlerService.handleError(error, this.ERROR_MARKING_NOTIFICATION_AS_READ)
@@ -76,15 +79,15 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private fetchNotificationsFromDatabase(): void {
     this.notificationService.getNotifications().subscribe({
       next: (notifications) => {
-        this.notificationsFromDatabase = notifications.content;
-        this.notificationsToDisplay = this.computeNotificationsToDisplay();
-        this.unreadNotificationsForBadge = this.computeUnreadNotificationsBadge();
+        this.notificationsFromDatabase.set(notifications.content);
+        this.notificationsToDisplay.set(this.computeNotificationsToDisplay());
+        this.unreadNotificationsForBadge.set(this.computeUnreadNotificationsBadge());
       }
     });
   }
 
   private computeNotificationsToDisplay(): INotificationToDisplay[] {
-    return this.notificationsFromDatabase.map((notification) => {
+    return this.notificationsFromDatabase().map((notification) => {
       return {
         ...notification,
         ...{
@@ -120,6 +123,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   private computeUnreadNotificationsBadge(): number {
-    return this.notificationsFromDatabase.filter((notif) => !notif.isRead).length;
+    return this.notificationsFromDatabase().filter((notif) => !notif.isRead).length;
   }
 }

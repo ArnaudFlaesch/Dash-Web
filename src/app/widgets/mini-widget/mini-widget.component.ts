@@ -15,7 +15,7 @@ import { NgTemplateOutlet } from "@angular/common";
   selector: "dash-mini-widget",
   templateUrl: "./mini-widget.component.html",
   styleUrls: ["./mini-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })

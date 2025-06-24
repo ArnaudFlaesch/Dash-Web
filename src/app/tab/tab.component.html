@@ -1,4 +1,4 @@
-@if (this.editMode) {
+@if (this.editMode()) {
   <div class="tab-input">
     <input
       (keypress)="this.enterSaveTabName($event)"
