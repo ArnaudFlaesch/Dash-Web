@@ -92,7 +92,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(CalendarWidgetComponent, {
               injector: injector
             });
-            component.instance.calendarUrls = (widgetData?.["calendarUrls"] as string[]) ?? [];
+            component.instance.calendarUrls.set((widgetData?.["calendarUrls"] as string[]) ?? []);
             break;
           }
           case WidgetTypeEnum.STRAVA: {
@@ -118,8 +118,8 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(AirParifWidgetComponent, {
               injector: injector
             });
-            component.instance.airParifApiKey = widgetData?.["airParifApiKey"] as string;
-            component.instance.communeInseeCode = widgetData?.["communeInseeCode"] as string;
+            component.instance.airParifApiKey.set(widgetData?.["airParifApiKey"] as string);
+            component.instance.communeInseeCode.set(widgetData?.["communeInseeCode"] as string);
             break;
           }
           case WidgetTypeEnum.ECOWATT: {

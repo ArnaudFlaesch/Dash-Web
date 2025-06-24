@@ -1,7 +1,7 @@
 <dash-widget
   [widgetData]="getWidgetConfig()"
   [isFormValid]="isFormValid()"
-  [isWidgetLoaded]="isWidgetLoaded"
+  [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="this.refreshWidget()"
 >
   <ng-template #headerIcon>
@@ -14,7 +14,7 @@
 
   <ng-template #editComponent>
     <div id="calendar-urls-list-container">
-      @for (calendarUrl of this.calendarUrls; track calendarUrl; let index = $index) {
+      @for (calendarUrl of this.calendarUrls(); track calendarUrl; let index = $index) {
         <div class="calendar-url-container">
           <input
             id="{{ index.toString() }}"
@@ -97,7 +97,7 @@
           <mwl-calendar-month-view
             [locale]="locale"
             [viewDate]="viewDate"
-            [events]="events"
+            [events]="events()"
             [weekStartsOn]="weekStartsOn"
             [refresh]="refresh"
             [activeDayIsOpen]="activeDayIsOpen"
@@ -110,7 +110,7 @@
             [viewDate]="viewDate"
             [weekStartsOn]="weekStartsOn"
             [locale]="locale"
-            [events]="events"
+            [events]="events()"
             [refresh]="refresh"
             (eventClicked)="handleEvent('Clicked', $event.event)"
           >
@@ -120,7 +120,7 @@
           <mwl-calendar-day-view
             [viewDate]="viewDate"
             [locale]="locale"
-            [events]="events"
+            [events]="events()"
             [refresh]="refresh"
           ></mwl-calendar-day-view>
         }
