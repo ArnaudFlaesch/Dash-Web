@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
 
 import { ErrorHandlerService } from "./../../services/error.handler.service";
 import { ICity, IForecast, IWeatherAPIResponse } from "./IWeather";
@@ -32,7 +32,7 @@ export class WeatherWidgetComponent {
   public city?: string;
 
   public weather: IWeatherAPIResponse | undefined;
-  public forecastResponse: IForecast[] = [];
+  public forecastResponse: WritableSignal<IForecast[]> = signal([]);
   public cityData: ICity | undefined;
 
   public isWeatherLoaded = false;
@@ -55,7 +55,7 @@ export class WeatherWidgetComponent {
         next: ([weatherData, forecastApiResponse]) => {
           this.weather = weatherData;
           this.isWeatherLoaded = true;
-          this.forecastResponse = forecastApiResponse.list;
+          this.forecastResponse.set(forecastApiResponse.list);
           this.cityData = forecastApiResponse.city;
           this.isForecastLoaded = true;
         },
