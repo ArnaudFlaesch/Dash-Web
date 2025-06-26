@@ -6,8 +6,8 @@ import {
   TemplateRef
 } from "@angular/core";
 
-import { ErrorHandlerService } from "../../../app/services/error.handler.service";
-import { WidgetService } from "../../../app/services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { WidgetService } from "../../services/widget.service/widget.service";
 import { AbstractWidgetComponent } from "../abstract-widget/abstract-widget.component";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { DeleteWidgetComponent } from "../delete-widget/delete-widget.component";

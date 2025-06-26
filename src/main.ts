@@ -1,4 +1,11 @@
-import { enableProdMode, importProvidersFrom, inject, isDevMode, LOCALE_ID } from "@angular/core";
+import {
+  enableProdMode,
+  importProvidersFrom,
+  inject,
+  isDevMode,
+  LOCALE_ID,
+  provideZonelessChangeDetection
+} from "@angular/core";
 
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
@@ -135,6 +142,7 @@ bootstrapApplication(AppComponent, {
     provideCharts(withDefaultRegisterables()),
     provideDateFnsAdapter(),
     provideAnimations(),
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    provideZonelessChangeDetection()
   ]
 }).catch((err) => console.error(err));

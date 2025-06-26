@@ -16,7 +16,7 @@ import { CalendarWidgetComponent } from "../calendar-widget/calendar-widget.comp
 import { RssWidgetComponent } from "../rss-widget/rss-widget.component";
 import { SteamWidgetComponent } from "../steam-widget/steam-widget.component";
 import { WeatherWidgetComponent } from "../weather-widget/weather-widget.component";
-import { IWidgetConfig } from "./../../model/IWidgetConfig";
+import { IWidgetConfig } from "../../model/IWidgetConfig";
 import { StravaWidgetComponent } from "../strava-widget/strava-widget.component";
 import { WorkoutWidgetComponent } from "../workout-widget/workout-widget.component";
 import { AirParifWidgetComponent } from "../airparif-widget/airparif-widget.component";
@@ -29,7 +29,6 @@ import { IncidentWidgetComponent } from "../incident-widget/incident-widget.comp
   templateUrl: "./widget-list.component.html",
   styleUrls: ["./widget-list.component.scss"],
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [CdkDropList, CdkDrag]
 })
 export class WidgetListComponent implements OnChanges {
