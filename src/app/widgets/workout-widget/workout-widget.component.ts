@@ -52,7 +52,7 @@ enum WORKOUT_STATISTICS {
   selector: "dash-workout-widget",
   templateUrl: "./workout-widget.component.html",
   styleUrls: ["./workout-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -81,12 +81,12 @@ export class WorkoutWidgetComponent {
   public workoutStatsByMonth: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
   public workoutStatsOfMonths: WritableSignal<IWorkoutStatByMonth[]> = signal([]);
   public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
+  public selectedWorkoutStatistics: WORKOUT_STATISTICS | undefined;
+  public isWidgetLoaded = signal(false);
+  public WIDGET_VIEW: WORKOUT_WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
 
   public dateFormat = DEFAULT_DATE_FORMAT;
   public widgetViewEnum = WORKOUT_WIDGET_VIEW;
-  public selectedWorkoutStatistics: WORKOUT_STATISTICS | undefined;
-  public WIDGET_VIEW: WORKOUT_WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
-  public isWidgetLoaded = false;
 
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl("");
@@ -110,7 +110,7 @@ export class WorkoutWidgetComponent {
       next: (workoutTypes) => this.workoutTypes.set(workoutTypes),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES),
-      complete: () => (this.isWidgetLoaded = true)
+      complete: () => this.isWidgetLoaded.set(true)
     });
     const selectedMonth = this.selectedMonthFormControl.value ?? new Date();
     this.getWorkoutSessionsOfMonth(selectedMonth);

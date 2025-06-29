@@ -69,7 +69,7 @@ describe("WorkoutWidgetComponent", () => {
   it("should create", () => {
     expect(component.workoutTypes()).toEqual([]);
     expect(component.workoutSessions()).toEqual([]);
-    expect(component.isWidgetLoaded).toEqual(false);
+    expect(component.isWidgetLoaded()).toEqual(false);
 
     const workoutTypesFromDB = [{ id: 1, name: "Abdos" }];
 
@@ -104,7 +104,7 @@ describe("WorkoutWidgetComponent", () => {
     );
     workoutStatsMonthRequest.flush([]);
 
-    expect(component.isWidgetLoaded).toEqual(true);
+    expect(component.isWidgetLoaded()).toEqual(true);
     expect(component.workoutTypes()).toEqual(workoutTypesFromDB);
     expect(component.workoutSessions().length).toEqual(0);
   });

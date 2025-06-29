@@ -34,7 +34,7 @@ import { WidgetComponent } from "../widget/widget.component";
   selector: "dash-calendar-widget",
   templateUrl: "./calendar-widget.component.html",
   styleUrls: ["./calendar-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -102,10 +102,12 @@ export class CalendarWidgetComponent {
   }
 
   public onCalendarUrlUpdated(event: Event): void {
-    this.calendarUrls.set(this.calendarUrls().map((url: string, index: number) => {
-      const eventTarget = event.target as HTMLInputElement;
-      return index.toString() === eventTarget?.id ? eventTarget.value : url;
-    }));
+    this.calendarUrls.set(
+      this.calendarUrls().map((url: string, index: number) => {
+        const eventTarget = event.target as HTMLInputElement;
+        return index.toString() === eventTarget?.id ? eventTarget.value : url;
+      })
+    );
   }
 
   public isFormValid(): boolean {

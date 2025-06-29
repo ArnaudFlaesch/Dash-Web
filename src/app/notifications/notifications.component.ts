@@ -21,7 +21,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 @Component({
   selector: "dash-notifications",
   templateUrl: "./notifications.component.html",
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NotificationsListComponent]
 })

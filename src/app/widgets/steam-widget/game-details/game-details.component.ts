@@ -38,12 +38,11 @@ export class GameDetailsComponent {
   public readonly steamUserId = input.required<string>();
   public readonly profileUrl = input.required<string>();
 
-  public achievements: WritableSignal<IAchievement[]> = signal([]);
-  public completedAchievements: WritableSignal<IAchievement[]> = signal([]);
-  public completionStatus = signal<number | undefined>(undefined);
+  public readonly achievements: WritableSignal<IAchievement[]> = signal([]);
+  public readonly completedAchievements: WritableSignal<IAchievement[]> = signal([]);
+  public readonly completionStatus = signal<number | undefined>(undefined);
 
   private readonly ERROR_GETTING_ACHIEVEMENTS_DATA = "Erreur lors de la récupération des succès.";
-
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -60,9 +59,7 @@ export class GameDetailsComponent {
             )
           );
           this.completionStatus.set(
-            Math.floor(
-              (this.completedAchievements().length / this.achievements().length) * 100
-            )
+            Math.floor((this.completedAchievements().length / this.achievements().length) * 100)
           );
         }
         this.changeDetectorRef.detectChanges();

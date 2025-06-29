@@ -4,6 +4,7 @@ import {
   contentChild,
   inject,
   input,
+  OnInit,
   output,
   signal,
   TemplateRef
@@ -14,9 +15,9 @@ import { WidgetService } from "../../services/widget.service/widget.service";
 @Component({
   selector: "dash-abstract-widget",
   templateUrl: "./abstract-widget.component.html",
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AbstractWidgetComponent {
+export class AbstractWidgetComponent implements OnInit {
   public readonly body = contentChild.required<TemplateRef<unknown> | null>("body");
   public readonly editComponent = contentChild<TemplateRef<unknown> | null>("editComponent");
   public readonly isFormValid = input(false);
@@ -24,17 +25,17 @@ export class AbstractWidgetComponent {
   public readonly widgetData = input<Record<string, unknown>>();
   public readonly refreshWidgetAction = output();
 
-  public mode = signal(this.widgetData() ? ModeEnum.READ : ModeEnum.EDIT);
-  public widgetId: number;
+  public readonly mode = signal(this.widgetData() ? ModeEnum.READ : ModeEnum.EDIT);
+  public widgetId = inject<number>("widgetId" as never);
 
   protected readonly widgetService = inject(WidgetService);
 
-  public constructor() {
-    const widgetId = inject<number>("widgetId" as never);
-    this.widgetId = widgetId;
+  public ngOnInit(): void {
+    this.refreshWidget();
   }
 
   public refreshWidget(): void {
+    console.log(this.isFormValid());
     if (this.isFormValid()) {
       this.refreshWidgetAction.emit();
     }

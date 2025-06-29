@@ -28,7 +28,7 @@ import { IncidentWidgetComponent } from "../incident-widget/incident-widget.comp
   selector: "dash-widget-list",
   templateUrl: "./widget-list.component.html",
   styleUrls: ["./widget-list.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CdkDropList, CdkDrag]
 })
 export class WidgetListComponent implements OnChanges {
@@ -43,6 +43,7 @@ export class WidgetListComponent implements OnChanges {
     if (changes["widgetList"]) {
       this.cdRef.detectChanges();
       this.createWidgets();
+      this.cdRef.detectChanges();
     }
   }
 
@@ -138,6 +139,7 @@ export class WidgetListComponent implements OnChanges {
           }
         }
       });
+      this.cdRef.detectChanges();
     }
   }
 }

@@ -20,7 +20,7 @@ import { WidgetComponent } from "../widget/widget.component";
   selector: "dash-rss-widget",
   templateUrl: "./rss-widget.component.html",
   styleUrls: ["./rss-widget.component.scss", "../widget/widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -36,7 +36,7 @@ import { WidgetComponent } from "../widget/widget.component";
   ]
 })
 export class RssWidgetComponent {
-  public isWidgetLoaded = false;
+  public isWidgetLoaded = signal(false);
 
   public urlFeed?: string;
   public rssFeedResult: IRSSHeader | undefined;
@@ -52,16 +52,16 @@ export class RssWidgetComponent {
 
   public refreshWidget(): void {
     if (this.urlFeed) {
-      this.isWidgetLoaded = false;
+      this.isWidgetLoaded.set(false);
       this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
         next: (apiResult: unknown) => {
           if (apiResult && (apiResult as Record<string, unknown>)["channel"] != null) {
             this.rssFeedResult = (apiResult as Record<string, unknown>)["channel"] as IRSSHeader;
           }
-          this.isWidgetLoaded = true;
+          this.isWidgetLoaded.set(true);
         },
         error: (error) => this.errorHandlerService.handleError(error, this.ERROR_GETTING_RSS_FEED),
-        complete: () => (this.isWidgetLoaded = true)
+        complete: () => this.isWidgetLoaded.set(true)
       });
     }
   }

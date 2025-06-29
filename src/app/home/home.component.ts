@@ -43,7 +43,7 @@ import { TabComponent } from "../tab/tab.component";
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CdkDropList,
     TabComponent,
@@ -301,9 +301,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private deleteTabFromDashboard(tabId: number): void {
-    this.activeWidgets.set(this.activeWidgets().filter(
-      (widget: IWidgetConfig) => widget.tabId !== tabId
-    ));
+    this.activeWidgets.set(
+      this.activeWidgets().filter((widget: IWidgetConfig) => widget.tabId !== tabId)
+    );
     if (this.tabs().length > 1) {
       if (this.tabs()[0].id === tabId) {
         this.selectTab(this.tabs()[1].id);

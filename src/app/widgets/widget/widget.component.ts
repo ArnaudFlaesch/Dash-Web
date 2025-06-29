@@ -20,8 +20,7 @@ import { NgTemplateOutlet } from "@angular/common";
   selector: "dash-widget",
   templateUrl: "./widget.component.html",
   styleUrls: ["./widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatIconButton,
     MatTooltip,

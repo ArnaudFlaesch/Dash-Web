@@ -27,7 +27,7 @@ import { switchMap } from "rxjs";
   selector: "dash-incident-widget",
   templateUrl: "./incident-widget.component.html",
   styleUrls: ["./incident-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,

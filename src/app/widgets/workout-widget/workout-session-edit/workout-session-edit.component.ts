@@ -21,7 +21,7 @@ import { NgClass } from "@angular/common";
   selector: "dash-workout-session-edit",
   templateUrl: "./workout-session-edit.component.html",
   styleUrls: ["./workout-session-edit.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })

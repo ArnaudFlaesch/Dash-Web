@@ -1,7 +1,7 @@
 <dash-widget
   [isFormValid]="isFormValid()"
   [widgetData]="getWidgetData()"
-  [isWidgetLoaded]="isWeatherLoaded && isForecastLoaded"
+  [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="this.refreshWidget()"
 >
   <ng-template #headerIcon>

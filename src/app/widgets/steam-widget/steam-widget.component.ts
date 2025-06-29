@@ -15,7 +15,6 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
 import { SteamWidgetService } from "./steam.widget.service";
-import { Subject } from "rxjs";
 import { IPage } from "../../model/IPage";
 import { GameDetailsComponent } from "./game-details/game-details.component";
 import { MatIcon } from "@angular/material/icon";
@@ -31,7 +30,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   selector: "dash-steam-widget",
   templateUrl: "./steam-widget.component.html",
   styleUrls: ["./steam-widget.component.scss", "../widget/widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -58,8 +57,8 @@ export class SteamWidgetComponent implements OnInit {
 
   public steamUserId?: string;
   public searchFormControl = new FormControl("");
-  public isPlayerDataLoaded = false;
-  public areGamesLoaded = false;
+  public isPlayerDataLoaded = signal(false);
+  public areGamesLoaded = signal(false);
 
   private ownedGames: WritableSignal<IGameInfoResponse[]> = signal([]);
 
@@ -96,11 +95,11 @@ export class SteamWidgetComponent implements OnInit {
   }
 
   public getPlayerData(steamUserId: string): void {
-    this.isPlayerDataLoaded = false;
+    this.isPlayerDataLoaded.set(false);
     this.steamWidgetService.getPlayerData(steamUserId).subscribe({
       next: (response: IPlayerDataResponse[]) => {
         this.playerData = response[0];
-        this.isPlayerDataLoaded = true;
+        this.isPlayerDataLoaded.set(true);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_PLAYER_DATA)
@@ -135,7 +134,7 @@ export class SteamWidgetComponent implements OnInit {
   }
 
   private getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {
-    this.areGamesLoaded = false;
+    this.areGamesLoaded.set(false);
     this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).subscribe({
       next: (response: IPage<IGameInfoResponse>) => {
         this.gameCount = response.totalElements;
@@ -143,7 +142,7 @@ export class SteamWidgetComponent implements OnInit {
         this.ownedGamesDisplay.set(
           this.ownedGames().map((game) => this.gameInfoResponseToGameInfoDisplay(game))
         );
-        this.areGamesLoaded = true;
+        this.areGamesLoaded.set(true);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_OWNED_GAMES)
