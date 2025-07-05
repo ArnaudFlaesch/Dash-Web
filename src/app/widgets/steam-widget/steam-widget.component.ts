@@ -1,14 +1,22 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal
+} from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
-import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
 import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
 import { SteamWidgetService } from "./steam.widget.service";
-import { Subject } from "rxjs";
-import { IPage } from "../../../app/model/IPage";
+import { IPage } from "../../model/IPage";
 import { GameDetailsComponent } from "./game-details/game-details.component";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -17,12 +25,13 @@ import { MatIconButton } from "@angular/material/button";
 import { MatInput } from "@angular/material/input";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { WidgetComponent } from "../widget/widget.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "dash-steam-widget",
   templateUrl: "./steam-widget.component.html",
   styleUrls: ["./steam-widget.component.scss", "../widget/widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -38,9 +47,13 @@ import { WidgetComponent } from "../widget/widget.component";
     MatPaginator
   ]
 })
-export class SteamWidgetComponent implements OnInit, OnDestroy {
-  public playerData: IPlayerDataResponse | undefined;
-  public ownedGamesDisplay: IGameInfoDisplay[] = [];
+export class SteamWidgetComponent implements OnInit {
+  public readonly playerData = signal<IPlayerDataResponse | undefined>(undefined);
+  public readonly ownedGamesDisplay = computed<IGameInfoDisplay[]>(() =>
+    this.ownedGames().map((game) => this.gameInfoResponseToGameInfoDisplay(game))
+  );
+  public readonly isPlayerDataLoaded = signal(false);
+  public readonly areGamesLoaded = signal(false);
 
   public gameCount = 0;
   public pageSize = 25;
@@ -48,35 +61,28 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   public pageNumber = 0;
 
   public steamUserId?: string;
-  public searchFormControl = new FormControl("");
-  public isPlayerDataLoaded = false;
-  public areGamesLoaded = false;
+  public searchFormControl = new FormControl();
 
-  private ownedGames: IGameInfoResponse[] = [];
-  private readonly destroy$: Subject<unknown> = new Subject();
+  private readonly ownedGames: WritableSignal<IGameInfoResponse[]> = signal([]);
 
   private readonly ERROR_GETTING_PLAYER_DATA =
     "Erreur lors de la récupération de vos informations Steam.";
   private readonly ERROR_GETTING_OWNED_GAMES =
     "Erreur lors de la récupération de la liste des jeux.";
+
+  private readonly destroyRef = inject(DestroyRef);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
   public ngOnInit(): void {
     this.searchFormControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
         if (this.steamUserId) {
           this.pageNumber = 0;
           this.getOwnedGames(this.steamUserId, searchValue ?? undefined);
         }
       });
-  }
-
-  public ngOnDestroy(): void {
-    this.destroy$.next(null);
-    this.destroy$.complete();
   }
 
   public refreshWidget(): void {
@@ -92,11 +98,11 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   }
 
   public getPlayerData(steamUserId: string): void {
-    this.isPlayerDataLoaded = false;
+    this.isPlayerDataLoaded.set(false);
     this.steamWidgetService.getPlayerData(steamUserId).subscribe({
       next: (response: IPlayerDataResponse[]) => {
-        this.playerData = response[0];
-        this.isPlayerDataLoaded = true;
+        this.playerData.set(response[0]);
+        this.isPlayerDataLoaded.set(true);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_PLAYER_DATA)
@@ -131,15 +137,12 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
   }
 
   private getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {
-    this.areGamesLoaded = false;
+    this.areGamesLoaded.set(false);
     this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).subscribe({
       next: (response: IPage<IGameInfoResponse>) => {
         this.gameCount = response.totalElements;
-        this.ownedGames = response.content;
-        this.ownedGamesDisplay = this.ownedGames.map((game) =>
-          this.gameInfoResponseToGameInfoDisplay(game)
-        );
-        this.areGamesLoaded = true;
+        this.ownedGames.set(response.content);
+        this.areGamesLoaded.set(true);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_OWNED_GAMES)
@@ -148,7 +151,7 @@ export class SteamWidgetComponent implements OnInit, OnDestroy {
 
   private gameInfoResponseToGameInfoDisplay(gameInfoResponse: IGameInfoResponse): IGameInfoDisplay {
     const appIdLink = this.steamWidgetService.STEAM_COMMUNITY_URL + gameInfoResponse.appid;
-    const playerAchievementUrl = `${this.playerData?.profileurl}stats/${gameInfoResponse?.appid}/achievements/`;
+    const playerAchievementUrl = `${this.playerData()?.profileurl}stats/${gameInfoResponse?.appid}/achievements/`;
     const gameImgSrc = `${this.steamWidgetService.STEAM_IMAGE_URL}${gameInfoResponse.appid}/${gameInfoResponse.imgIconUrl}.jpg`;
     return {
       ...gameInfoResponse,

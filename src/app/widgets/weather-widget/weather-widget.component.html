@@ -1,7 +1,7 @@
 <dash-widget
   [isFormValid]="isFormValid()"
   [widgetData]="getWidgetData()"
-  [isWidgetLoaded]="isWeatherLoaded && isForecastLoaded"
+  [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="this.refreshWidget()"
 >
   <ng-template #headerIcon>
@@ -30,7 +30,7 @@
       <dash-weather-widget-view
         [weather]="weather"
         [cityData]="cityData"
-        [forecastResponse]="forecastResponse"
+        [forecastResponse]="forecastResponse()"
       ></dash-weather-widget-view>
     }
   </ng-template>

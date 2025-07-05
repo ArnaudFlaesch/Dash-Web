@@ -75,8 +75,8 @@ describe("SteamWidgetComponent", () => {
   };
 
   it("should create", () => {
-    expect(component.playerData).toEqual(undefined);
-    expect(component.ownedGamesDisplay).toEqual([]);
+    expect(component.playerData()).toEqual(undefined);
+    expect(component.ownedGamesDisplay()).toEqual([]);
     const steamUserId = "1337";
     expect(component.isFormValid()).toEqual(false);
     component.steamUserId = steamUserId;
@@ -92,12 +92,12 @@ describe("SteamWidgetComponent", () => {
     );
     getOwnedGamesRequest.flush(ownedGamesData);
 
-    expect(component.playerData?.personaname).toEqual(playerData[0].personaname);
-    expect(component.ownedGamesDisplay.length).toEqual(3);
+    expect(component.playerData()?.personaname).toEqual(playerData[0].personaname);
+    expect(component.ownedGamesDisplay().length).toEqual(3);
   });
 
   it("Should load new data on page navigation", () => {
-    expect(component.ownedGamesDisplay).toEqual([]);
+    expect(component.ownedGamesDisplay()).toEqual([]);
     expect(component.pageNumber).toEqual(0);
     const pageIndex = 2;
     const pageEvent = {

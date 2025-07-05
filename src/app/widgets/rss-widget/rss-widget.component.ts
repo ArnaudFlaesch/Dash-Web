@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatIconButton } from "@angular/material/button";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
@@ -20,7 +20,7 @@ import { WidgetComponent } from "../widget/widget.component";
   selector: "dash-rss-widget",
   templateUrl: "./rss-widget.component.html",
   styleUrls: ["./rss-widget.component.scss", "../widget/widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -36,12 +36,11 @@ import { WidgetComponent } from "../widget/widget.component";
   ]
 })
 export class RssWidgetComponent {
-  public isWidgetLoaded = false;
+  public isWidgetLoaded = signal(false);
 
-  public isFeedClosed = true;
   public urlFeed?: string;
   public rssFeedResult: IRSSHeader | undefined;
-  public readArticles: string[] = [];
+  public readArticles: WritableSignal<string[]> = signal([]);
 
   private readonly ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
   private readonly ERROR_MARKING_FEED_AS_READ = "Erreur pendant la mise à jour du widget RSS.";
@@ -53,22 +52,22 @@ export class RssWidgetComponent {
 
   public refreshWidget(): void {
     if (this.urlFeed) {
-      this.isWidgetLoaded = false;
+      this.isWidgetLoaded.set(false);
       this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
         next: (apiResult: unknown) => {
           if (apiResult && (apiResult as Record<string, unknown>)["channel"] != null) {
             this.rssFeedResult = (apiResult as Record<string, unknown>)["channel"] as IRSSHeader;
           }
-          this.isWidgetLoaded = true;
+          this.isWidgetLoaded.set(true);
         },
         error: (error) => this.errorHandlerService.handleError(error, this.ERROR_GETTING_RSS_FEED),
-        complete: () => (this.isWidgetLoaded = true)
+        complete: () => this.isWidgetLoaded.set(true)
       });
     }
   }
 
   public markArticleAsRead(guid: string): void {
-    this.updateRssFeed([guid, ...this.readArticles]);
+    this.updateRssFeed([guid, ...this.readArticles()]);
   }
 
   public markAllFeedAsRead(): void {
@@ -91,9 +90,9 @@ export class RssWidgetComponent {
       })
       .subscribe({
         next: (response: IWidgetConfig) =>
-          (this.readArticles = response.data
-            ? (response.data["readArticlesGuids"] as string[])
-            : []),
+          this.readArticles.set(
+            response.data ? (response.data["readArticlesGuids"] as string[]) : []
+          ),
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ)
       });

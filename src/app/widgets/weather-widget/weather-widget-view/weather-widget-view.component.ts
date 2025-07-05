@@ -4,7 +4,9 @@ import {
   inject,
   input,
   OnChanges,
-  SimpleChanges
+  signal,
+  SimpleChanges,
+  WritableSignal
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
@@ -38,25 +40,26 @@ export class WeatherWidgetViewComponent implements OnChanges {
   public readonly forecastResponse = input.required<IForecast[]>();
   public readonly cityData = input.required<ICity>();
 
-  public displayAllForecast = false;
-  public forecastToDisplay: IForecast[] = [];
-  public forecastDays: Date[] = [];
-
-  public forecastMode = ForecastMode.DAY;
-  private selectedDayForecast: Date = new Date();
+  public readonly displayAllForecast = signal(false);
+  public readonly forecastToDisplay: WritableSignal<IForecast[]> = signal([]);
+  public readonly forecastDays: WritableSignal<Date[]> = signal([]);
+  public readonly forecastMode = signal(ForecastMode.DAY);
+  private readonly selectedDayForecast = signal(new Date());
 
   private readonly dateUtils = inject(DateUtilsService);
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes["forecastResponse"]) {
-      this.forecastDays = [
-        ...new Set(
-          (changes["forecastResponse"].currentValue as IForecast[]).map((data) =>
-            startOfDay(data.dt * 1000).getTime()
+      this.forecastDays.set(
+        [
+          ...new Set(
+            (changes["forecastResponse"].currentValue as IForecast[]).map((data) =>
+              startOfDay(data.dt * 1000).getTime()
+            )
           )
-        )
-      ].map((data) => new Date(data));
-      this.selectDayForecast(this.forecastDays[0]);
+        ].map((data) => new Date(data))
+      );
+      this.selectDayForecast(this.forecastDays()[0]);
     }
   }
 
@@ -66,36 +69,37 @@ export class WeatherWidgetViewComponent implements OnChanges {
 
   public isSelectedDay(date: Date): boolean {
     return (
-      this.forecastMode === ForecastMode.DAY && this.selectedDayForecast.getDay() === date.getDay()
+      this.forecastMode() === ForecastMode.DAY &&
+      this.selectedDayForecast().getDay() === date.getDay()
     );
   }
 
   public isForecastModeWeek(): boolean {
-    return this.forecastMode === ForecastMode.WEEK;
+    return this.forecastMode() === ForecastMode.WEEK;
   }
 
   public selectDayForecast(date: Date): void {
-    if (this.forecastMode !== ForecastMode.WEEK && this.selectedDayForecast === date) return;
-    this.forecastMode = ForecastMode.DAY;
-    this.selectedDayForecast = date;
+    if (this.forecastMode() !== ForecastMode.WEEK && this.selectedDayForecast() === date) return;
+    this.forecastMode.set(ForecastMode.DAY);
+    this.selectedDayForecast.set(date);
     this.updateForecastData();
   }
 
   public selectWeekForecast(): void {
-    if (this.forecastMode === ForecastMode.WEEK) return;
-    this.forecastMode = ForecastMode.WEEK;
+    if (this.forecastMode() === ForecastMode.WEEK) return;
+    this.forecastMode.set(ForecastMode.WEEK);
     this.updateForecastData();
   }
 
   public updateForecastData(): void {
     const cityData = this.cityData();
     if (cityData) {
-      this.forecastToDisplay = this.filterForecastByMode(cityData, this.forecastResponse());
+      this.forecastToDisplay.set(this.filterForecastByMode(cityData, this.forecastResponse()));
     }
   }
 
   private filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {
-    switch (this.forecastMode) {
+    switch (this.forecastMode()) {
       case ForecastMode.WEEK: {
         return forecastData.filter((forecastDay) => {
           const forecastElement = this.dateUtils.formatDateFromTimestamp(
@@ -106,13 +110,13 @@ export class WeatherWidgetViewComponent implements OnChanges {
         });
       }
       case ForecastMode.DAY: {
-        if (isToday(this.selectedDayForecast)) {
+        if (isToday(this.selectedDayForecast())) {
           return forecastData.slice(0, 6);
         }
         return forecastData.filter(
           (forecastDay) =>
-            new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast.getDay() &&
-            (this.displayAllForecast || new Date(forecastDay.dt * 1000).getHours() >= 7)
+            new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast().getDay() &&
+            (this.displayAllForecast() || new Date(forecastDay.dt * 1000).getHours() >= 7)
         );
       }
     }
