@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, LOCALE_ID } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  LOCALE_ID,
+  signal,
+  WritableSignal
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import {
   CalendarCommonModule,
@@ -8,10 +15,10 @@ import {
   CalendarView,
   CalendarWeekModule
 } from "angular-calendar";
-import { addMonths, endOfDay, format, startOfDay } from "date-fns";
+import { endOfDay, format, startOfDay } from "date-fns";
 import { Subject } from "rxjs";
 
-import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
 import { CalendarWidgetService } from "./calendar-widget.service";
 import { EventDetailModalComponent } from "./event-detail-modal/event-detail-modal.component";
 import { ICalendarData } from "./ICalendarData";
@@ -27,7 +34,7 @@ import { WidgetComponent } from "../widget/widget.component";
   selector: "dash-calendar-widget",
   templateUrl: "./calendar-widget.component.html",
   styleUrls: ["./calendar-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -42,30 +49,17 @@ import { WidgetComponent } from "../widget/widget.component";
   ]
 })
 export class CalendarWidgetComponent {
-  public calendarUrls: string[] = [];
-  public isWidgetLoaded = true;
-
-  public calendarView = CalendarView;
-  public events: CalendarEvent[] = [];
-
-  public view: CalendarView = CalendarView.Month;
   public viewDate: Date = new Date();
   public refresh: Subject<unknown> = new Subject();
-  public locale = "fr";
-  public hourSegments: 1 | 2 | 4 | 6 = 1;
-  public weekStartsOn = 1;
-  public startsWithToday = true;
-  public activeDayIsOpen = true;
-  public excludeDays: number[] = [];
-  public weekendDays: number[] = [0, 6];
-  public dayStartHour = 6;
-  public dayEndHour = 24;
+  public readonly calendarUrls: WritableSignal<string[]> = signal([]);
+  public readonly isWidgetLoaded = signal(true);
+  public readonly events: WritableSignal<CalendarEvent[]> = signal([]);
+  public readonly view = signal(CalendarView.Month);
+  public readonly activeDayIsOpen = signal(true);
+  public readonly locale = inject(LOCALE_ID);
 
-  public minDate: Date = new Date();
-  public maxDate: Date = endOfDay(addMonths(new Date(), 1));
-
-  public prevBtnDisabled = false;
-  public nextBtnDisabled = false;
+  public readonly calendarView = CalendarView;
+  public readonly weekStartsOn = 1;
 
   private readonly dialog = inject(MatDialog);
   private readonly calendarWidgetService = inject(CalendarWidgetService);
@@ -73,19 +67,13 @@ export class CalendarWidgetComponent {
   private readonly MILLISECONDS_IN_A_DAY = 86400000;
   private readonly ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
-  public constructor() {
-    const locale = inject(LOCALE_ID);
-
-    this.locale = locale;
-  }
-
   public refreshWidget(): void {
-    this.events = [];
-    this.calendarUrls?.forEach((calendarUrl: string) => {
+    this.events.set([]);
+    this.calendarUrls()?.forEach((calendarUrl: string) => {
       this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
         next: (calendarData) => {
-          this.events = [...this.events, ...this.parseEvents(calendarData)];
-          this.isWidgetLoaded = true;
+          this.events.set([...this.events(), ...this.parseEvents(calendarData)]);
+          this.isWidgetLoaded.set(true);
         },
         error: (error) => this.errorHandlerService.handleError(error, this.ERROR_PARSING_EVENTS)
       });
@@ -93,15 +81,15 @@ export class CalendarWidgetComponent {
   }
 
   public getWidgetConfig(): { calendarUrls: string[] } | undefined {
-    return this.calendarUrls?.length ? { calendarUrls: this.calendarUrls } : undefined;
+    return this.calendarUrls()?.length ? { calendarUrls: this.calendarUrls() } : undefined;
   }
 
   public onCalendarUrlAdded(): void {
-    this.calendarUrls = [...this.calendarUrls, ""];
+    this.calendarUrls.update((calendarUrls) => [...calendarUrls, ""]);
   }
 
   public removeCalendarUrl(calendarUrl: string): void {
-    this.calendarUrls = this.calendarUrls.filter((url) => url !== calendarUrl);
+    this.calendarUrls.set(this.calendarUrls().filter((url) => url !== calendarUrl));
   }
 
   public displayTodaysDate(): string {
@@ -109,34 +97,36 @@ export class CalendarWidgetComponent {
   }
 
   public onCalendarUrlUpdated(event: Event): void {
-    this.calendarUrls = this.calendarUrls.map((url: string, index: number) => {
-      const eventTarget = event.target as HTMLInputElement;
-      return index.toString() === eventTarget?.id ? eventTarget.value : url;
-    });
+    this.calendarUrls.set(
+      this.calendarUrls().map((url: string, index: number) => {
+        const eventTarget = event.target as HTMLInputElement;
+        return index.toString() === eventTarget?.id ? eventTarget.value : url;
+      })
+    );
   }
 
   public isFormValid(): boolean {
-    return this.calendarUrls && this.calendarUrls.length > 0;
+    return this.calendarUrls() && this.calendarUrls().length > 0;
   }
 
   public closeOpenMonthViewDay(): void {
-    this.activeDayIsOpen = false;
+    this.activeDayIsOpen.set(false);
   }
 
   public setView(view: CalendarView): void {
-    this.view = view;
+    this.view.set(view);
   }
 
   public isCalendarViewMonth(): boolean {
-    return this.view === CalendarView.Month;
+    return this.view() === CalendarView.Month;
   }
 
   public isCalendarViewWeek(): boolean {
-    return this.view === CalendarView.Week;
+    return this.view() === CalendarView.Week;
   }
 
   public isCalendarViewDay(): boolean {
-    return this.view === CalendarView.Day;
+    return this.view() === CalendarView.Day;
   }
 
   public handleEvent(action: string, event: CalendarEvent): void {

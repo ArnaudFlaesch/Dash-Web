@@ -1,7 +1,7 @@
 <dash-widget
   [widgetData]="getWidgetData()"
   [isFormValid]="isFormValid()"
-  [isWidgetLoaded]="isWidgetLoaded"
+  [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="this.refreshWidget()"
 >
   <ng-template #headerIcon>
@@ -20,7 +20,8 @@
       <input
         matInput
         id="airParifApiKey"
-        [(ngModel)]="this.airParifApiKey"
+        [ngModel]="this.airParifApiKey()"
+        (ngModelChange)="this.airParifApiKey.set($event)"
         placeholder="Saisissez la clé d'API AirParif"
       />
     </mat-form-field>
@@ -29,7 +30,8 @@
       <input
         matInput
         id="communeInseeCode"
-        [(ngModel)]="this.communeInseeCode"
+        [ngModel]="this.communeInseeCode()"
+        (ngModelChange)="this.communeInseeCode.set($event)"
         placeholder="Saisissez le code commune"
       />
     </mat-form-field>
@@ -38,9 +40,9 @@
   <ng-template #body>
     <dash-airparif-map
       class="airparif-map"
-      [airParifApiKey]="this.airParifApiKey"
-      [airParifForecast]="this.airParifForecast"
-      [airParifCouleursIndices]="this.airParifCouleursIndices"
+      [airParifApiKey]="this.airParifApiKey()"
+      [airParifForecast]="this.airParifForecast()"
+      [airParifCouleursIndices]="this.airParifCouleursIndices()"
     />
   </ng-template>
 </dash-widget>

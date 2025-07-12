@@ -43,6 +43,6 @@ describe("MiniWidgetListComponent", () => {
         type: MiniWidgetTypeEnum.WEATHER
       }
     ]);
-    expect(component.miniWidgetList.length).toEqual(1);
+    expect(component.miniWidgetList().length).toEqual(1);
   });
 });

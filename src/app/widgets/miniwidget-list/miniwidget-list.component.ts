@@ -7,8 +7,10 @@ import {
   Injector,
   OnDestroy,
   OnInit,
+  signal,
   viewChildren,
-  ViewContainerRef
+  ViewContainerRef,
+  WritableSignal
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 
@@ -27,13 +29,13 @@ import { MatMiniFabButton } from "@angular/material/button";
   selector: "dash-miniwidget-list",
   templateUrl: "./miniwidget-list.component.html",
   styleUrls: ["./miniwidget-list.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MatMiniFabButton, MatTooltip, MatIcon]
 })
 export class MiniWidgetListComponent implements OnInit, OnDestroy {
   public readonly miniWidgetTargets = viewChildren("dynamic", { read: ViewContainerRef });
-  public miniWidgetList: IMiniWidgetConfig[] = [];
+  public miniWidgetList: WritableSignal<IMiniWidgetConfig[]> = signal([]);
 
   private readonly cdRef = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
@@ -50,7 +52,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.miniWidgetService.getMiniWidgets().subscribe({
       next: (miniWidgets) => {
-        this.miniWidgetList = miniWidgets;
+        this.miniWidgetList.set(miniWidgets);
         this.createMiniWidgets();
       },
       error: (error: HttpErrorResponse) =>
@@ -61,9 +63,9 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
       next: (miniWidgetId) => {
         this.miniWidgetService.deleteMiniWidget(miniWidgetId).subscribe({
           next: () =>
-            (this.miniWidgetList = this.miniWidgetList.filter(
-              (miniWidget) => miniWidget.id !== miniWidgetId
-            )),
+            this.miniWidgetList.update((miniWidgetList) =>
+              miniWidgetList.filter((miniWidget) => miniWidget.id !== miniWidgetId)
+            ),
           error: (error) =>
             this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_MINI_WIDGET)
         });
@@ -87,7 +89,10 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
         const type = MiniWidgetTypeEnum[result];
         this.miniWidgetService.addMiniWidget(type).subscribe({
           next: (createdMiniWidgetResponse: IMiniWidgetConfig) => {
-            this.miniWidgetList = [...this.miniWidgetList, createdMiniWidgetResponse];
+            this.miniWidgetList.update((miniWidgetList) => [
+              ...miniWidgetList,
+              createdMiniWidgetResponse
+            ]);
             this.createMiniWidgets();
           },
           error: (error: HttpErrorResponse) =>
@@ -108,12 +113,12 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
           providers: [
             {
               provide: "widgetId",
-              useValue: this.miniWidgetList[index].id
+              useValue: this.miniWidgetList()[index].id
             }
           ]
         });
-        const widgetData = this.miniWidgetList[index].data;
-        if (this.miniWidgetList[index].type === MiniWidgetTypeEnum.WEATHER) {
+        const widgetData = this.miniWidgetList()[index].data;
+        if (this.miniWidgetList()[index].type === MiniWidgetTypeEnum.WEATHER) {
           component = target.createComponent(WeatherMiniWidgetComponent, {
             injector: injector
           });

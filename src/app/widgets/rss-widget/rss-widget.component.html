@@ -1,7 +1,7 @@
 <dash-widget
   [widgetData]="getWidgetData()"
   [isFormValid]="isFormValid()"
-  [isWidgetLoaded]="isWidgetLoaded"
+  [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="this.refreshWidget()"
 >
   <ng-template #headerIcon>
@@ -40,7 +40,7 @@
         <div class="rss-widget-description">{{ this.rssFeedResult?.description }}</div>
         <dash-rss-feed
           [feed]="this.rssFeedResult?.item ?? []"
-          [readArticles]="this.readArticles"
+          [readArticles]="this.readArticles()"
           (markArticleAsReadEvent)="this.markArticleAsRead($event)"
         ></dash-rss-feed>
       </div>

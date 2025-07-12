@@ -1,16 +1,16 @@
-@if (this.isDashboardLoaded) {
+@if (this.isDashboardLoaded()) {
   <div id="home-header-container">
     <div id="home-header-top-bar">
       <div id="tab-list-container">
         <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)">
-          @for (tab of this.tabs; track tab.id) {
+          @for (tab of this.tabs(); track tab.id) {
             <dash-tab
               class="tab"
               (keydown)="selectTab(tab.id)"
               (click)="selectTab(tab.id)"
               (tabDeletedEvent)="deleteTabFromDash($event)"
-              [cdkDragDisabled]="!editModeEnabled"
-              [ngClass]="{ 'selected-item': activeTab === tab.id }"
+              [cdkDragDisabled]="!editModeEnabled()"
+              [ngClass]="{ 'selected-item': activeTab() === tab.id }"
               [tab]="tab"
               cdkDrag
               cdkDropListOrientation="horizontal"
@@ -38,7 +38,7 @@
           <dash-notifications></dash-notifications>
         }
 
-        @if (editModeEnabled) {
+        @if (editModeEnabled()) {
           <button
             (click)="this.toggleEditMode()"
             matTooltip="Valider l'ordre des widgets"
@@ -61,7 +61,7 @@
         }
 
         <button
-          [disabled]="this.tabs.length < 1"
+          [disabled]="this.tabs().length < 1"
           matTooltip="Ajouter un nouveau widget"
           (click)="this.openCreateWidgetModal()"
           id="openAddWidgetModal"
@@ -128,10 +128,10 @@
       <dash-miniwidget-list></dash-miniwidget-list>
     </div>
   </div>
-  @if (this.areWidgetsLoaded) {
+  @if (this.areWidgetsLoaded()) {
     <dash-widget-list
-      [widgetList]="this.activeWidgets"
-      [toggleEditMode]="editModeEnabled"
+      [widgetList]="this.activeWidgets()"
+      [toggleEditMode]="editModeEnabled()"
       (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"
     ></dash-widget-list>
   } @else {

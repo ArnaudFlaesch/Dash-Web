@@ -1,6 +1,6 @@
 <div id="miniwidget-list-container">
   <div id="miniwidget-list">
-    @for (miniWidget of this.miniWidgetList; track miniWidget.id) {
+    @for (miniWidget of this.miniWidgetList(); track miniWidget.id) {
       <div class="miniwidget-container">
         <ng-template #dynamic></ng-template>
       </div>

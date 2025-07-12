@@ -4,7 +4,9 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
-  input
+  input,
+  signal,
+  WritableSignal
 } from "@angular/core";
 import {
   MatExpansionPanel,
@@ -14,8 +16,8 @@ import {
 } from "@angular/material/expansion";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { IAchievement, IAchievementResponse, IGameInfoDisplay } from "../ISteam";
-import { ErrorHandlerService } from "./../../../services/error.handler.service";
-import { SteamWidgetService } from "./../steam.widget.service";
+import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { SteamWidgetService } from "../steam.widget.service";
 
 @Component({
   selector: "dash-game-details",
@@ -36,12 +38,11 @@ export class GameDetailsComponent {
   public readonly steamUserId = input.required<string>();
   public readonly profileUrl = input.required<string>();
 
-  public achievements: IAchievement[] = [];
-  public completedAchievements: IAchievement[] = [];
-  public completionStatus: number | undefined;
+  public readonly achievements: WritableSignal<IAchievement[]> = signal([]);
+  public readonly completedAchievements: WritableSignal<IAchievement[]> = signal([]);
+  public readonly completionStatus = signal<number | undefined>(undefined);
 
   private readonly ERROR_GETTING_ACHIEVEMENTS_DATA = "Erreur lors de la récupération des succès.";
-
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -51,12 +52,14 @@ export class GameDetailsComponent {
       next: (response: unknown) => {
         const achievementResponse = response as IAchievementResponse;
         if (achievementResponse.playerstats.achievements) {
-          this.achievements = achievementResponse.playerstats.achievements;
-          this.completedAchievements = achievementResponse.playerstats.achievements.filter(
-            (achievement: IAchievement) => achievement.achieved === 1
+          this.achievements.set(achievementResponse.playerstats.achievements);
+          this.completedAchievements.set(
+            achievementResponse.playerstats.achievements.filter(
+              (achievement: IAchievement) => achievement.achieved === 1
+            )
           );
-          this.completionStatus = Math.floor(
-            (this.completedAchievements.length / this.achievements.length) * 100
+          this.completionStatus.set(
+            Math.floor((this.completedAchievements().length / this.achievements().length) * 100)
           );
         }
         this.changeDetectorRef.detectChanges();

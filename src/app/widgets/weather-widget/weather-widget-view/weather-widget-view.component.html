@@ -3,7 +3,7 @@
   @if (cityData() && forecastResponse()) {
     <div class="forecast-data-container">
       <div class="forecast-selector">
-        @for (date of forecastDays; track date.getTime()) {
+        @for (date of forecastDays(); track date.getTime()) {
           <button
             [color]="this.isSelectedDay(date) ? 'primary' : ''"
             mat-raised-button
@@ -30,8 +30,8 @@
       </div>
       @if (this.cityData()) {
         <dash-weather-forecast
-          [forecast]="this.forecastToDisplay"
-          [forecastMode]="this.forecastMode"
+          [forecast]="this.forecastToDisplay()"
+          [forecastMode]="this.forecastMode()"
           [timezone]="this.cityData().timezone"
         ></dash-weather-forecast>
       }

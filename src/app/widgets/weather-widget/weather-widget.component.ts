@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
 
-import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
 import { ICity, IForecast, IWeatherAPIResponse } from "./IWeather";
 import { WeatherWidgetService } from "./weather.widget.service";
 
@@ -16,7 +16,7 @@ import { WeatherWidgetViewComponent } from "./weather-widget-view/weather-widget
   selector: "dash-weather-widget",
   templateUrl: "./weather-widget.component.html",
   styleUrls: ["./weather-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -32,32 +32,31 @@ export class WeatherWidgetComponent {
   public city?: string;
 
   public weather: IWeatherAPIResponse | undefined;
-  public forecastResponse: IForecast[] = [];
+  public forecastResponse: WritableSignal<IForecast[]> = signal([]);
   public cityData: ICity | undefined;
 
-  public isWeatherLoaded = false;
-  public isForecastLoaded = false;
+  public readonly isWeatherLoaded = signal(false);
+  public readonly isForecastLoaded = signal(false);
 
   private readonly ERROR_GETTING_WEATHER_DATA =
     "Erreur lors de la récupération des données météorologiques.";
-
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public refreshWidget(): void {
     if (this.city) {
-      this.isWeatherLoaded = false;
-      this.isForecastLoaded = false;
+      this.isWeatherLoaded.set(false);
+      this.isForecastLoaded.set(false);
       forkJoin([
         this.weatherWidgetService.fetchWeatherData(this.city),
         this.weatherWidgetService.fetchForecastData(this.city)
       ]).subscribe({
         next: ([weatherData, forecastApiResponse]) => {
           this.weather = weatherData;
-          this.isWeatherLoaded = true;
-          this.forecastResponse = forecastApiResponse.list;
+          this.isWeatherLoaded.set(true);
+          this.forecastResponse.set(forecastApiResponse.list);
           this.cityData = forecastApiResponse.city;
-          this.isForecastLoaded = true;
+          this.isForecastLoaded.set(true);
         },
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WEATHER_DATA)
@@ -66,7 +65,7 @@ export class WeatherWidgetComponent {
   }
 
   public isWidgetLoaded(): boolean {
-    return this.isWeatherLoaded && this.isForecastLoaded;
+    return this.isWeatherLoaded() && this.isForecastLoaded();
   }
 
   public getWidgetData(): { city: string } | undefined {

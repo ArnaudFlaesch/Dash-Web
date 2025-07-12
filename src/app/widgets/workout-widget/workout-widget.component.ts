@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
   MatDatepicker,
@@ -52,7 +52,7 @@ enum WORKOUT_STATISTICS {
   selector: "dash-workout-widget",
   templateUrl: "./workout-widget.component.html",
   styleUrls: ["./workout-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -75,18 +75,18 @@ enum WORKOUT_STATISTICS {
   ]
 })
 export class WorkoutWidgetComponent {
-  public workoutTypes: IWorkoutType[] = [];
-  public workoutSessions: IWorkoutSession[] = [];
-  public workoutStatsByWeek: IWorkoutStatsByPeriod[] = [];
-  public workoutStatsByMonth: IWorkoutStatsByPeriod[] = [];
-  public workoutStatsOfMonths: IWorkoutStatByMonth[] = [];
+  public workoutTypes: WritableSignal<IWorkoutType[]> = signal([]);
+  public workoutSessions: WritableSignal<IWorkoutSession[]> = signal([]);
+  public workoutStatsByWeek: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
+  public workoutStatsByMonth: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
+  public workoutStatsOfMonths: WritableSignal<IWorkoutStatByMonth[]> = signal([]);
   public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
+  public selectedWorkoutStatistics: WORKOUT_STATISTICS | undefined;
+  public isWidgetLoaded = signal(false);
+  public WIDGET_VIEW: WORKOUT_WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
 
   public dateFormat = DEFAULT_DATE_FORMAT;
   public widgetViewEnum = WORKOUT_WIDGET_VIEW;
-  public selectedWorkoutStatistics: WORKOUT_STATISTICS | undefined;
-  public WIDGET_VIEW: WORKOUT_WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
-  public isWidgetLoaded = false;
 
   public workoutNameInput: string | null = null;
   public workoutDateFormControl = new FormControl("");
@@ -107,10 +107,10 @@ export class WorkoutWidgetComponent {
 
   public refreshWidget(): void {
     this.workoutWidgetService.getWorkoutTypes().subscribe({
-      next: (workoutTypes) => (this.workoutTypes = workoutTypes),
+      next: (workoutTypes) => this.workoutTypes.set(workoutTypes),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES),
-      complete: () => (this.isWidgetLoaded = true)
+      complete: () => this.isWidgetLoaded.set(true)
     });
     const selectedMonth = this.selectedMonthFormControl.value ?? new Date();
     this.getWorkoutSessionsOfMonth(selectedMonth);
@@ -137,7 +137,7 @@ export class WorkoutWidgetComponent {
     if (this.workoutNameInput) {
       this.workoutWidgetService.addWorkoutType(this.workoutNameInput).subscribe({
         next: (addedWorkoutType) => {
-          this.workoutTypes = [...this.workoutTypes, addedWorkoutType];
+          this.workoutTypes.update((oldWorkoutTypes) => [...oldWorkoutTypes, addedWorkoutType]);
           this.workoutNameInput = "";
         },
         error: (error) =>
@@ -153,7 +153,10 @@ export class WorkoutWidgetComponent {
       );
       this.workoutWidgetService.createWorkoutSession(workoutDate).subscribe({
         next: (addedWorkoutSession) => {
-          this.workoutSessions = [...this.workoutSessions, addedWorkoutSession];
+          this.workoutSessions.update((oldWorkoutSessions) => [
+            ...oldWorkoutSessions,
+            addedWorkoutSession
+          ]);
           this.editWorkoutSession(addedWorkoutSession);
         },
         error: (error) =>
@@ -229,7 +232,7 @@ export class WorkoutWidgetComponent {
 
   private getWorkoutStatsOfInterval(dateIntervalStart: Date, dateIntervalEnd: Date): void {
     this.workoutWidgetService.getWorkoutStatsByMonth(dateIntervalStart, dateIntervalEnd).subscribe({
-      next: (workoutStatsOfMonths) => (this.workoutStatsOfMonths = workoutStatsOfMonths)
+      next: (workoutStatsOfMonths) => this.workoutStatsOfMonths.set(workoutStatsOfMonths)
     });
   }
 
@@ -237,7 +240,7 @@ export class WorkoutWidgetComponent {
     this.workoutWidgetService
       .getWorkoutSessions(startOfMonth(selectedMonth), endOfMonth(selectedMonth))
       .subscribe({
-        next: (workoutSessions) => (this.workoutSessions = workoutSessions),
+        next: (workoutSessions) => this.workoutSessions.set(workoutSessions),
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_SESSIONS)
       });
@@ -248,7 +251,7 @@ export class WorkoutWidgetComponent {
     this.workoutWidgetService
       .getWorkoutStatsByPeriod(startOfISOWeek(today), endOfWeek(today))
       .subscribe({
-        next: (workoutStatsByWeek) => (this.workoutStatsByWeek = workoutStatsByWeek),
+        next: (workoutStatsByWeek) => this.workoutStatsByWeek.set(workoutStatsByWeek),
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)
       });
@@ -259,7 +262,7 @@ export class WorkoutWidgetComponent {
       .getWorkoutStatsByPeriod(startOfMonth(date), endOfMonth(date))
       .subscribe({
         next: (workoutStatsByMonth) => {
-          this.workoutStatsByMonth = workoutStatsByMonth;
+          this.workoutStatsByMonth.set(workoutStatsByMonth);
         },
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)

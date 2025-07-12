@@ -6,6 +6,7 @@ import {
   ElementRef,
   HostListener,
   inject,
+  signal,
   viewChild
 } from "@angular/core";
 import { SafePipe } from "../../pipes/safe.pipe";
@@ -26,7 +27,7 @@ export class EcowattWidgetComponent implements AfterViewInit {
   public ecowattIframeUrl =
     "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
 
-  public isWidgetLoaded = true;
+  public isWidgetLoaded = signal(true);
   public iframeContainerHeight = 0;
   public iframeContainerWidth = 0;
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
