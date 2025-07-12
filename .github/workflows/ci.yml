@@ -16,7 +16,7 @@ jobs:
       - name: Use Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: 24.3.0
+          node-version: 24.4.0
           cache: "npm"
 
       - name: Cache node modules
@@ -124,7 +124,7 @@ jobs:
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
-        #     if: success() && github.ref_name == 'master'
+        if: success() && github.ref_name == 'master'
         with:
           path: ./public
 
@@ -140,7 +140,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: test
-    #    if: success() && github.ref_name == 'master'
+    if: success() && github.ref_name == 'master'
 
     steps:
       - name: Deploy to GitHub Pages
