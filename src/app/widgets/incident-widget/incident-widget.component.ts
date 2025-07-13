@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  signal,
+  WritableSignal
+} from "@angular/core";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { IIncidentStreak, IIncidentViewEnum } from "./IIncident";
@@ -20,7 +27,7 @@ import { switchMap } from "rxjs";
   selector: "dash-incident-widget",
   templateUrl: "./incident-widget.component.html",
   styleUrls: ["./incident-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     WidgetComponent,
@@ -37,7 +44,7 @@ export class IncidentWidgetComponent {
   public incidentId?: number;
   public incidentName?: string;
   public lastIncidentDate?: string;
-  public streaks: IIncidentStreak[] = [];
+  public streaks: WritableSignal<IIncidentStreak[]> = signal([]);
   public isWidgetLoaded = false;
 
   private widgetView: IIncidentViewEnum = IIncidentViewEnum.CURRENT_STREAK;
@@ -66,12 +73,14 @@ export class IncidentWidgetComponent {
       )
       .subscribe({
         next: (incidentStreaks) =>
-          (this.streaks = incidentStreaks
-            .slice()
-            .sort(
-              (streakA: IIncidentStreak, streakB: IIncidentStreak) =>
-                Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
-            )),
+          this.streaks.set(
+            incidentStreaks
+              .slice()
+              .sort(
+                (streakA: IIncidentStreak, streakB: IIncidentStreak) =>
+                  Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
+              )
+          ),
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS),
         complete: () => this.changeDetectorRef.detectChanges()

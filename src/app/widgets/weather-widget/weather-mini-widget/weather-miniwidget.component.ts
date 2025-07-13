@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
-import { ICity, IForecast, IWeatherAPIResponse } from "../IWeather";
+import { ICity, IWeatherAPIResponse } from "../IWeather";
 import { WeatherWidgetService } from "../weather.widget.service";
 
 import { FormsModule } from "@angular/forms";
@@ -15,8 +15,7 @@ import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
   selector: "dash-weather-miniwidget",
   templateUrl: "./weather-miniwidget.component.html",
   styleUrls: ["./weather-miniwidget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MiniWidgetComponent,
     MatFormField,
@@ -30,10 +29,8 @@ import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
 })
 export class WeatherMiniWidgetComponent {
   public city: string | null = null;
-  public weather: IWeatherAPIResponse | undefined;
-  public forecastResponse: IForecast[] = [];
+  public weather = signal<IWeatherAPIResponse | null>(null);
   public cityData: ICity | undefined;
-  public selectedDayForecast: Date = new Date();
 
   private readonly ERROR_GETTING_WEATHER_DATA =
     "Erreur lors de la récupération des données météorologiques.";
@@ -43,7 +40,7 @@ export class WeatherMiniWidgetComponent {
   public refreshWidget(): void {
     if (this.city) {
       this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
-        next: (weatherData) => (this.weather = weatherData),
+        next: (weatherData) => this.weather.set(weatherData),
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WEATHER_DATA)
       });

@@ -38,17 +38,17 @@ describe("WeatherWidgetViewComponent", () => {
   it("should create", () => {
     component.ngOnChanges({ forecastResponse: new SimpleChange({}, forecastData.list, true) });
     expect(component.isForecastModeWeek()).toEqual(false);
-    component.selectDayForecast(new Date(component.forecastDays[0]));
-    const dateToSelect = new Date(component.forecastDays[1]);
+    component.selectDayForecast(new Date(component.forecastDays()[0]));
+    const dateToSelect = new Date(component.forecastDays()[1]);
     component.selectDayForecast(dateToSelect);
     expect(component.isSelectedDay(dateToSelect)).toEqual(true);
     // Select the same date a second time to check that nothing changes and to cover all possible cases
     component.selectDayForecast(dateToSelect);
     expect(component.isSelectedDay(dateToSelect)).toEqual(true);
     expect(
-      component.forecastToDisplay.map((forecast) =>
-        format(new Date(forecast.dt * 1000), "dd-MM-yyyy")
-      )
+      component
+        .forecastToDisplay()
+        .map((forecast) => format(new Date(forecast.dt * 1000), "dd-MM-yyyy"))
     ).toEqual(["07-03-2022"]);
     component.selectWeekForecast();
     expect(component.isSelectedDay(dateToSelect)).toEqual(false);

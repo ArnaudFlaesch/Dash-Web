@@ -41,11 +41,11 @@ describe("CalendarWidgetComponent", () => {
   });
 
   it("should create", () => {
-    expect(component.calendarUrls).toEqual([]);
+    expect(component.calendarUrls()).toEqual([]);
     component.refreshWidget();
-    expect(component.events).toEqual([]);
+    expect(component.events()).toEqual([]);
     expect(component.isCalendarViewMonth()).toEqual(true);
-    component.calendarUrls.push("https://calendar.ical");
+    component.calendarUrls().push("https://calendar.ical");
     component.refreshWidget();
     const getCalendarDataRequest = httpTestingController.expectOne(
       environment.backend_url + `/calendarWidget/`
@@ -83,8 +83,8 @@ describe("CalendarWidgetComponent", () => {
       }
     ];
     getCalendarDataRequest.flush(getCalendarData);
-    expect(component.events.length).toEqual(6);
-    const calendarEvent = component.events[0];
+    expect(component.events().length).toEqual(6);
+    const calendarEvent = component.events()[0];
     expect(calendarEvent.title).toEqual("La Toussaint");
   });
 
@@ -96,10 +96,10 @@ describe("CalendarWidgetComponent", () => {
   });
 
   it("Should update the calendar urls", () => {
-    expect(component.calendarUrls).toEqual([]);
+    expect(component.calendarUrls()).toEqual([]);
     expect(component.getWidgetConfig()).toEqual(undefined);
     component.onCalendarUrlAdded();
-    expect(component.calendarUrls).toEqual([""]);
+    expect(component.calendarUrls()).toEqual([""]);
     expect(component.getWidgetConfig()).toEqual({ calendarUrls: [""] });
     component.removeCalendarUrl("");
     expect(component.getWidgetConfig()).toEqual(undefined);

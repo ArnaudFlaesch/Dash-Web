@@ -17,7 +17,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 export class WeatherTodayComponent {
   public readonly weather = input.required<IWeatherAPIResponse>();
   public readonly dateUtils = inject(DateUtilsService);
-  private weatherWidgetService = inject(WeatherWidgetService);
+  private readonly weatherWidgetService = inject(WeatherWidgetService);
 
   public getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getIconFromWeatherApi(icon);

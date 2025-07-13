@@ -172,7 +172,7 @@ describe("WeatherWidgetComponent", () => {
       expect(component.isFormValid()).toEqual(false);
       const cityName = "Paris";
       expect(component.cityData).toEqual(undefined);
-      expect(component.forecastResponse).toEqual([]);
+      expect(component.forecastResponse()).toEqual([]);
       expect(component.isWidgetLoaded()).toEqual(false);
       component.city = cityName;
       expect(component.isFormValid()).toEqual(true);
@@ -184,7 +184,7 @@ describe("WeatherWidgetComponent", () => {
       requests[1].flush(forecastData);
 
       expect(component.cityData?.name).toEqual(cityName);
-      expect(component.forecastResponse.length).toEqual(forecastData.list.length);
+      expect(component.forecastResponse().length).toEqual(forecastData.list.length);
       expect(component.isWidgetLoaded()).toEqual(true);
     });
   });
@@ -198,7 +198,7 @@ describe("WeatherWidgetComponent", () => {
       requests[0].error(new ProgressEvent("Server error"));
 
       expect(component.weather).toEqual(undefined);
-      expect(component.forecastResponse).toEqual([]);
+      expect(component.forecastResponse()).toEqual([]);
     });
   });
 });

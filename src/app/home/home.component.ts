@@ -1,7 +1,15 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
 import { Location, NgClass } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  WritableSignal
+} from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -35,7 +43,7 @@ import { TabComponent } from "../tab/tab.component";
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CdkDropList,
     TabComponent,
@@ -58,12 +66,12 @@ import { TabComponent } from "../tab/tab.component";
   ]
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  public tabs: ITab[] = [];
-  public activeWidgets: IWidgetConfig[] = [];
-  public activeTab = -1;
-  public isDashboardLoaded = false;
-  public areWidgetsLoaded = false;
-  public editModeEnabled = false;
+  public tabs: WritableSignal<ITab[]> = signal([]);
+  public activeWidgets: WritableSignal<IWidgetConfig[]> = signal([]);
+  public activeTab = signal(-1);
+  public isDashboardLoaded = signal(false);
+  public areWidgetsLoaded = signal(false);
+  public editModeEnabled = signal(false);
   public toggleControl = new FormControl(false);
   public cashManagerApplicationUrl = "https://arnaudflaesch.github.io/CashManager/";
 
@@ -125,9 +133,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     const newTabLabel = "Nouvel onglet";
     this.tabService.addTab(newTabLabel).subscribe({
       next: (insertedTab: ITab) => {
-        this.tabs = [...this.tabs, insertedTab];
-        this.activeTab = insertedTab.id;
-        this.activeWidgets = [];
+        this.tabs.update((tabs) => [...tabs, insertedTab]);
+        this.activeTab.set(insertedTab.id);
+        this.activeWidgets.set([]);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_TAB)
@@ -135,8 +143,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public selectTab(tabId: number): void {
-    if (this.activeTab !== tabId) {
-      this.activeTab = tabId;
+    if (this.activeTab() !== tabId) {
+      this.activeTab.set(tabId);
       const url = this.router
         .createUrlTree([], {
           relativeTo: this.activatedRoute,
@@ -144,7 +152,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         })
         .toString();
       this.location.go(url);
-      this.loadWidgets(this.activeTab);
+      this.loadWidgets(this.activeTab());
     }
   }
 
@@ -153,9 +161,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_WIDGET),
       complete: () =>
-        (this.activeWidgets = this.activeWidgets.filter(
-          (widget: IWidgetConfig) => widget.id !== id
-        ))
+        this.activeWidgets.update((activeWidgets) => {
+          return activeWidgets.filter((widget: IWidgetConfig) => widget.id !== id);
+        })
     });
   }
 
@@ -176,9 +184,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result: WidgetTypeEnum) => {
       if (result) {
         const type = WidgetTypeEnum[result];
-        this.widgetService.addWidget(type, this.activeTab).subscribe({
+        this.widgetService.addWidget(type, this.activeTab()).subscribe({
           next: (response: IWidgetConfig) => {
-            this.activeWidgets = [...this.activeWidgets, response];
+            this.activeWidgets.update((activeWidgets) => [...activeWidgets, response]);
           },
           error: (error: HttpErrorResponse) =>
             this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_WIDGET)
@@ -229,19 +237,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public drop(event: CdkDragDrop<ITab[]>): void {
-    moveItemInArray(this.tabs, event.previousIndex, event.currentIndex);
-    const updatedTabs = this.tabs.map((tab: ITab, index: number) => {
+    const tabsCopy = [...this.tabs()];
+    moveItemInArray(tabsCopy, event.previousIndex, event.currentIndex);
+    const updatedTabs = tabsCopy.map((tab: ITab, index: number) => {
       tab.tabOrder = index;
       return tab;
     });
     this.tabService.updateTabs(updatedTabs).subscribe({
-      next: (tabs: ITab[]) => (this.tabs = tabs),
+      next: (tabs: ITab[]) => this.tabs.set(tabs),
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_UPDATING_TABS)
     });
   }
 
   public toggleEditMode(): void {
-    this.editModeEnabled = !this.editModeEnabled;
+    this.editModeEnabled.set(!this.editModeEnabled());
   }
 
   public toggleTheme(isToggleChecked: boolean): void {
@@ -255,36 +264,36 @@ export class HomeComponent implements OnInit, OnDestroy {
   private initDashboard(): void {
     this.tabService.getTabs().subscribe({
       next: (tabs) => {
-        this.tabs = tabs;
+        this.tabs.set(tabs);
         if (tabs.length) {
           this.activatedRoute.queryParams.subscribe((params) => {
             const tabIdParam = params["tabId"];
             if (tabIdParam && tabs.find((tab) => tab.id === Number.parseInt(tabIdParam))) {
-              this.activeTab = Number.parseInt(tabIdParam);
+              this.activeTab.set(Number.parseInt(tabIdParam));
             } else {
-              this.activeTab = tabs[0].id;
+              this.activeTab.set(tabs[0].id);
             }
           });
-          this.loadWidgets(this.activeTab);
+          this.loadWidgets(this.activeTab());
         } else {
-          this.areWidgetsLoaded = true;
+          this.areWidgetsLoaded.set(true);
         }
-        this.isDashboardLoaded = true;
+        this.isDashboardLoaded.set(true);
       },
       error: (error: HttpErrorResponse) => {
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_INIT_DASHBOARD);
-        this.isDashboardLoaded = true;
+        this.isDashboardLoaded.set(true);
       }
     });
   }
 
   private loadWidgets(activeTabId: number): void {
-    this.activeWidgets = [];
-    this.areWidgetsLoaded = false;
+    this.activeWidgets.set([]);
+    this.areWidgetsLoaded.set(false);
     this.widgetService.getWidgets(activeTabId).subscribe({
       next: (widgets) => {
-        this.activeWidgets = widgets;
-        this.areWidgetsLoaded = true;
+        this.activeWidgets.set(widgets);
+        this.areWidgetsLoaded.set(true);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_WIDGETS)
@@ -292,16 +301,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private deleteTabFromDashboard(tabId: number): void {
-    this.activeWidgets = this.activeWidgets.filter(
-      (widget: IWidgetConfig) => widget.tabId !== tabId
+    this.activeWidgets.set(
+      this.activeWidgets().filter((widget: IWidgetConfig) => widget.tabId !== tabId)
     );
-    if (this.tabs.length > 1) {
-      if (this.tabs[0].id === tabId) {
-        this.selectTab(this.tabs[1].id);
-      } else if (this.activeTab === tabId) {
-        this.selectTab(this.tabs[0].id);
+    if (this.tabs().length > 1) {
+      if (this.tabs()[0].id === tabId) {
+        this.selectTab(this.tabs()[1].id);
+      } else if (this.activeTab() === tabId) {
+        this.selectTab(this.tabs()[0].id);
       }
     }
-    this.tabs = this.tabs.filter((tab) => tab.id !== tabId);
+    this.tabs.set(this.tabs().filter((tab) => tab.id !== tabId));
   }
 }

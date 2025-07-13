@@ -12,7 +12,7 @@ export type IMenu = {
   selector: "dash-root",
   templateUrl: "./app.component.html",
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {

@@ -72,8 +72,8 @@ describe("GameDetailsComponent", () => {
           success: true
         }
       };
-      expect(component.achievements).toEqual([]);
-      expect(component.completedAchievements).toEqual([]);
+      expect(component.achievements()).toEqual([]);
+      expect(component.completedAchievements()).toEqual([]);
       fixture.componentRef.setInput("gameInfo", {
         appid: appId,
         name: "Super Game"
@@ -88,9 +88,9 @@ describe("GameDetailsComponent", () => {
           appId
       );
       getAchievementsRequest.flush(achievementsData);
-      expect(component.achievements.length).toEqual(5);
-      expect(component.completedAchievements.length).toEqual(4);
-      expect(component.completionStatus).toEqual(80);
+      expect(component.achievements().length).toEqual(5);
+      expect(component.completedAchievements().length).toEqual(4);
+      expect(component.completionStatus()).toEqual(80);
     });
   });
 

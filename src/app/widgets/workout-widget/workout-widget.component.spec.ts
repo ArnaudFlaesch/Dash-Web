@@ -67,9 +67,9 @@ describe("WorkoutWidgetComponent", () => {
   });
 
   it("should create", () => {
-    expect(component.workoutTypes).toEqual([]);
-    expect(component.workoutSessions).toEqual([]);
-    expect(component.isWidgetLoaded).toEqual(false);
+    expect(component.workoutTypes()).toEqual([]);
+    expect(component.workoutSessions()).toEqual([]);
+    expect(component.isWidgetLoaded()).toEqual(false);
 
     const workoutTypesFromDB = [{ id: 1, name: "Abdos" }];
 
@@ -104,9 +104,9 @@ describe("WorkoutWidgetComponent", () => {
     );
     workoutStatsMonthRequest.flush([]);
 
-    expect(component.isWidgetLoaded).toEqual(true);
-    expect(component.workoutTypes).toEqual(workoutTypesFromDB);
-    expect(component.workoutSessions.length).toEqual(0);
+    expect(component.isWidgetLoaded()).toEqual(true);
+    expect(component.workoutTypes()).toEqual(workoutTypesFromDB);
+    expect(component.workoutSessions().length).toEqual(0);
   });
 
   it("should add a new workout type", () => {
@@ -123,12 +123,12 @@ describe("WorkoutWidgetComponent", () => {
       name: newWorkoutTypeName
     } as IWorkoutType;
     addWorkoutTypeRequest.flush(addWorkoutTypeResponse);
-    expect(component.workoutTypes).toEqual([addWorkoutTypeResponse]);
+    expect(component.workoutTypes()).toEqual([addWorkoutTypeResponse]);
   });
 
   it("Should create widget with errors from webservices", () => {
-    expect(component.workoutTypes).toEqual([]);
-    expect(component.workoutSessions).toEqual([]);
+    expect(component.workoutTypes()).toEqual([]);
+    expect(component.workoutSessions()).toEqual([]);
 
     component.refreshWidget();
 
@@ -169,7 +169,7 @@ describe("WorkoutWidgetComponent", () => {
 
   it("Should create a new workout session", () => {
     const alreadyExistingWorkoutType = { id: 1, name: "Abdos" } as IWorkoutType;
-    component.workoutTypes = [alreadyExistingWorkoutType];
+    component.workoutTypes.set([alreadyExistingWorkoutType]);
     const newWorkoutSessionDate = new Date(2022, 8, 1, 0, 0, 0).toString();
     component.workoutDateFormControl.setValue(newWorkoutSessionDate);
     component.createWorkoutSession();
@@ -184,7 +184,7 @@ describe("WorkoutWidgetComponent", () => {
     } as IWorkoutSession;
 
     addNewWorkoutSessionRequest.flush(mockedAddNewWorkoutSessionResponse);
-    expect(component.workoutSessions).toEqual([mockedAddNewWorkoutSessionResponse]);
+    expect(component.workoutSessions()).toEqual([mockedAddNewWorkoutSessionResponse]);
 
     component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
     expect(component.currentWorkoutSessionToEdit).toEqual(mockedAddNewWorkoutSessionResponse);

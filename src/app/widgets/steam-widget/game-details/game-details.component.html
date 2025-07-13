@@ -10,23 +10,23 @@
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
       <div class="game-data-container">
-        @if (this.achievements && this.completedAchievements && this.achievements.length) {
+        @if (this.achievements() && this.completedAchievements() && this.achievements().length) {
           <div class="game-achievements-data-container">
             <a href="{{ gameInfo().playerAchievementUrl }}" class="game-achievements-data">
-              <div class="totalachievements">Succès : {{ achievements.length }}</div>
-              <div class="completedAchievements">Succès complétés : {{ completedAchievements.length }}</div>
+              <div class="totalachievements">Succès : {{ achievements().length }}</div>
+              <div class="completedAchievements">Succès complétés : {{ completedAchievements().length }}</div>
             </a>
             <a href="{{ gameInfo().appIdLink }}" class="hoverable-link"> Community hub </a>
           </div>
 
           <a href="{{ gameInfo().playerAchievementUrl }}" class="spinner-container">
-            <div class="progress-value">{{ this.completionStatus }}%</div>
+            <div class="progress-value">{{ this.completionStatus() }}%</div>
             <mat-progress-spinner
               #spinner
               [title]="'test'"
               [color]="'primary'"
               [mode]="'determinate'"
-              [value]="this.completionStatus"
+              [value]="this.completionStatus()"
             >
             </mat-progress-spinner>
           </a>

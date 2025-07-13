@@ -103,7 +103,7 @@ describe("RssWidgetComponent", () => {
     component.urlFeed = urlFeed;
     component.refreshWidget();
 
-    expect(component.isWidgetLoaded).toEqual(false);
+    expect(component.isWidgetLoaded()).toEqual(false);
     const request = httpTestingController.expectOne(
       environment.backend_url + "/rssWidget/?url=" + urlFeed
     );
@@ -122,8 +122,8 @@ describe("RssWidgetComponent", () => {
     };
     markAllFeedAsReadRequest.flush(updatedWidgetData);
 
-    expect(component.isWidgetLoaded).toEqual(true);
-    expect(component.readArticles.length).toEqual(feedLength);
+    expect(component.isWidgetLoaded()).toEqual(true);
+    expect(component.readArticles().length).toEqual(feedLength);
   });
 
   it("Should get widget data and check form", () => {
@@ -149,7 +149,7 @@ describe("RssWidgetComponent", () => {
       .expectOne(environment.backend_url + `/widget/updateWidgetData/${widgetId}`)
       .error(new ProgressEvent("Server error"));
 
-    expect(component.isWidgetLoaded).toEqual(true);
-    expect(component.readArticles.length).toEqual(0);
+    expect(component.isWidgetLoaded()).toEqual(true);
+    expect(component.readArticles().length).toEqual(0);
   });
 });

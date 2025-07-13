@@ -2,7 +2,7 @@
   [widgetData]="{}"
   (refreshWidgetAction)="this.refreshWidget()"
   [isFormValid]="true"
-  [isWidgetLoaded]="this.isWidgetLoaded"
+  [isWidgetLoaded]="this.isWidgetLoaded()"
 >
   <ng-template #headerIcon>
     @if (athlete) {
@@ -24,7 +24,7 @@
 
   <ng-template #body>
     @if (this.isUserLoggedIn()) {
-      @if (this.activities.length) {
+      @if (this.activities().length) {
         <div>
           <div id="strava-activities-container">
             <div id="activities-pagination-container">
@@ -39,7 +39,7 @@
                 </button>
               }
             </div>
-            <dash-strava-activities [activities]="this.activities"></dash-strava-activities>
+            <dash-strava-activities [activities]="this.activities()"></dash-strava-activities>
           </div>
           <div id="strava-statistics">
             <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>

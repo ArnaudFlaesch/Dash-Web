@@ -86,18 +86,18 @@ describe("AirParifWidgetComponent", () => {
   });
 
   it("Should create an AirParif Widget", () => {
-    expect(component.airParifApiKey).toEqual(undefined);
-    expect(component.communeInseeCode).toEqual(undefined);
+    expect(component.airParifApiKey()).toEqual(undefined);
+    expect(component.communeInseeCode()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     expect(component.getWidgetData()).toEqual(undefined);
-    component.airParifApiKey = airParifToken;
-    component.communeInseeCode = communeInseeCode;
+    component.airParifApiKey.set(airParifToken);
+    component.communeInseeCode.set(communeInseeCode);
     expect(component.isFormValid()).toEqual(true);
     const widgetData = component.getWidgetData();
     expect(widgetData?.airParifApiKey).toBe(airParifToken);
     expect(widgetData?.communeInseeCode).toBe(communeInseeCode);
-    expect(component.airParifForecast).toEqual([]);
-    expect(component.airParifCouleursIndices).toEqual([]);
+    expect(component.airParifForecast()).toEqual([]);
+    expect(component.airParifCouleursIndices()).toEqual([]);
 
     component.refreshWidget();
 
@@ -107,15 +107,15 @@ describe("AirParifWidgetComponent", () => {
     requests[0].flush(forecastData);
     requests[1].flush(couleursIndicesData);
 
-    expect(component.airParifForecast).toEqual(forecastData);
-    expect(component.airParifCouleursIndices).toEqual(couleursIndicesData);
+    expect(component.airParifForecast()).toEqual(forecastData);
+    expect(component.airParifCouleursIndices()).toEqual(couleursIndicesData);
   });
 
   it("Should get errors from API", () => {
-    component.airParifApiKey = airParifToken;
-    component.communeInseeCode = communeInseeCode;
-    expect(component.airParifForecast).toEqual([]);
-    expect(component.airParifCouleursIndices).toEqual([]);
+    component.airParifApiKey.set(airParifToken);
+    component.communeInseeCode.set(communeInseeCode);
+    expect(component.airParifForecast()).toEqual([]);
+    expect(component.airParifCouleursIndices()).toEqual([]);
     component.refreshWidget();
 
     const requests = httpTestingController.match({
@@ -123,7 +123,7 @@ describe("AirParifWidgetComponent", () => {
     });
     requests[0].error(new ProgressEvent("Server error"));
 
-    expect(component.airParifForecast).toEqual([]);
-    expect(component.airParifCouleursIndices).toEqual([]);
+    expect(component.airParifForecast()).toEqual([]);
+    expect(component.airParifCouleursIndices()).toEqual([]);
   });
 });

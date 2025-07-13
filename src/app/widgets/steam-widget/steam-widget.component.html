@@ -5,15 +5,15 @@
   [isWidgetLoaded]="true"
 >
   <ng-template #headerIcon>
-    <a href="{{ playerData?.profileurl }}" class="steam-header">
-      <img src="{{ playerData?.avatar }}" alt="{{ playerData?.personaname }}" />
+    <a href="{{ playerData()?.profileurl }}" class="steam-header">
+      <img src="{{ playerData()?.avatar }}" alt="{{ playerData()?.personaname }}" />
     </a>
   </ng-template>
 
   <ng-template #headerTitle>
     <div>
-      <a href="{{ playerData?.profileurl }}" class="steam-header">
-        {{ playerData?.personaname }}
+      <a href="{{ playerData()?.profileurl }}" class="steam-header">
+        {{ playerData()?.personaname }}
       </a>
     </div>
   </ng-template>
@@ -45,11 +45,11 @@
       }
     </form>
 
-    @if (this.steamUserId && this.playerData) {
-      @for (game of this.ownedGamesDisplay; track game.appid) {
+    @if (this.steamUserId && this.playerData(); as playerData) {
+      @for (game of this.ownedGamesDisplay(); track game.appid) {
         <dash-game-details
           [steamUserId]="this.steamUserId"
-          [profileUrl]="this.playerData.profileurl"
+          [profileUrl]="playerData.profileurl"
           [gameInfo]="game"
         />
       }
