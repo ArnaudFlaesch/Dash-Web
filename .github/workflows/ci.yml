@@ -123,7 +123,7 @@ jobs:
           mv documentation public/documentation
 
       - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         if: success() && github.ref_name == 'master'
         with:
           path: ./public
