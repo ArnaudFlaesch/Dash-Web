@@ -40,7 +40,7 @@
     "@angular/platform-browser-dynamic": "20.3.3",
     "@angular/router": "20.3.3",
     "@angular/service-worker": "20.3.3",
-    "@compodoc/compodoc": "1.1.30",
+    "@compodoc/compodoc": "1.1.31",
     "chart.js": "4.5.0",
     "date-fns": "4.1.0",
     "jwt-decode": "4.0.0",
