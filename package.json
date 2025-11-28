@@ -72,7 +72,7 @@
     "jest-date-mock": "1.0.10",
     "jest-preset-angular": "14.6.2",
     "mochawesome": "7.1.4",
-    "mochawesome-merge": "5.0.0",
+    "mochawesome-merge": "5.1.0",
     "mochawesome-report-generator": "6.3.2",
     "prettier": "3.6.2",
     "stylelint": "16.25.0",
