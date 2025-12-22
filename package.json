@@ -32,7 +32,7 @@
     "@angular/cdk": "20.2.13",
     "@angular/common": "20.3.11",
     "@angular/compiler": "20.3.11",
-    "@angular/core": "20.3.11",
+    "@angular/core": "20.3.14",
     "@angular/forms": "20.3.11",
     "@angular/material": "20.2.13",
     "@angular/material-date-fns-adapter": "20.2.13",
