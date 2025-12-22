@@ -28,7 +28,7 @@
     "npm": "11.x"
   },
   "dependencies": {
-    "@angular/animations": "20.3.11",
+    "@angular/animations": "20.3.14",
     "@angular/cdk": "20.2.13",
     "@angular/common": "20.3.11",
     "@angular/compiler": "20.3.11",
