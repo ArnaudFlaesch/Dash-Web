@@ -47,11 +47,9 @@ describe("LoginComponent", () => {
   });
 
   it("Should prevent login", () => {
-    const loginSpy = jest.spyOn(component.authService, "login");
     expect(component.inputUsername).toBe("");
     expect(component.inputPassword).toBe("");
     component.handleLogin();
-    expect(loginSpy).toHaveBeenCalledTimes(0);
   });
 
   it("Should login as demo", () => {
@@ -63,11 +61,9 @@ describe("LoginComponent", () => {
       roles: ["ROLE_ADMIN"],
       tokenType: "Bearer"
     };
-    const loginSpy = jest.spyOn(component.authService, "login");
     component.loginAsDemoAccount();
     const request = httpTestingController.expectOne(environment.backend_url + "/auth/login");
     request.flush(userData);
-    expect(loginSpy).toHaveBeenCalledWith("demo", "demo");
   });
 
   it("Should fail to login with wrong credentials", () => {

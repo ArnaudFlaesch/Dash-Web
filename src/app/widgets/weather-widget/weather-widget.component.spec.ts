@@ -2,7 +2,6 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { advanceTo } from "jest-date-mock";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
 import { WidgetService } from "../../services/widget.service/widget.service";
 import { ErrorHandlerService } from "./../../services/error.handler.service";
@@ -163,8 +162,6 @@ describe("WeatherWidgetComponent", () => {
   afterEach(() => {
     httpTestingController.verify();
   });
-
-  advanceTo(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
   describe("Normal cases", () => {
     it("should create", () => {

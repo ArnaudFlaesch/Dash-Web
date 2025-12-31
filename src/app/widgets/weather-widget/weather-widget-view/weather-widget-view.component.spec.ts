@@ -4,17 +4,15 @@ import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { SimpleChange } from "@angular/core";
 import { format } from "date-fns";
-import { advanceTo } from "jest-date-mock";
 import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
 import { forecastData, weatherData } from "../weather-widget.component.spec";
 import { WeatherWidgetService } from "../weather.widget.service";
 import { WeatherWidgetViewComponent } from "./weather-widget-view.component";
+import { IForecast } from "../IWeather";
 
 describe("WeatherWidgetViewComponent", () => {
   let component: WeatherWidgetViewComponent;
   let fixture: ComponentFixture<WeatherWidgetViewComponent>;
-
-  advanceTo(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -36,7 +34,9 @@ describe("WeatherWidgetViewComponent", () => {
   });
 
   it("should create", () => {
-    component.ngOnChanges({ forecastResponse: new SimpleChange({}, forecastData.list, true) });
+    component.ngOnChanges({
+      forecastResponse: new SimpleChange({} as unknown as IForecast[], forecastData.list, true)
+    });
     expect(component.isForecastModeWeek()).toEqual(false);
     component.selectDayForecast(new Date(component.forecastDays()[0]));
     const dateToSelect = new Date(component.forecastDays()[1]);
