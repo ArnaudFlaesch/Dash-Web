@@ -44,7 +44,6 @@ Thumbs.db
 
 .dccache
 
-coverage-jest/
 cypress/results
 cypress/reports
 

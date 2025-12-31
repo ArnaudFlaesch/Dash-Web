@@ -1,7 +1,6 @@
 import { provideHttpClient } from "@angular/common/http";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { addDays, getTime } from "date-fns";
-import { advanceTo } from "jest-date-mock";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
@@ -57,8 +56,6 @@ describe("StravaWidgetComponent", () => {
   const STRAVA_TOKEN_KEY = "strava_token";
   const STRAVA_REFRESH_TOKEN_KEY = "strava_refresh_token";
   const STRAVA_TOKEN_EXPIRATION_DATE_KEY = "strava_token_expires_at";
-
-  advanceTo(new Date(1644882400)); // 15/02/2022
 
   const athleteData = {
     id: 25345795,

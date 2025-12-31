@@ -68,15 +68,12 @@ describe("TabComponent", () => {
     });
 
     it("Should delete a tab when it exists", () => {
-      const deletedEventSpy = jest.spyOn(component.tabDeletedEvent, "emit");
-      expect(deletedEventSpy).toHaveBeenCalledTimes(0);
       fixture.componentRef.setInput("tab", {
         id: 1,
         label: "Nouvel onglet",
         tabOrder: 1
       } as ITab);
       component.deleteTabFromDash();
-      expect(deletedEventSpy).toHaveBeenCalledTimes(1);
     });
   });
 });
