@@ -55,7 +55,7 @@
     "@angular-devkit/build-angular": "20.3.24",
     "@angular/cli": "20.3.24",
     "@angular/compiler-cli": "20.3.19",
-    "@eslint/js": "9.39.4",
+    "@eslint/js": "10.0.1",
     "@types/jest": "29.5.14",
     "@types/leaflet": "1.9.21",
     "@types/node": "24.12.2",
