@@ -59,7 +59,7 @@
                 Créer
               </button>
             </div>
-            @if (this.workoutStatsByWeek.length) {
+            @if (this.workoutStatsByWeek().length) {
               <div id="workout-stats-by-week-container">
                 <div class="workout-stats-header">Cette semaine :</div>
                 <div class="stats-container">
@@ -69,7 +69,7 @@
                 </div>
               </div>
             }
-            @if (this.workoutStatsByMonth.length) {
+            @if (this.workoutStatsByMonth().length) {
               <div id="workout-stats-by-month-container">
                 <div class="workout-stats-header">Ce mois-ci</div>
                 <div class="stats-container">

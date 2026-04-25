@@ -43,7 +43,7 @@ jobs:
       - name: Build
         run: |
           npm run build -- --base-href=https://arnaudflaesch.github.io/Dash-Web/
-          cp public/index.html public/404.html
+          cp public/browser/index.html public/browser/404.html
 
       - name: Test
         id: application-tests

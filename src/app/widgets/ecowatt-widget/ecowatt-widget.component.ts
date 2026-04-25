@@ -32,7 +32,7 @@ export class EcowattWidgetComponent implements AfterViewInit {
   public iframeContainerWidth = 0;
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener("window:resize", [])
   public onResize(): void {
     this.resizeWidget();
   }

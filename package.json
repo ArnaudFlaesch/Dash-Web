@@ -7,7 +7,7 @@
     "start:dev": "npm run start -- -c=dev",
     "build": "ng build --configuration=production",
     "build:bundle-stats": "npm run build -- --stats-json",
-    "test": "jest --config jest-config.ts",
+    "test": "ng test",
     "test:watch": "npm run test -- --watch",
     "cy:open": "cypress open",
     "cy:verify": "npx cypress verify",
@@ -67,6 +67,7 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-cypress": "5.3.0",
     "globals": "17.5.0",
+    "jsdom": "29.0.2",
     "mochawesome": "7.1.4",
     "mochawesome-merge": "5.1.1",
     "mochawesome-report-generator": "6.3.2",
@@ -75,6 +76,7 @@
     "stylelint-config-standard-scss": "17.0.0",
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.58.2"
+    "typescript-eslint": "8.58.2",
+    "vitest": "4.0.16"
   }
 }

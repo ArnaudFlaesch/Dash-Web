@@ -24,6 +24,6 @@ export default [
     }
   },
   {
-    ignores: [".angular/", "coverage-jest/", "dist/"]
+    ignores: [".angular/", "dist/"]
   }
 ];
