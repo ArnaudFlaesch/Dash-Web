@@ -1,7 +1,7 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
-import pluginCypress from "eslint-plugin-cypress/flat";
+import pluginCypress from "eslint-plugin-cypress";
 import eslintConfigPrettier from "eslint-config-prettier";
 
 /** @type {import("eslint").Linter.Config[]} */
