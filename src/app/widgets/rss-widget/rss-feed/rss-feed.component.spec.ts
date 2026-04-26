@@ -1,8 +1,8 @@
-import { advanceTo } from "jest-date-mock";
 import { IArticle } from "../IArticle";
 
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RssFeedComponent } from "./rss-feed.component";
+import { vi } from "vitest";
 
 describe("RssFeedComponent", () => {
   let component: RssFeedComponent;
@@ -19,7 +19,7 @@ describe("RssFeedComponent", () => {
   });
 
   it("Should get date to display", () => {
-    advanceTo(new Date(2022, 2, 15, 0, 0, 0)); // 15/03/2022
+    vi.setSystemTime(new Date(2022, 2, 15, 0, 0, 0)); // 15/03/2022
     const article: IArticle = {
       title:
         "Fortnite : combien d'argent avez-vous dépensé dans les skins et les V-Bucks ? Voici comment savoir",
@@ -32,10 +32,10 @@ describe("RssFeedComponent", () => {
 
     expect(component.formatTitleForArticle(article)).toEqual(`19:00 ${article.title}`);
 
-    advanceTo(Date.parse("2022-02-15"));
+    vi.setSystemTime(Date.parse("2022-02-15"));
     expect(component.formatTitleForArticle(article)).toEqual(`15/03 19:00:02 ${article.title}`);
 
-    advanceTo(Date.parse("2021-02-05"));
+    vi.setSystemTime(Date.parse("2021-02-05"));
     expect(component.formatTitleForArticle(article)).toEqual(
       `15/03/2022 19:00:02 ${article.title}`
     );
@@ -64,7 +64,7 @@ describe("RssFeedComponent", () => {
   });
 
   it("Should mark article as read", () => {
-    const markArticleAsReadEventSpy = jest.spyOn(component.markArticleAsReadEvent, "emit");
+    const markArticleAsReadEventSpy = vi.spyOn(component.markArticleAsReadEvent, "emit");
     fixture.componentRef.setInput("readArticles", ["1", "2"]);
     component.onOpenDetail("3");
     expect(component.isArticleOpened("3")).toEqual(true);

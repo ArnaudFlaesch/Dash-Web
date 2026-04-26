@@ -1,4 +1,11 @@
-import { enableProdMode, importProvidersFrom, inject, isDevMode, LOCALE_ID } from "@angular/core";
+import {
+  enableProdMode,
+  importProvidersFrom,
+  inject,
+  isDevMode,
+  LOCALE_ID,
+  provideZoneChangeDetection
+} from "@angular/core";
 
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
@@ -75,6 +82,7 @@ const routes: Routes = [
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection(),
     importProvidersFrom(
       BrowserModule,
       DragDropModule,

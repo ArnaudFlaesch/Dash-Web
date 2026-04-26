@@ -1,6 +1,6 @@
 name: Node.js CI
 
-on: [ "push", "workflow_dispatch" ]
+on: ["push", "workflow_dispatch"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -43,7 +43,7 @@ jobs:
       - name: Build
         run: |
           npm run build -- --base-href=https://arnaudflaesch.github.io/Dash-Web/
-          cp public/index.html public/404.html
+          cp public/browser/index.html public/browser/404.html
 
       - name: Test
         id: application-tests
@@ -95,19 +95,19 @@ jobs:
           name: Cypress report
           path: cypress/reports/html
 
-      - name: Report coverage for Codecov
-        uses: codecov/codecov-action@v6
-        if: always() && steps.application-tests.outcome == 'success'
-        with:
-          directory: coverage-jest
-          token: ${{ secrets.CODECOV_TOKEN }}
+      #- name: Report coverage for Codecov
+        #  uses: codecov/codecov-action@v6
+        #if: always() && steps.application-tests.outcome == 'success'
+          #with:
+          #directory: coverage-jest
+          #token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Report coverage for Codacy
-        if: always() && steps.application-tests.outcome == 'success'
-        run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage-jest/lcov.info
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        #- name: Report coverage for Codacy
+        #if: always() && steps.application-tests.outcome == 'success'
+          #run: |
+          #bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage-jest/lcov.info
+          #env:
+          #CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7.1.0

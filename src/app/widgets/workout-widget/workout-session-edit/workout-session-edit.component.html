@@ -31,8 +31,8 @@
 
           @if (getExerciceNumberOfReps(workoutType.id) > 0) {
             <span class="workout-number-of-reps" [ngClass]="{ 'edit-mode': this.sessionEditMode() }">{{
-                getExerciceNumberOfReps(workoutType.id)
-              }}</span>
+              getExerciceNumberOfReps(workoutType.id)
+            }}</span>
           }
 
           @if (sessionEditMode()) {

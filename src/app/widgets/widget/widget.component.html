@@ -31,10 +31,7 @@
   }
 
   @if (this.isModeDelete()) {
-    <dash-delete-widget
-      (cancelWidgetDeletion)="toReadMode()"
-      (validateWidgetDeletion)="deleteWidget()"
-    />
+    <dash-delete-widget (cancelWidgetDeletion)="toReadMode()" (validateWidgetDeletion)="deleteWidget()" />
   }
 
   @if (this.isModeRead()) {

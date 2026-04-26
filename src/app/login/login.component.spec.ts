@@ -8,9 +8,10 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { provideRouter } from "@angular/router";
 import { environment } from "../../environments/environment";
 import { HomeComponent } from "../home/home.component";
-import { AuthService } from "./../services/auth.service/auth.service";
-import { ErrorHandlerService } from "./../services/error.handler.service";
+import { AuthService } from "../services/auth.service/auth.service";
+import { ErrorHandlerService } from "../services/error.handler.service";
 import { LoginComponent } from "./login.component";
+import { expect, vi } from "vitest";
 
 describe("LoginComponent", () => {
   let component: LoginComponent;
@@ -47,7 +48,7 @@ describe("LoginComponent", () => {
   });
 
   it("Should prevent login", () => {
-    const loginSpy = jest.spyOn(component.authService, "login");
+    const loginSpy = vi.spyOn(component.authService, "login");
     expect(component.inputUsername).toBe("");
     expect(component.inputPassword).toBe("");
     component.handleLogin();
@@ -63,7 +64,7 @@ describe("LoginComponent", () => {
       roles: ["ROLE_ADMIN"],
       tokenType: "Bearer"
     };
-    const loginSpy = jest.spyOn(component.authService, "login");
+    const loginSpy = vi.spyOn(component.authService, "login");
     component.loginAsDemoAccount();
     const request = httpTestingController.expectOne(environment.backend_url + "/auth/login");
     request.flush(userData);

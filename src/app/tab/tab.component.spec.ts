@@ -3,10 +3,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { environment } from "../../environments/environment";
 import { TabService } from "../services/tab.service/tab.service";
-import { ITab } from "./../model/Tab";
-import { ErrorHandlerService } from "./../services/error.handler.service";
+import { ITab } from "../model/Tab";
+import { ErrorHandlerService } from "../services/error.handler.service";
 import { TabComponent } from "./tab.component";
 import { provideHttpClient } from "@angular/common/http";
+import { vi } from "vitest";
 
 describe("TabComponent", () => {
   let component: TabComponent;
@@ -68,7 +69,7 @@ describe("TabComponent", () => {
     });
 
     it("Should delete a tab when it exists", () => {
-      const deletedEventSpy = jest.spyOn(component.tabDeletedEvent, "emit");
+      const deletedEventSpy = vi.spyOn(component.tabDeletedEvent, "emit");
       expect(deletedEventSpy).toHaveBeenCalledTimes(0);
       fixture.componentRef.setInput("tab", {
         id: 1,

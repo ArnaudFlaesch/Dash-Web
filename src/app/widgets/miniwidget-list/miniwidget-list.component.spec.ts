@@ -9,6 +9,8 @@ import { ErrorHandlerService } from "../../services/error.handler.service";
 import { MiniWidgetService } from "../../services/widget.service/miniwidget.service";
 import { MiniWidgetListComponent } from "./miniwidget-list.component";
 import { provideHttpClient } from "@angular/common/http";
+import { WeatherWidgetService } from "../weather-widget/weather.widget.service";
+import { WidgetService } from "../../services/widget.service/widget.service";
 
 describe("MiniWidgetListComponent", () => {
   let component: MiniWidgetListComponent;
@@ -19,7 +21,9 @@ describe("MiniWidgetListComponent", () => {
       imports: [MatDialogModule, MatSnackBarModule],
       providers: [
         MiniWidgetService,
+        WidgetService,
         ErrorHandlerService,
+        WeatherWidgetService,
         provideHttpClient(),
         provideHttpClientTesting()
       ]
