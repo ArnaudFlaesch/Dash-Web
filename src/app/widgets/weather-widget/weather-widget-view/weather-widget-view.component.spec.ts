@@ -9,10 +9,13 @@ import { forecastData, weatherData } from "../weather-widget.component.spec";
 import { WeatherWidgetService } from "../weather.widget.service";
 import { WeatherWidgetViewComponent } from "./weather-widget-view.component";
 import { IForecast } from "../IWeather";
+import { vi } from "vitest";
 
 describe("WeatherWidgetViewComponent", () => {
   let component: WeatherWidgetViewComponent;
   let fixture: ComponentFixture<WeatherWidgetViewComponent>;
+
+  vi.setSystemTime(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

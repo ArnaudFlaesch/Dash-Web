@@ -12,6 +12,7 @@ import { StravaWidgetService } from "./strava.widget.service";
 import { WidgetService } from "../../services/widget.service/widget.service";
 import { HomeComponent } from "../../home/home.component";
 import { provideRouter } from "@angular/router";
+import { vi } from "vitest";
 
 describe("StravaWidgetComponent", () => {
   let component: StravaWidgetComponent;
@@ -56,6 +57,8 @@ describe("StravaWidgetComponent", () => {
   const STRAVA_TOKEN_KEY = "strava_token";
   const STRAVA_REFRESH_TOKEN_KEY = "strava_refresh_token";
   const STRAVA_TOKEN_EXPIRATION_DATE_KEY = "strava_token_expires_at";
+
+  vi.setSystemTime(new Date(1644882400)); // 15/02/2022
 
   const athleteData = {
     id: 25345795,

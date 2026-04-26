@@ -1,5 +1,6 @@
 import { DateFormatPipe } from "./date-format.pipe";
 import { InitialUppercasePipe } from "./initial.uppercase.pipe";
+import { vi } from "vitest";
 
 describe("InitialUppercasePipe", () => {
   const component = new InitialUppercasePipe();
@@ -11,6 +12,7 @@ describe("InitialUppercasePipe", () => {
 
 describe("DateFormatPipe", () => {
   const component = new DateFormatPipe();
+  vi.setSystemTime(new Date(2022, 2, 15, 0, 0, 0)); // 15/03/2022
 
   it("should format date", () => {
     expect(component.transform(new Date())).toEqual("15/03/2022 00:00:00");

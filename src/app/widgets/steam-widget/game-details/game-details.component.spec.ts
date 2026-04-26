@@ -5,13 +5,15 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { IGameInfoDisplay } from "../ISteam";
 import { SteamWidgetService } from "../steam.widget.service";
-import { environment } from "./../../../../environments/environment";
+import { environment } from "../../../../environments/environment";
 import { GameDetailsComponent } from "./game-details.component";
 import { provideHttpClient } from "@angular/common/http";
+import { ComponentRef } from "@angular/core";
 
 describe("GameDetailsComponent", () => {
   let component: GameDetailsComponent;
   let fixture: ComponentFixture<GameDetailsComponent>;
+  let componentRef: ComponentRef<GameDetailsComponent>
   let httpTestingController: HttpTestingController;
 
   beforeEach(async () => {
@@ -27,7 +29,9 @@ describe("GameDetailsComponent", () => {
 
     fixture = TestBed.createComponent(GameDetailsComponent);
     component = fixture.componentInstance;
+    componentRef = fixture.componentRef;
     httpTestingController = TestBed.inject(HttpTestingController);
+    componentRef.setInput("steamUserId", "1337");
   });
 
   afterEach(() => {
