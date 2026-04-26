@@ -126,7 +126,7 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         if: success() && github.ref_name == 'master'
         with:
-          path: ./public
+          path: ./public/browser
 
   deploy:
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
