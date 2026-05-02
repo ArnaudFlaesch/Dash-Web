@@ -36,7 +36,6 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideRouter, Routes } from "@angular/router";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { CalendarModule, DateAdapter } from "angular-calendar";
@@ -142,7 +141,6 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     provideCharts(withDefaultRegisterables()),
     provideDateFnsAdapter(),
-    provideAnimations(),
     provideHttpClient(withInterceptorsFromDi())
   ]
 }).catch((err) => console.error(err));

@@ -1,16 +1,33 @@
+import js from "@eslint/js";
 import globals from "globals";
-import pluginJs from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 import tseslint from "typescript-eslint";
 import pluginCypress from "eslint-plugin-cypress";
-import eslintConfigPrettier from "eslint-config-prettier";
+import { defineConfig, globalIgnores } from "eslint/config";
 
-/** @type {import("eslint").Linter.Config[]} */
-export default [
-  { files: ["**/*.{js,mjs,cjs,ts}"] },
-  { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  pluginCypress.configs.recommended,
+export default defineConfig([
+  globalIgnores([
+    ".angular",
+    "coverage",
+    "dist",
+    "cypress.config.ts",
+    "cypress-test.config.ts",
+    "node_modules",
+    "public",
+    "build",
+    "package-lock.json"
+  ]),
+  {
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
+    plugins: { js },
+    extends: ["js/recommended"],
+    languageOptions: { globals: globals.browser }
+  },
+  {
+    files: ["cypress/**/*.ts"],
+    extends: [pluginCypress.configs.recommended]
+  },
+  tseslint.configs.recommended,
   eslintConfigPrettier,
   {
     rules: {
@@ -22,8 +39,5 @@ export default [
       "@typescript-eslint/explicit-member-accessibility": "error",
       "@typescript-eslint/explicit-function-return-type": "error"
     }
-  },
-  {
-    ignores: [".angular/", "public/"]
   }
-];
+]);

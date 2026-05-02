@@ -10,7 +10,6 @@ import { IIncident, IIncidentStreak } from "./IIncident";
 import { IncidentWidgetComponent } from "./incident-widget.component";
 import { IncidentWidgetService } from "./incident.widget.service";
 import { provideHttpClient } from "@angular/common/http";
-import { provideNoopAnimations } from "@angular/platform-browser/animations";
 
 describe("IncidentWidgetComponent", () => {
   let component: IncidentWidgetComponent;
@@ -22,7 +21,6 @@ describe("IncidentWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideNoopAnimations(),
         ErrorHandlerService,
         IncidentWidgetService,
         WidgetService,

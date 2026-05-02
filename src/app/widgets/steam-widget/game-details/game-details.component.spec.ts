@@ -13,7 +13,7 @@ import { ComponentRef } from "@angular/core";
 describe("GameDetailsComponent", () => {
   let component: GameDetailsComponent;
   let fixture: ComponentFixture<GameDetailsComponent>;
-  let componentRef: ComponentRef<GameDetailsComponent>
+  let componentRef: ComponentRef<GameDetailsComponent>;
   let httpTestingController: HttpTestingController;
 
   beforeEach(async () => {

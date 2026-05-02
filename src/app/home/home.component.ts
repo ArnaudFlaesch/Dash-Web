@@ -75,7 +75,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public toggleControl = new FormControl(false);
   public cashManagerApplicationUrl = "https://arnaudflaesch.github.io/CashManager/";
 
-  private refreshInterval: NodeJS.Timeout | null = null;
+  private refreshInterval: number | undefined;
 
   private readonly destroy$: Subject<unknown> = new Subject();
   private readonly ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
