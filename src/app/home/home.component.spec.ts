@@ -6,14 +6,14 @@ import { provideHttpClient } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { environment } from "../../environments/environment";
-import { WidgetTypeEnum } from "./../enums/WidgetTypeEnum";
-import { IWidgetConfig } from "./../model/IWidgetConfig";
-import { AuthService } from "./../services/auth.service/auth.service";
-import { ConfigService } from "./../services/config.service/config.service";
-import { ErrorHandlerService } from "./../services/error.handler.service";
-import { TabService } from "./../services/tab.service/tab.service";
-import { ThemeService } from "./../services/theme.service/theme.service";
-import { WidgetService } from "./../services/widget.service/widget.service";
+import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
+import { IWidgetConfig } from "../model/IWidgetConfig";
+import { AuthService } from "../services/auth.service/auth.service";
+import { ConfigService } from "../services/config.service/config.service";
+import { ErrorHandlerService } from "../services/error.handler.service";
+import { TabService } from "../services/tab.service/tab.service";
+import { ThemeService } from "../services/theme.service/theme.service";
+import { WidgetService } from "../services/widget.service/widget.service";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {

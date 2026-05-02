@@ -5,7 +5,7 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { AuthService } from "../services/auth.service/auth.service";
-import { ErrorHandlerService } from "./../services/error.handler.service";
+import { ErrorHandlerService } from "../services/error.handler.service";
 
 @Component({
   selector: "dash-login",

@@ -4,14 +4,13 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { provideRouter } from "@angular/router";
 import { environment } from "../../environments/environment";
 import { HomeComponent } from "../home/home.component";
 import { AuthService } from "../services/auth.service/auth.service";
 import { ErrorHandlerService } from "../services/error.handler.service";
 import { LoginComponent } from "./login.component";
-import { expect, vi } from "vitest";
+import { vi } from "vitest";
 
 describe("LoginComponent", () => {
   let component: LoginComponent;
@@ -19,7 +18,7 @@ describe("LoginComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, MatProgressSpinnerModule, NoopAnimationsModule],
+      imports: [FormsModule, MatProgressSpinnerModule],
       providers: [
         provideRouter([
           {

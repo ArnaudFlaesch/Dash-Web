@@ -15,7 +15,6 @@ import { WeatherWidgetViewComponent } from "./weather-widget-view/weather-widget
 @Component({
   selector: "dash-weather-widget",
   templateUrl: "./weather-widget.component.html",
-  styleUrls: ["./weather-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

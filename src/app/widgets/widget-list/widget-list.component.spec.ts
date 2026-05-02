@@ -1,4 +1,3 @@
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
@@ -27,7 +26,7 @@ describe("WidgetListComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, MatDialogModule, NoopAnimationsModule],
+      imports: [MatSnackBarModule, MatDialogModule],
       providers: [
         provideRouter([
           {
