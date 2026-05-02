@@ -3,8 +3,7 @@ import {
   importProvidersFrom,
   inject,
   isDevMode,
-  LOCALE_ID,
-  provideZoneChangeDetection
+  LOCALE_ID
 } from "@angular/core";
 
 import { registerLocaleData } from "@angular/common";
@@ -81,7 +80,6 @@ const routes: Routes = [
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection(),
     importProvidersFrom(
       BrowserModule,
       DragDropModule,
