@@ -1,5 +1,3 @@
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { CalendarView, DateAdapter } from "angular-calendar";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
@@ -18,7 +16,6 @@ describe("CalendarWidgetComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatSnackBarModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

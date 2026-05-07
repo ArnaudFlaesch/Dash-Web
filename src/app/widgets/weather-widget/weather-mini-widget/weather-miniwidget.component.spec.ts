@@ -1,9 +1,8 @@
-import { environment } from "./../../../../environments/environment";
+import { environment } from "../../../../environments/environment";
 
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { MiniWidgetService } from "../../../services/widget.service/miniwidget.service";
@@ -17,7 +16,6 @@ describe("WeatherMiniWidgetComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

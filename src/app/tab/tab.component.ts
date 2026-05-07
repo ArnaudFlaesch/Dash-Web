@@ -10,9 +10,8 @@ import { FormsModule } from "@angular/forms";
   selector: "dash-tab",
   templateUrl: "./tab.component.html",
   styleUrls: ["./tab.component.scss"],
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, MatIcon]
+  imports: [MatIcon, FormsModule]
 })
 export class TabComponent {
   public readonly tab = input.required<ITab>();

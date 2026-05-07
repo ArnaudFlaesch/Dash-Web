@@ -17,7 +17,6 @@ import {
   templateUrl: "./rss-feed.component.html",
   styleUrls: ["./rss-feed.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatAccordion,
     MatExpansionPanel,

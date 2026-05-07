@@ -6,7 +6,6 @@ import { MatButton } from "@angular/material/button";
   templateUrl: "./delete-widget.component.html",
   styleUrls: ["./delete-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatButton]
 })
 export class DeleteWidgetComponent {

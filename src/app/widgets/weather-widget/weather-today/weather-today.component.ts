@@ -11,7 +11,6 @@ import { MatTooltip } from "@angular/material/tooltip";
   templateUrl: "./weather-today.component.html",
   styleUrls: ["./weather-today.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatTooltip, MatIcon, InitialUppercasePipe]
 })
 export class WeatherTodayComponent {

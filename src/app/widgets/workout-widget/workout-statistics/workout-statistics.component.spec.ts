@@ -1,5 +1,4 @@
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { DateFormatPipe } from "../../../pipes/date-format.pipe";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { IWorkoutType } from "../model/Workout";
@@ -11,7 +10,7 @@ describe("WorkoutStatisticsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, DateFormatPipe],
+      imports: [DateFormatPipe],
       providers: [WorkoutWidgetService, ErrorHandlerService]
     }).compileComponents();
 

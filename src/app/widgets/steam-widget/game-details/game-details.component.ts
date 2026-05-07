@@ -24,7 +24,6 @@ import { SteamWidgetService } from "../steam.widget.service";
   templateUrl: "./game-details.component.html",
   styleUrls: ["./game-details.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

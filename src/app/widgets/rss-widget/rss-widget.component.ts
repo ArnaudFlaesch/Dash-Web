@@ -21,7 +21,6 @@ import { WidgetComponent } from "../widget/widget.component";
   templateUrl: "./rss-widget.component.html",
   styleUrls: ["./rss-widget.component.scss", "../widget/widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     MatFormField,

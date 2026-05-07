@@ -1,9 +1,6 @@
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
-import { DateFormatPipe } from "../../../pipes/date-format.pipe";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
 import { WorkoutWidgetService } from "../workout.widget.service";
@@ -24,7 +21,6 @@ describe("WorkoutSessionEditComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, DateFormatPipe],
       providers: [
         WorkoutWidgetService,
         provideHttpClient(),

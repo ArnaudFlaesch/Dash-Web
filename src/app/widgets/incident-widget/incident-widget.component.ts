@@ -28,7 +28,6 @@ import { switchMap } from "rxjs";
   templateUrl: "./incident-widget.component.html",
   styleUrls: ["./incident-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     MatIcon,

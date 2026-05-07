@@ -14,7 +14,6 @@ import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card"
   selector: "dash-create-mini-widget-modal",
   templateUrl: "./create-mini-widget-modal.component.html",
   styleUrls: ["./create-mini-widget-modal.component.scss"],
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDialogTitle,

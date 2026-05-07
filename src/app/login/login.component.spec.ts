@@ -1,9 +1,6 @@
-import { FormsModule } from "@angular/forms";
-
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { provideRouter } from "@angular/router";
 import { environment } from "../../environments/environment";
 import { HomeComponent } from "../home/home.component";
@@ -18,7 +15,6 @@ describe("LoginComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, MatProgressSpinnerModule],
       providers: [
         provideRouter([
           {

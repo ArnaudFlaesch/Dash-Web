@@ -1,19 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { AuthService } from "../services/auth.service/auth.service";
 import { ErrorHandlerService } from "../services/error.handler.service";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "dash-login",
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, FormsModule, MatButton, MatProgressSpinner]
+  imports: [RouterLink, MatButton, MatProgressSpinner, FormsModule]
 })
 export class LoginComponent {
   public isLoading = false;

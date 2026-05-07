@@ -21,7 +21,6 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
 
 @Component({
   selector: "dash-weather-widget-view",
-  standalone: true,
   imports: [
     InitialUppercasePipe,
     FormsModule,
