@@ -1,24 +1,15 @@
-import {
-  enableProdMode,
-  importProvidersFrom,
-  inject,
-  isDevMode,
-  LOCALE_ID,
-  provideZoneChangeDetection
-} from "@angular/core";
+import { inject, isDevMode, LOCALE_ID, provideZoneChangeDetection } from "@angular/core";
 
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { AppComponent } from "./app/app.component";
-
-import { environment } from "./environments/environment";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { provideDateFnsAdapter } from "@angular/material-date-fns-adapter";
 import { MAT_DATE_LOCALE } from "@angular/material/core";
 import { provideRouter, Routes } from "@angular/router";
 import { provideServiceWorker } from "@angular/service-worker";
-import { CalendarModule, DateAdapter } from "angular-calendar";
+import { DateAdapter, provideCalendar } from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
 import { fr } from "date-fns/locale";
 import { provideCharts, withDefaultRegisterables } from "ng2-charts";
@@ -40,10 +31,6 @@ import { WeatherWidgetService } from "./app/widgets/weather-widget/weather.widge
 import { WorkoutWidgetService } from "./app/widgets/workout-widget/workout.widget.service";
 import { ThemeService } from "./app/services/theme.service/theme.service";
 
-if (environment.production) {
-  enableProdMode();
-}
-
 registerLocaleData(localeFr);
 
 const routes: Routes = [
@@ -61,13 +48,8 @@ const routes: Routes = [
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideCalendar({ provide: DateAdapter, useFactory: adapterFactory }),
     provideZoneChangeDetection(),
-    importProvidersFrom(
-      CalendarModule.forRoot({
-        provide: DateAdapter,
-        useFactory: adapterFactory
-      })
-    ),
     provideServiceWorker("ngsw-worker.js", {
       enabled: !isDevMode(),
       registrationStrategy: "registerWhenStable:30000"

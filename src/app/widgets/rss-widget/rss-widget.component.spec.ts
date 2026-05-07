@@ -3,8 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../environments/environment";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
-import { ErrorHandlerService } from "./../../services/error.handler.service";
-import { WidgetService } from "./../../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { WidgetService } from "../../services/widget.service/widget.service";
 import { RssWidgetComponent } from "./rss-widget.component";
 import { RssWidgetService } from "./rss.widget.service";
 

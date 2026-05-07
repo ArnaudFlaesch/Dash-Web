@@ -1,4 +1,4 @@
-import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "./../model/Workout";
+import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
 import {
   ChangeDetectionStrategy,
   Component,

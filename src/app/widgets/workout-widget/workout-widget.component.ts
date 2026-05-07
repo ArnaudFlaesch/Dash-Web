@@ -1,19 +1,36 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from "@angular/material/datepicker";
-import { endOfMonth, endOfWeek, endOfYear, startOfISOWeek, startOfMonth, startOfYear, subMonths } from "date-fns";
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle
+} from "@angular/material/datepicker";
+import {
+  endOfMonth,
+  endOfWeek,
+  endOfYear,
+  startOfISOWeek,
+  startOfMonth,
+  startOfYear,
+  subMonths
+} from "date-fns";
 
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
-import { ErrorHandlerService } from "../../../app/services/error.handler.service";
-import { DEFAULT_DATE_FORMAT } from "../../../app/utils/Constants";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { DEFAULT_DATE_FORMAT } from "../../utils/Constants";
 import { DateFormatPipe } from "../../pipes/date-format.pipe";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
 import { WidgetComponent } from "../widget/widget.component";
-import { IWorkoutSession, IWorkoutStatByMonth, IWorkoutStatsByPeriod, IWorkoutType } from "./model/Workout";
+import {
+  IWorkoutSession,
+  IWorkoutStatByMonth,
+  IWorkoutStatsByPeriod,
+  IWorkoutType
+} from "./model/Workout";
 import { WorkoutSessionEditComponent } from "./workout-session-edit/workout-session-edit.component";
 import { WorkoutStatisticsComponent } from "./workout-statistics/workout-statistics.component";
 import { WorkoutWidgetService } from "./workout.widget.service";

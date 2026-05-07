@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing";
-import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { CalendarEvent } from "angular-calendar";
-import { DateFormatPipe } from "./../../../pipes/date-format.pipe";
 import { EventDetailModalComponent } from "./event-detail-modal.component";
 
 describe("EventDetailModalComponent", () => {
@@ -16,7 +15,6 @@ describe("EventDetailModalComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, DateFormatPipe],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: calendarEvent }]
     }).compileComponents();
 
