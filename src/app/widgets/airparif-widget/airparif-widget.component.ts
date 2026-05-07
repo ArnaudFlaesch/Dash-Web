@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
-
-import { FormsModule } from "@angular/forms";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
@@ -11,22 +9,22 @@ import { ErrorHandlerService } from "../../services/error.handler.service";
 import { AirParifMapComponent } from "./airparif-map/airparif-map.component";
 import { AirParifWidgetService } from "./airparif-widget.service";
 import { IAirParifCouleur, IForecast } from "./model/IAirParif";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "dash-airparif-widget",
   templateUrl: "./airparif-widget.component.html",
   styleUrls: ["./airparif-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     MatIcon,
     MatFormField,
     MatLabel,
     MatInput,
-    FormsModule,
     AirParifMapComponent,
-    SafePipe
+    SafePipe,
+    FormsModule
   ]
 })
 export class AirParifWidgetComponent {

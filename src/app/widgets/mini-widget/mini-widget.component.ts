@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
@@ -16,7 +15,6 @@ import { NgTemplateOutlet } from "@angular/common";
   templateUrl: "./mini-widget.component.html",
   styleUrls: ["./mini-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })
 export class MiniWidgetComponent extends AbstractWidgetComponent {

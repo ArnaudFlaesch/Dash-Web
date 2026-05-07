@@ -1,4 +1,3 @@
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import {
   endOfMonth,
   endOfWeek,
@@ -31,7 +30,6 @@ describe("WorkoutWidgetComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

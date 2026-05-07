@@ -1,5 +1,4 @@
 import { PageEvent } from "@angular/material/paginator";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
@@ -18,7 +17,6 @@ describe("SteamWidgetComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

@@ -1,20 +1,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerToggle
-} from "@angular/material/datepicker";
-import {
-  endOfMonth,
-  endOfWeek,
-  endOfYear,
-  startOfISOWeek,
-  startOfMonth,
-  startOfYear,
-  subMonths
-} from "date-fns";
+import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from "@angular/material/datepicker";
+import { endOfMonth, endOfWeek, endOfYear, startOfISOWeek, startOfMonth, startOfYear, subMonths } from "date-fns";
 
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/form-field";
@@ -25,12 +13,7 @@ import { DEFAULT_DATE_FORMAT } from "../../../app/utils/Constants";
 import { DateFormatPipe } from "../../pipes/date-format.pipe";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
 import { WidgetComponent } from "../widget/widget.component";
-import {
-  IWorkoutSession,
-  IWorkoutStatByMonth,
-  IWorkoutStatsByPeriod,
-  IWorkoutType
-} from "./model/Workout";
+import { IWorkoutSession, IWorkoutStatByMonth, IWorkoutStatsByPeriod, IWorkoutType } from "./model/Workout";
 import { WorkoutSessionEditComponent } from "./workout-session-edit/workout-session-edit.component";
 import { WorkoutStatisticsComponent } from "./workout-statistics/workout-statistics.component";
 import { WorkoutWidgetService } from "./workout.widget.service";
@@ -53,7 +36,6 @@ enum WORKOUT_STATISTICS {
   templateUrl: "./workout-widget.component.html",
   styleUrls: ["./workout-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     MatIcon,
@@ -62,8 +44,6 @@ enum WORKOUT_STATISTICS {
     MatLabel,
     MatInput,
     MatDatepickerInput,
-    FormsModule,
-    ReactiveFormsModule,
     MatDatepickerToggle,
     MatSuffix,
     MatDatepicker,
@@ -71,7 +51,9 @@ enum WORKOUT_STATISTICS {
     MatIconButton,
     WorkoutStatisticsComponent,
     WorkoutSessionEditComponent,
-    DateFormatPipe
+    DateFormatPipe,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class WorkoutWidgetComponent {

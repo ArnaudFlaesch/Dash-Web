@@ -11,7 +11,6 @@ export type IMenu = {
 @Component({
   selector: "dash-root",
   templateUrl: "./app.component.html",
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet]
 })

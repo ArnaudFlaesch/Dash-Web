@@ -22,7 +22,6 @@ import { NgClass } from "@angular/common";
   templateUrl: "./workout-session-edit.component.html",
   styleUrls: ["./workout-session-edit.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {

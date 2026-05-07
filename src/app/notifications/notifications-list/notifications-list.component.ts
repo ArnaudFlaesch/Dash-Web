@@ -13,7 +13,6 @@ import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
   templateUrl: "./notifications-list.component.html",
   styleUrl: "./notifications-list.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     NgClass,
     MatTooltip,

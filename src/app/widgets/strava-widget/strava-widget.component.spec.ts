@@ -1,5 +1,4 @@
 import { provideHttpClient } from "@angular/common/http";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { addDays, getTime } from "date-fns";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
@@ -20,7 +19,6 @@ describe("StravaWidgetComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
       providers: [
         provideRouter([
           {

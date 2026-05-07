@@ -11,7 +11,6 @@ import { MatButton } from "@angular/material/button";
 @Component({
   selector: "dash-confirm-modal",
   templateUrl: "./confirm-modal.component.html",
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })

@@ -24,7 +24,6 @@ import { MatIcon } from "@angular/material/icon";
   templateUrl: "./airparif-map.component.html",
   styleUrls: ["./airparif-map.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatIcon, MatButton]
 })
 export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {

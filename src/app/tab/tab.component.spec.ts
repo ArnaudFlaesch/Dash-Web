@@ -1,6 +1,5 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { environment } from "../../environments/environment";
 import { TabService } from "../services/tab.service/tab.service";
 import { ITab } from "../model/Tab";
@@ -22,7 +21,6 @@ describe("TabComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
       providers: [ErrorHandlerService, provideHttpClient(), provideHttpClientTesting(), TabService]
     }).compileComponents();
 

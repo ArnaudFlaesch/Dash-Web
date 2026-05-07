@@ -1,6 +1,4 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
 import { ErrorHandlerService } from "../../services/error.handler.service";
@@ -26,7 +24,6 @@ describe("WidgetListComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, MatDialogModule],
       providers: [
         provideRouter([
           {

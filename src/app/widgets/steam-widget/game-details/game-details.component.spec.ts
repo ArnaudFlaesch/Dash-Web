@@ -1,5 +1,3 @@
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
@@ -18,7 +16,6 @@ describe("GameDetailsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
       providers: [
         SteamWidgetService,
         provideHttpClient(),

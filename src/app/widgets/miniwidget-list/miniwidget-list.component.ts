@@ -30,7 +30,6 @@ import { MatMiniFabButton } from "@angular/material/button";
   templateUrl: "./miniwidget-list.component.html",
   styleUrls: ["./miniwidget-list.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatMiniFabButton, MatTooltip, MatIcon]
 })
 export class MiniWidgetListComponent implements OnInit, OnDestroy {
