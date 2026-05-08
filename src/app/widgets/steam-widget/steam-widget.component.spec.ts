@@ -2,7 +2,7 @@ import { PageEvent } from "@angular/material/paginator";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { IPage } from "../../../app/model/IPage";
+import { IPage } from "../../model/IPage";
 import { environment } from "../../../environments/environment";
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { WidgetService } from "../../services/widget.service/widget.service";

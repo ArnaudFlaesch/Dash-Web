@@ -10,8 +10,7 @@ import { IWorkoutStatByMonth, IWorkoutType } from "../model/Workout";
   templateUrl: "./workout-statistics.component.html",
   styleUrls: ["./workout-statistics.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BaseChartDirective],
-  standalone: true
+  imports: [BaseChartDirective]
 })
 export class WorkoutStatisticsComponent implements OnChanges {
   public readonly workoutStatsByMonth = input.required<IWorkoutStatByMonth[]>();
