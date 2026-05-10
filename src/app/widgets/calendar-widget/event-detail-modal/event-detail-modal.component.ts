@@ -13,7 +13,6 @@ import { MatButton } from "@angular/material/button";
 @Component({
   selector: "dash-event-detail-modal",
   templateUrl: "./event-detail-modal.component.html",
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDialogTitle,

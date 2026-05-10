@@ -1,10 +1,9 @@
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
 import { WidgetService } from "../../services/widget.service/widget.service";
-import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
 import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
 import { WeatherWidgetComponent } from "./weather-widget.component";
 import { WeatherWidgetService } from "./weather.widget.service";
@@ -142,7 +141,6 @@ describe("WeatherWidgetComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

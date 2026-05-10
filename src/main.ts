@@ -1,44 +1,15 @@
-import {
-  enableProdMode,
-  importProvidersFrom,
-  inject,
-  isDevMode,
-  LOCALE_ID,
-  provideZoneChangeDetection
-} from "@angular/core";
+import { inject, isDevMode, LOCALE_ID, provideZoneChangeDetection } from "@angular/core";
 
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
-import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
+import { bootstrapApplication } from "@angular/platform-browser";
 import { AppComponent } from "./app/app.component";
-
-import { environment } from "./environments/environment";
-import { DragDropModule } from "@angular/cdk/drag-drop";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatDateFnsModule, provideDateFnsAdapter } from "@angular/material-date-fns-adapter";
-import { MatBadgeModule } from "@angular/material/badge";
-import { MatButtonModule } from "@angular/material/button";
-import { MatCardModule } from "@angular/material/card";
-import { MAT_DATE_LOCALE, MatNativeDateModule } from "@angular/material/core";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatDividerModule } from "@angular/material/divider";
-import { MatExpansionModule } from "@angular/material/expansion";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatPaginatorModule } from "@angular/material/paginator";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { MatTabsModule } from "@angular/material/tabs";
-import { MatToolbarModule } from "@angular/material/toolbar";
-import { MatTooltipModule } from "@angular/material/tooltip";
+import { provideDateFnsAdapter } from "@angular/material-date-fns-adapter";
+import { MAT_DATE_LOCALE } from "@angular/material/core";
 import { provideRouter, Routes } from "@angular/router";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { CalendarModule, DateAdapter } from "angular-calendar";
+import { provideServiceWorker } from "@angular/service-worker";
+import { DateAdapter, provideCalendar } from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
 import { fr } from "date-fns/locale";
 import { provideCharts, withDefaultRegisterables } from "ng2-charts";
@@ -60,10 +31,6 @@ import { WeatherWidgetService } from "./app/widgets/weather-widget/weather.widge
 import { WorkoutWidgetService } from "./app/widgets/workout-widget/workout.widget.service";
 import { ThemeService } from "./app/services/theme.service/theme.service";
 
-if (environment.production) {
-  enableProdMode();
-}
-
 registerLocaleData(localeFr);
 
 const routes: Routes = [
@@ -81,44 +48,12 @@ const routes: Routes = [
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideCalendar({ provide: DateAdapter, useFactory: adapterFactory }),
     provideZoneChangeDetection(),
-    importProvidersFrom(
-      BrowserModule,
-      DragDropModule,
-      MatProgressSpinnerModule,
-      MatSnackBarModule,
-      FormsModule,
-      MatButtonModule,
-      MatDatepickerModule,
-      MatDividerModule,
-      MatNativeDateModule,
-      MatIconModule,
-      MatInputModule,
-      MatBadgeModule,
-      MatTooltipModule,
-      MatMenuModule,
-      MatFormFieldModule,
-      MatSnackBarModule,
-      MatTabsModule,
-      MatSlideToggleModule,
-      MatExpansionModule,
-      MatDialogModule,
-      MatCardModule,
-      MatToolbarModule,
-      MatPaginatorModule,
-      MatDateFnsModule,
-      ReactiveFormsModule,
-      CalendarModule.forRoot({
-        provide: DateAdapter,
-        useFactory: adapterFactory
-      }),
-      ServiceWorkerModule.register("ngsw-worker.js", {
-        enabled: !isDevMode(),
-        // Register the ServiceWorker as soon as the application is stable
-        // or after 30 seconds (whichever comes first).
-        registrationStrategy: "registerWhenStable:30000"
-      })
-    ),
+    provideServiceWorker("ngsw-worker.js", {
+      enabled: !isDevMode(),
+      registrationStrategy: "registerWhenStable:30000"
+    }),
     AuthService,
     TabService,
     WidgetService,

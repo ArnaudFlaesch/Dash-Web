@@ -1,5 +1,3 @@
-import { MatMenuModule } from "@angular/material/menu";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { startOfYesterday } from "date-fns";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
@@ -19,7 +17,6 @@ describe("NotificationsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, MatMenuModule],
       providers: [
         WidgetService,
         ErrorHandlerService,

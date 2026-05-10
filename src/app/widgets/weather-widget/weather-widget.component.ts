@@ -3,28 +3,26 @@ import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } fr
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { ICity, IForecast, IWeatherAPIResponse } from "./IWeather";
 import { WeatherWidgetService } from "./weather.widget.service";
-
-import { FormsModule } from "@angular/forms";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { forkJoin } from "rxjs";
 import { WidgetComponent } from "../widget/widget.component";
 import { WeatherWidgetViewComponent } from "./weather-widget-view/weather-widget-view.component";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "dash-weather-widget",
   templateUrl: "./weather-widget.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     MatIcon,
     MatFormField,
     MatLabel,
     MatInput,
-    FormsModule,
-    WeatherWidgetViewComponent
+    WeatherWidgetViewComponent,
+    FormsModule
   ]
 })
 export class WeatherWidgetComponent {

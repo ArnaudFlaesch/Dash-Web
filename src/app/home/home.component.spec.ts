@@ -1,6 +1,4 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 import { provideHttpClient } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
@@ -46,7 +44,6 @@ describe("HomeComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatSnackBarModule],
       providers: [
         provideRouter([
           {

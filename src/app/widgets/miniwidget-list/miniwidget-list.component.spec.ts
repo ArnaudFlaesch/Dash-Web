@@ -1,6 +1,3 @@
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../environments/environment";
@@ -18,7 +15,6 @@ describe("MiniWidgetListComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatSnackBarModule],
       providers: [
         MiniWidgetService,
         WidgetService,

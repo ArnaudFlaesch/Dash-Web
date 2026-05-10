@@ -20,8 +20,8 @@ import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
-import { ErrorHandlerService } from "../../../app/services/error.handler.service";
-import { DEFAULT_DATE_FORMAT } from "../../../app/utils/Constants";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { DEFAULT_DATE_FORMAT } from "../../utils/Constants";
 import { DateFormatPipe } from "../../pipes/date-format.pipe";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
 import { WidgetComponent } from "../widget/widget.component";
@@ -53,7 +53,6 @@ enum WORKOUT_STATISTICS {
   templateUrl: "./workout-widget.component.html",
   styleUrls: ["./workout-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     MatIcon,
@@ -62,8 +61,6 @@ enum WORKOUT_STATISTICS {
     MatLabel,
     MatInput,
     MatDatepickerInput,
-    FormsModule,
-    ReactiveFormsModule,
     MatDatepickerToggle,
     MatSuffix,
     MatDatepicker,
@@ -71,7 +68,9 @@ enum WORKOUT_STATISTICS {
     MatIconButton,
     WorkoutStatisticsComponent,
     WorkoutSessionEditComponent,
-    DateFormatPipe
+    DateFormatPipe,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class WorkoutWidgetComponent {

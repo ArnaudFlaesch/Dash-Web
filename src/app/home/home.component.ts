@@ -10,7 +10,7 @@ import {
   signal,
   WritableSignal
 } from "@angular/core";
-import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
@@ -42,7 +42,6 @@ import { TabComponent } from "../tab/tab.component";
   selector: "dash-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CdkDropList,
@@ -57,12 +56,11 @@ import { TabComponent } from "../tab/tab.component";
     MatMenu,
     MatMenuItem,
     MatSlideToggle,
-    FormsModule,
-    ReactiveFormsModule,
     MatDivider,
     MiniWidgetListComponent,
     WidgetListComponent,
-    MatProgressSpinner
+    MatProgressSpinner,
+    ReactiveFormsModule
   ]
 })
 export class HomeComponent implements OnInit, OnDestroy {

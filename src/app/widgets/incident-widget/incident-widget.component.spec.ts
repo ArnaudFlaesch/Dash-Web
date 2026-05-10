@@ -1,7 +1,5 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { startOfYesterday } from "date-fns";
 import { environment } from "../../../environments/environment";
 import { ErrorHandlerService } from "../../services/error.handler.service";
@@ -17,7 +15,6 @@ describe("IncidentWidgetComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatSnackBarModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

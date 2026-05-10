@@ -8,12 +8,15 @@ import {
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import {
-  CalendarCommonModule,
-  CalendarDayModule,
+  CalendarDatePipe,
+  CalendarDayViewComponent,
   CalendarEvent,
-  CalendarMonthModule,
+  CalendarMonthViewComponent,
+  CalendarNextViewDirective,
+  CalendarPreviousViewDirective,
+  CalendarTodayDirective,
   CalendarView,
-  CalendarWeekModule
+  CalendarWeekViewComponent
 } from "angular-calendar";
 import { endOfDay, format, startOfDay } from "date-fns";
 import { Subject } from "rxjs";
@@ -35,17 +38,19 @@ import { WidgetComponent } from "../widget/widget.component";
   templateUrl: "./calendar-widget.component.html",
   styleUrls: ["./calendar-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     MatIcon,
     MatButton,
     MatTooltip,
-    CalendarCommonModule,
-    CalendarMonthModule,
-    CalendarWeekModule,
-    CalendarDayModule,
-    InitialUppercasePipe
+    InitialUppercasePipe,
+    CalendarDayViewComponent,
+    CalendarWeekViewComponent,
+    CalendarMonthViewComponent,
+    CalendarDatePipe,
+    CalendarNextViewDirective,
+    CalendarTodayDirective,
+    CalendarPreviousViewDirective
   ]
 })
 export class CalendarWidgetComponent {

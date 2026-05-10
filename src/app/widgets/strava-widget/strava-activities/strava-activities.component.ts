@@ -13,7 +13,6 @@ import {
   selector: "dash-strava-activities",
   templateUrl: "./strava-activities.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

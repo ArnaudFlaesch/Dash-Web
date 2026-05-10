@@ -1,4 +1,4 @@
-import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "./../model/Workout";
+import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,7 +22,6 @@ import { NgClass } from "@angular/common";
   templateUrl: "./workout-session-edit.component.html",
   styleUrls: ["./workout-session-edit.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {

@@ -3,15 +3,9 @@ import { Router, RouterOutlet } from "@angular/router";
 import { AuthService } from "./services/auth.service/auth.service";
 import { ThemeService } from "./services/theme.service/theme.service";
 
-export type IMenu = {
-  link: string;
-  icon: string;
-};
-
 @Component({
   selector: "dash-root",
   templateUrl: "./app.component.html",
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet]
 })

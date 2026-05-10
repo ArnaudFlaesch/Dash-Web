@@ -29,7 +29,6 @@ import { WidgetComponent } from "../widget/widget.component";
   templateUrl: "./strava-widget.component.html",
   styleUrls: ["./strava-widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     BaseChartDirective,

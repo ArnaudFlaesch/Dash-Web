@@ -32,7 +32,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   templateUrl: "./steam-widget.component.html",
   styleUrls: ["./steam-widget.component.scss", "../widget/widget.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     WidgetComponent,
     MatFormField,

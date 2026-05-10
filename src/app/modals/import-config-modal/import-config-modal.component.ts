@@ -8,13 +8,12 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from "@angular/material/dialog";
-import { ConfigService } from "./../../services/config.service/config.service";
-import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { ConfigService } from "../../services/config.service/config.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
 
 @Component({
   selector: "dash-import-config-modal",
   templateUrl: "./import-config-modal.component.html",
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
