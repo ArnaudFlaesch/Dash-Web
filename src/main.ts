@@ -1,4 +1,4 @@
-import { inject, isDevMode, LOCALE_ID, provideZoneChangeDetection } from "@angular/core";
+import { inject, isDevMode, LOCALE_ID } from "@angular/core";
 
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
@@ -49,7 +49,6 @@ const routes: Routes = [
 bootstrapApplication(AppComponent, {
   providers: [
     provideCalendar({ provide: DateAdapter, useFactory: adapterFactory }),
-    provideZoneChangeDetection(),
     provideServiceWorker("ngsw-worker.js", {
       enabled: !isDevMode(),
       registrationStrategy: "registerWhenStable:30000"
