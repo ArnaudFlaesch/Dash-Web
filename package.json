@@ -52,7 +52,7 @@
     "@angular/build": "^21.2.8",
     "@angular/cli": "21.2.14",
     "@angular/compiler-cli": "21.2.16",
-    "@compodoc/compodoc": "1.2.1",
+    "@compodoc/compodoc": "2.0.0",
     "@eslint/js": "10.0.1",
     "@types/leaflet": "1.9.21",
     "@vitest/coverage-v8": "4.1.9",
