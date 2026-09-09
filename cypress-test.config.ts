@@ -23,7 +23,7 @@ export default defineConfig({
       configFile: "reporter-e2e-config.json"
     },
     env: {
-      backend_url: "localhost:8080"
+      BACKEND_URL: "localhost:8080"
     }
   }
 });
