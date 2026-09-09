@@ -63,7 +63,7 @@
     "esbuild-visualizer": "0.7.0",
     "eslint": "10.10.0",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-cypress": "7.0.1",
+    "eslint-plugin-cypress": "7.0.2",
     "globals": "17.12.0",
     "jsdom": "30.0.1",
     "mochawesome": "8.0.1",
