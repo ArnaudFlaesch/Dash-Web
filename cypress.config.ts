@@ -17,7 +17,7 @@ export default defineConfig({
     videoCompression: false,
     env: {
       coverage: false,
-      backend_url: "localhost:8080"
+      BACKEND_URL: "localhost:8080"
     }
   }
 });

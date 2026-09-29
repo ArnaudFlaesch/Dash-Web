@@ -31,7 +31,9 @@ describe("Steam Widget tests", () => {
       expect(requests[1].response.statusCode).to.equal(200);
       cy.get(".widget .game-info").should("have.length", 25);
       cy.get(".widget .game-info").contains("Half-Life 2: Episode Two").scrollIntoView();
-      cy.get(".widget .game-info").contains("Half-Life 2: Episode Two").click();
+      cy.contains("mat-expansion-panel", "Half-Life 2: Episode Two")
+        .find("mat-expansion-panel-header")
+        .click();
       cy.wait("@getAchievementData").then((request: Interception) => {
         expect(request.response.statusCode).to.equal(200);
         cy.get(".widget .totalachievements")
