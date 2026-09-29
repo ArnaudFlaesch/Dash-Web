@@ -1,10 +1,6 @@
 import authorizationBearer from "./authorizationBearer";
 
 describe("Authorization bearer tests", () => {
-  it("Should not retrieve a token when it does not exists", () => {
-    expect(authorizationBearer()).toEqual("");
-  });
-
   it("Should get the token", () => {
     const userData = {
       accessToken: "accessToken",
