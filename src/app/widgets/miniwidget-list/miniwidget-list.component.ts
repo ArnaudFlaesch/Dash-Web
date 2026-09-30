@@ -3,18 +3,17 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   inject,
   Injector,
-  OnDestroy,
   OnInit,
   signal,
   viewChildren,
   ViewContainerRef,
   WritableSignal
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
-
-import { Subject, takeUntil } from "rxjs";
 import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
 import { CreateMiniWidgetModalComponent } from "../../modals/create-mini-widget-modal/create-mini-widget-modal.component";
 import { IMiniWidgetConfig } from "../../model/IMiniWidgetConfig";
@@ -32,7 +31,7 @@ import { MatMiniFabButton } from "@angular/material/button";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatMiniFabButton, MatTooltip, MatIcon]
 })
-export class MiniWidgetListComponent implements OnInit, OnDestroy {
+export class MiniWidgetListComponent implements OnInit {
   public readonly miniWidgetTargets = viewChildren("dynamic", { read: ViewContainerRef });
   public miniWidgetList: WritableSignal<IMiniWidgetConfig[]> = signal([]);
 
@@ -40,7 +39,7 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
   private readonly dialog = inject(MatDialog);
   private readonly miniWidgetService = inject(MiniWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly destroy$: Subject<unknown> = new Subject();
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly ERROR_MESSAGE_GET_MINI_WIDGETS =
     "Erreur lors de la récupération des mini widgets.";
@@ -58,23 +57,20 @@ export class MiniWidgetListComponent implements OnInit, OnDestroy {
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_MINI_WIDGETS)
     });
 
-    this.miniWidgetService.miniWidgetDeleted.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (miniWidgetId) => {
-        this.miniWidgetService.deleteMiniWidget(miniWidgetId).subscribe({
-          next: () =>
-            this.miniWidgetList.update((miniWidgetList) =>
-              miniWidgetList.filter((miniWidget) => miniWidget.id !== miniWidgetId)
-            ),
-          error: (error) =>
-            this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_MINI_WIDGET)
-        });
-      }
-    });
-  }
-
-  public ngOnDestroy(): void {
-    this.destroy$.next(null);
-    this.destroy$.complete();
+    this.miniWidgetService.miniWidgetDeleted
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (miniWidgetId) => {
+          this.miniWidgetService.deleteMiniWidget(miniWidgetId).subscribe({
+            next: () =>
+              this.miniWidgetList.update((miniWidgetList) =>
+                miniWidgetList.filter((miniWidget) => miniWidget.id !== miniWidgetId)
+              ),
+            error: (error) =>
+              this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_MINI_WIDGET)
+          });
+        }
+      });
   }
 
   public openCreateMiniWidgetModal(): void {
