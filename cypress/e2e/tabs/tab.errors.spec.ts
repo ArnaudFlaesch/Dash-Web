@@ -12,7 +12,7 @@ describe("Tab error tests", () => {
       .visit("/")
       .wait("@getTabsError")
       .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(500);
+        expect(request.response?.statusCode).to.equal(500);
         cy.shouldDisplayErrorMessage("Erreur lors de l'initialisation du dashboard.");
       });
   });
@@ -23,7 +23,7 @@ describe("Tab error tests", () => {
       .visit("/")
       .wait("@getWidgetsError")
       .then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(500);
+        expect(request.response?.statusCode).to.equal(500);
         cy.shouldDisplayErrorMessage("Erreur lors de la récupération des widgets.");
       });
   });
@@ -33,7 +33,7 @@ describe("Tab error tests", () => {
     cy.get(".tab").should("have.length", 1);
     cy.get("#addNewTabButton").click();
     cy.wait("@addTabError").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(500);
+      expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de l'ajout d'un onglet.")
         .get(".tab")
         .should("have.length", 1);
@@ -54,7 +54,7 @@ describe("Tab error tests", () => {
     cy.get("input").type("Flux RSS");
     cy.get("input").dblclick();
     cy.wait("@updateTabError").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(500);
+      expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de la modification d'un onglet.")
         .reload()
         .get(".tab")
@@ -73,7 +73,7 @@ describe("Tab error tests", () => {
     cy.get(".tab").should("have.length", 1).eq(0).dblclick();
     cy.get(".deleteTabButton").click();
     cy.wait("@deleteTabError").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(500);
+      expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de la suppression d'un onglet.")
         .get(".tab")
         .should("have.length", 1);

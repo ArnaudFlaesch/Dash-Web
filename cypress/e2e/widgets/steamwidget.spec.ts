@@ -27,15 +27,15 @@ describe("Steam Widget tests", () => {
     cy.get("#steamUserIdInput").type(steamUserId);
     cy.get(".validateButton").click();
     cy.wait(["@getPlayerData", "@getGameData"]).then((requests: Interception[]) => {
-      expect(requests[0].response.statusCode).to.equal(200);
-      expect(requests[1].response.statusCode).to.equal(200);
+      expect(requests[0]?.response?.statusCode).to.equal(200);
+      expect(requests[1]?.response?.statusCode).to.equal(200);
       cy.get(".widget .game-info").should("have.length", 25);
       cy.get(".widget .game-info").contains("Half-Life 2: Episode Two").scrollIntoView();
       cy.contains("mat-expansion-panel", "Half-Life 2: Episode Two")
         .find("mat-expansion-panel-header")
         .click();
       cy.wait("@getAchievementData").then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
+        expect(request.response?.statusCode).to.equal(200);
         cy.get(".widget .totalachievements")
           .should("have.text", "Succès : 23")
           .get(".completedAchievements")

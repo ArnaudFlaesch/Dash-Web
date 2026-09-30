@@ -20,7 +20,7 @@ describe("Weather Widget error tests", () => {
       .click();
     cy.get("#WEATHER").click();
     cy.wait("@addWidgetError").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(500);
+      expect(request.response?.statusCode).to.equal(500);
       cy.get(".widget")
         .should("have.length", 0)
         .shouldDisplayErrorMessage("Erreur lors de l'ajout d'un widget.");

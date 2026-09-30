@@ -17,8 +17,9 @@
 // Import commands.js using ES2015 syntax:
 import "./commands";
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import addContext = require("mochawesome/addContext");
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import addContext from "mochawesome/addContext";
 
 import { Suite, Test } from "mocha";
 

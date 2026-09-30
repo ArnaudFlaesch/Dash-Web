@@ -2,8 +2,8 @@
 
 declare namespace Cypress {
   interface Chainable {
-    loginAsAdmin(): Chainable<Response>;
-    loginAsUser(): Chainable<Response>;
+    loginAsAdmin(): Chainable<unknown>;
+    loginAsUser(): Chainable<unknown>;
     navigateToTab(tabName: string): Chainable;
     createNewTab(tabName: string): Chainable;
     deleteTab(tabName: string): Chainable;

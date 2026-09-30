@@ -24,8 +24,8 @@ describe("AirParif Widget tests", () => {
       .as("getColorsData");
     cy.get(".validateButton").click();
     cy.wait(["@getForecastData", "@getColorsData"]).then((requests: Interception[]) => {
-      expect(requests[0].response.statusCode).to.equal(200);
-      expect(requests[1].response.statusCode).to.equal(200);
+      expect(requests[0]?.response?.statusCode).to.equal(200);
+      expect(requests[1]?.response?.statusCode).to.equal(200);
     });
   });
 });

@@ -20,7 +20,7 @@ describe("RSS Widget errors tests", () => {
       .click();
     cy.get("#RSS").click();
     cy.wait("@addWidgetError").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(500);
+      expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de l'ajout d'un widget.")
         .get(".widget")
         .should("have.length", 0);

@@ -1,11 +1,11 @@
 import { Interception } from "cypress/types/net-stubbing";
 import Chainable = Cypress.Chainable;
 
-Cypress.Commands.add("loginAsAdmin", (): Chainable<Record<string, unknown>> => {
+Cypress.Commands.add("loginAsAdmin", (): Chainable<unknown> => {
   return loginAs("admintest", "adminpassword");
 });
 
-Cypress.Commands.add("loginAsUser", (): Chainable<Record<string, unknown>> => {
+Cypress.Commands.add("loginAsUser", (): Chainable<unknown> => {
   return loginAs("usertest", "userpassword");
 });
 
@@ -29,16 +29,16 @@ Cypress.Commands.add("shouldDisplayErrorMessage", (errorMessage: string): void =
   shouldDisplayErrorMessage(errorMessage);
 });
 
-function loginAs(username: string, password: string): Chainable<Record<string, unknown>> {
+function loginAs(username: string, password: string): Chainable<Response<unknown>> {
   return cy.env(["BACKEND_URL"]).then(({ BACKEND_URL }) => {
-    cy.request({
-      method: "POST",
-      url: `${BACKEND_URL}/auth/login`,
-      body: { username, password }
-    })
-      .its("body")
-      .then((response) => {
-        window.localStorage.setItem("user", JSON.stringify(response));
+    return cy
+      .request({
+        method: "POST",
+        url: `${BACKEND_URL}/auth/login`,
+        body: { username, password }
+      })
+      .then(({ body }) => {
+        window.localStorage.setItem("user", JSON.stringify(body));
       });
   });
 }

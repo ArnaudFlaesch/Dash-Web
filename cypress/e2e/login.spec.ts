@@ -10,7 +10,7 @@ describe("Login tests", () => {
     cy.get("#inputPassword").type("test");
     cy.get("#loginButton").should("be.enabled").click();
     cy.wait("@login").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(401);
+      expect(request.response?.statusCode).to.equal(401);
       cy.shouldDisplayErrorMessage("Erreur lors de la connexion de l'utilisateur.");
     });
   });
@@ -22,7 +22,7 @@ describe("Login tests", () => {
     cy.get("#inputPassword").type("adminpassword");
     cy.get("#loginButton").should("be.enabled").click();
     cy.wait("@login").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(200);
+      expect(request.response?.statusCode).to.equal(200);
       cy.url().should("be.equal", `${Cypress.config("baseUrl")}home`);
       cy.get("#dash-menu").click();
       cy.get("#logoutButton").click();

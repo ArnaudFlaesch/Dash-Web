@@ -106,10 +106,13 @@ export class WorkoutWidgetComponent {
 
   public refreshWidget(): void {
     this.workoutWidgetService.getWorkoutTypes().subscribe({
-      next: (workoutTypes) => this.workoutTypes.set(workoutTypes),
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES),
-      complete: () => this.isWidgetLoaded.set(true)
+      next: (workoutTypes) => {
+        this.workoutTypes.set(workoutTypes)
+        this.isWidgetLoaded.set(true)
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES);
+        this.isWidgetLoaded.set(true)},
     });
     const selectedMonth = this.selectedMonthFormControl.value ?? new Date();
     this.getWorkoutSessionsOfMonth(selectedMonth);

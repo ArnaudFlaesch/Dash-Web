@@ -48,7 +48,7 @@ describe("Tab tests", () => {
       .dblclick();
     cy.get(".deleteTabButton").click();
     cy.wait("@deleteTab").then((response: Interception) => {
-      expect(response.response.statusCode).to.equal(200);
+      expect(response.response?.statusCode).to.equal(200);
       cy.get(".tab").should("have.length", 1);
     });
   });

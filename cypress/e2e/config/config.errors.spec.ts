@@ -13,7 +13,7 @@ describe("Config error tests", () => {
     cy.get("#dash-menu").click();
     cy.get("#downloadConfigButton").click();
     cy.wait("@downloadConfigError").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(500);
+      expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de l'export de la configuration.");
     });
   });
@@ -25,7 +25,7 @@ describe("Config error tests", () => {
     cy.get("#file").attachFile("dashboardConfigTest.json");
     cy.get("#uploadFileButton").click();
     cy.wait("@importConfigError").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(500);
+      expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de l'import de la configuration.");
     });
   });
