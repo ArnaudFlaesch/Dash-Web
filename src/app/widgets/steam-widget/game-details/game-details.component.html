@@ -1,4 +1,8 @@
-<mat-expansion-panel [title]="gameInfo().name" (opened)="loadAchievementsData(this.steamUserId(), this.gameInfo())" hideToggle>
+<mat-expansion-panel
+  [title]="gameInfo().name"
+  (opened)="loadAchievementsData(this.steamUserId(), this.gameInfo())"
+  hideToggle
+>
   <mat-expansion-panel-header>
     <mat-panel-title>
       <div class="game-info">
@@ -26,8 +30,7 @@
             [color]="'primary'"
             [mode]="'determinate'"
             [value]="this.completionStatus()"
-          >
-          </mat-progress-spinner>
+          />
         </a>
       }
     </div>

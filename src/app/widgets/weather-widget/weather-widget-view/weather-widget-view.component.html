@@ -1,5 +1,5 @@
 <div class="weather-forecast-container">
-  <dash-weather-today [weather]="this.weather()"></dash-weather-today>
+  <dash-weather-today [weather]="this.weather()" />
   @if (cityData() && forecastResponse()) {
     <div class="forecast-data-container">
       <div class="forecast-selector">
@@ -33,7 +33,7 @@
           [forecast]="this.forecastToDisplay()"
           [forecastMode]="this.forecastMode()"
           [timezone]="this.cityData().timezone"
-        ></dash-weather-forecast>
+        />
       }
     </div>
   }

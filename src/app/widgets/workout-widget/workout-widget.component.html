@@ -23,13 +23,13 @@
               <mat-form-field appearance="fill">
                 <mat-label>Sélectionnez un mois</mat-label>
                 <input matInput [matDatepicker]="picker" [formControl]="selectedMonthFormControl" />
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker-toggle matIconSuffix [for]="picker" />
                 <mat-datepicker
                   #picker
                   startView="multi-year"
                   (monthSelected)="setMonthAndYear($event, picker)"
                   [startAt]="this.selectedMonthFormControl.value"
-                ></mat-datepicker>
+                />
               </mat-form-field>
               <div id="workout-sessions-grid">
                 @for (workoutSession of this.workoutSessions(); track workoutSession.id) {
@@ -47,8 +47,8 @@
                 <mat-label>Sélectionnez la date</mat-label>
                 <input [formControl]="workoutDateFormControl" matInput [matDatepicker]="workoutDatePicker" />
                 <mat-hint>{{ dateFormat }}</mat-hint>
-                <mat-datepicker-toggle matSuffix [for]="workoutDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker #workoutDatePicker></mat-datepicker>
+                <mat-datepicker-toggle matSuffix [for]="workoutDatePicker" />
+                <mat-datepicker #workoutDatePicker />
               </mat-form-field>
               <button
                 mat-raised-button
@@ -139,7 +139,7 @@
             <dash-workout-statistics
               [workoutTypes]="this.workoutTypes()"
               [workoutStatsByMonth]="this.workoutStatsOfMonths()"
-            ></dash-workout-statistics>
+            />
           </div>
         }
         @case (widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW) {
@@ -151,7 +151,7 @@
               <dash-workout-session-edit
                 [workoutTypes]="this.workoutTypes()"
                 [currentWorkoutSessionToEdit]="currentWorkoutSessionToEdit"
-              ></dash-workout-session-edit>
+              />
             </div>
           }
         }

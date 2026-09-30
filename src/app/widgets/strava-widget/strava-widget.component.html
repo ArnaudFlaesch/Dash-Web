@@ -39,7 +39,7 @@
                 </button>
               }
             </div>
-            <dash-strava-activities [activities]="this.activities()"></dash-strava-activities>
+            <dash-strava-activities [activities]="this.activities()" />
           </div>
           <div id="strava-statistics">
             <canvas baseChart [data]="this.activitiesChartData()" [type]="'bar'"></canvas>
