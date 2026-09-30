@@ -12,7 +12,7 @@ describe("Workout Widget tests", () => {
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   beforeEach(() => {
-    cy.clock(mockedDate.getTime());
+    cy.clock(mockedDate.getTime(), ['Date']);
     cy.loginAsAdmin().navigateToTab(tabName);
   });
 

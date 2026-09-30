@@ -15,7 +15,7 @@ describe("Weather Widget tests", () => {
       .intercept("GET", `/weatherWidget/forecast?city=*`)
       .as("getForecast");
     cy.loginAsAdmin().navigateToTab(tabName);
-    cy.clock(new Date(2022, 9, 29, 0, 0, 0).getTime());
+    cy.clock(new Date(2022, 9, 29, 0, 0, 0).getTime(), ["Date"]);
   });
 
   afterEach(() =>
