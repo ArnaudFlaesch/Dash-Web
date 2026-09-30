@@ -41,9 +41,10 @@ import { WidgetComponent } from "../widget/widget.component";
 })
 export class StravaWidgetComponent implements OnInit {
   public activities: WritableSignal<IActivity[]> = signal([]);
-  public athlete: IAthlete | undefined;
-  public activitiesChartData: ChartData<keyof ChartTypeRegistry, number[], string> | undefined =
-    undefined;
+  public athlete = signal<IAthlete | undefined>(undefined);
+  public activitiesChartData = signal<
+    ChartData<keyof ChartTypeRegistry, number[], string> | undefined
+  >(undefined);
 
   public isWidgetLoaded = signal(true);
   public pageNumber = 1;
@@ -173,7 +174,7 @@ export class StravaWidgetComponent implements OnInit {
       this.isWidgetLoaded.set(false);
       this.stravaWidgetService.getAthleteData(token).subscribe({
         next: (response) => {
-          this.athlete = response;
+          this.athlete.set(response);
           this.getActivities();
           this.isWidgetLoaded.set(true);
         },
@@ -186,7 +187,7 @@ export class StravaWidgetComponent implements OnInit {
 
   private getChartData(): void {
     const activitiesStats = this.getStatsFromActivities();
-    this.activitiesChartData = {
+    this.activitiesChartData.set({
       labels: activitiesStats.map((data: IActivitiesStatsByMonth) =>
         format(data.x, "MMM yyyy", { locale: fr })
       ),
@@ -202,7 +203,7 @@ export class StravaWidgetComponent implements OnInit {
           )
         }
       ]
-    };
+    });
   }
 
   private async refreshPage(): Promise<void> {
@@ -265,7 +266,7 @@ export class StravaWidgetComponent implements OnInit {
           window.localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, response.accessToken);
           window.localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, response.refreshToken);
           window.localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, response.expiresAt);
-          this.athlete = response.athlete;
+          this.athlete.set(response.athlete);
           this.isWidgetLoaded.set(true);
         },
         error: (error: HttpErrorResponse) =>

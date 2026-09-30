@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   OnInit,
   signal,
@@ -26,8 +27,16 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 })
 export class NotificationsComponent implements OnInit {
   public readonly notificationsFromDatabase: WritableSignal<INotification[]> = signal([]);
-  public readonly notificationsToDisplay: WritableSignal<INotificationToDisplay[]> = signal([]);
-  public readonly unreadNotificationsForBadge = signal(0);
+  public readonly notificationsToDisplay = computed<INotificationToDisplay[]>(() =>
+    this.notificationsFromDatabase().map((notification) => ({
+      ...notification,
+      notificationDateToDisplay: this.computeDateToDisplay(notification.notificationDate),
+      notificationTypeToDisplay: this.computeTypeToDisplay(notification.notificationType)
+    }))
+  );
+  public readonly unreadNotificationsForBadge = computed(
+    () => this.notificationsFromDatabase().filter((notification) => !notification.isRead).length
+  );
 
   private readonly notificationService = inject(NotificationService);
   private readonly widgetService = inject(WidgetService);
@@ -67,8 +76,6 @@ export class NotificationsComponent implements OnInit {
             return Date.parse(timeB.notificationDate) - Date.parse(timeA.notificationDate);
           });
         });
-        this.notificationsToDisplay.set(this.computeNotificationsToDisplay());
-        this.unreadNotificationsForBadge.set(this.computeUnreadNotificationsBadge());
       },
       error: (error) =>
         this.errorHandlerService.handleError(error, this.ERROR_MARKING_NOTIFICATION_AS_READ)
@@ -79,21 +86,7 @@ export class NotificationsComponent implements OnInit {
     this.notificationService.getNotifications().subscribe({
       next: (notifications) => {
         this.notificationsFromDatabase.set(notifications.content);
-        this.notificationsToDisplay.set(this.computeNotificationsToDisplay());
-        this.unreadNotificationsForBadge.set(this.computeUnreadNotificationsBadge());
       }
-    });
-  }
-
-  private computeNotificationsToDisplay(): INotificationToDisplay[] {
-    return this.notificationsFromDatabase().map((notification) => {
-      return {
-        ...notification,
-        ...{
-          notificationDateToDisplay: this.computeDateToDisplay(notification.notificationDate),
-          notificationTypeToDisplay: this.computeTypeToDisplay(notification.notificationType)
-        }
-      };
     });
   }
 
@@ -119,9 +112,5 @@ export class NotificationsComponent implements OnInit {
       case NotificationTypeEnum.WARN:
         return "warning";
     }
-  }
-
-  private computeUnreadNotificationsBadge(): number {
-    return this.notificationsFromDatabase().filter((notif) => !notif.isRead).length;
   }
 }

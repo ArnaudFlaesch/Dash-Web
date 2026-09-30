@@ -28,9 +28,9 @@ import { FormsModule } from "@angular/forms";
 export class WeatherWidgetComponent {
   public city?: string;
 
-  public weather: IWeatherAPIResponse | undefined;
+  public weather = signal<IWeatherAPIResponse | undefined>(undefined);
   public forecastResponse: WritableSignal<IForecast[]> = signal([]);
-  public cityData: ICity | undefined;
+  public cityData = signal<ICity | undefined>(undefined);
 
   public readonly isWeatherLoaded = signal(false);
   public readonly isForecastLoaded = signal(false);
@@ -49,10 +49,10 @@ export class WeatherWidgetComponent {
         this.weatherWidgetService.fetchForecastData(this.city)
       ]).subscribe({
         next: ([weatherData, forecastApiResponse]) => {
-          this.weather = weatherData;
+          this.weather.set(weatherData);
           this.isWeatherLoaded.set(true);
           this.forecastResponse.set(forecastApiResponse.list);
-          this.cityData = forecastApiResponse.city;
+          this.cityData.set(forecastApiResponse.city);
           this.isForecastLoaded.set(true);
         },
         error: (error) =>

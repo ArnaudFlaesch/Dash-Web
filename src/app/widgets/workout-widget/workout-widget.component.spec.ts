@@ -185,9 +185,9 @@ describe("WorkoutWidgetComponent", () => {
     expect(component.workoutSessions()).toEqual([mockedAddNewWorkoutSessionResponse]);
 
     component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
-    expect(component.currentWorkoutSessionToEdit).toEqual(mockedAddNewWorkoutSessionResponse);
+    expect(component.currentWorkoutSessionToEdit()).toEqual(mockedAddNewWorkoutSessionResponse);
     component.backToWorkoutSessionsList();
-    expect(component.currentWorkoutSessionToEdit).toEqual(undefined);
+    expect(component.currentWorkoutSessionToEdit()).toEqual(undefined);
   });
 
   it("Should check month selected", () => {

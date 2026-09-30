@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   inject,
   input,
@@ -44,7 +43,6 @@ export class GameDetailsComponent {
   private readonly ERROR_GETTING_ACHIEVEMENTS_DATA = "Erreur lors de la récupération des succès.";
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   public loadAchievementsData(steamUserId: string, gameInfo: IGameInfoDisplay): void {
     this.steamWidgetService.getAchievementList(steamUserId, gameInfo.appid).subscribe({
@@ -61,7 +59,6 @@ export class GameDetailsComponent {
             Math.floor((this.completedAchievements().length / this.achievements().length) * 100)
           );
         }
-        this.changeDetectorRef.detectChanges();
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACHIEVEMENTS_DATA)

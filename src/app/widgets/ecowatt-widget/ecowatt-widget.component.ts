@@ -1,11 +1,9 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
-  inject,
+  afterNextRender,
   signal,
   viewChild
 } from "@angular/core";
@@ -20,32 +18,30 @@ import { WidgetComponent } from "../widget/widget.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [WidgetComponent, MatIcon, SafePipe]
 })
-export class EcowattWidgetComponent implements AfterViewInit {
+export class EcowattWidgetComponent {
   public readonly iframeContainer = viewChild<ElementRef>("iframeContainer");
 
   public ecowattIframeUrl =
     "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
 
   public isWidgetLoaded = signal(true);
-  public iframeContainerHeight = 0;
-  public iframeContainerWidth = 0;
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  public iframeContainerHeight = signal(0);
+  public iframeContainerWidth = signal(0);
+
+  public constructor() {
+    afterNextRender(() => this.resizeWidget());
+  }
 
   @HostListener("window:resize", [])
   public onResize(): void {
     this.resizeWidget();
   }
 
-  public ngAfterViewInit(): void {
-    this.resizeWidget();
-  }
-
   public resizeWidget(): void {
     const iframeContainer = this.iframeContainer();
     if (iframeContainer) {
-      this.iframeContainerHeight = iframeContainer?.nativeElement.offsetHeight;
-      this.iframeContainerWidth = iframeContainer?.nativeElement.offsetWidth;
-      this.changeDetectorRef.detectChanges();
+      this.iframeContainerHeight.set(iframeContainer.nativeElement.offsetHeight);
+      this.iframeContainerWidth.set(iframeContainer.nativeElement.offsetWidth);
     }
   }
 

@@ -3,7 +3,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
-import { ICity, IWeatherAPIResponse } from "../IWeather";
+import { IWeatherAPIResponse } from "../IWeather";
 import { WeatherWidgetService } from "../weather.widget.service";
 
 import { FormsModule } from "@angular/forms";
@@ -30,7 +30,6 @@ import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
 export class WeatherMiniWidgetComponent {
   public city: string | null = null;
   public weather = signal<IWeatherAPIResponse | null>(null);
-  public cityData: ICity | undefined;
 
   private readonly ERROR_GETTING_WEATHER_DATA =
     "Erreur lors de la récupération des données météorologiques.";
@@ -60,6 +59,6 @@ export class WeatherMiniWidgetComponent {
   }
 
   public isWidgetLoaded(): boolean {
-    return this.city != null && this.weather != null;
+    return this.city != null && this.weather() != null;
   }
 }

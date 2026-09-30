@@ -79,10 +79,10 @@ export class WorkoutWidgetComponent {
   public workoutStatsByWeek: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
   public workoutStatsByMonth: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
   public workoutStatsOfMonths: WritableSignal<IWorkoutStatByMonth[]> = signal([]);
-  public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
+  public currentWorkoutSessionToEdit = signal<IWorkoutSession | undefined>(undefined);
   public selectedWorkoutStatistics: WORKOUT_STATISTICS | undefined;
   public isWidgetLoaded = signal(false);
-  public WIDGET_VIEW: WORKOUT_WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
+  public WIDGET_VIEW = signal(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
 
   public dateFormat = DEFAULT_DATE_FORMAT;
   public widgetViewEnum = WORKOUT_WIDGET_VIEW;
@@ -118,17 +118,17 @@ export class WorkoutWidgetComponent {
   }
 
   public editWorkoutSession(workoutSession: IWorkoutSession): void {
-    this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.EDIT_WORKOUT_SESSION_VIEW;
-    this.currentWorkoutSessionToEdit = workoutSession;
+    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.EDIT_WORKOUT_SESSION_VIEW);
+    this.currentWorkoutSessionToEdit.set(workoutSession);
   }
 
   public backToWorkoutSessionsList(): void {
-    this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
-    this.currentWorkoutSessionToEdit = undefined;
+    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
+    this.currentWorkoutSessionToEdit.set(undefined);
   }
 
   public goToStatisticsView(): void {
-    this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_STATISTICS_VIEW;
+    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.WORKOUT_STATISTICS_VIEW);
     this.getWorkoutsStatsOfLastThreeMonths();
   }
 

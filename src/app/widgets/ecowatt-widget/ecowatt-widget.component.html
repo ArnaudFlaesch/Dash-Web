@@ -16,8 +16,8 @@
       <iframe
         [src]="ecowattIframeUrl | safe: 'resource_url'"
         title="ecowatt"
-        [width]="iframeContainerWidth"
-        [height]="iframeContainerHeight"
+        [width]="iframeContainerWidth()"
+        [height]="iframeContainerHeight()"
       ></iframe>
     </div>
   </ng-template>

@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  signal,
-  WritableSignal
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { IIncidentStreak, IIncidentViewEnum } from "./IIncident";
@@ -40,13 +33,12 @@ import { switchMap } from "rxjs";
   ]
 })
 export class IncidentWidgetComponent {
-  public incidentId?: number;
   public incidentName?: string;
-  public lastIncidentDate?: string;
+  public lastIncidentDate = signal<string | undefined>(undefined);
   public streaks: WritableSignal<IIncidentStreak[]> = signal([]);
-  public isWidgetLoaded = false;
+  public isWidgetLoaded = signal(false);
 
-  private widgetView: IIncidentViewEnum = IIncidentViewEnum.CURRENT_STREAK;
+  private widgetView = signal(IIncidentViewEnum.CURRENT_STREAK);
 
   private readonly ERROR_STARTING_NEW_STREAK = "Erreur lors du démarrage de la série.";
   private readonly ERROR_ENDING_NEW_STREAK = "Erreur lors de la clôture de la série.";
@@ -55,19 +47,17 @@ export class IncidentWidgetComponent {
   private readonly dialog = inject(MatDialog);
   private readonly incidentWidgetService = inject(IncidentWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly widgetId = inject<number>("widgetId" as never);
 
   public refreshWidget(): void {
-    this.isWidgetLoaded = false;
+    this.isWidgetLoaded.set(false);
     this.incidentWidgetService
       .getIncidentConfigForWidget(this.widgetId)
       .pipe(
         switchMap((incidentConfig) => {
-          this.incidentId = incidentConfig.id;
-          this.lastIncidentDate = incidentConfig.lastIncidentDate;
-          this.isWidgetLoaded = true;
-          return this.incidentWidgetService.getIncidentStreaks(this.incidentId);
+          this.lastIncidentDate.set(incidentConfig.lastIncidentDate);
+          this.isWidgetLoaded.set(true);
+          return this.incidentWidgetService.getIncidentStreaks(incidentConfig.id);
         })
       )
       .subscribe({
@@ -81,15 +71,14 @@ export class IncidentWidgetComponent {
               )
           ),
         error: (error) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS),
-        complete: () => this.changeDetectorRef.detectChanges()
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS)
       });
   }
 
   public startNewStreak(): void {
     this.incidentWidgetService.startFirstStreak(this.widgetId).subscribe({
       next: (updatedIncidentConfig) =>
-        (this.lastIncidentDate = updatedIncidentConfig.lastIncidentDate),
+        this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate),
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_STARTING_NEW_STREAK)
     });
   }
@@ -110,19 +99,20 @@ export class IncidentWidgetComponent {
 
   public goToCurrentStreakView(): void {
     if (!this.isWidgetViewCurrentStreak()) {
-      this.widgetView = IIncidentViewEnum.CURRENT_STREAK;
+      this.widgetView.set(IIncidentViewEnum.CURRENT_STREAK);
     }
   }
 
   public goToPastStreaksView(): void {
     if (!this.isWidgetViewPastStreaks()) {
-      this.widgetView = IIncidentViewEnum.PAST_STREAKS;
+      this.widgetView.set(IIncidentViewEnum.PAST_STREAKS);
     }
   }
 
   public getDaysSinceLastIncident(): number {
-    if (!this.lastIncidentDate) return 0;
-    return differenceInDays(new Date(), Date.parse(this.lastIncidentDate));
+    const lastIncidentDate = this.lastIncidentDate();
+    if (!lastIncidentDate) return 0;
+    return differenceInDays(new Date(), Date.parse(lastIncidentDate));
   }
 
   public getNumberOfDaysFromStreak(streakStartDate: string, streakEndDate: string): number {
@@ -130,11 +120,11 @@ export class IncidentWidgetComponent {
   }
 
   public isWidgetViewCurrentStreak(): boolean {
-    return this.widgetView === IIncidentViewEnum.CURRENT_STREAK;
+    return this.widgetView() === IIncidentViewEnum.CURRENT_STREAK;
   }
 
   public isWidgetViewPastStreaks(): boolean {
-    return this.widgetView === IIncidentViewEnum.PAST_STREAKS;
+    return this.widgetView() === IIncidentViewEnum.PAST_STREAKS;
   }
 
   public getWidgetConfig(): { incidentName: string } | undefined {
@@ -148,7 +138,7 @@ export class IncidentWidgetComponent {
   private endCurrentStreak(): void {
     this.incidentWidgetService.endStreak(this.widgetId).subscribe({
       next: (updatedIncidentConfig) =>
-        (this.lastIncidentDate = updatedIncidentConfig.lastIncidentDate),
+        this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate),
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_ENDING_NEW_STREAK)
     });
   }

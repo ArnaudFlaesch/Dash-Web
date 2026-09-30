@@ -53,7 +53,7 @@
 
     <mat-paginator
       (page)="onPageChanged($event)"
-      [length]="gameCount"
+      [length]="gameCount()"
       [pageSize]="pageSize"
       [pageIndex]="pageNumber"
       [pageSizeOptions]="pageSizeOptions"

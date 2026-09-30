@@ -7,19 +7,30 @@
       <h1 id="login-page-title">Dash</h1>
     </div>
     <div id="login-form">
-      <input id="inputUsername" placeholder="Username" [(ngModel)]="inputUsername" />
+      <input
+        id="inputUsername"
+        placeholder="Username"
+        [ngModel]="inputUsername()"
+        (ngModelChange)="inputUsername.set($event)"
+      />
 
-      <input id="inputPassword" placeholder="Password" [(ngModel)]="inputPassword" type="password" />
+      <input
+        id="inputPassword"
+        placeholder="Password"
+        type="password"
+        [ngModel]="inputPassword()"
+        (ngModelChange)="inputPassword.set($event)"
+      />
 
       <button
         mat-raised-button
         id="loginButton"
-        [disabled]="!this.inputUsername || !inputPassword || isLoading"
+        [disabled]="!inputUsername() || !inputPassword() || isLoading()"
         (click)="handleLogin()"
         color="primary"
       >
         <span id="login-button-label">
-          @if (isLoading) {
+          @if (isLoading()) {
             <mat-spinner diameter="30"></mat-spinner>
           }
           <span>Se connecter</span>

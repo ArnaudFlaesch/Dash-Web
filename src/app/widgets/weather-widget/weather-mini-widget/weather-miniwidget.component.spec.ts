@@ -64,7 +64,6 @@ describe("WeatherMiniWidgetComponent", () => {
     httpTestingController
       .expectOne(environment.backend_url + "/weatherWidget/weather?city=" + city)
       .error(new ProgressEvent("Server error"));
-    expect(component.cityData).toBeUndefined();
   });
 
   it("Should get weather icons", () => {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { Router, RouterLink } from "@angular/router";
@@ -15,32 +15,34 @@ import { FormsModule } from "@angular/forms";
   imports: [RouterLink, MatButton, MatProgressSpinner, FormsModule]
 })
 export class LoginComponent {
-  public isLoading = false;
+  public readonly isLoading = signal(false);
 
-  public inputUsername = "";
-  public inputPassword = "";
+  public readonly inputUsername = signal("");
+  public readonly inputPassword = signal("");
 
   public authService = inject(AuthService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly router = inject(Router);
 
   public async handleLogin(): Promise<void> {
-    if (this.inputUsername && this.inputPassword) {
-      this.isLoading = true;
+    const username = this.inputUsername();
+    const password = this.inputPassword();
+    if (username && password) {
+      this.isLoading.set(true);
       try {
-        await firstValueFrom(this.authService.login(this.inputUsername, this.inputPassword));
-        this.isLoading = false;
+        await firstValueFrom(this.authService.login(username, password));
+        this.isLoading.set(false);
         await this.router.navigate(["home"]);
       } catch (error) {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.errorHandlerService.handleLoginError(error as Error);
       }
     }
   }
 
   public async loginAsDemoAccount(): Promise<void> {
-    this.inputUsername = "demo";
-    this.inputPassword = "demo";
+    this.inputUsername.set("demo");
+    this.inputPassword.set("demo");
     await this.handleLogin();
   }
 }

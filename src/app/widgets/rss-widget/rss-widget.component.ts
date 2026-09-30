@@ -38,7 +38,7 @@ export class RssWidgetComponent {
   public isWidgetLoaded = signal(false);
 
   public urlFeed?: string;
-  public rssFeedResult: IRSSHeader | undefined;
+  public rssFeedResult = signal<IRSSHeader | undefined>(undefined);
   public readArticles: WritableSignal<string[]> = signal([]);
 
   private readonly ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
@@ -55,7 +55,7 @@ export class RssWidgetComponent {
       this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
         next: (apiResult: unknown) => {
           if (apiResult && (apiResult as Record<string, unknown>)["channel"] != null) {
-            this.rssFeedResult = (apiResult as Record<string, unknown>)["channel"] as IRSSHeader;
+            this.rssFeedResult.set((apiResult as Record<string, unknown>)["channel"] as IRSSHeader);
           }
           this.isWidgetLoaded.set(true);
         },
@@ -70,7 +70,7 @@ export class RssWidgetComponent {
   }
 
   public markAllFeedAsRead(): void {
-    this.updateRssFeed(this.rssFeedResult?.item.map((article) => article.guid) ?? []);
+    this.updateRssFeed(this.rssFeedResult()?.item.map((article) => article.guid) ?? []);
   }
 
   public isFormValid(): boolean {

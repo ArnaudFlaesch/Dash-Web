@@ -14,7 +14,7 @@
 
   <ng-template #body>
     <div>
-      @switch (WIDGET_VIEW) {
+      @switch (WIDGET_VIEW()) {
         @case (widgetViewEnum.WORKOUT_SESSIONS_LIST_VIEW) {
           <div>
             <div>
@@ -143,14 +143,14 @@
           </div>
         }
         @case (widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW) {
-          @if (this.currentWorkoutSessionToEdit) {
+          @if (this.currentWorkoutSessionToEdit(); as currentWorkoutSessionToEdit) {
             <div>
               <button mat-icon-button (click)="backToWorkoutSessionsList()">
                 <mat-icon>arrow_back</mat-icon>
               </button>
               <dash-workout-session-edit
                 [workoutTypes]="this.workoutTypes()"
-                [currentWorkoutSessionToEdit]="this.currentWorkoutSessionToEdit"
+                [currentWorkoutSessionToEdit]="currentWorkoutSessionToEdit"
               ></dash-workout-session-edit>
             </div>
           }

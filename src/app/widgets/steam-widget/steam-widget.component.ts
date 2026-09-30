@@ -54,7 +54,7 @@ export class SteamWidgetComponent implements OnInit {
   public readonly isPlayerDataLoaded = signal(false);
   public readonly areGamesLoaded = signal(false);
 
-  public gameCount = 0;
+  public gameCount = signal(0);
   public pageSize = 25;
   public pageSizeOptions = [this.pageSize];
   public pageNumber = 0;
@@ -139,7 +139,7 @@ export class SteamWidgetComponent implements OnInit {
     this.areGamesLoaded.set(false);
     this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).subscribe({
       next: (response: IPage<IGameInfoResponse>) => {
-        this.gameCount = response.totalElements;
+        this.gameCount.set(response.totalElements);
         this.ownedGames.set(response.content);
         this.areGamesLoaded.set(true);
       },
