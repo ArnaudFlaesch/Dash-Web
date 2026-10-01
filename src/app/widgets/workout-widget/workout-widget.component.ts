@@ -79,10 +79,10 @@ export class WorkoutWidgetComponent {
   public workoutStatsByWeek: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
   public workoutStatsByMonth: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
   public workoutStatsOfMonths: WritableSignal<IWorkoutStatByMonth[]> = signal([]);
-  public currentWorkoutSessionToEdit: IWorkoutSession | undefined;
+  public currentWorkoutSessionToEdit = signal<IWorkoutSession | undefined>(undefined);
   public selectedWorkoutStatistics: WORKOUT_STATISTICS | undefined;
   public isWidgetLoaded = signal(false);
-  public WIDGET_VIEW: WORKOUT_WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
+  public WIDGET_VIEW = signal(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
 
   public dateFormat = DEFAULT_DATE_FORMAT;
   public widgetViewEnum = WORKOUT_WIDGET_VIEW;
@@ -106,10 +106,13 @@ export class WorkoutWidgetComponent {
 
   public refreshWidget(): void {
     this.workoutWidgetService.getWorkoutTypes().subscribe({
-      next: (workoutTypes) => this.workoutTypes.set(workoutTypes),
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES),
-      complete: () => this.isWidgetLoaded.set(true)
+      next: (workoutTypes) => {
+        this.workoutTypes.set(workoutTypes)
+        this.isWidgetLoaded.set(true)
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES);
+        this.isWidgetLoaded.set(true)},
     });
     const selectedMonth = this.selectedMonthFormControl.value ?? new Date();
     this.getWorkoutSessionsOfMonth(selectedMonth);
@@ -118,17 +121,17 @@ export class WorkoutWidgetComponent {
   }
 
   public editWorkoutSession(workoutSession: IWorkoutSession): void {
-    this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.EDIT_WORKOUT_SESSION_VIEW;
-    this.currentWorkoutSessionToEdit = workoutSession;
+    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.EDIT_WORKOUT_SESSION_VIEW);
+    this.currentWorkoutSessionToEdit.set(workoutSession);
   }
 
   public backToWorkoutSessionsList(): void {
-    this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW;
-    this.currentWorkoutSessionToEdit = undefined;
+    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
+    this.currentWorkoutSessionToEdit.set(undefined);
   }
 
   public goToStatisticsView(): void {
-    this.WIDGET_VIEW = WORKOUT_WIDGET_VIEW.WORKOUT_STATISTICS_VIEW;
+    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.WORKOUT_STATISTICS_VIEW);
     this.getWorkoutsStatsOfLastThreeMonths();
   }
 

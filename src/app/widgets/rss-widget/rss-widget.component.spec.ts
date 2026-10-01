@@ -96,7 +96,7 @@ describe("RssWidgetComponent", () => {
   };
 
   it("Should read all articles", () => {
-    expect(component.rssFeedResult?.item).toEqual(undefined);
+    expect(component.rssFeedResult()?.item).toEqual(undefined);
     component.urlFeed = urlFeed;
     component.refreshWidget();
 
@@ -106,7 +106,7 @@ describe("RssWidgetComponent", () => {
     );
     request.flush(rssFeedData);
     const feedLength = rssFeedData.channel.item.length;
-    expect(component.rssFeedResult?.item.length).toEqual(feedLength);
+    expect(component.rssFeedResult()?.item.length).toEqual(feedLength);
     const allArticlesGuids = rssFeedData.channel.item.map((item) => item.guid);
 
     component.markAllFeedAsRead();

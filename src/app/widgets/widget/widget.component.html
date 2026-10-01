@@ -10,7 +10,7 @@
       </div>
       <div class="widget-body">
         <div class="widget-edit-component-container">
-          <ng-container *ngTemplateOutlet="editComponent() ?? null"></ng-container>
+          <ng-container *ngTemplateOutlet="editComponent() ?? null" />
         </div>
         <div class="edit-component-actions">
           @if (this.isWidgetLoaded() && this.widgetData()) {
@@ -45,7 +45,7 @@
         <div class="header-actions">
           @if (additionalActions()) {
             <span>
-              <ng-container *ngTemplateOutlet="additionalActions() ?? null"> </ng-container>
+              <ng-container *ngTemplateOutlet="additionalActions() ?? null" />
             </span>
           }
 
@@ -66,7 +66,7 @@
       </div>
       <div class="widget-body">
         @if (this.isWidgetLoaded()) {
-          <ng-container *ngTemplateOutlet="body()"></ng-container>
+          <ng-container *ngTemplateOutlet="body()" />
         } @else {
           <div class="widget-loading-spinner">
             <mat-spinner />

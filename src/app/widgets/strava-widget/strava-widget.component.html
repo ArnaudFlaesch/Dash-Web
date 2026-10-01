@@ -5,7 +5,7 @@
   [isWidgetLoaded]="this.isWidgetLoaded()"
 >
   <ng-template #headerIcon>
-    @if (athlete) {
+    @if (athlete(); as athlete) {
       <a [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader">
         <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="Athlete profile" />
       </a>
@@ -15,7 +15,7 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    @if (athlete) {
+    @if (athlete(); as athlete) {
       <div class="strava-header">{{ athlete.firstname }} {{ athlete.lastname }}</div>
     } @else {
       <div>Strava</div>
@@ -33,16 +33,16 @@
                   <mat-icon>arrow_forward</mat-icon>
                 </button>
               }
-              @if (this.activities.length === this.paginationActivities) {
+              @if (this.activities().length === this.paginationActivities) {
                 <button (click)="this.getPreviousActivitiesPage()" matTooltip="Page précédente" mat-icon-button>
                   <mat-icon>arrow_back</mat-icon>
                 </button>
               }
             </div>
-            <dash-strava-activities [activities]="this.activities()"></dash-strava-activities>
+            <dash-strava-activities [activities]="this.activities()" />
           </div>
           <div id="strava-statistics">
-            <canvas baseChart [data]="this.activitiesChartData" [type]="'bar'"></canvas>
+            <canvas baseChart [data]="this.activitiesChartData()" [type]="'bar'"></canvas>
           </div>
         </div>
       }

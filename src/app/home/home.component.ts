@@ -4,17 +4,16 @@ import { HttpErrorResponse } from "@angular/common/http";
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
-  OnDestroy,
   OnInit,
   signal,
   WritableSignal
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
-
 import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
 import { ErrorHandlerService } from "../services/error.handler.service";
 import { TabService } from "../services/tab.service/tab.service";
@@ -63,7 +62,7 @@ import { TabComponent } from "../tab/tab.component";
     ReactiveFormsModule
   ]
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
   public tabs: WritableSignal<ITab[]> = signal([]);
   public activeWidgets: WritableSignal<IWidgetConfig[]> = signal([]);
   public activeTab = signal(-1);
@@ -75,7 +74,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private refreshInterval: number | undefined;
 
-  private readonly destroy$: Subject<unknown> = new Subject();
+  private readonly destroyRef = inject(DestroyRef);
   private readonly ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
   private readonly ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
   private readonly ERROR_MESSAGE_GET_WIDGETS = "Erreur lors de la récupération des widgets.";
@@ -101,20 +100,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public constructor() {
     this.initDashboard();
+    this.destroyRef.onDestroy(() => this.clearWidgetAutoRefresh());
   }
 
   public ngOnInit(): void {
-    this.widgetService.widgetDeleted.pipe(takeUntil(this.destroy$)).subscribe({
+    this.widgetService.widgetDeleted.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
     });
     this.setupWidgetAutoRefresh();
     this.toggleControl.setValue(this.themeService.isPreferredThemeDarkMode());
-  }
-
-  public ngOnDestroy(): void {
-    this.clearWidgetAutoRefresh();
-    this.destroy$.next(null);
-    this.destroy$.complete();
   }
 
   public setupWidgetAutoRefresh(): void {

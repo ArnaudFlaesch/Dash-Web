@@ -5,14 +5,16 @@
   (refreshWidgetAction)="this.refreshWidget()"
 >
   <ng-template #headerIcon>
-    <img class="rss-widget-header" src="{{ this.rssFeedResult?.image?.url }}" alt="logo" />
+    <img class="rss-widget-header" src="{{ this.rssFeedResult()?.image?.url }}" alt="logo" />
   </ng-template>
 
   <ng-template #headerTitle>
-    @if (this.rssFeedResult && this.rssFeedResult.image && this.rssFeedResult.image.link !== undefined) {
-      <a [href]="this.rssFeedResult.image.link | safe: 'url'">
-        <div class="rss-title">{{ this.rssFeedResult.title }}</div>
-      </a>
+    @if (this.rssFeedResult(); as rssFeedResult) {
+      @if (rssFeedResult.image && rssFeedResult.image.link !== undefined) {
+        <a [href]="rssFeedResult.image.link | safe: 'url'">
+          <div class="rss-title">{{ rssFeedResult.title }}</div>
+        </a>
+      }
     }
   </ng-template>
 
@@ -37,12 +39,12 @@
   <ng-template #body>
     @if (this.urlFeed) {
       <div class="rss-widget-body">
-        <div class="rss-widget-description">{{ this.rssFeedResult?.description }}</div>
+        <div class="rss-widget-description">{{ this.rssFeedResult()?.description }}</div>
         <dash-rss-feed
-          [feed]="this.rssFeedResult?.item ?? []"
+          [feed]="this.rssFeedResult()?.item ?? []"
           [readArticles]="this.readArticles()"
           (markArticleAsReadEvent)="this.markArticleAsRead($event)"
-        ></dash-rss-feed>
+        />
       </div>
     }
   </ng-template>

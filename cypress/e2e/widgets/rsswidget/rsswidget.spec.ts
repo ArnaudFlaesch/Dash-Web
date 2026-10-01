@@ -26,7 +26,7 @@ describe("RSS Widget tests", () => {
     cy.get("input").type(rssFeedUrl);
     cy.get(".validateButton").click();
     cy.wait("@refreshWidget").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(200);
+      expect(request.response?.statusCode).to.equal(200);
       cy.get(".rss-title")
         .invoke("text")
         .then((text) => {
@@ -62,7 +62,7 @@ describe("RSS Widget tests", () => {
       cy.get(".widget .mat-expansion-panel-header-title.is-read").should("have.length", 1);
       cy.get(".widget .markAllArticlesAsReadButton").click();
       cy.wait("@markAllFeedAsRead").then((request: Interception) => {
-        expect(request.response.statusCode).to.equal(200);
+        expect(request.response?.statusCode).to.equal(200);
         cy.get(".widget .mat-expansion-panel-header-title.is-read").should(
           "have.length",
           NUMBER_OF_ARTICLES
@@ -74,7 +74,7 @@ describe("RSS Widget tests", () => {
   it("Should refresh all widgets", () => {
     cy.get("#reloadAllWidgetsButton").click();
     cy.wait("@refreshWidget").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(200);
+      expect(request.response?.statusCode).to.equal(200);
       cy.get(".widget .rss-article").should("have.length", NUMBER_OF_ARTICLES);
     });
   });
@@ -89,7 +89,7 @@ describe("RSS Widget tests", () => {
     cy.get("h4").should("have.text", "Êtes-vous sûr de vouloir supprimer ce widget ?");
     cy.get(".validateDeletionButton").click();
     cy.wait("@deleteWidgetError").then((request: Interception) => {
-      expect(request.response.statusCode).to.equal(500);
+      expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de la suppression d'un widget.")
         .get(".widget")
         .should("have.length", 1);

@@ -15,7 +15,7 @@
               cdkDrag
               cdkDropListOrientation="horizontal"
               cdkDragBoundary="#tab-list"
-            ></dash-tab>
+            />
           }
         </div>
         <button
@@ -35,7 +35,7 @@
         </button>
 
         @if (this.canUserSeeNotifications()) {
-          <dash-notifications></dash-notifications>
+          <dash-notifications />
         }
 
         @if (editModeEnabled()) {
@@ -101,12 +101,11 @@
           <div mat-menu-item>
             <div id="toggle-mode-container">
               <mat-icon>light_mode</mat-icon>
-              <mat-slide-toggle (change)="toggleTheme($event.checked)" [formControl]="toggleControl">
-              </mat-slide-toggle>
+              <mat-slide-toggle (change)="toggleTheme($event.checked)" [formControl]="toggleControl" />
               <mat-icon>dark_mode</mat-icon>
             </div>
           </div>
-          <mat-divider></mat-divider>
+          <mat-divider />
           <button mat-menu-item (click)="this.downloadConfig()" id="downloadConfigButton">
             <mat-icon>download</mat-icon>
             <span>Télécharger la configuration</span>
@@ -115,7 +114,7 @@
             <mat-icon>upload</mat-icon>
             <span>Importer une configuration</span>
           </button>
-          <mat-divider></mat-divider>
+          <mat-divider />
           <button mat-menu-item (click)="logout()" id="logoutButton">
             <mat-icon>logout</mat-icon>
             <span>Déconnexion</span>
@@ -125,7 +124,7 @@
     </div>
 
     <div id="mini-widgets-container">
-      <dash-miniwidget-list></dash-miniwidget-list>
+      <dash-miniwidget-list />
     </div>
   </div>
   @if (this.areWidgetsLoaded()) {
@@ -133,14 +132,14 @@
       [widgetList]="this.activeWidgets()"
       [toggleEditMode]="editModeEnabled()"
       (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"
-    ></dash-widget-list>
+    />
   } @else {
     <div class="loading-spinner-container">
-      <mat-spinner></mat-spinner>
+      <mat-spinner />
     </div>
   }
 } @else {
   <div class="loading-spinner-container">
-    <mat-spinner></mat-spinner>
+    <mat-spinner />
   </div>
 }

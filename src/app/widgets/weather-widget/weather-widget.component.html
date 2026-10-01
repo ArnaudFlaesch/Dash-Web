@@ -26,12 +26,12 @@
   </ng-template>
 
   <ng-template #body>
-    @if (cityData && weather && weather.weather) {
-      <dash-weather-widget-view
-        [weather]="weather"
-        [cityData]="cityData"
-        [forecastResponse]="forecastResponse()"
-      ></dash-weather-widget-view>
+    @if (cityData(); as cityData) {
+      @if (weather(); as weather) {
+        @if (weather.weather) {
+          <dash-weather-widget-view [weather]="weather" [cityData]="cityData" [forecastResponse]="forecastResponse()" />
+        }
+      }
     }
   </ng-template>
 </dash-widget>

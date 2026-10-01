@@ -13,10 +13,9 @@ describe("Weather Widget tests", () => {
     cy.intercept("GET", `/weatherWidget/weather?city=*`)
       .as("getWeather")
       .intercept("GET", `/weatherWidget/forecast?city=*`)
-      .as("getForecast")
-      .clock(new Date(2022, 9, 29, 0, 0, 0).getTime())
-      .loginAsAdmin()
-      .navigateToTab(tabName);
+      .as("getForecast");
+    cy.loginAsAdmin().navigateToTab(tabName);
+    cy.clock(new Date(2022, 9, 29, 0, 0, 0).getTime(), ["Date"]);
   });
 
   afterEach(() =>
@@ -29,8 +28,8 @@ describe("Weather Widget tests", () => {
     cy.get("#cityNameInput").type("Paris");
     cy.get(".validateButton").click();
     cy.wait(["@getWeather", "@getForecast"]).then((request: Interception[]) => {
-      expect(request[0].response.statusCode).to.equal(200);
-      expect(request[1].response.statusCode).to.equal(200);
+      expect(request[0]?.response?.statusCode).to.equal(200);
+      expect(request[1]?.response?.statusCode).to.equal(200);
       cy.get(".widget .forecast").should("have.length.at.least", 2);
     });
   });

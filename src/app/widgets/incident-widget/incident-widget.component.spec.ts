@@ -47,7 +47,7 @@ describe("IncidentWidgetComponent", () => {
     expect(component.getWidgetConfig()).toEqual(undefined);
     component.refreshWidget();
 
-    expect(component.isWidgetLoaded).toEqual(false);
+    expect(component.isWidgetLoaded()).toEqual(false);
     const request = httpTestingController.expectOne(
       environment.backend_url + "/incidentWidget/incidentWidgetConfig?widgetId=" + widgetId
     );

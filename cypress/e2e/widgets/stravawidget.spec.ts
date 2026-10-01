@@ -16,8 +16,8 @@ describe("Strava Widget tests", () => {
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   it("Should fail to load date because of wrong token", () => {
-    window.localStorage.setItem("strava_token", null);
-    window.localStorage.setItem("strava_refresh_token", null);
+    window.localStorage.removeItem("strava_token");
+    window.localStorage.removeItem("strava_refresh_token");
     window.localStorage.setItem("strava_token_expires_at", TOKEN_EXPIRATION_DATE.toString());
   });
 
@@ -35,10 +35,10 @@ describe("Strava Widget tests", () => {
       .wait("@getAthleteData")
       .then((getAthleteDataRequest: Interception) => {
         const getAthleteResponse = getAthleteDataRequest.response;
-        expect(getAthleteResponse.statusCode).to.equal(200);
+        expect(getAthleteResponse?.statusCode).to.equal(200);
         cy.wait("@getActivities").then((getActivitiesRequest: Interception) => {
           const getActivitiesResponse = getActivitiesRequest.response;
-          expect(getActivitiesResponse.statusCode).to.equal(200);
+          expect(getActivitiesResponse?.statusCode).to.equal(200);
           cy.get(".widget")
             .find(".strava-header")
             .should("have.text", "Arnaud Flaesch")

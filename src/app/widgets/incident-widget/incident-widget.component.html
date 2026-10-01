@@ -1,7 +1,7 @@
 <dash-widget
   [widgetData]="getWidgetConfig()"
   [isFormValid]="isFormValid()"
-  [isWidgetLoaded]="isWidgetLoaded"
+  [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
@@ -26,11 +26,11 @@
   </ng-template>
 
   <ng-template #body>
-    @if (this.lastIncidentDate) {
+    @if (this.lastIncidentDate(); as lastIncidentDate) {
       @if (this.isWidgetViewCurrentStreak()) {
         <div id="incident-widget-body-header">
           <div>Dernier incident le {{ lastIncidentDate | dateFormat: "short" }}</div>
-          @if (this.streaks.length > 0) {
+          @if (this.streaks().length > 0) {
             <button (click)="this.goToPastStreaksView()" mat-raised-button>Séries précédentes</button>
           }
         </div>

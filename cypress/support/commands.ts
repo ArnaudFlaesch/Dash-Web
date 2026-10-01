@@ -1,55 +1,117 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import { Interception } from "cypress/types/net-stubbing";
+import Chainable = Cypress.Chainable;
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import addContext = require("mochawesome/addContext");
-
-// Import commands.ts using ES2015 syntax:
-import "./commands";
-
-import { Suite, Test } from "mocha";
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
-
-// https://medium.com/egnyte-engineering/3-steps-to-awesome-test-reports-with-cypress-f4fe915bc246
-Cypress.on("test:after:run", (test, runnable) => {
-  if (test.state === "failed") {
-    let item: Test | Suite = runnable;
-    const nameParts = [runnable.title];
-
-    // Iterate through all parents and grab the titles
-    while (item.parent) {
-      nameParts.unshift(item.parent.title);
-      item = item.parent;
-    }
-
-    const fullTestName = nameParts.filter(Boolean).join(" -- "); // this is how cypress joins the test title fragments
-    const imageUrl = `screenshots/${Cypress.spec.relative.replace("cypress/e2e/", "")}/${fullTestName} (failed).png`;
-
-    addContext({ test }, imageUrl);
-  }
+Cypress.Commands.add("loginAsAdmin", (): Chainable<unknown> => {
+  return loginAs("admintest", "adminpassword");
 });
+
+Cypress.Commands.add("loginAsUser", (): Chainable<unknown> => {
+  return loginAs("usertest", "userpassword");
+});
+
+Cypress.Commands.add("navigateToTab", (tabName: string): Cypress.Chainable => {
+  return navigateToTab(tabName);
+});
+
+Cypress.Commands.add("createNewTab", (tabName: string): Cypress.Chainable => {
+  return createNewTab(tabName);
+});
+
+Cypress.Commands.add("deleteTab", (tabName: string): void => {
+  deleteTab(tabName);
+});
+
+Cypress.Commands.add("createWidget", (widgetType: string): void => {
+  createWidget(widgetType);
+});
+
+Cypress.Commands.add("shouldDisplayErrorMessage", (errorMessage: string): void => {
+  shouldDisplayErrorMessage(errorMessage);
+});
+
+function loginAs(username: string, password: string): Chainable<Response<unknown>> {
+  return cy.env(["BACKEND_URL"]).then(({ BACKEND_URL }) => {
+    return cy
+      .request({
+        method: "POST",
+        url: `${BACKEND_URL}/auth/login`,
+        body: { username, password }
+      })
+      .then(({ body }) => {
+        window.localStorage.setItem("user", JSON.stringify(body));
+      });
+  });
+}
+
+function navigateToTab(tabName: string): Cypress.Chainable {
+  cy.intercept("GET", "/tab/").as("getTabs");
+  cy.intercept("GET", "/widget/?tabId=*").as("getWidgets");
+  cy.visit("/");
+  return cy.wait("@getTabs").then((getTabResponse: Interception) => {
+    expect(getTabResponse?.response?.statusCode).to.equal(200);
+    cy.get(".tab").contains(tabName).click();
+    cy.wait("@getWidgets").then((getWidgetsResponse: Interception) => {
+      expect(getWidgetsResponse?.response?.statusCode).to.equal(200);
+    });
+  });
+}
+
+function createNewTab(tabName: string): Cypress.Chainable {
+  return cy
+    .intercept("GET", "/tab/")
+    .as("getTabs")
+    .intercept("POST", "/tab/addTab")
+    .as("createTab")
+    .intercept("POST", "/tab/updateTab")
+    .as("updateTab")
+    .visit("/")
+    .wait("@getTabs")
+    .then((getTabsResponse) => {
+      expect(getTabsResponse?.response?.statusCode).to.equal(200);
+      cy.get("#addNewTabButton").click();
+      cy.wait("@createTab").then((createTabResponse) => {
+        expect(createTabResponse?.response?.statusCode).to.equal(200);
+        cy.get(".tab:nth(-1) .tab-label").click();
+        cy.get(".tab:nth(-1) .tab-label").dblclick();
+        cy.get("input").clear();
+        cy.get("input").type(tabName);
+        cy.get("input").dblclick();
+        cy.wait("@updateTab").then((updateTabResponse: Interception) => {
+          expect(updateTabResponse?.response?.statusCode).to.equal(200);
+          cy.get(".tab.selected-item .tab-label")
+            .invoke("text")
+            .then((text) => {
+              expect(text.trim()).equal(tabName);
+            });
+        });
+      });
+    });
+}
+
+function deleteTab(tabName: string): void {
+  cy.intercept("DELETE", "/tab/deleteTab*").as("deleteTab");
+  cy.get(".tab").contains(tabName).dblclick();
+  cy.get(".deleteTabButton").click();
+  cy.wait("@deleteTab").then((deleteTabResponse: Interception) => {
+    expect(deleteTabResponse?.response?.statusCode).to.equal(200);
+  });
+}
+
+function createWidget(widgetType: string): void {
+  cy.intercept("POST", "/widget/addWidget").as("addWidget");
+  cy.get("#openAddWidgetModal").click();
+  cy.get(`#${widgetType}`).click();
+  cy.wait("@addWidget").then((request: Interception) => {
+    expect(request?.response?.statusCode).to.equal(200);
+    cy.get(".widget").should("have.length", 1);
+  });
+}
+
+function shouldDisplayErrorMessage(errorMessage: string): Cypress.Chainable {
+  return cy
+    .get(".mat-mdc-simple-snack-bar")
+    .invoke("text")
+    .then((text) => {
+      expect(text.trim()).equal(errorMessage);
+    });
+}

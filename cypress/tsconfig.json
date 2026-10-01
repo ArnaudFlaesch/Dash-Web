@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["es6", "dom"],
+    "target": "ES2024",
+    "lib": ["ES2024", "DOM"],
     "sourceMap": true,
     "types": ["cypress", "cypress-file-upload"]
   },
