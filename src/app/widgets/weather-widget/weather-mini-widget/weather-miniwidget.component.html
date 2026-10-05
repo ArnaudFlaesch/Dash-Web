@@ -7,13 +7,7 @@
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Ville</mat-label>
-      <input
-        id="cityNameInput"
-        name="city"
-        matInput
-        [(ngModel)]="this.city"
-        placeholder="Saisissez de nom de la ville"
-      />
+      <input id="cityNameInput" matInput [formField]="cityForm" placeholder="Saisissez de nom de la ville" />
     </mat-form-field>
   </ng-template>
 
@@ -27,7 +21,7 @@
           [alt]="weather.weather[0].description"
         />
         <div class="weather-data-container">
-          <div>{{ city }}</div>
+          <div>{{ city() }}</div>
           <div class="temperature-container">
             <mat-icon matTooltip="Température actuelle">device_thermostat</mat-icon>
             <div>{{ weather.main.temp }}°</div>

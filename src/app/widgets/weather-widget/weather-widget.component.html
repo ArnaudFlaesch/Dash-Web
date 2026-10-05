@@ -9,19 +9,13 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <div>La météo aujourd'hui à {{ city }}</div>
+    <div>La météo aujourd'hui à {{ city() }}</div>
   </ng-template>
 
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Ville</mat-label>
-      <input
-        id="cityNameInput"
-        name="city"
-        matInput
-        [(ngModel)]="this.city"
-        placeholder="Saisissez de nom de la ville"
-      />
+      <input id="cityNameInput" matInput [formField]="cityForm" placeholder="Saisissez de nom de la ville" />
     </mat-form-field>
   </ng-template>
 

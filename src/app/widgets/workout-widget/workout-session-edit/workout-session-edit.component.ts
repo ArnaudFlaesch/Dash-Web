@@ -2,10 +2,10 @@ import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workou
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   input,
   signal,
-  SimpleChanges,
   WritableSignal
 } from "@angular/core";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
@@ -41,9 +41,13 @@ export class WorkoutSessionEditComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes["currentWorkoutSessionToEdit"].currentValue)
-      this.fetchWorkoutExercisesBySessionId(changes["currentWorkoutSessionToEdit"].currentValue.id);
+  public constructor() {
+    effect(() => {
+      const currentSession = this.currentWorkoutSessionToEdit();
+      if (currentSession?.id) {
+        this.fetchWorkoutExercisesBySessionId(currentSession.id);
+      }
+    });
   }
 
   public decrementExerciceNumberOfReps(workoutTypeId: number): void {

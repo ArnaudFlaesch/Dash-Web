@@ -7,20 +7,9 @@
       <h1 id="login-page-title">Dash</h1>
     </div>
     <div id="login-form">
-      <input
-        id="inputUsername"
-        placeholder="Username"
-        [ngModel]="inputUsername()"
-        (ngModelChange)="inputUsername.set($event)"
-      />
+      <input id="inputUsername" placeholder="Username" [formField]="usernameForm" />
 
-      <input
-        id="inputPassword"
-        placeholder="Password"
-        type="password"
-        [ngModel]="inputPassword()"
-        (ngModelChange)="inputPassword.set($event)"
-      />
+      <input id="inputPassword" placeholder="Password" type="password" [formField]="passwordForm" />
 
       <button
         mat-raised-button

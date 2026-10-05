@@ -109,7 +109,7 @@ describe("WorkoutWidgetComponent", () => {
 
   it("should add a new workout type", () => {
     const newWorkoutTypeName = "Haltères";
-    component.workoutNameInput = newWorkoutTypeName;
+    component.workoutNameInput.set(newWorkoutTypeName);
     component.addWorkoutType();
 
     const addWorkoutTypeRequest = httpTestingController.expectOne(
@@ -169,7 +169,7 @@ describe("WorkoutWidgetComponent", () => {
     const alreadyExistingWorkoutType = { id: 1, name: "Abdos" } as IWorkoutType;
     component.workoutTypes.set([alreadyExistingWorkoutType]);
     const newWorkoutSessionDate = new Date(2022, 8, 1, 0, 0, 0).toString();
-    component.workoutDateFormControl.setValue(newWorkoutSessionDate);
+    component.workoutDateInput.set(newWorkoutSessionDate);
     component.createWorkoutSession();
 
     const addNewWorkoutSessionRequest = httpTestingController.expectOne(
@@ -211,7 +211,7 @@ describe("WorkoutWidgetComponent", () => {
     );
     workoutStatsMonthRequest.flush([]);
 
-    expect(component.selectedMonthFormControl.value).toEqual(selectedMonth);
+    expect(component.selectedMonthInput()).toEqual(selectedMonth);
   });
 
   it("Should switch between statistics views", () => {

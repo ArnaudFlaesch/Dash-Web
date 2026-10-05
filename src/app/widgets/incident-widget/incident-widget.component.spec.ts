@@ -64,7 +64,7 @@ describe("IncidentWidgetComponent", () => {
     );
     startStreakRequest.flush(incidentWidgetConfig);
 
-    component.incidentName = "Incident test";
+    component.incidentName.set("Incident test");
 
     expect(component.isFormValid()).toEqual(true);
 

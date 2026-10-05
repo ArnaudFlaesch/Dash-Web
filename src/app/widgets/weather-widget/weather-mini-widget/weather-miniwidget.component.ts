@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
@@ -6,7 +6,7 @@ import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
 import { IWeatherAPIResponse } from "../IWeather";
 import { WeatherWidgetService } from "../weather.widget.service";
 
-import { FormsModule } from "@angular/forms";
+import { FormField, form } from "@angular/forms/signals";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
@@ -21,15 +21,19 @@ import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
     MatFormField,
     MatLabel,
     MatInput,
-    FormsModule,
+    FormField,
     MatTooltip,
     MatIcon,
     InitialUppercasePipe
   ]
 })
 export class WeatherMiniWidgetComponent {
-  public city: string | null = null;
+  public readonly city = signal<string>("");
+  public readonly cityForm = form(this.city);
   public weather = signal<IWeatherAPIResponse | null>(null);
+
+  public readonly isFormValid = computed(() => this.city().trim().length > 0);
+  public readonly isWidgetLoaded = computed(() => Boolean(this.city()) && this.weather() != null);
 
   private readonly ERROR_GETTING_WEATHER_DATA =
     "Erreur lors de la récupération des données météorologiques.";
@@ -37,8 +41,9 @@ export class WeatherMiniWidgetComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public refreshWidget(): void {
-    if (this.city) {
-      this.weatherWidgetService.fetchWeatherData(this.city).subscribe({
+    const city = this.city();
+    if (city) {
+      this.weatherWidgetService.fetchWeatherData(city).subscribe({
         next: (weatherData) => this.weather.set(weatherData),
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WEATHER_DATA)
@@ -51,14 +56,7 @@ export class WeatherMiniWidgetComponent {
   }
 
   public getWidgetData(): { city: string } | undefined {
-    return this.city ? { city: this.city } : undefined;
-  }
-
-  public isFormValid(): boolean {
-    return (this.city ?? "").length > 0;
-  }
-
-  public isWidgetLoaded(): boolean {
-    return this.city != null && this.weather() != null;
+    const city = this.city();
+    return city ? { city } : undefined;
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, output, signal } from "@angular/core";
 import { isThisYear, isToday } from "date-fns";
 import { IArticle } from "../IArticle";
 import { SafePipe } from "../../../pipes/safe.pipe";
@@ -32,7 +32,7 @@ export class RssFeedComponent {
   public readonly feed = input.required<IArticle[]>();
   public readonly readArticles = input.required<string[]>();
   public readonly markArticleAsReadEvent = output<string>();
-  private currentOpenedArticle: string | undefined;
+  public readonly currentOpenedArticle = signal<string | undefined>(undefined);
 
   public stripHtmlFromContent(content?: string): string {
     const div = document.createElement("div");
@@ -52,18 +52,18 @@ export class RssFeedComponent {
   }
 
   public isArticleOpened(guid: string): boolean {
-    return this.currentOpenedArticle !== undefined && this.currentOpenedArticle === guid;
+    return this.currentOpenedArticle() !== undefined && this.currentOpenedArticle() === guid;
   }
 
   public onOpenDetail(guid: string): void {
     if (!this.isArticleRead(guid)) {
       this.markArticleAsReadEvent.emit(guid);
     }
-    this.currentOpenedArticle = guid;
+    this.currentOpenedArticle.set(guid);
   }
 
   public onClosePanel(): void {
-    this.currentOpenedArticle = undefined;
+    this.currentOpenedArticle.set(undefined);
   }
 
   private getPublicationDateToDisplay(articleDate: Date): string {

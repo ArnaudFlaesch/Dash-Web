@@ -40,7 +40,7 @@ describe("TabComponent", () => {
       component.toggleEditMode();
       expect(component.editMode()).toEqual(true);
       const updatedTabLabel = "Journaux";
-      fixture.componentRef.setInput("tab", { ...component.tab, label: updatedTabLabel });
+      fixture.componentRef.setInput("tab", { ...component.tab(), label: updatedTabLabel });
 
       component.enterSaveTabName(new KeyboardEvent("keydown", { key: "Enter" }));
       const updatedTabData = {

@@ -9,19 +9,13 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <div>Incident {{ incidentName }}</div>
+    <div>Incident {{ incidentName() }}</div>
   </ng-template>
 
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Type d'incident</mat-label>
-      <input
-        id="incidentName"
-        name="incidentName"
-        matInput
-        [(ngModel)]="this.incidentName"
-        placeholder="Saisissez le type d'incident"
-      />
+      <input id="incidentName" matInput [formField]="incidentNameForm" placeholder="Saisissez le type d'incident" />
     </mat-form-field>
   </ng-template>
 

@@ -1,30 +1,41 @@
 import { ErrorHandlerService } from "../services/error.handler.service";
 import { TabService } from "../services/tab.service/tab.service";
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  linkedSignal,
+  output,
+  signal
+} from "@angular/core";
 import { ITab } from "../model/Tab";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MatIcon } from "@angular/material/icon";
-import { FormsModule } from "@angular/forms";
+import { FormField, form } from "@angular/forms/signals";
 
 @Component({
   selector: "dash-tab",
   templateUrl: "./tab.component.html",
   styleUrls: ["./tab.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIcon, FormsModule]
+  imports: [MatIcon, FormField]
 })
 export class TabComponent {
   public readonly tab = input.required<ITab>();
   public readonly tabDeletedEvent = output<number>();
   public readonly editMode = signal(false);
+  public readonly tabLabel = linkedSignal(() => this.tab().label);
+  public readonly tabLabelForm = form(this.tabLabel);
 
   private readonly ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
   private readonly tabService = inject(TabService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public deleteTabFromDash(): void {
-    if (this.tab()) {
-      this.tabDeletedEvent.emit(this.tab().id);
+    const tab = this.tab();
+    if (tab) {
+      this.tabDeletedEvent.emit(tab.id);
     }
   }
 
@@ -44,7 +55,7 @@ export class TabComponent {
     if (event.key === "Enter") {
       const tab = this.tab();
       if (tab) {
-        this.saveTabName(tab.id, tab.label, tab.tabOrder);
+        this.saveTabName(tab.id, this.tabLabel(), tab.tabOrder);
       }
     }
   }

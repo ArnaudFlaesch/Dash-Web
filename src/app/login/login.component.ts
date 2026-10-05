@@ -5,20 +5,23 @@ import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { AuthService } from "../services/auth.service/auth.service";
 import { ErrorHandlerService } from "../services/error.handler.service";
-import { FormsModule } from "@angular/forms";
+import { FormField, form } from "@angular/forms/signals";
 
 @Component({
   selector: "dash-login",
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatButton, MatProgressSpinner, FormsModule]
+  imports: [RouterLink, MatButton, MatProgressSpinner, FormField]
 })
 export class LoginComponent {
   public readonly isLoading = signal(false);
 
   public readonly inputUsername = signal("");
   public readonly inputPassword = signal("");
+
+  public readonly usernameForm = form(this.inputUsername);
+  public readonly passwordForm = form(this.inputPassword);
 
   public authService = inject(AuthService);
   private readonly errorHandlerService = inject(ErrorHandlerService);

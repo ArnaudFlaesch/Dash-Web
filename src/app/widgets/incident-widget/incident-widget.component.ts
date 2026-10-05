@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+  WritableSignal
+} from "@angular/core";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { IIncidentStreak, IIncidentViewEnum } from "./IIncident";
@@ -9,7 +16,7 @@ import { ConfirmModalComponent } from "../../modals/confirm-modal/confirm-modal.
 import { DateFormatPipe } from "../../pipes/date-format.pipe";
 import { MatButton } from "@angular/material/button";
 
-import { FormsModule } from "@angular/forms";
+import { FormField, form } from "@angular/forms/signals";
 import { MatInput } from "@angular/material/input";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
@@ -27,18 +34,32 @@ import { switchMap } from "rxjs";
     MatFormField,
     MatLabel,
     MatInput,
-    FormsModule,
+    FormField,
     MatButton,
     DateFormatPipe
   ]
 })
 export class IncidentWidgetComponent {
-  public incidentName?: string;
+  public readonly incidentName = signal<string>("");
+  public readonly incidentNameForm = form(this.incidentName);
   public lastIncidentDate = signal<string | undefined>(undefined);
   public streaks: WritableSignal<IIncidentStreak[]> = signal([]);
   public isWidgetLoaded = signal(false);
 
-  private widgetView = signal(IIncidentViewEnum.CURRENT_STREAK);
+  public readonly isWidgetViewCurrentStreak = computed(
+    () => this.widgetView() === IIncidentViewEnum.CURRENT_STREAK
+  );
+  public readonly isWidgetViewPastStreaks = computed(
+    () => this.widgetView() === IIncidentViewEnum.PAST_STREAKS
+  );
+  public readonly isFormValid = computed(() => this.incidentName().trim().length > 0);
+  public readonly daysSinceLastIncident = computed(() => {
+    const lastIncidentDate = this.lastIncidentDate();
+    if (!lastIncidentDate) return 0;
+    return differenceInDays(new Date(), Date.parse(lastIncidentDate));
+  });
+
+  private readonly widgetView = signal(IIncidentViewEnum.CURRENT_STREAK);
 
   private readonly ERROR_STARTING_NEW_STREAK = "Erreur lors du démarrage de la série.";
   private readonly ERROR_ENDING_NEW_STREAK = "Erreur lors de la clôture de la série.";
@@ -110,29 +131,16 @@ export class IncidentWidgetComponent {
   }
 
   public getDaysSinceLastIncident(): number {
-    const lastIncidentDate = this.lastIncidentDate();
-    if (!lastIncidentDate) return 0;
-    return differenceInDays(new Date(), Date.parse(lastIncidentDate));
+    return this.daysSinceLastIncident();
   }
 
   public getNumberOfDaysFromStreak(streakStartDate: string, streakEndDate: string): number {
     return differenceInDays(Date.parse(streakEndDate), Date.parse(streakStartDate));
   }
 
-  public isWidgetViewCurrentStreak(): boolean {
-    return this.widgetView() === IIncidentViewEnum.CURRENT_STREAK;
-  }
-
-  public isWidgetViewPastStreaks(): boolean {
-    return this.widgetView() === IIncidentViewEnum.PAST_STREAKS;
-  }
-
   public getWidgetConfig(): { incidentName: string } | undefined {
-    return this.incidentName ? { incidentName: this.incidentName } : undefined;
-  }
-
-  public isFormValid(): boolean {
-    return (this.incidentName ?? "").length > 0;
+    const incidentName = this.incidentName();
+    return incidentName ? { incidentName } : undefined;
   }
 
   private endCurrentStreak(): void {

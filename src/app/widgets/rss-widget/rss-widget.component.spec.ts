@@ -97,7 +97,7 @@ describe("RssWidgetComponent", () => {
 
   it("Should read all articles", () => {
     expect(component.rssFeedResult()?.item).toEqual(undefined);
-    component.urlFeed = urlFeed;
+    component.urlFeed.set(urlFeed);
     component.refreshWidget();
 
     expect(component.isWidgetLoaded()).toEqual(false);
@@ -127,13 +127,13 @@ describe("RssWidgetComponent", () => {
     expect(component.getWidgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     const url = "localhost";
-    component.urlFeed = url;
+    component.urlFeed.set(url);
     expect(component.getWidgetData()).toEqual({ url: url });
     expect(component.isFormValid()).toEqual(true);
   });
 
   it("Should fail to mark all articles as read", () => {
-    component.urlFeed = urlFeed;
+    component.urlFeed.set(urlFeed);
     component.refreshWidget();
 
     const request = httpTestingController.expectOne(

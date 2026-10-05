@@ -1,6 +1,13 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+  WritableSignal
+} from "@angular/core";
+import { FormField, form } from "@angular/forms/signals";
 import { MatIconButton } from "@angular/material/button";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
@@ -26,7 +33,7 @@ import { WidgetComponent } from "../widget/widget.component";
     MatFormField,
     MatLabel,
     MatInput,
-    FormsModule,
+    FormField,
     MatIconButton,
     MatTooltip,
     MatIcon,
@@ -37,9 +44,12 @@ import { WidgetComponent } from "../widget/widget.component";
 export class RssWidgetComponent {
   public isWidgetLoaded = signal(false);
 
-  public urlFeed?: string;
+  public readonly urlFeed = signal<string>("");
+  public readonly urlFeedForm = form(this.urlFeed);
   public rssFeedResult = signal<IRSSHeader | undefined>(undefined);
   public readArticles: WritableSignal<string[]> = signal([]);
+
+  public readonly isFormValid = computed(() => this.urlFeed().trim().length > 0);
 
   private readonly ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
   private readonly ERROR_MARKING_FEED_AS_READ = "Erreur pendant la mise à jour du widget RSS.";
@@ -50,9 +60,10 @@ export class RssWidgetComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public refreshWidget(): void {
-    if (this.urlFeed) {
+    const urlFeed = this.urlFeed();
+    if (urlFeed) {
       this.isWidgetLoaded.set(false);
-      this.rssWidgetService.fetchDataFromRssFeed(this.urlFeed).subscribe({
+      this.rssWidgetService.fetchDataFromRssFeed(urlFeed).subscribe({
         next: (apiResult: unknown) => {
           if (apiResult && (apiResult as Record<string, unknown>)["channel"] != null) {
             this.rssFeedResult.set((apiResult as Record<string, unknown>)["channel"] as IRSSHeader);
@@ -73,18 +84,15 @@ export class RssWidgetComponent {
     this.updateRssFeed(this.rssFeedResult()?.item.map((article) => article.guid) ?? []);
   }
 
-  public isFormValid(): boolean {
-    return (this.urlFeed ?? "").length > 0;
-  }
-
   public getWidgetData(): { url: string } | undefined {
-    return this.urlFeed ? { url: this.urlFeed } : undefined;
+    const url = this.urlFeed();
+    return url ? { url } : undefined;
   }
 
   private updateRssFeed(readArticlesGuids: string[]): void {
     this.widgetService
       .updateWidgetData(this.widgetId, {
-        url: this.urlFeed,
+        url: this.urlFeed(),
         readArticlesGuids: readArticlesGuids
       })
       .subscribe({

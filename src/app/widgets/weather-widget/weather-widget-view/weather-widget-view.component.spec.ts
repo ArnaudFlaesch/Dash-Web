@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { SimpleChange } from "@angular/core";
 import { format } from "date-fns";
 import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
 import { forecastData, weatherData } from "../weather-widget.component.spec";
 import { WeatherWidgetService } from "../weather.widget.service";
 import { WeatherWidgetViewComponent } from "./weather-widget-view.component";
-import { IForecast } from "../IWeather";
 import { vi } from "vitest";
 
 describe("WeatherWidgetViewComponent", () => {
@@ -37,9 +35,6 @@ describe("WeatherWidgetViewComponent", () => {
   });
 
   it("should create", () => {
-    component.ngOnChanges({
-      forecastResponse: new SimpleChange({} as unknown as IForecast[], forecastData.list, true)
-    });
     expect(component.isForecastModeWeek()).toEqual(false);
     component.selectDayForecast(new Date(component.forecastDays()[0]));
     const dateToSelect = new Date(component.forecastDays()[1]);
