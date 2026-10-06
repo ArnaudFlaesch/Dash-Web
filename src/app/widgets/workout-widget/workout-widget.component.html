@@ -87,7 +87,12 @@
             </div>
             <div>
               <h4>Ajouter un type d'exercice</h4>
-              <input id="addWorkoutInput" [formField]="workoutNameForm" placeholder="Nouveau type d'exercice" />
+              <input
+                id="addWorkoutInput"
+                [formField]="workoutNameForm"
+                placeholder="Nouveau type d'exercice"
+                aria-label="Nouveau type d'exercice"
+              />
             </div>
             <button mat-raised-button id="addWorkoutTypeButton" (click)="addWorkoutType()" color="primary">
               Valider

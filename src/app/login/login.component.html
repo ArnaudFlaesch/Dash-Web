@@ -7,9 +7,15 @@
       <h1 id="login-page-title">Dash</h1>
     </div>
     <div id="login-form">
-      <input id="inputUsername" placeholder="Username" [formField]="usernameForm" />
+      <input id="inputUsername" placeholder="Username" [formField]="usernameForm" aria-label="Username" />
 
-      <input id="inputPassword" placeholder="Password" type="password" [formField]="passwordForm" />
+      <input
+        id="inputPassword"
+        placeholder="Password"
+        type="password"
+        [formField]="passwordForm"
+        aria-label="Password"
+      />
 
       <button
         mat-raised-button
