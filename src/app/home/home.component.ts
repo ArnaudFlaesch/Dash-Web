@@ -260,7 +260,7 @@ export class HomeComponent implements OnInit {
         if (tabs.length) {
           this.activatedRoute.queryParams.subscribe((params) => {
             const tabIdParam = params["tabId"];
-            if (tabIdParam && tabs.find((tab) => tab.id === Number.parseInt(tabIdParam))) {
+            if (tabIdParam && tabs.some((tab) => tab.id === Number.parseInt(tabIdParam))) {
               this.activeTab.set(Number.parseInt(tabIdParam));
             } else {
               this.activeTab.set(tabs[0].id);

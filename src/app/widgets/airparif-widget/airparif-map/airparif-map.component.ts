@@ -88,7 +88,7 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
     if (this.sidebarControl) {
       this.map?.removeControl(this.sidebarControl);
     }
-    this.map?.setTarget(undefined);
+    this.map?.setTarget();
     this.map?.dispose();
   }
 

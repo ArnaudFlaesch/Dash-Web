@@ -32,16 +32,16 @@ export class NotificationsListComponent {
   public readonly notificationsList = input.required<INotificationToDisplay[]>();
   public readonly unreadNotificationsForBadge = input<number>(0);
 
-  public readonly onNotificationRead = output<number>();
-  public readonly onMarkAllNotificationsAsRead = output();
+  public readonly markNotificationAsReadEvent = output<number>();
+  public readonly markAllNotificationsAsReadEvent = output();
 
   public notificationTypeEnum = NotificationTypeEnum;
 
   public markNotificationAsRead(notificationId: number): void {
-    this.onNotificationRead.emit(notificationId);
+    this.markNotificationAsReadEvent.emit(notificationId);
   }
 
   public markAllNotificationsAsRead(): void {
-    this.onMarkAllNotificationsAsRead.emit();
+    this.markAllNotificationsAsReadEvent.emit();
   }
 }

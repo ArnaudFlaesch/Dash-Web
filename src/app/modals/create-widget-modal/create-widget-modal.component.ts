@@ -29,7 +29,7 @@ import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card"
 })
 export class CreateWidgetModalComponent {
   public widgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(WidgetTypeEnum)
-    .filter((key) => isNaN(parseInt(key, 0)))
+    .filter((key) => Number.isNaN(Number.parseInt(key, 10)))
     .map((type: string) => {
       return { type: type, icon: this.getWidgetTypeEnumIconToDisplay(type) };
     });
