@@ -22,7 +22,8 @@ describe("Config error tests", () => {
     cy.intercept("POST", "/dashConfig/import", { statusCode: 500 }).as("importConfigError");
     cy.get("#dash-menu").click();
     cy.get("#openImportConfigModal").click();
-    cy.get("#file").attachFile("dashboardConfigTest.json");
+    cy.fixture("dashboardConfigTest.json", null).as("dashboardConfigTest");
+    cy.get("#file").selectFile("@dashboardConfigTest");
     cy.get("#uploadFileButton").click();
     cy.wait("@importConfigError").then((request: Interception) => {
       expect(request.response?.statusCode).to.equal(500);

@@ -23,8 +23,6 @@ import addContext from "mochawesome/addContext";
 
 import { Suite, Test } from "mocha";
 
-import "cypress-file-upload";
-
 Cypress.on("test:after:run", (test, runnable) => {
   if (test.state === "failed") {
     let item: Test | Suite = runnable;

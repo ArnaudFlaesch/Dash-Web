@@ -3,7 +3,7 @@
     "target": "ES2024",
     "lib": ["ES2024", "DOM"],
     "sourceMap": true,
-    "types": ["cypress", "cypress-file-upload"]
+    "types": ["cypress"]
   },
   "include": ["./**/*.ts"]
 }

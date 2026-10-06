@@ -1,11 +1,11 @@
 import { Interception } from "cypress/types/net-stubbing";
 import Chainable = Cypress.Chainable;
 
-Cypress.Commands.add("loginAsAdmin", (): Chainable<unknown> => {
+Cypress.Commands.add("loginAsAdmin", (): Chainable<Cypress.Response<unknown>> => {
   return loginAs("admintest", "adminpassword");
 });
 
-Cypress.Commands.add("loginAsUser", (): Chainable<unknown> => {
+Cypress.Commands.add("loginAsUser", (): Chainable<Cypress.Response<unknown>> => {
   return loginAs("usertest", "userpassword");
 });
 
@@ -29,10 +29,10 @@ Cypress.Commands.add("shouldDisplayErrorMessage", (errorMessage: string): void =
   shouldDisplayErrorMessage(errorMessage);
 });
 
-function loginAs(username: string, password: string): Chainable<Response<unknown>> {
+function loginAs(username: string, password: string): Chainable<Cypress.Response<unknown>> {
   return cy.env(["BACKEND_URL"]).then(({ BACKEND_URL }) => {
     return cy
-      .request({
+      .request<unknown>({
         method: "POST",
         url: `${BACKEND_URL}/auth/login`,
         body: { username, password }
