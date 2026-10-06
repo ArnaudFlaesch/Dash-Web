@@ -5,7 +5,6 @@ import {
   computed,
   DestroyRef,
   inject,
-  OnInit,
   signal,
   WritableSignal
 } from "@angular/core";
@@ -45,7 +44,7 @@ import { WidgetComponent } from "../widget/widget.component";
     MatPaginator
   ]
 })
-export class SteamWidgetComponent implements OnInit {
+export class SteamWidgetComponent {
   public readonly playerData = signal<IPlayerDataResponse | undefined>(undefined);
   public readonly ownedGamesDisplay = computed<IGameInfoDisplay[]>(() =>
     this.ownedGames().map((game) => this.gameInfoResponseToGameInfoDisplay(game))
@@ -76,7 +75,7 @@ export class SteamWidgetComponent implements OnInit {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
-  public ngOnInit(): void {
+  public constructor() {
     toObservable(this.searchQuery)
       .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {

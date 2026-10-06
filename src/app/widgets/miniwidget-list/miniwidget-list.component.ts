@@ -115,7 +115,7 @@ export class MiniWidgetListComponent implements OnInit {
           component = target.createComponent(WeatherMiniWidgetComponent, {
             injector: injector
           });
-          component.instance.city.set(widgetData?.["city"] as string);
+          component.instance.city.set((widgetData?.["city"] as string) ?? "");
         }
       });
     }

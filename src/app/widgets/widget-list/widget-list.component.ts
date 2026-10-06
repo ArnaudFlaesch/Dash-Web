@@ -77,14 +77,14 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(WeatherWidgetComponent, {
               injector: injector
             });
-            component.instance.city.set(widgetData?.["city"] as string);
+            component.instance.city.set((widgetData?.["city"] as string) ?? "");
             break;
           }
           case WidgetTypeEnum.RSS: {
             component = target.createComponent(RssWidgetComponent, {
               injector: injector
             });
-            component.instance.urlFeed.set(widgetData?.["url"] as string);
+            component.instance.urlFeed.set((widgetData?.["url"] as string) ?? "");
             component.instance.readArticles.set(
               (widgetData?.["readArticlesGuids"] as string[]) ?? []
             );
@@ -107,7 +107,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(SteamWidgetComponent, {
               injector: injector
             });
-            component.instance.steamUserId.set(widgetData?.["steamUserId"] as string);
+            component.instance.steamUserId.set((widgetData?.["steamUserId"] as string) ?? "");
             break;
           }
           case WidgetTypeEnum.WORKOUT: {
@@ -120,8 +120,10 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(AirParifWidgetComponent, {
               injector: injector
             });
-            component.instance.airParifApiKey.set(widgetData?.["airParifApiKey"] as string);
-            component.instance.communeInseeCode.set(widgetData?.["communeInseeCode"] as string);
+            component.instance.airParifApiKey.set((widgetData?.["airParifApiKey"] as string) ?? "");
+            component.instance.communeInseeCode.set(
+              (widgetData?.["communeInseeCode"] as string) ?? ""
+            );
             break;
           }
           case WidgetTypeEnum.ECOWATT: {
@@ -134,7 +136,7 @@ export class WidgetListComponent implements OnChanges {
             component = target.createComponent(IncidentWidgetComponent, {
               injector: injector
             });
-            component.instance.incidentName.set(widgetData?.["incidentName"] as string);
+            component.instance.incidentName.set((widgetData?.["incidentName"] as string) ?? "");
             break;
           }
         }
