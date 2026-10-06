@@ -169,7 +169,7 @@ describe("WeatherWidgetComponent", () => {
       expect(component.cityData()).toEqual(undefined);
       expect(component.forecastResponse()).toEqual([]);
       expect(component.isWidgetLoaded()).toEqual(false);
-      component.city = cityName;
+      component.city.set(cityName);
       expect(component.isFormValid()).toEqual(true);
       expect(component.getWidgetData()).toEqual({ city: cityName });
       component.refreshWidget();
@@ -187,7 +187,7 @@ describe("WeatherWidgetComponent", () => {
   describe("Error cases", () => {
     it("should display error messages", () => {
       const cityName = "Paris";
-      component.city = cityName;
+      component.city.set(cityName);
       component.refreshWidget();
       const requests = httpTestingController.match({ method: "GET" });
       requests[0].error(new ProgressEvent("Server error"));

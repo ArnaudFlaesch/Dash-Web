@@ -83,8 +83,8 @@ describe("AirParifWidgetComponent", () => {
   });
 
   it("Should create an AirParif Widget", () => {
-    expect(component.airParifApiKey()).toEqual(undefined);
-    expect(component.communeInseeCode()).toEqual(undefined);
+    expect(component.airParifApiKey()).toEqual("");
+    expect(component.communeInseeCode()).toEqual("");
     expect(component.isFormValid()).toEqual(false);
     expect(component.getWidgetData()).toEqual(undefined);
     component.airParifApiKey.set(airParifToken);

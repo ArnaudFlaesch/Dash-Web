@@ -43,7 +43,7 @@ describe("WeatherMiniWidgetComponent", () => {
     expect(component.isWidgetLoaded()).toEqual(false);
 
     const city = "Paris";
-    component.city = city;
+    component.city.set(city);
 
     expect(component.getWidgetData()).toEqual({ city: city });
     expect(component.isFormValid()).toEqual(true);
@@ -58,7 +58,7 @@ describe("WeatherMiniWidgetComponent", () => {
 
   it("Should not refresh widget because of error", () => {
     const city = "Paris";
-    component.city = city;
+    component.city.set(city);
 
     component.refreshWidget();
     httpTestingController

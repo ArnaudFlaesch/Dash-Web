@@ -4,6 +4,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
   OnInit,
@@ -11,7 +12,7 @@ import {
   WritableSignal
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormControl, ReactiveFormsModule } from "@angular/forms";
+import { FormField, form } from "@angular/forms/signals";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
@@ -59,7 +60,7 @@ import { TabComponent } from "../tab/tab.component";
     MiniWidgetListComponent,
     WidgetListComponent,
     MatProgressSpinner,
-    ReactiveFormsModule
+    FormField
   ]
 })
 export class HomeComponent implements OnInit {
@@ -69,8 +70,11 @@ export class HomeComponent implements OnInit {
   public isDashboardLoaded = signal(false);
   public areWidgetsLoaded = signal(false);
   public editModeEnabled = signal(false);
-  public toggleControl = new FormControl(false);
+  public isDarkTheme = signal(false);
+  public toggleThemeForm = form(this.isDarkTheme);
   public cashManagerApplicationUrl = "https://arnaudflaesch.github.io/CashManager/";
+
+  public readonly canUserSeeNotifications = computed(() => this.authService.isUserAdmin());
 
   private refreshInterval: number | undefined;
 
@@ -108,7 +112,7 @@ export class HomeComponent implements OnInit {
       next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
     });
     this.setupWidgetAutoRefresh();
-    this.toggleControl.setValue(this.themeService.isPreferredThemeDarkMode());
+    this.isDarkTheme.set(this.themeService.isPreferredThemeDarkMode());
   }
 
   public setupWidgetAutoRefresh(): void {
@@ -247,10 +251,6 @@ export class HomeComponent implements OnInit {
 
   public toggleTheme(isToggleChecked: boolean): void {
     this.themeService.selectDarkMode(isToggleChecked);
-  }
-
-  public canUserSeeNotifications(): boolean {
-    return this.authService.isUserAdmin();
   }
 
   private initDashboard(): void {

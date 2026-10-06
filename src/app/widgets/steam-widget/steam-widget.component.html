@@ -24,8 +24,7 @@
       <input
         matInput
         id="steamUserIdInput"
-        name="userId"
-        [(ngModel)]="this.steamUserId"
+        [formField]="steamUserIdForm"
         placeholder="Saisissez l'user ID du joueur Steam'"
       />
     </mat-form-field>
@@ -35,19 +34,21 @@
     <form id="search-game-form">
       <mat-form-field appearance="fill">
         <mat-label>Recherchez un jeu</mat-label>
-        <input matInput [formControl]="searchFormControl" />
+        <input matInput [formField]="searchForm" />
       </mat-form-field>
 
-      @if (this.searchFormControl.dirty && this.searchFormControl.value) {
+      @if (this.searchQuery()) {
         <button mat-icon-button matTooltip="Annuler la recherche" id="reset-form-button" (click)="this.resetForm()">
           <mat-icon aria-hidden="false">close</mat-icon>
         </button>
       }
     </form>
 
-    @if (this.steamUserId && this.playerData(); as playerData) {
-      @for (game of this.ownedGamesDisplay(); track game.appid) {
-        <dash-game-details [steamUserId]="this.steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
+    @if (this.steamUserId(); as steamUserId) {
+      @if (this.playerData(); as playerData) {
+        @for (game of this.ownedGamesDisplay(); track game.appid) {
+          <dash-game-details [steamUserId]="steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
+        }
       }
     }
 

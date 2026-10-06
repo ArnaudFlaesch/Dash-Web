@@ -37,8 +37,7 @@ describe("WorkoutStatisticsComponent", () => {
   ];
 
   it("should create", () => {
-    component.ngOnChanges();
-    expect(component.workoutStatsChartData).toEqual({
+    expect(component.workoutStatsChartData()).toEqual({
       datasets: [{ data: [6, 4], label: "Abdos" }],
       labels: ["janv.", "févr."]
     });

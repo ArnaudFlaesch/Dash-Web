@@ -2,22 +2,32 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   inject,
   input,
-  OnChanges,
+  linkedSignal,
   OnDestroy,
-  SimpleChanges,
+  signal,
   viewChild
 } from "@angular/core";
-import * as L from "leaflet";
-import "leaflet-sidebar-v2";
+import { MatButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import TileLayer from "ol/layer/Tile";
+import Map from "ol/Map";
+import { fromLonLat, transformExtent } from "ol/proj";
+import OSM from "ol/source/OSM";
+import TileWMS from "ol/source/TileWMS";
+import View from "ol/View";
 
 import { AirParifWidgetService } from "../airparif-widget.service";
 import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from "../model/IAirParif";
-import { MatButton } from "@angular/material/button";
+import { SidebarControl } from "../SidebarControl";
 
-import { MatIcon } from "@angular/material/icon";
+export interface SidebarOptions {
+  element: HTMLElement | string;
+  position?: "left" | "right";
+}
 
 @Component({
   selector: "dash-airparif-map",
@@ -26,75 +36,74 @@ import { MatIcon } from "@angular/material/icon";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIcon, MatButton]
 })
-export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   public readonly mapContainer = viewChild<ElementRef>("map");
+  public readonly sidebarContainer = viewChild<ElementRef>("sidebar");
   public readonly airParifCouleursIndices = input.required<IAirParifCouleur[]>();
   public readonly airParifForecast = input.required<IForecast[]>();
   public readonly airParifApiKey = input<string>();
 
-  public forecastToDisplay: IForecast | undefined;
-  public forecastMode: ForecastMode = ForecastMode.TODAY;
+  public readonly forecastMode = signal<ForecastMode>(ForecastMode.TODAY);
+  public readonly forecastToDisplay = linkedSignal<IForecast | undefined>(
+    () => this.airParifForecast()[0]
+  );
+
+  public readonly isForecastModeToday = computed(() => this.forecastMode() === ForecastMode.TODAY);
+  public readonly isForecastModeTomorrow = computed(
+    () => this.forecastMode() === ForecastMode.TOMORROW
+  );
+
   private readonly airParifWidgetService = inject(AirParifWidgetService);
 
   private readonly airParifUrl = "https://magellan.airparif.asso.fr/geoserver/";
-  private map: L.Map | undefined;
-  private readonly airParifForecastTodayLayer: L.Layer;
-  private readonly airParifForecastTomorrowLayer: L.Layer;
-
-  private readonly sidebarControl = L.control.sidebar({
-    autopan: false,
-    closeButton: true,
-    container: "sidebar",
-    position: "left"
-  });
+  private map: Map | undefined;
+  private readonly airParifForecastTodayLayer: TileLayer<TileWMS>;
+  private readonly airParifForecastTomorrowLayer: TileLayer<TileWMS>;
+  private sidebarControl: SidebarControl | undefined;
 
   public constructor() {
-    this.airParifForecastTodayLayer = L.tileLayer.wms(
-      this.airParifUrl + "siteweb/wms",
-      this.getAirParifWmsOptions("siteweb:vue_indice_atmo_2020_com")
-    );
-    this.airParifForecastTomorrowLayer = L.tileLayer.wms(
-      this.airParifUrl + "siteweb/wms",
-      this.getAirParifWmsOptions("siteweb:vue_indice_atmo_2020_com_jp1")
-    );
+    this.airParifForecastTodayLayer = new TileLayer({
+      opacity: 0.5,
+      source: new TileWMS({
+        url: this.airParifUrl + "siteweb/wms",
+        params: this.getAirParifWmsParams("siteweb:vue_indice_atmo_2020_com"),
+        attributions: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`
+      })
+    });
+    this.airParifForecastTomorrowLayer = new TileLayer({
+      opacity: 0.5,
+      source: new TileWMS({
+        url: this.airParifUrl + "siteweb/wms",
+        params: this.getAirParifWmsParams("siteweb:vue_indice_atmo_2020_com_jp1"),
+        attributions: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`
+      })
+    });
   }
 
   public ngAfterViewInit(): void {
     this.initMap();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes["airParifForecast"] && !this.forecastToDisplay) {
-      this.selectTodayForecast();
-    }
-  }
-
   public ngOnDestroy(): void {
-    this.map?.removeControl(this.sidebarControl);
-    this.map?.off();
-    this.map?.remove();
+    if (this.sidebarControl) {
+      this.map?.removeControl(this.sidebarControl);
+    }
+    this.map?.setTarget(undefined);
+    this.map?.dispose();
   }
 
   public selectTodayForecast(): void {
     this.map?.removeLayer(this.airParifForecastTomorrowLayer);
-    this.forecastMode = ForecastMode.TODAY;
-    this.forecastToDisplay = this.airParifForecast()[0];
+    this.forecastMode.set(ForecastMode.TODAY);
+    this.forecastToDisplay.set(this.airParifForecast()[0]);
     this.map?.addLayer(this.airParifForecastTodayLayer);
   }
 
   public selectTomorrowForecast(): void {
     this.map?.removeLayer(this.airParifForecastTodayLayer);
-    this.forecastMode = ForecastMode.TOMORROW;
-    this.forecastToDisplay = this.airParifForecast()[1];
+    this.forecastMode.set(ForecastMode.TOMORROW);
+    this.forecastToDisplay.set(this.airParifForecast()[1]);
     this.map?.addLayer(this.airParifForecastTomorrowLayer);
-  }
-
-  public isForecastModeToday(): boolean {
-    return this.forecastMode === ForecastMode.TODAY;
-  }
-
-  public isForecastModeTomorrow(): boolean {
-    return this.forecastMode === ForecastMode.TOMORROW;
   }
 
   public getColorFromIndice(indice: AirParifIndiceEnum): string {
@@ -105,43 +114,57 @@ export class AirParifMapComponent implements AfterViewInit, OnChanges, OnDestroy
   }
 
   private initMap(): void {
-    const southWest = L.latLng(48.12, 1.44),
-      northEast = L.latLng(49.24, 3.56),
-      bounds = L.latLngBounds(southWest, northEast);
+    const mapContainer = this.mapContainer();
+    if (!mapContainer) {
+      return;
+    }
 
-    const openStreetMapLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18,
-      attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    const maxExtent = transformExtent([1.44, 48.12, 3.56, 49.24], "EPSG:4326", "EPSG:3857");
+
+    const openStreetMapLayer = new TileLayer({
+      source: new OSM()
     });
 
-    const mapContainer = this.mapContainer();
-    if (mapContainer) {
-      this.map = L.map(mapContainer.nativeElement, {
-        center: [48.8502, 2.3488],
-        zoom: 11,
-        maxBounds: bounds,
-        layers: [openStreetMapLayer, this.airParifForecastTodayLayer]
+    const sidebarElement =
+      this.sidebarContainer()?.nativeElement ?? document.getElementById("sidebar");
+
+    if (sidebarElement) {
+      this.sidebarControl = new SidebarControl({
+        element: sidebarElement,
+        position: "left"
       });
+    }
 
-      L.control.layers({ OpenStreetMap: openStreetMapLayer }).addTo(this.map);
+    this.map = new Map({
+      target: mapContainer.nativeElement,
+      layers: [openStreetMapLayer, this.airParifForecastTodayLayer],
+      view: new View({
+        center: fromLonLat([2.3488, 48.8502]),
+        zoom: 11,
+        maxZoom: 18,
+        extent: maxExtent
+      })
+    });
 
-      this.sidebarControl.addTo(this.map);
+    if (this.sidebarControl) {
+      this.map.addControl(this.sidebarControl);
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  private getAirParifWmsOptions(layer: string) {
-    return {
-      service: "WMS",
-      version: "1.3",
-      layers: layer,
-      tiled: true,
-      transparent: true,
-      format: "image/png8",
-      styles: "nouvel_indice_polygones",
-      opacity: 0.5,
-      attribution: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`,
-      authkey: this.airParifApiKey()
+  private getAirParifWmsParams(layer: string): Record<string, unknown> {
+    const params: Record<string, unknown> = {
+      SERVICE: "WMS",
+      VERSION: "1.3.0",
+      LAYERS: layer,
+      TILED: true,
+      TRANSPARENT: true,
+      FORMAT: "image/png8",
+      STYLES: "nouvel_indice_polygones"
     };
+    const apiKey = this.airParifApiKey();
+    if (apiKey) {
+      params["authkey"] = apiKey;
+    }
+    return params;
   }
 }

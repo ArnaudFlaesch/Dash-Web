@@ -1,6 +1,6 @@
-<div id="sidebar" class="leaflet-sidebar collapsed">
-  <div class="leaflet-sidebar-tabs">
-    <ul>
+<div id="sidebar" #sidebar class="sidebar collapsed">
+  <div class="sidebar-tabs">
+    <ul role="tablist">
       <li>
         <a href="#home" role="tab">
           <mat-icon>menu</mat-icon>
@@ -9,10 +9,10 @@
     </ul>
   </div>
 
-  <div class="leaflet-sidebar-content">
-    <div class="leaflet-sidebar-pane" id="home">
-      <div class="leaflet-sidebar-header">
-        <div class="leaflet-sidebar-close">
+  <div class="sidebar-content">
+    <div class="sidebar-pane" id="home">
+      <div class="sidebar-header">
+        <div class="sidebar-close">
           <mat-icon>close</mat-icon>
         </div>
       </div>
@@ -38,43 +38,43 @@
             }
           </div>
 
-          @if (this.forecastToDisplay) {
+          @if (this.forecastToDisplay(); as forecastToDisplay) {
             <div id="sidepanel-indices">
               <div
                 class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.indice) }"
+                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.indice) }"
               >
-                <span>Indice global</span><span>{{ this.forecastToDisplay.indice }}</span>
+                <span>Indice global</span><span>{{ forecastToDisplay.indice }}</span>
               </div>
               <div
                 class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.no2) }"
+                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.no2) }"
               >
-                <span>Dioxyde d'Azote (NO₂)</span><span>{{ this.forecastToDisplay.no2 }}</span>
+                <span>Dioxyde d'Azote (NO₂)</span><span>{{ forecastToDisplay.no2 }}</span>
               </div>
               <div
                 class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.o3) }"
+                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.o3) }"
               >
-                <span>Ozone (O₃)</span><span>{{ this.forecastToDisplay.o3 }}</span>
+                <span>Ozone (O₃)</span><span>{{ forecastToDisplay.o3 }}</span>
               </div>
               <div
                 class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm10) }"
+                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.pm10) }"
               >
-                <span>Particules (diamètre inférieur à 10µm) (PM₁₀)</span><span>{{ this.forecastToDisplay.pm10 }}</span>
+                <span>Particules (diamètre inférieur à 10µm) (PM₁₀)</span><span>{{ forecastToDisplay.pm10 }}</span>
               </div>
               <div
                 class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.pm25) }"
+                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.pm25) }"
               >
-                <span>pm25</span><span>{{ this.forecastToDisplay.pm25 }}</span>
+                <span>pm25</span><span>{{ forecastToDisplay.pm25 }}</span>
               </div>
               <div
                 class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(this.forecastToDisplay.so2) }"
+                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.so2) }"
               >
-                <span>Dioxyde de soufre (SO₂)</span><span>{{ this.forecastToDisplay.so2 }}</span>
+                <span>Dioxyde de soufre (SO₂)</span><span>{{ forecastToDisplay.so2 }}</span>
               </div>
             </div>
           }

@@ -57,20 +57,18 @@ export class MiniWidgetListComponent implements OnInit {
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_MINI_WIDGETS)
     });
 
-    this.miniWidgetService.miniWidgetDeleted
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (miniWidgetId) => {
-          this.miniWidgetService.deleteMiniWidget(miniWidgetId).subscribe({
-            next: () =>
-              this.miniWidgetList.update((miniWidgetList) =>
-                miniWidgetList.filter((miniWidget) => miniWidget.id !== miniWidgetId)
-              ),
-            error: (error) =>
-              this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_MINI_WIDGET)
-          });
-        }
-      });
+    this.miniWidgetService.miniWidgetDeleted.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (miniWidgetId) => {
+        this.miniWidgetService.deleteMiniWidget(miniWidgetId).subscribe({
+          next: () =>
+            this.miniWidgetList.update((miniWidgetList) =>
+              miniWidgetList.filter((miniWidget) => miniWidget.id !== miniWidgetId)
+            ),
+          error: (error) =>
+            this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_MINI_WIDGET)
+        });
+      }
+    });
   }
 
   public openCreateMiniWidgetModal(): void {
@@ -117,7 +115,7 @@ export class MiniWidgetListComponent implements OnInit {
           component = target.createComponent(WeatherMiniWidgetComponent, {
             injector: injector
           });
-          component.instance.city = widgetData?.["city"] as string;
+          component.instance.city.set((widgetData?.["city"] as string) ?? "");
         }
       });
     }

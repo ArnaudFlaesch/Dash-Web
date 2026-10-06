@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+  WritableSignal
+} from "@angular/core";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
@@ -9,7 +16,7 @@ import { ErrorHandlerService } from "../../services/error.handler.service";
 import { AirParifMapComponent } from "./airparif-map/airparif-map.component";
 import { AirParifWidgetService } from "./airparif-widget.service";
 import { IAirParifCouleur, IForecast } from "./model/IAirParif";
-import { FormsModule } from "@angular/forms";
+import { FormField, form } from "@angular/forms/signals";
 
 @Component({
   selector: "dash-airparif-widget",
@@ -24,15 +31,21 @@ import { FormsModule } from "@angular/forms";
     MatInput,
     AirParifMapComponent,
     SafePipe,
-    FormsModule
+    FormField
   ]
 })
 export class AirParifWidgetComponent {
-  public airParifApiKey = signal<string | undefined>(undefined);
-  public communeInseeCode = signal<string | undefined>(undefined);
+  public airParifApiKey = signal<string>("");
+  public communeInseeCode = signal<string>("");
+  public airParifApiKeyForm = form(this.airParifApiKey);
+  public communeInseeCodeForm = form(this.communeInseeCode);
   public airParifCouleursIndices: WritableSignal<IAirParifCouleur[]> = signal([]);
   public airParifForecast: WritableSignal<IForecast[]> = signal([]);
   public isWidgetLoaded = signal(true);
+
+  public readonly isFormValid = computed(
+    () => this.airParifApiKey().trim().length > 0 && this.communeInseeCode().trim().length > 0
+  );
 
   public readonly airParifWidgetService = inject(AirParifWidgetService);
 
@@ -41,9 +54,11 @@ export class AirParifWidgetComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public refreshWidget(): void {
-    if (this.airParifApiKey() && this.communeInseeCode()) {
+    const apiKey = this.airParifApiKey();
+    const inseeCode = this.communeInseeCode();
+    if (apiKey && inseeCode) {
       forkJoin([
-        this.airParifWidgetService.getCommunePrevision(this.communeInseeCode()!),
+        this.airParifWidgetService.getCommunePrevision(inseeCode),
         this.airParifWidgetService.getColors()
       ]).subscribe({
         next: ([forecast, airParifColors]) => {
@@ -56,20 +71,18 @@ export class AirParifWidgetComponent {
     }
   }
 
-  public isFormValid(): boolean {
-    return (this.airParifApiKey() ?? "").length > 0 && (this.communeInseeCode() ?? "").length > 0;
-  }
-
   public getWidgetData():
     | {
         airParifApiKey: string;
         communeInseeCode: string;
       }
     | undefined {
-    return this.airParifApiKey() && this.communeInseeCode()
+    const apiKey = this.airParifApiKey();
+    const inseeCode = this.communeInseeCode();
+    return apiKey && inseeCode
       ? {
-          airParifApiKey: this.airParifApiKey()!,
-          communeInseeCode: this.communeInseeCode()!
+          airParifApiKey: apiKey,
+          communeInseeCode: inseeCode
         }
       : undefined;
   }

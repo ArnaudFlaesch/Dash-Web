@@ -21,7 +21,7 @@
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>URL</mat-label>
-      <input matInput id="rssFeedUrl" name="url" [(ngModel)]="this.urlFeed" placeholder="Saisissez l'URL du flux RSS" />
+      <input matInput id="rssFeedUrl" [formField]="urlFeedForm" placeholder="Saisissez l'URL du flux RSS" />
     </mat-form-field>
   </ng-template>
 
@@ -37,7 +37,7 @@
   </ng-template>
 
   <ng-template #body>
-    @if (this.urlFeed) {
+    @if (this.urlFeed()) {
       <div class="rss-widget-body">
         <div class="rss-widget-description">{{ this.rssFeedResult()?.description }}</div>
         <dash-rss-feed

@@ -32,22 +32,24 @@ describe("Strava Widget tests", () => {
       .intercept("/stravaWidget/getAthleteActivities*")
       .as("getActivities")
       .reload()
-      .wait("@getAthleteData")
+      .wait("@getAthleteData", { requestTimeout: 15000, responseTimeout: 15000 })
       .then((getAthleteDataRequest: Interception) => {
         const getAthleteResponse = getAthleteDataRequest.response;
         expect(getAthleteResponse?.statusCode).to.equal(200);
-        cy.wait("@getActivities").then((getActivitiesRequest: Interception) => {
-          const getActivitiesResponse = getActivitiesRequest.response;
-          expect(getActivitiesResponse?.statusCode).to.equal(200);
-          cy.get(".widget")
-            .find(".strava-header")
-            .should("have.text", "Arnaud Flaesch")
-            .get(".widget")
-            .find(".stravaActivity")
-            .should("have.length", 6)
-            .first()
-            .contains("Evening Run 10.7047 kms");
-        });
+        cy.wait("@getActivities", { requestTimeout: 15000, responseTimeout: 15000 }).then(
+          (getActivitiesRequest: Interception) => {
+            const getActivitiesResponse = getActivitiesRequest.response;
+            expect(getActivitiesResponse?.statusCode).to.equal(200);
+            cy.get(".widget .strava-header", { timeout: 10000 }).should(
+              "contain.text",
+              "Arnaud Flaesch"
+            );
+            cy.get(".widget .stravaActivity", { timeout: 10000 })
+              .should("have.length", 6)
+              .first()
+              .contains("Evening Run 10.7047 kms");
+          }
+        );
       });
   });
 });

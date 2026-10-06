@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import {
   MatDialogActions,
@@ -18,7 +18,7 @@ import { ErrorHandlerService } from "../../services/error.handler.service";
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ImportConfigModalComponent {
-  public fileToUpload: File | null = null;
+  public readonly fileToUpload = signal<File | null>(null);
 
   private readonly configService = inject(ConfigService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
@@ -26,16 +26,17 @@ export class ImportConfigModalComponent {
 
   private readonly ERROR_IMPORT_CONFIGURATION = "Erreur lors de l'import de la configuration.";
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public selectFile(event: any): void {
-    if (event.target.files?.[0]) {
-      this.fileToUpload = event.target.files[0];
+  public selectFile(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files?.[0]) {
+      this.fileToUpload.set(target.files[0]);
     }
   }
 
   public upload(): void {
-    if (this.fileToUpload) {
-      this.configService.importConfig(this.fileToUpload).subscribe({
+    const file = this.fileToUpload();
+    if (file) {
+      this.configService.importConfig(file).subscribe({
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_IMPORT_CONFIGURATION),
         complete: () => {

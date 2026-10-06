@@ -77,7 +77,7 @@ describe("SteamWidgetComponent", () => {
     expect(component.ownedGamesDisplay()).toEqual([]);
     const steamUserId = "1337";
     expect(component.isFormValid()).toEqual(false);
-    component.steamUserId = steamUserId;
+    component.steamUserId.set(steamUserId);
     expect(component.isFormValid()).toEqual(true);
     component.refreshWidget();
 
@@ -106,9 +106,9 @@ describe("SteamWidgetComponent", () => {
     component.onPageChanged(pageEvent);
     expect(component.pageNumber).toEqual(0);
     const steamUserId = "1337";
-    component.steamUserId = steamUserId;
+    component.steamUserId.set(steamUserId);
     const searchValue = "Mario";
-    component.searchFormControl.setValue(searchValue);
+    component.searchQuery.set(searchValue);
     component.onPageChanged(pageEvent);
     expect(component.pageNumber).toEqual(pageIndex);
 
@@ -118,14 +118,14 @@ describe("SteamWidgetComponent", () => {
     );
 
     component.resetForm();
-    expect(component.searchFormControl.value).toEqual(null);
+    expect(component.searchQuery()).toEqual("");
   });
 
   it("Should get widget data and check form", () => {
     expect(component.getWidgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     const steamUserId = "1337";
-    component.steamUserId = steamUserId;
+    component.steamUserId.set(steamUserId);
     expect(component.getWidgetData()).toEqual({
       steamUserId: steamUserId
     });

@@ -5,11 +5,11 @@ import {
   computed,
   DestroyRef,
   inject,
-  OnInit,
   signal,
   WritableSignal
 } from "@angular/core";
-import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { toObservable, takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormField, form } from "@angular/forms/signals";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
@@ -25,7 +25,6 @@ import { MatIconButton } from "@angular/material/button";
 import { MatInput } from "@angular/material/input";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { WidgetComponent } from "../widget/widget.component";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "dash-steam-widget",
@@ -37,8 +36,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     MatFormField,
     MatLabel,
     MatInput,
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatIconButton,
     MatTooltip,
     MatIcon,
@@ -46,7 +44,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     MatPaginator
   ]
 })
-export class SteamWidgetComponent implements OnInit {
+export class SteamWidgetComponent {
   public readonly playerData = signal<IPlayerDataResponse | undefined>(undefined);
   public readonly ownedGamesDisplay = computed<IGameInfoDisplay[]>(() =>
     this.ownedGames().map((game) => this.gameInfoResponseToGameInfoDisplay(game))
@@ -59,8 +57,12 @@ export class SteamWidgetComponent implements OnInit {
   public pageSizeOptions = [this.pageSize];
   public pageNumber = 0;
 
-  public steamUserId?: string;
-  public searchFormControl = new FormControl();
+  public readonly steamUserId = signal<string>("");
+  public readonly steamUserIdForm = form(this.steamUserId);
+  public readonly searchQuery = signal("");
+  public readonly searchForm = form(this.searchQuery);
+
+  public readonly isFormValid = computed(() => this.steamUserId().trim().length > 0);
 
   private readonly ownedGames: WritableSignal<IGameInfoResponse[]> = signal([]);
 
@@ -73,26 +75,23 @@ export class SteamWidgetComponent implements OnInit {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
-  public ngOnInit(): void {
-    this.searchFormControl.valueChanges
+  public constructor() {
+    toObservable(this.searchQuery)
       .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(500), distinctUntilChanged())
       .subscribe((searchValue) => {
-        if (this.steamUserId) {
+        const steamUserId = this.steamUserId();
+        if (steamUserId) {
           this.pageNumber = 0;
-          this.getOwnedGames(this.steamUserId, searchValue ?? undefined);
+          this.getOwnedGames(steamUserId, searchValue || undefined);
         }
       });
   }
 
   public refreshWidget(): void {
-    if (this.steamUserId) {
-      const steamUserId = this.steamUserId;
+    const steamUserId = this.steamUserId();
+    if (steamUserId) {
       this.getPlayerData(steamUserId);
-      this.getOwnedGames(
-        this.steamUserId,
-        this.searchFormControl.value ?? undefined,
-        this.pageNumber
-      );
+      this.getOwnedGames(steamUserId, this.searchQuery() || undefined, this.pageNumber);
     }
   }
 
@@ -109,18 +108,15 @@ export class SteamWidgetComponent implements OnInit {
   }
 
   public onPageChanged(event: PageEvent): void {
-    if (this.steamUserId) {
+    const steamUserId = this.steamUserId();
+    if (steamUserId) {
       this.pageNumber = event.pageIndex;
-      this.getOwnedGames(
-        this.steamUserId,
-        this.searchFormControl.value ?? undefined,
-        this.pageNumber
-      );
+      this.getOwnedGames(steamUserId, this.searchQuery() || undefined, this.pageNumber);
     }
   }
 
   public resetForm(): void {
-    this.searchFormControl.reset();
+    this.searchQuery.set("");
   }
 
   public getWidgetData():
@@ -128,11 +124,8 @@ export class SteamWidgetComponent implements OnInit {
         steamUserId: string;
       }
     | undefined {
-    return this.steamUserId ? { steamUserId: this.steamUserId } : undefined;
-  }
-
-  public isFormValid(): boolean {
-    return (this.steamUserId ?? "").length > 0;
+    const steamUserId = this.steamUserId();
+    return steamUserId ? { steamUserId } : undefined;
   }
 
   private getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {

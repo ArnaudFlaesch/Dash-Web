@@ -1,14 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
-  OnChanges,
-  signal,
-  SimpleChanges,
-  WritableSignal
+  linkedSignal,
+  signal
 } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormField, form } from "@angular/forms/signals";
 import { MatButton } from "@angular/material/button";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { format, isToday, startOfDay } from "date-fns";
@@ -23,44 +22,43 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   selector: "dash-weather-widget-view",
   imports: [
     InitialUppercasePipe,
-    FormsModule,
+    FormField,
     WeatherTodayComponent,
     MatButton,
     MatSlideToggle,
-    WeatherForecastComponent,
-    InitialUppercasePipe
+    WeatherForecastComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./weather-widget-view.component.html",
   styleUrl: "./weather-widget-view.component.scss"
 })
-export class WeatherWidgetViewComponent implements OnChanges {
+export class WeatherWidgetViewComponent {
   public readonly weather = input.required<IWeatherAPIResponse>();
   public readonly forecastResponse = input.required<IForecast[]>();
   public readonly cityData = input.required<ICity>();
 
   public readonly displayAllForecast = signal(false);
-  public readonly forecastToDisplay: WritableSignal<IForecast[]> = signal([]);
-  public readonly forecastDays: WritableSignal<Date[]> = signal([]);
+  public readonly displayAllForecastForm = form(this.displayAllForecast);
+  public readonly forecastDays = computed<Date[]>(() =>
+    [...new Set(this.forecastResponse().map((data) => startOfDay(data.dt * 1000).getTime()))].map(
+      (data) => new Date(data)
+    )
+  );
   public readonly forecastMode = signal(ForecastMode.DAY);
-  private readonly selectedDayForecast = signal(new Date());
+  public readonly selectedDayForecast = linkedSignal<Date>(
+    () => this.forecastDays()[0] ?? new Date()
+  );
+
+  public readonly isForecastModeWeek = computed(() => this.forecastMode() === ForecastMode.WEEK);
+
+  public readonly forecastToDisplay = computed<IForecast[]>(() => {
+    const cityData = this.cityData();
+    const forecastData = this.forecastResponse();
+    if (!cityData || !forecastData) return [];
+    return this.filterForecastByMode(cityData, forecastData);
+  });
 
   private readonly dateUtils = inject(DateUtilsService);
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes["forecastResponse"]) {
-      this.forecastDays.set(
-        [
-          ...new Set(
-            (changes["forecastResponse"].currentValue as IForecast[]).map((data) =>
-              startOfDay(data.dt * 1000).getTime()
-            )
-          )
-        ].map((data) => new Date(data))
-      );
-      this.selectDayForecast(this.forecastDays()[0]);
-    }
-  }
 
   public formatDate(date: Date): string {
     return format(date, "eee dd", { locale: fr });
@@ -73,28 +71,15 @@ export class WeatherWidgetViewComponent implements OnChanges {
     );
   }
 
-  public isForecastModeWeek(): boolean {
-    return this.forecastMode() === ForecastMode.WEEK;
-  }
-
   public selectDayForecast(date: Date): void {
     if (this.forecastMode() !== ForecastMode.WEEK && this.selectedDayForecast() === date) return;
     this.forecastMode.set(ForecastMode.DAY);
     this.selectedDayForecast.set(date);
-    this.updateForecastData();
   }
 
   public selectWeekForecast(): void {
     if (this.forecastMode() === ForecastMode.WEEK) return;
     this.forecastMode.set(ForecastMode.WEEK);
-    this.updateForecastData();
-  }
-
-  public updateForecastData(): void {
-    const cityData = this.cityData();
-    if (cityData) {
-      this.forecastToDisplay.set(this.filterForecastByMode(cityData, this.forecastResponse()));
-    }
   }
 
   private filterForecastByMode(cityData: ICity, forecastData: IForecast[]): IForecast[] {

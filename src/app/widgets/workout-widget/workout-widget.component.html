@@ -22,13 +22,13 @@
               <button mat-raised-button (click)="this.goToStatisticsView()">Statistiques</button>
               <mat-form-field appearance="fill">
                 <mat-label>Sélectionnez un mois</mat-label>
-                <input matInput [matDatepicker]="picker" [formControl]="selectedMonthFormControl" />
+                <input matInput [matDatepicker]="picker" [formField]="selectedMonthForm" />
                 <mat-datepicker-toggle matIconSuffix [for]="picker" />
                 <mat-datepicker
                   #picker
                   startView="multi-year"
                   (monthSelected)="setMonthAndYear($event, picker)"
-                  [startAt]="this.selectedMonthFormControl.value"
+                  [startAt]="this.selectedMonthInput()"
                 />
               </mat-form-field>
               <div id="workout-sessions-grid">
@@ -45,7 +45,7 @@
               <h4>Créer une session</h4>
               <mat-form-field id="workoutDatePickerField" appearance="fill">
                 <mat-label>Sélectionnez la date</mat-label>
-                <input [formControl]="workoutDateFormControl" matInput [matDatepicker]="workoutDatePicker" />
+                <input [formField]="workoutDateForm" matInput [matDatepicker]="workoutDatePicker" />
                 <mat-hint>{{ dateFormat }}</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="workoutDatePicker" />
                 <mat-datepicker #workoutDatePicker />
@@ -87,12 +87,7 @@
             </div>
             <div>
               <h4>Ajouter un type d'exercice</h4>
-              <input
-                id="addWorkoutInput"
-                name="url"
-                [(ngModel)]="this.workoutNameInput"
-                placeholder="Nouveau type d'exercice"
-              />
+              <input id="addWorkoutInput" [formField]="workoutNameForm" placeholder="Nouveau type d'exercice" />
             </div>
             <button mat-raised-button id="addWorkoutTypeButton" (click)="addWorkoutType()" color="primary">
               Valider

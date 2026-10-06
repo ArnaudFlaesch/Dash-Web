@@ -24,10 +24,6 @@ import { MatButton } from "@angular/material/button";
   ]
 })
 export class EventDetailModalComponent {
-  public readonly eventDetail: CalendarEvent;
-  public readonly data = inject(MAT_DIALOG_DATA);
-
-  public constructor() {
-    this.eventDetail = this.data;
-  }
+  public readonly data = inject<CalendarEvent>(MAT_DIALOG_DATA);
+  public readonly eventDetail: CalendarEvent = this.data;
 }

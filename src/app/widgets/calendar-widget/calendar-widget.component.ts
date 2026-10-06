@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   LOCALE_ID,
   signal,
@@ -63,6 +64,11 @@ export class CalendarWidgetComponent {
   public readonly activeDayIsOpen = signal(true);
   public readonly locale = inject(LOCALE_ID);
 
+  public readonly isCalendarViewMonth = computed(() => this.view() === CalendarView.Month);
+  public readonly isCalendarViewWeek = computed(() => this.view() === CalendarView.Week);
+  public readonly isCalendarViewDay = computed(() => this.view() === CalendarView.Day);
+  public readonly isFormValid = computed(() => (this.calendarUrls()?.length ?? 0) > 0);
+
   public readonly calendarView = CalendarView;
   public readonly weekStartsOn = 1;
 
@@ -110,28 +116,12 @@ export class CalendarWidgetComponent {
     );
   }
 
-  public isFormValid(): boolean {
-    return this.calendarUrls() && this.calendarUrls().length > 0;
-  }
-
   public closeOpenMonthViewDay(): void {
     this.activeDayIsOpen.set(false);
   }
 
   public setView(view: CalendarView): void {
     this.view.set(view);
-  }
-
-  public isCalendarViewMonth(): boolean {
-    return this.view() === CalendarView.Month;
-  }
-
-  public isCalendarViewWeek(): boolean {
-    return this.view() === CalendarView.Week;
-  }
-
-  public isCalendarViewDay(): boolean {
-    return this.view() === CalendarView.Day;
   }
 
   public handleEvent(action: string, event: CalendarEvent): void {
