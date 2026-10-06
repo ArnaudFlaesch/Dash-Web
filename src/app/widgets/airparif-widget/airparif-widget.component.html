@@ -20,8 +20,7 @@
       <input
         matInput
         id="airParifApiKey"
-        [ngModel]="this.airParifApiKey()"
-        (ngModelChange)="this.airParifApiKey.set($event)"
+        [formField]="airParifApiKeyForm"
         placeholder="Saisissez la clé d'API AirParif"
       />
     </mat-form-field>
@@ -30,8 +29,7 @@
       <input
         matInput
         id="communeInseeCode"
-        [ngModel]="this.communeInseeCode()"
-        (ngModelChange)="this.communeInseeCode.set($event)"
+        [formField]="communeInseeCodeForm"
         placeholder="Saisissez le code commune"
       />
     </mat-form-field>

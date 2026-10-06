@@ -9,6 +9,16 @@ describe("AirParifMapComponent", () => {
   let component: AirParifMapComponent;
   let fixture: ComponentFixture<AirParifMapComponent>;
 
+  beforeAll(() => {
+    if (typeof window !== "undefined" && !window.ResizeObserver) {
+      window.ResizeObserver = class ResizeObserver {
+        public observe(): void {}
+        public unobserve(): void {}
+        public disconnect(): void {}
+      };
+    }
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), AirParifWidgetService]
@@ -78,6 +88,37 @@ describe("AirParifMapComponent", () => {
     component.selectTomorrowForecast();
     expect(component.isForecastModeTomorrow()).toEqual(true);
     component.selectTodayForecast();
-    expect(component.forecastToDisplay?.no2).toEqual("MOYEN");
+    expect(component.forecastToDisplay()?.no2).toEqual("MOYEN");
+  });
+
+  it("Should interact with sidebar control and handle destroy", () => {
+    fixture.componentRef.setInput("airParifForecast", [
+      {
+        date: "2022-10-08",
+        no2: "MOYEN",
+        o3: "BON",
+        pm10: "BON",
+        pm25: "BON",
+        so2: "BON",
+        indice: "MOYEN"
+      }
+    ] as unknown as IForecast[]);
+    fixture.componentRef.setInput("airParifCouleursIndices", []);
+    fixture.componentRef.setInput("airParifApiKey", "test-key");
+    fixture.detectChanges();
+
+    const sidebarNative = fixture.nativeElement.querySelector("#sidebar");
+    const tabLink = sidebarNative?.querySelector("a[href='#home']");
+    const closeBtn = sidebarNative?.querySelector(".sidebar-close");
+
+    expect(sidebarNative?.classList.contains("collapsed")).toBe(true);
+
+    tabLink?.dispatchEvent(new MouseEvent("click"));
+    expect(sidebarNative?.classList.contains("collapsed")).toBe(false);
+
+    closeBtn?.dispatchEvent(new MouseEvent("click"));
+    expect(sidebarNative?.classList.contains("collapsed")).toBe(true);
+
+    component.ngOnDestroy();
   });
 });
