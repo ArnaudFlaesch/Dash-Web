@@ -102,7 +102,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "coverageReporters": ["lcov", "text-summary"],
+            "coverageReporters": ["lcov",  "text-summary"],
             "coverageExclude": ["**/*.spec.ts"]
           }
         }

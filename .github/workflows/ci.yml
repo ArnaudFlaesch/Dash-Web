@@ -105,7 +105,7 @@ jobs:
       - name: Report coverage for Codacy
         if: always() && steps.application-tests.outcome == 'success'
         run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/Dash-Web/clover.xml
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/Dash-Web/lcov.info
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
