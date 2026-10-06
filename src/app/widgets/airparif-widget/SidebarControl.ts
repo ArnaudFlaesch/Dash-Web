@@ -59,7 +59,7 @@ export class SidebarControl extends Control {
   private bindEvents(): void {
     this.tabItems.forEach((tab) => {
       const link = tab.querySelector("a");
-      if (link && link.getAttribute("href")?.startsWith("#")) {
+      if (link?.getAttribute("href")?.startsWith("#")) {
         link.addEventListener("click", (evt: Event) => {
           evt.preventDefault();
           this.onTabClick(tab);

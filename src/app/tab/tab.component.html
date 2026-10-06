@@ -1,6 +1,8 @@
 @if (this.editMode()) {
   <div class="tab-input">
     <input
+      id="tabNameInput"
+      aria-label="Tab name"
       (keydown)="this.enterSaveTabName($event)"
       (dblclick)="this.saveTabName(this.tab().id, this.tabLabel(), this.tab().tabOrder)"
       [formField]="this.tabLabelForm"

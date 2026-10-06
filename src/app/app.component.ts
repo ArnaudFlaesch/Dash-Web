@@ -16,9 +16,9 @@ export class AppComponent implements OnInit {
   private readonly themeService = inject(ThemeService);
   private readonly router = inject(Router);
 
-  public async ngOnInit(): Promise<void> {
+  public ngOnInit(): void {
     if (!this.authService.userHasValidToken()) {
-      await this.router.navigate(["/login"]);
+      void this.router.navigate(["/login"]);
     }
     this.themeService.selectDarkMode(this.themeService.isPreferredThemeDarkMode());
   }

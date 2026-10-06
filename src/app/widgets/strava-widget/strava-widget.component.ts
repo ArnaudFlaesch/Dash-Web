@@ -70,7 +70,7 @@ export class StravaWidgetComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  public async ngOnInit(): Promise<void> {
+  public ngOnInit(): void {
     setTimeout(async () => {
       this.getAthleteData();
       const apiCode = this.route.snapshot.queryParamMap.get("code");
