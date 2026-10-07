@@ -163,15 +163,9 @@ jobs:
       - name: Run Codacy Analysis CLI
         run: |
           curl -Ls https://raw.githubusercontent.com/codacy/codacy-cli-v2/main/codacy-cli.sh -o codacy-cli
-          ls
           chmod +x codacy-cli
           ./codacy-cli init --project-token ${{ secrets.CODACY_PROJECT_TOKEN }} --provider gh --organization ArnaudFlaesch --repository Dash-Web
           ./codacy-cli config discover .
           ./codacy-cli install
           ./codacy-cli analyze --format sarif -o results.sarif
-
-      # Upload the SARIF file generated in the previous step
-      - name: Upload SARIF results file
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: results.sarif
+          ./codacy-cli upload -s results.sarif -c ${{ github.sha }} -t ${{ secrets.CODACY_PROJECT_TOKEN }}
