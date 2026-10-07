@@ -155,6 +155,8 @@ jobs:
 
     name: Codacy Security Scan
     runs-on: ubuntu-latest
+    env:
+      CODACY_CLI: "bash <(curl -Ls https://raw.githubusercontent.com/codacy/codacy-cli-v2/main/codacy-cli.sh)"
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -162,12 +164,11 @@ jobs:
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI
         run: |
-          alias codacy-cli="bash <(curl -Ls https://raw.githubusercontent.com/codacy/codacy-cli-v2/main/codacy-cli.sh)"
-          codacy-cli init --project-token ${{ secrets.CODACY_PROJECT_TOKEN }} --provider gh --organization ArnaudFlaesch --repository Dash-Web
-          codacy-cli config discover .
-          codacy-cli install
-          codacy-cli analyze --format sarif -o results.sarif
-          codacy-cli upload -s results.sarif -t ${{ secrets.CODACY_PROJECT_TOKEN }}
+          $CODACY_CLI init --project-token ${{ secrets.CODACY_PROJECT_TOKEN }} --provider gh --organization ArnaudFlaesch --repository Dash-Web
+          $CODACY_CLI config discover .
+          $CODACY_CLI install
+          $CODACY_CLI analyze --format sarif -o results.sarif
+          $CODACY_CLI upload -s results.sarif -t ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       # Upload the SARIF file generated in the previous step
       - name: Upload SARIF results file
