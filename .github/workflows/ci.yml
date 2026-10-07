@@ -169,7 +169,6 @@ jobs:
           ./codacy-cli config discover .
           ./codacy-cli install
           ./codacy-cli analyze --format sarif -o results.sarif
-          ./codacy-cli upload -s results.sarif -t ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       # Upload the SARIF file generated in the previous step
       - name: Upload SARIF results file
