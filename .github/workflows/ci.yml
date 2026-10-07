@@ -162,8 +162,8 @@ jobs:
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI
         run: |
-          curl -Ls https://raw.githubusercontent.com/codacy/codacy-cli-v2/main/codacy-cli.sh -o /usr/local/bin/codacy-cli
-          chmod +x codacy-cli
+          alias codacy-cli="bash <(curl -Ls https://raw.githubusercontent.com/codacy/codacy-cli-v2/main/codacy-cli.sh)"
+          chmod +x codacy-cli.sh
           codacy-cli init --project-token ${{ secrets.CODACY_PROJECT_TOKEN }} --provider gh --organization ArnaudFlaesch --repository Dash-Web
           codacy-cli config discover .
           codacy-cli install
