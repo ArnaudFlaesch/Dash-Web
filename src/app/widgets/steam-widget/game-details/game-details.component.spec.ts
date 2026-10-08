@@ -115,6 +115,7 @@ describe("GameDetailsComponent", () => {
             appId
         )
         .error(new ProgressEvent("Server error"));
+      expect(component.achievements()).toHaveLength(0);
     });
   });
 });

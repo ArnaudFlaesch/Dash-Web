@@ -147,7 +147,7 @@ describe("StravaWidgetComponent", () => {
     getActivitiesRequest.flush(activitiesData);
 
     expect(component.isWidgetLoaded()).toEqual(true);
-    expect(component.activities().length).toEqual(25);
+    expect(component.activities()).toHaveLength(25);
     expect(component.getActivitiesByMonth()).toEqual({
       "2022-10": [
         10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047, 10.7047,
