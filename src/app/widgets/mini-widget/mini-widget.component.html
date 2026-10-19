@@ -1,6 +1,6 @@
 <div class="mini-widget">
   @if (isModeEdit()) {
-    <div class="edit-mini-widget">
+    <div class="edit-mini-widget row">
       <ng-container *ngTemplateOutlet="editComponent() ?? null" />
 
       @if (isWidgetLoaded() && widgetData()) {

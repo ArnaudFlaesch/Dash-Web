@@ -10,7 +10,6 @@ import { TabService } from "../services/tab.service/tab.service";
 @Component({
   selector: "dash-tab",
   templateUrl: "./tab.component.html",
-  styleUrl: "./tab.component.scss",
   imports: [MatIcon, FormField]
 })
 export class TabComponent {

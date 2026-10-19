@@ -20,7 +20,6 @@ import { WidgetComponent } from "../widget/widget.component";
 @Component({
   selector: "dash-rss-widget",
   templateUrl: "./rss-widget.component.html",
-  styleUrl: "./rss-widget.component.scss",
   imports: [
     WidgetComponent,
     MatFormField,

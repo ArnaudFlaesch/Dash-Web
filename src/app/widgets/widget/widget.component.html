@@ -1,18 +1,18 @@
 <div class="widget">
   @if (isModeEdit()) {
-    <div class="widget-edit-mode">
-      <div class="header-container">
-        <div class="header-actions">
+    <div class="widget-edit-mode column items-center full-size">
+      <div class="header-container row items-center">
+        <div class="header-actions row">
           <button class="deleteButton" mat-icon-button matTooltip="Supprimer le widget" (click)="toDeleteMode()">
             <mat-icon aria-hidden="false">delete</mat-icon>
           </button>
         </div>
       </div>
-      <div class="widget-body">
+      <div class="widget-body column">
         <div class="widget-edit-component-container">
           <ng-container *ngTemplateOutlet="editComponent() ?? null" />
         </div>
-        <div class="edit-component-actions">
+        <div class="edit-component-actions row">
           @if (isWidgetLoaded() && widgetData()) {
             <button class="cancelButton" mat-raised-button (click)="cancelEdition()">Annuler</button>
           }
@@ -35,14 +35,14 @@
   }
 
   @if (isModeRead()) {
-    <div class="widget-read-mode">
-      <div class="header-container">
-        <div class="header">
+    <div class="widget-read-mode column full-height">
+      <div class="header-container row items-center">
+        <div class="header row items-center gap-xs">
           <div *ngTemplateOutlet="headerIcon()"></div>
           <div *ngTemplateOutlet="headerTitle()"></div>
         </div>
 
-        <div class="header-actions">
+        <div class="header-actions row">
           @if (additionalActions()) {
             <span>
               <ng-container *ngTemplateOutlet="additionalActions() ?? null" />
@@ -59,11 +59,11 @@
           }
         </div>
       </div>
-      <div class="widget-body">
+      <div class="widget-body column">
         @if (isWidgetLoaded()) {
           <ng-container *ngTemplateOutlet="body()" />
         } @else {
-          <div class="widget-loading-spinner">
+          <div class="loading-spinner">
             <mat-spinner />
           </div>
         }

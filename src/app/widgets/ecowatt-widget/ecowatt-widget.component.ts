@@ -6,7 +6,6 @@ import { WidgetComponent } from "../widget/widget.component";
 @Component({
   selector: "dash-ecowatt-widget",
   templateUrl: "./ecowatt-widget.component.html",
-  styleUrl: "./ecowatt-widget.component.scss",
   imports: [WidgetComponent, MatIcon, SafePipe],
   host: { "(window:resize)": "resizeWidget()" }
 })

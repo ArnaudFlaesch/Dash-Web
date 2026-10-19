@@ -4,7 +4,7 @@
   <div class="widget-types-list">
     @for (miniWidgetType of miniWidgetTypes; track miniWidgetType.type) {
       <mat-card>
-        <mat-card-content class="widget-type-container">
+        <mat-card-content class="widget-type-container column items-center gap-md">
           <mat-icon>{{ miniWidgetType.icon }}</mat-icon>
           <span>{{ miniWidgetType.type }}</span>
         </mat-card-content>

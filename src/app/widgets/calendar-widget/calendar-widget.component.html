@@ -13,9 +13,9 @@
   </ng-template>
 
   <ng-template #editComponent>
-    <div id="calendar-urls-list-container">
+    <div id="calendar-urls-list-container" class="column items-center gap-sm">
       @for (calendarUrlField of configForm.calendarUrls; track calendarUrlField; let index = $index) {
-        <div class="calendar-url-container">
+        <div class="calendar-url-container row gap-md">
           <input [id]="index" [formField]="calendarUrlField" placeholder="Saisissez une URL" />
           <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(index)">Supprimer</button>
         </div>
@@ -25,8 +25,8 @@
   </ng-template>
 
   <ng-template #body>
-    <div id="calendar-actions-container">
-      <div id="date-navigation-container">
+    <div id="calendar-actions-container" class="row justify-between">
+      <div id="date-navigation-container" class="row gap-xs">
         <button
           mat-raised-button
           matTooltip="Précédent"
@@ -54,7 +54,7 @@
         </button>
       </div>
 
-      <div id="calendar-view-switch-container">
+      <div id="calendar-view-switch-container" class="row wrap gap-xs">
         <button mat-raised-button (click)="setView(calendarView.Day)" [color]="isCalendarViewDay() ? 'primary' : ''">
           Jour
         </button>

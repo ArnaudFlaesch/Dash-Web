@@ -62,7 +62,7 @@
             </div>
             @if (workoutStatsByWeek().length) {
               <div id="workout-stats-by-week-container">
-                <div class="workout-stats-header">Cette semaine :</div>
+                <div class="workout-stats-header bold">Cette semaine :</div>
                 <div class="stats-container">
                   @for (workoutStat of workoutStatsByWeek(); track workoutStat.workoutTypeName) {
                     <div>{{ workoutStat.workoutTypeName }} : {{ workoutStat.totalNumberOfReps }}</div>
@@ -72,7 +72,7 @@
             }
             @if (workoutStatsByMonth().length) {
               <div id="workout-stats-by-month-container">
-                <div class="workout-stats-header">Ce mois-ci</div>
+                <div class="workout-stats-header bold">Ce mois-ci</div>
                 <div class="stats-container">
                   @for (workoutStat of workoutStatsByMonth(); track workoutStat.workoutTypeName) {
                     <div>{{ workoutStat.workoutTypeName }} :{{ workoutStat.totalNumberOfReps }}</div>

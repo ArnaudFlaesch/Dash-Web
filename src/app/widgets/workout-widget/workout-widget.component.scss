@@ -19,29 +19,22 @@
   @media (width >= $breakpoint-sm) {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
+}
 
-  .workout-session {
-    cursor: pointer;
+.workout-session {
+  cursor: pointer;
 
-    :hover {
-      font-weight: bold;
-    }
+  :hover {
+    font-weight: bold;
   }
 }
 
-#workout-types-grid {
+#workout-types-grid,
+.stats-container {
   @extend %two-columns-grid;
 }
 
 #workout-stats-by-week-container,
 #workout-stats-by-month-container {
-  margin-top: 10px;
-
-  .workout-stats-header {
-    font-weight: bold;
-  }
-
-  .stats-container {
-    @extend %two-columns-grid;
-  }
+  margin-top: $space-sm;
 }

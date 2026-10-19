@@ -16,7 +16,6 @@ import { requiredText } from "../../utils/form-validators";
 @Component({
   selector: "dash-airparif-widget",
   templateUrl: "./airparif-widget.component.html",
-  styleUrl: "./airparif-widget.component.scss",
   imports: [
     WidgetComponent,
     MatIcon,

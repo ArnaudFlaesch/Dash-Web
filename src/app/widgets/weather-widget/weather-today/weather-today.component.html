@@ -1,6 +1,6 @@
 @if (weather().weather; as currentWeather) {
-  <div class="weather-today-container">
-    <div class="weather-container">
+  <div class="weather-today-container row justify-between">
+    <div class="weather-container row items-center">
       <img
         class="current-weather-icon"
         [src]="getIconFromWeatherApi(currentWeather[0].icon)"
@@ -8,29 +8,29 @@
         [alt]="currentWeather[0].description"
       />
 
-      <div class="current-temperature-container">
+      <div class="current-temperature-container column">
         <div>{{ currentWeather[0].description | initialUppercase }}</div>
-        <div matTooltip="Température actuelle" class="current-temperature">
+        <div matTooltip="Température actuelle" class="current-temperature row items-center">
           <mat-icon>device_thermostat</mat-icon>
           <div class="temperature">{{ weather().main.temp }}°</div>
         </div>
       </div>
     </div>
 
-    <div class="time-data-container">
-      <div class="day-data-container">
-        <div class="time-container">
+    <div class="time-data-container column">
+      <div class="day-data-container row gap-md">
+        <div class="time-container row items-center gap-sm">
           <mat-icon matTooltip="Lever du soleil" class="sunrise-time">wb_sunny</mat-icon>
           <div>{{ sunriseTime() }}</div>
         </div>
 
-        <div class="time-container">
+        <div class="time-container row items-center gap-sm">
           <mat-icon matTooltip="Coucher du soleil" class="sunset-time">brightness_3</mat-icon>
           <div>{{ sunsetTime() }}</div>
         </div>
       </div>
 
-      <div class="time-container">
+      <div class="time-container row items-center gap-sm">
         <mat-icon matTooltip="Dernière mise à jour à" class="lastupdated-time">schedule</mat-icon>
         <div>{{ lastUpdateTime() }}</div>
       </div>

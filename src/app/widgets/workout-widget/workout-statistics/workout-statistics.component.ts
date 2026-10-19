@@ -8,7 +8,6 @@ import { IWorkoutStatByMonth, IWorkoutType } from "../model/Workout";
 @Component({
   selector: "dash-workout-statistics",
   templateUrl: "./workout-statistics.component.html",
-  styleUrl: "./workout-statistics.component.scss",
   imports: [BaseChartDirective]
 })
 export class WorkoutStatisticsComponent {

@@ -1,33 +1,19 @@
 @use "mixins" as *;
 
 .game-info {
-  display: flex;
-  align-items: center;
   height: 2.5rem;
 
   > * {
-    margin-left: 0.5rem;
-  }
-}
-
-.game-data-container {
-  display: flex;
-  justify-content: space-between;
-
-  .game-achievements-data-container,
-  .game-achievements-data {
-    @include flex-column;
+    margin-left: $space-sm;
   }
 }
 
 .spinner-container {
   position: relative;
+}
 
-  .progress-value {
-    @include centered;
-
-    position: absolute;
-    width: 100px;
-    height: 100px;
-  }
+.progress-value {
+  position: absolute;
+  width: 100px;
+  height: 100px;
 }

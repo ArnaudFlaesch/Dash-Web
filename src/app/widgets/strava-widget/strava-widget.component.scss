@@ -1,17 +1,10 @@
-@use "mixins" as *;
-
 #strava-profile-picture {
   max-height: 2.3rem;
 }
 
 #strava-activities-container {
-  display: flex;
   max-height: 12rem;
   overflow-y: scroll;
-
-  #activities-pagination-container {
-    @include flex-column;
-  }
 }
 
 #strava-statistics {

@@ -21,7 +21,7 @@
   }
   @for (notification of notificationsList(); track notification.id) {
     <div
-      class="notification-container"
+      class="notification-container row items-center gap-xs"
       [class.unread-notification]="!notification.isRead"
       [class.info]="notification.notificationType === notificationTypeEnum.INFO"
       [class.warn]="notification.notificationType === notificationTypeEnum.WARN"

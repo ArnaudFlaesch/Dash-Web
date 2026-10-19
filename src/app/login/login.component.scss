@@ -1,46 +1,31 @@
 @use "mixins" as *;
 
-#login-page {
+#login-container {
+  margin: auto;
+  padding: 1.5rem 4rem;
+  border-radius: $border-radius;
+  background-color: #fff;
+}
+
+#logo-container {
+  display: inline-block;
+  margin: $space-md;
+}
+
+#dash-logo {
   display: flex;
-  height: 100%;
+  margin: 0 auto;
+}
 
-  #login-container {
-    @include flex-column;
+#login-page-title {
+  font-size: 2rem;
+  line-height: 1;
+}
 
-    align-items: center;
-    margin: auto;
-    padding: 1.5rem 4rem;
-    border-radius: $border-radius;
-    background-color: #fff;
+#login-form {
+  margin-top: 2.5rem;
+}
 
-    #logo-container {
-      display: inline-block;
-      margin: 1rem;
-
-      #dash-logo {
-        display: flex;
-        margin: 0 auto;
-      }
-    }
-
-    #login-page-title {
-      font-size: 2rem;
-      line-height: 1;
-    }
-
-    #login-form {
-      @include flex-column(1rem);
-
-      margin-top: 2.5rem;
-
-      #login-button-label {
-        display: flex;
-        align-items: center;
-
-        mat-spinner {
-          margin-right: 1.25rem;
-        }
-      }
-    }
-  }
+#login-button-label mat-spinner {
+  margin-right: 1.25rem;
 }

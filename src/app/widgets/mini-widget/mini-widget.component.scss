@@ -3,19 +3,9 @@
 .mini-widget {
   border-radius: $border-radius;
   background-color: var(--widget-background-color);
+}
 
-  .edit-mini-widget {
-    display: flex;
-  }
-
-  .read-mini-widget-body-container {
-    padding: 0.15em;
-    overflow-y: auto;
-
-    .loading-spinner {
-      @include centered;
-
-      margin: auto 0;
-    }
-  }
+.read-mini-widget-body-container {
+  padding: 0.15em;
+  overflow-y: auto;
 }

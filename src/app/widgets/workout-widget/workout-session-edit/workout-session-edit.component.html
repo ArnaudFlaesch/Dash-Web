@@ -1,5 +1,5 @@
 @if (currentWorkoutSessionToEdit() && workoutExercisesLoaded()) {
-  <div id="workout-widget-header">
+  <div id="workout-widget-header" class="row justify-between">
     <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit().workoutDate | dateFormat: "short" }}</h3>
 
     @if (sessionEditMode()) {
@@ -30,7 +30,7 @@
           }
 
           @if (getExerciceNumberOfReps(workoutType.id) > 0) {
-            <span class="workout-number-of-reps" [class.edit-mode]="sessionEditMode()">{{
+            <span class="workout-number-of-reps bold" [class.edit-mode]="sessionEditMode()">{{
               getExerciceNumberOfReps(workoutType.id)
             }}</span>
           }

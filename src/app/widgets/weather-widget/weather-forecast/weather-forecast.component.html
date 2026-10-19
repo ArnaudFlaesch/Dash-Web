@@ -1,7 +1,7 @@
-<div class="forecast-row">
+<div class="forecast-row row">
   @for (forecastDay of forecast(); track forecastDay.dt) {
     <div class="forecast-container">
-      <div class="forecast">
+      <div class="forecast row">
         @if (forecastDay) {
           <div class="forecast-time">
             {{ getDateToDisplay(forecastDay.dt, timezone()) }}
@@ -16,7 +16,7 @@
           />
         </div>
       </div>
-      <div class="forecast-icons">
+      <div class="forecast-icons column">
         <div>
           <mat-icon matTooltip="Température maximum" class="weather-widget-icon temp-max">device_thermostat</mat-icon>
           {{ forecastDay.main.tempMax }}°

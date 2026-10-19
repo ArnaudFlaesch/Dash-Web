@@ -1,15 +1,15 @@
-// Shared layout helpers, available in every stylesheet with `@use "mixins" as *;`
+// Shared design tokens and layout helpers, available in every stylesheet with `@use "mixins" as *;`
 
 $breakpoint-sm: 640px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 1280px;
 $border-radius: 0.25rem;
 
-@mixin flex-column($gap: null) {
-  display: flex;
-  flex-direction: column;
-  gap: $gap;
-}
+// Spacing scale
+$space-xs: 0.25rem;
+$space-sm: 0.5rem;
+$space-md: 1rem;
+$space-lg: 2rem;
 
 @mixin centered {
   display: flex;

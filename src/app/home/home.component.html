@@ -1,8 +1,8 @@
 @if (isDashboardLoaded()) {
-  <div id="home-header-container">
-    <div id="home-header-top-bar">
-      <div id="tab-list-container">
-        <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)">
+  <div id="home-header-container" class="column">
+    <div id="home-header-top-bar" class="row justify-between">
+      <div id="tab-list-container" class="row">
+        <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)" class="row gap-xs">
           @for (tab of tabs(); track tab.id) {
             <dash-tab
               class="tab"
@@ -29,7 +29,7 @@
         </button>
       </div>
 
-      <div id="action-bar-buttons">
+      <div id="action-bar-buttons" class="row gap-xs">
         <button mat-mini-fab matTooltip="Applications" [matMenuTriggerFor]="appsMenu" color="primary">
           <mat-icon>apps</mat-icon>
         </button>
@@ -99,7 +99,7 @@
 
         <mat-menu #dashMenu="matMenu">
           <div mat-menu-item>
-            <div id="toggle-mode-container">
+            <div id="toggle-mode-container" class="row">
               <mat-icon>light_mode</mat-icon>
               <mat-slide-toggle (change)="toggleTheme($event.checked)" [formField]="toggleThemeForm" />
               <mat-icon>dark_mode</mat-icon>
@@ -134,12 +134,12 @@
       (updateWidgetsOrderEvent)="updateWidgetOrder($event)"
     />
   } @else {
-    <div class="loading-spinner-container">
+    <div class="loading-spinner">
       <mat-spinner />
     </div>
   }
 } @else {
-  <div class="loading-spinner-container">
+  <div class="loading-spinner">
     <mat-spinner />
   </div>
 }

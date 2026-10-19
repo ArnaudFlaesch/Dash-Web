@@ -7,86 +7,62 @@ $header-height: 2.5rem;
   border: 2px solid var(--widget-header-color);
   border-radius: $border-radius;
   background-color: var(--widget-background-color);
+}
 
-  .widget-read-mode {
-    @include flex-column;
+.header-container {
+  height: $header-height;
+  padding: 0.1em 0.2em;
+  background-color: var(--widget-header-color);
+  color: var(--widget-header-text-color);
+}
 
-    height: 100%;
-  }
+.widget-edit-mode {
+  text-align: center;
 
   .header-container {
-    display: flex;
-    align-items: center;
-    height: $header-height;
-    padding: 0.1em 0.2em;
-    background-color: var(--widget-header-color);
-    color: var(--widget-header-text-color);
-
-    .header {
-      display: flex;
-      flex: 0 1 60%;
-      align-items: center;
-      column-gap: 5px;
-      height: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-weight: 600;
-
-      ::ng-deep img {
-        max-height: 2.25rem;
-        max-width: 2.25rem;
-        border-radius: $border-radius;
-      }
-
-      ::ng-deep a {
-        display: flex;
-        height: 100%;
-
-        > * {
-          margin: auto 0;
-        }
-      }
-    }
-
-    .header-actions {
-      display: flex;
-      flex: 1 0 40%;
-      justify-content: flex-end;
-    }
-  }
-
-  .widget-edit-mode {
-    @include flex-column;
-
-    place-items: center;
-    height: 100%;
     width: 100%;
-    text-align: center;
+  }
+}
 
-    .header-container {
-      width: 100%;
-    }
+.header {
+  flex: 0 1 60%;
+  height: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+
+  ::ng-deep img {
+    max-height: 2.25rem;
+    max-width: 2.25rem;
+    border-radius: $border-radius;
   }
 
-  .widget-body {
-    @include flex-column;
+  ::ng-deep a {
+    display: flex;
+    height: 100%;
 
-    height: calc(100% - $header-height);
-    overflow-y: auto;
-    padding: 0.5em;
-
-    .widget-edit-component-container {
-      overflow-y: auto;
-    }
-
-    .edit-component-actions {
-      display: flex;
-      justify-content: space-evenly;
+    > * {
       margin: auto 0;
     }
-
-    .widget-loading-spinner {
-      margin: auto;
-    }
   }
+}
+
+.header-actions {
+  flex: 1 0 40%;
+  justify-content: flex-end;
+}
+
+.widget-body {
+  height: calc(100% - $header-height);
+  overflow-y: auto;
+  padding: $space-sm;
+}
+
+.widget-edit-component-container {
+  overflow-y: auto;
+}
+
+.edit-component-actions {
+  justify-content: space-evenly;
+  margin: auto 0;
 }

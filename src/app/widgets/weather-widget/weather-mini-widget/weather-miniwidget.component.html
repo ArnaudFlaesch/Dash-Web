@@ -13,16 +13,16 @@
 
   <ng-template #body>
     @if (weather(); as weather) {
-      <div class="mini-widget-weather-container">
+      <div class="mini-widget-weather-container row">
         <img
           class="current-weather-icon"
           [src]="getIconFromWeatherApi(weather.weather[0].icon)"
           [matTooltip]="weather.weather[0].description | initialUppercase"
           [alt]="weather.weather[0].description"
         />
-        <div class="weather-data-container">
+        <div class="weather-data-container column justify-center">
           <div>{{ config().city }}</div>
-          <div class="temperature-container">
+          <div class="temperature-container row">
             <mat-icon matTooltip="Température actuelle">device_thermostat</mat-icon>
             <div>{{ weather.main.temp }}°</div>
           </div>

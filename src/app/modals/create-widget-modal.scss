@@ -7,10 +7,4 @@
   @media (width <= $breakpoint-md) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .widget-type-container {
-    @include flex-column(1.25rem);
-
-    align-items: center;
-  }
 }

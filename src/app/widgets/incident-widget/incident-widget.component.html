@@ -27,7 +27,7 @@
   <ng-template #body>
     @if (lastIncidentDate(); as lastIncidentDate) {
       @if (isWidgetViewCurrentStreak()) {
-        <div id="incident-widget-body-header">
+        <div id="incident-widget-body-header" class="row justify-between">
           <div>Dernier incident le {{ lastIncidentDate | dateFormat: "short" }}</div>
           @if (streaks().length > 0) {
             <button (click)="goToPastStreaksView()" mat-raised-button>Séries précédentes</button>
