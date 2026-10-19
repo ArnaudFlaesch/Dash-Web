@@ -1,19 +1,19 @@
+@use "mixins" as *;
+
 .forecast-row {
   display: flex;
-  flex-direction: row;
   overflow-x: auto;
-  border-radius: 0.25rem;
-  background-color: #4693af;
   padding: 0.5em;
+  border-radius: $border-radius;
+  background-color: #4693af;
 
   .forecast-container {
     display: grid;
-    align-items: center;
     flex: 0 0 calc(100% / 4);
+    align-items: center;
 
     .forecast {
       display: flex;
-      flex-direction: row;
 
       .forecast-time {
         margin: auto 0;
@@ -26,8 +26,7 @@
     }
 
     .forecast-icons {
-      display: flex;
-      flex-direction: column;
+      @include flex-column;
 
       .temp-min {
         color: blue;

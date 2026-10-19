@@ -1,30 +1,25 @@
+@use "mixins" as *;
+
 .rss-article {
   .article-title {
-    &.is-read:not(.article-opened, :hover) {
-      color: grey;
-    }
-
     p {
-      overflow: hidden;
       display: -webkit-box;
+      overflow: hidden;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
     }
 
-    &.article-opened {
-      p {
-        -webkit-line-clamp: 3;
-      }
+    &.is-read:not(.article-opened, :hover) {
+      color: grey;
+    }
+
+    &.article-opened p {
+      -webkit-line-clamp: 3;
     }
   }
 
   .rss-feed-content {
     border: 2px solid #6b7280;
-    border-radius: 0.25rem;
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    border-radius: $border-radius;
   }
 }

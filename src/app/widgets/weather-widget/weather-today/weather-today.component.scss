@@ -1,35 +1,33 @@
+@use "mixins" as *;
+
 .weather-today-container {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
 
   .weather-container {
     display: flex;
-    flex-direction: row;
-    place-items: center;
     flex: 1 0 40%;
+    place-items: center;
 
     img {
       width: 4rem;
     }
 
     .current-temperature-container {
-      display: flex;
-      flex-direction: column;
+      @include flex-column;
 
       .current-temperature {
         display: flex;
-        flex-direction: row;
         align-items: center;
       }
     }
   }
 
   .time-data-container {
-    display: flex;
-    flex-direction: column;
-    margin: auto 0;
+    @include flex-column;
+
     flex: 1 0 50%;
+    margin: auto 0;
 
     .sunrise-time {
       color: #ffbe0a;
@@ -41,15 +39,13 @@
 
     .day-data-container {
       display: flex;
-      flex-direction: row;
       column-gap: 1.5em;
     }
 
     .time-container {
       display: flex;
-      flex-direction: row;
-      column-gap: 10px;
       place-items: center;
+      column-gap: 10px;
     }
   }
 }

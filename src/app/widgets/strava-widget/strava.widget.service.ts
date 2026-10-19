@@ -1,50 +1,24 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { Observable } from "rxjs";
-import authorizationBearer from "../../services/authorizationBearer/authorizationBearer";
 import { environment } from "../../../environments/environment";
 import { IActivity, IAthlete, ITokenData } from "./IStrava";
 
-@Injectable()
+@Service()
 export class StravaWidgetService {
   private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.backend_url}/stravaWidget`;
 
   public getToken(apiCode: string): Observable<ITokenData> {
-    return this.http.post<ITokenData>(
-      `${environment.backend_url}/stravaWidget/getToken`,
-      { apiCode: apiCode },
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.post<ITokenData>(`${this.baseUrl}/getToken`, { apiCode });
   }
 
   public getRefreshToken(refreshToken: string): Observable<ITokenData> {
-    return this.http.post<ITokenData>(
-      `${environment.backend_url}/stravaWidget/getRefreshToken`,
-      { refreshToken: refreshToken },
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.post<ITokenData>(`${this.baseUrl}/getRefreshToken`, { refreshToken });
   }
 
   public getAthleteData(token: string): Observable<IAthlete> {
-    return this.http.get<IAthlete>(
-      `${environment.backend_url}/stravaWidget/getAthleteData?token=${token}`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.get<IAthlete>(`${this.baseUrl}/getAthleteData?token=${token}`);
   }
 
   public getActivities(
@@ -53,13 +27,7 @@ export class StravaWidgetService {
     numberOfActivities?: number
   ): Observable<IActivity[]> {
     return this.http.get<IActivity[]>(
-      `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${token}&pageNumber=${pageNumber}&numberOfActivities=${numberOfActivities}`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
+      `${this.baseUrl}/getAthleteActivities?token=${token}&pageNumber=${pageNumber}&numberOfActivities=${numberOfActivities}`
     );
   }
 }

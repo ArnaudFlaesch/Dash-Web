@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ErrorHandlerService } from "../../services/error.handler.service";
@@ -15,7 +16,7 @@ describe("EcowattWidgetComponent", () => {
         WidgetService,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
     }).compileComponents();
 

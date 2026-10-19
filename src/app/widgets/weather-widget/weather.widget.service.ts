@@ -1,39 +1,20 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { Observable } from "rxjs";
-import authorizationBearer from "../../../app/services/authorizationBearer/authorizationBearer";
-import { environment } from "./../../../environments/environment";
+import { environment } from "../../../environments/environment";
 import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
 
-@Injectable()
+@Service()
 export class WeatherWidgetService {
   private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.backend_url}/weatherWidget`;
 
-  public fetchWeatherData(cityName: string): Observable<IWeatherAPIResponse> {
-    return this.http.get<IWeatherAPIResponse>(`${environment.backend_url}/weatherWidget/weather`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      },
-      params: {
-        city: cityName
-      }
-    });
+  public fetchWeatherData(city: string): Observable<IWeatherAPIResponse> {
+    return this.http.get<IWeatherAPIResponse>(`${this.baseUrl}/weather`, { params: { city } });
   }
 
-  public fetchForecastData(cityName: string): Observable<IForecastAPIResponse> {
-    return this.http.get<IForecastAPIResponse>(
-      `${environment.backend_url}/weatherWidget/forecast`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        },
-        params: {
-          city: cityName
-        }
-      }
-    );
+  public fetchForecastData(city: string): Observable<IForecastAPIResponse> {
+    return this.http.get<IForecastAPIResponse>(`${this.baseUrl}/forecast`, { params: { city } });
   }
 
   public getIconFromWeatherApi(icon: string): string {

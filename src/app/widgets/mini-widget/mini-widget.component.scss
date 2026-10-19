@@ -1,9 +1,11 @@
+@use "mixins" as *;
+
 .mini-widget {
-  border-radius: 0.25rem;
+  border-radius: $border-radius;
+  background-color: var(--widget-background-color);
 
   .edit-mini-widget {
     display: flex;
-    flex-direction: row;
   }
 
   .read-mini-widget-body-container {
@@ -11,9 +13,8 @@
     overflow-y: auto;
 
     .loading-spinner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      @include centered;
+
       margin: auto 0;
     }
   }

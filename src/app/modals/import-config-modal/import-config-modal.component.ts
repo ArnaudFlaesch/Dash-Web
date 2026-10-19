@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import {
   MatDialogActions,
@@ -14,7 +14,6 @@ import { ErrorHandlerService } from "../../services/error.handler.service";
 @Component({
   selector: "dash-import-config-modal",
   templateUrl: "./import-config-modal.component.html",
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ImportConfigModalComponent {

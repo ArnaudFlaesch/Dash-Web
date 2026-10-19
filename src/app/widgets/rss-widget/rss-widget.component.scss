@@ -1,9 +1,9 @@
+@use "mixins" as *;
+
 .rss-widget-body {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1em;
+  @include flex-column(1em);
 
   .rss-widget-description {
-    font-weight: 700;
+    font-weight: bold;
   }
 }

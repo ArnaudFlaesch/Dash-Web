@@ -1,64 +1,31 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { Observable } from "rxjs";
-import { ITab } from "../../../app/model/Tab";
 import { environment } from "../../../environments/environment";
-import authorizationBearer from "../authorizationBearer/authorizationBearer";
+import { ITab } from "../../model/Tab";
 
-@Injectable()
+@Service()
 export class TabService {
   private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.backend_url}/tab`;
 
   public getTabs(): Observable<ITab[]> {
-    return this.http.get<ITab[]>(`${environment.backend_url}/tab/`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      }
-    });
+    return this.http.get<ITab[]>(`${this.baseUrl}/`);
   }
 
   public addTab(label: string): Observable<ITab> {
-    return this.http.post<ITab>(
-      `${environment.backend_url}/tab/addTab`,
-      { label: label },
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.post<ITab>(`${this.baseUrl}/addTab`, { label });
   }
 
   public updateTab(id: number, label: string, tabOrder: number): Observable<ITab> {
-    return this.http.post<ITab>(
-      `${environment.backend_url}/tab/updateTab`,
-      { id: id, label: label, tabOrder: tabOrder },
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.post<ITab>(`${this.baseUrl}/updateTab`, { id, label, tabOrder });
   }
 
   public updateTabs(tabs: ITab[]): Observable<ITab[]> {
-    return this.http.post<ITab[]>(`${environment.backend_url}/tab/updateTabs`, tabs, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      }
-    });
+    return this.http.post<ITab[]>(`${this.baseUrl}/updateTabs`, tabs);
   }
 
   public deleteTab(id: number): Observable<void> {
-    return this.http.delete<void>(`${environment.backend_url}/tab/deleteTab?id=${id}`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      }
-    });
+    return this.http.delete<void>(`${this.baseUrl}/deleteTab?id=${id}`);
   }
 }

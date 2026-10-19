@@ -1,20 +1,19 @@
+@use "mixins" as *;
+
 .weather-forecast-container {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
 
   .forecast-data-container {
     margin: 0.5rem;
 
     .forecast-selector {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.5rem;
+      @include grid-columns(4, 0.5rem);
+
       margin: 0 auto;
     }
 
     .toggle-forecast {
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
+      margin: 1rem 0 0.5rem;
     }
   }
 }

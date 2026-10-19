@@ -1,20 +1,23 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
+import { MatButton } from "@angular/material/button";
+import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
 import {
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
   MatDialogTitle
 } from "@angular/material/dialog";
-import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
-import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
+import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
+
+const MINI_WIDGET_TYPE_ICONS: Record<keyof typeof MiniWidgetTypeEnum, string> = {
+  WEATHER: "sunny"
+};
 
 @Component({
   selector: "dash-create-mini-widget-modal",
   templateUrl: "./create-mini-widget-modal.component.html",
-  styleUrls: ["./create-mini-widget-modal.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "../create-widget-modal.scss",
   imports: [
     MatDialogTitle,
     MatDialogContent,
@@ -28,19 +31,8 @@ import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card"
   ]
 })
 export class CreateMiniWidgetModalComponent {
-  public miniWidgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(MiniWidgetTypeEnum)
-    .filter((key) => Number.isNaN(Number.parseInt(key, 10)))
-    .map((type) => {
-      return { type: type, icon: this.getWidgetTypeEnumIconToDisplay(type) };
-    });
-
-  public getWidgetTypeEnumIconToDisplay(miniWidgetType: unknown): string {
-    const key = MiniWidgetTypeEnum[
-      miniWidgetType as MiniWidgetTypeEnum
-    ] as unknown as MiniWidgetTypeEnum;
-    if (key === MiniWidgetTypeEnum.WEATHER) {
-      return "sunny";
-    }
-    return "";
-  }
+  public readonly miniWidgetTypes = Object.entries(MINI_WIDGET_TYPE_ICONS).map(([type, icon]) => ({
+    type,
+    icon
+  }));
 }

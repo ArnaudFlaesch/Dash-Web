@@ -1,7 +1,7 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
+  computed,
   contentChild,
+  Directive,
   inject,
   input,
   OnInit,
@@ -10,25 +10,28 @@ import {
   TemplateRef
 } from "@angular/core";
 import { ModeEnum } from "../../enums/ModeEnum";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error.handler.service";
+import { WIDGET_ID } from "../widget.tokens";
 
-@Component({
-  selector: "dash-abstract-widget",
-  templateUrl: "./abstract-widget.component.html",
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class AbstractWidgetComponent implements OnInit {
-  public readonly body = contentChild.required<TemplateRef<unknown> | null>("body");
-  public readonly editComponent = contentChild<TemplateRef<unknown> | null>("editComponent");
+/** Common behaviour (read / edit / delete modes) shared by widgets and mini widgets. */
+@Directive()
+export abstract class AbstractWidgetComponent implements OnInit {
+  public readonly body = contentChild.required<TemplateRef<unknown>>("body");
+  public readonly editComponent = contentChild<TemplateRef<unknown>>("editComponent");
   public readonly isFormValid = input(false);
   public readonly isWidgetLoaded = input(false);
   public readonly widgetData = input<Record<string, unknown> | undefined>(undefined);
   public readonly refreshWidgetAction = output();
 
   public readonly mode = signal(ModeEnum.EDIT);
-  public widgetId = inject<number>("widgetId" as never);
+  public readonly isModeRead = computed(() => this.mode() === ModeEnum.READ);
+  public readonly isModeEdit = computed(() => this.mode() === ModeEnum.EDIT);
+  public readonly isModeDelete = computed(() => this.mode() === ModeEnum.DELETE);
 
-  protected readonly widgetService = inject(WidgetService);
+  protected readonly widgetId = inject(WIDGET_ID);
+  protected readonly errorHandlerService = inject(ErrorHandlerService);
+  protected readonly ERROR_UPDATING_WIDGET_DATA =
+    "Erreur lors de la mise à jour de la configuration du widget.";
 
   public ngOnInit(): void {
     if (this.widgetData() !== undefined) {
@@ -44,7 +47,9 @@ export class AbstractWidgetComponent implements OnInit {
   }
 
   public toEditMode(): void {
-    this.mode.set(this.editComponent() ? ModeEnum.EDIT : this.mode());
+    if (this.editComponent()) {
+      this.mode.set(ModeEnum.EDIT);
+    }
   }
 
   public toReadMode(): void {
@@ -63,15 +68,9 @@ export class AbstractWidgetComponent implements OnInit {
     this.mode.set(ModeEnum.DELETE);
   }
 
-  public isModeRead(): boolean {
-    return this.mode() === ModeEnum.READ;
-  }
-
-  public isModeEdit(): boolean {
-    return this.mode() === ModeEnum.EDIT;
-  }
-
-  public isModeDelete(): boolean {
-    return this.mode() === ModeEnum.DELETE;
+  /** Called once the widget configuration has been saved. */
+  protected onWidgetDataSaved(): void {
+    this.toReadMode();
+    this.refreshWidget();
   }
 }

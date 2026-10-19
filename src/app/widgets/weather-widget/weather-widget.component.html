@@ -2,20 +2,20 @@
   [isFormValid]="isFormValid()"
   [widgetData]="getWidgetData()"
   [isWidgetLoaded]="isWidgetLoaded()"
-  (refreshWidgetAction)="this.refreshWidget()"
+  (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
     <mat-icon>sunny</mat-icon>
   </ng-template>
 
   <ng-template #headerTitle>
-    <div>La météo aujourd'hui à {{ city() }}</div>
+    <div>La météo aujourd'hui à {{ config().city }}</div>
   </ng-template>
 
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Ville</mat-label>
-      <input id="cityNameInput" matInput [formField]="cityForm" placeholder="Saisissez de nom de la ville" />
+      <input id="cityNameInput" matInput [formField]="configForm.city" placeholder="Saisissez de nom de la ville" />
     </mat-form-field>
   </ng-template>
 

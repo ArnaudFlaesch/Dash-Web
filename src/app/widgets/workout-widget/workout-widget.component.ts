@@ -1,13 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-  WritableSignal
-} from "@angular/core";
-import { FormField, form } from "@angular/forms/signals";
+import { Component, computed, inject, signal } from "@angular/core";
+import { form, FormField, required } from "@angular/forms/signals";
 import {
   MatDatepicker,
   MatDatepickerInput,
@@ -20,15 +13,16 @@ import {
   startOfISOWeek,
   startOfMonth,
   startOfYear,
-  subMonths
+  subMonths,
+  subYears
 } from "date-fns";
-
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { DEFAULT_DATE_FORMAT } from "../../utils/Constants";
+import { requiredText } from "../../utils/form-validators";
 import { DateFormatPipe } from "../../pipes/date-format.pipe";
 import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
 import { WidgetComponent } from "../widget/widget.component";
@@ -58,8 +52,7 @@ enum WORKOUT_STATISTICS {
 @Component({
   selector: "dash-workout-widget",
   templateUrl: "./workout-widget.component.html",
-  styleUrls: ["./workout-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./workout-widget.component.scss",
   imports: [
     WidgetComponent,
     MatIcon,
@@ -80,24 +73,24 @@ enum WORKOUT_STATISTICS {
   ]
 })
 export class WorkoutWidgetComponent {
-  public workoutTypes: WritableSignal<IWorkoutType[]> = signal([]);
-  public workoutSessions: WritableSignal<IWorkoutSession[]> = signal([]);
-  public workoutStatsByWeek: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
-  public workoutStatsByMonth: WritableSignal<IWorkoutStatsByPeriod[]> = signal([]);
-  public workoutStatsOfMonths: WritableSignal<IWorkoutStatByMonth[]> = signal([]);
-  public currentWorkoutSessionToEdit = signal<IWorkoutSession | undefined>(undefined);
-  public selectedWorkoutStatistics = signal<WORKOUT_STATISTICS | undefined>(undefined);
-  public isWidgetLoaded = signal(false);
-  public WIDGET_VIEW = signal(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
+  public readonly workoutTypes = signal<IWorkoutType[]>([]);
+  public readonly workoutSessions = signal<IWorkoutSession[]>([]);
+  public readonly workoutStatsByWeek = signal<IWorkoutStatsByPeriod[]>([]);
+  public readonly workoutStatsByMonth = signal<IWorkoutStatsByPeriod[]>([]);
+  public readonly workoutStatsOfMonths = signal<IWorkoutStatByMonth[]>([]);
+  public readonly currentWorkoutSessionToEdit = signal<IWorkoutSession | undefined>(undefined);
+  public readonly selectedWorkoutStatistics = signal<WORKOUT_STATISTICS | undefined>(undefined);
+  public readonly isWidgetLoaded = signal(false);
+  public readonly widgetView = signal(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
 
-  public dateFormat = DEFAULT_DATE_FORMAT;
-  public widgetViewEnum = WORKOUT_WIDGET_VIEW;
+  public readonly dateFormat = DEFAULT_DATE_FORMAT;
+  public readonly widgetViewEnum = WORKOUT_WIDGET_VIEW;
 
-  public workoutNameInput = signal<string>("");
-  public readonly workoutNameForm = form(this.workoutNameInput);
-  public workoutDateInput = signal<string>("");
-  public readonly workoutDateForm = form(this.workoutDateInput);
-  public selectedMonthInput = signal<Date>(startOfMonth(new Date()));
+  public readonly workoutNameInput = signal<string>("");
+  public readonly workoutNameForm = form(this.workoutNameInput, (path) => requiredText(path));
+  public readonly workoutDateInput = signal<string>("");
+  public readonly workoutDateForm = form(this.workoutDateInput, (path) => required(path));
+  public readonly selectedMonthInput = signal<Date>(startOfMonth(new Date()));
   public readonly selectedMonthForm = form(this.selectedMonthInput);
 
   public readonly isLastYearWorkoutStatisticsSelected = computed(
@@ -137,30 +130,28 @@ export class WorkoutWidgetComponent {
         this.isWidgetLoaded.set(true);
       }
     });
-    const selectedMonth = this.selectedMonthInput() ?? new Date();
-    this.getWorkoutSessionsOfMonth(selectedMonth);
+    this.selectMonth(this.selectedMonthInput());
     this.getWorkoutStatsOfCurrentWeek();
-    this.getWorkoutStatsOfMonth(selectedMonth);
   }
 
   public editWorkoutSession(workoutSession: IWorkoutSession): void {
-    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.EDIT_WORKOUT_SESSION_VIEW);
+    this.widgetView.set(WORKOUT_WIDGET_VIEW.EDIT_WORKOUT_SESSION_VIEW);
     this.currentWorkoutSessionToEdit.set(workoutSession);
   }
 
   public backToWorkoutSessionsList(): void {
-    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
+    this.widgetView.set(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
     this.currentWorkoutSessionToEdit.set(undefined);
   }
 
   public goToStatisticsView(): void {
-    this.WIDGET_VIEW.set(WORKOUT_WIDGET_VIEW.WORKOUT_STATISTICS_VIEW);
+    this.widgetView.set(WORKOUT_WIDGET_VIEW.WORKOUT_STATISTICS_VIEW);
     this.getWorkoutsStatsOfLastThreeMonths();
   }
 
   public addWorkoutType(): void {
     const workoutName = this.workoutNameInput();
-    if (workoutName) {
+    if (this.workoutNameForm().valid()) {
       this.workoutWidgetService.addWorkoutType(workoutName).subscribe({
         next: (addedWorkoutType) => {
           this.workoutTypes.update((oldWorkoutTypes) => [...oldWorkoutTypes, addedWorkoutType]);
@@ -174,7 +165,7 @@ export class WorkoutWidgetComponent {
 
   public createWorkoutSession(): void {
     const workoutDateVal = this.workoutDateInput();
-    if (workoutDateVal) {
+    if (this.workoutDateForm().valid()) {
       const workoutDate = this.dateUtilsService.formatDateWithOffsetToUtc(
         typeof workoutDateVal === "string"
           ? new Date(Date.parse(workoutDateVal))
@@ -194,8 +185,8 @@ export class WorkoutWidgetComponent {
     }
   }
 
-  public getWidgetData(): Record<string, string> {
-    return <Record<string, string>>{};
+  public getWidgetData(): Record<string, never> {
+    return {};
   }
 
   public selectMonth(monthDate: Date): void {
@@ -212,39 +203,48 @@ export class WorkoutWidgetComponent {
   }
 
   public getWorkoutsStatsOfCurrentYear(): void {
-    if (!this.isCurrentYearWorkoutStatisticsSelected()) {
-      this.selectedWorkoutStatistics.set(WORKOUT_STATISTICS.CURRENT_YEAR);
-      this.getWorkoutStatsOfInterval(startOfYear(new Date()), endOfYear(new Date()));
-    }
+    const today = new Date();
+    this.selectWorkoutStatistics(
+      WORKOUT_STATISTICS.CURRENT_YEAR,
+      startOfYear(today),
+      endOfYear(today)
+    );
   }
 
   public getWorkoutsStatsOfLastThreeMonths(): void {
-    if (!this.isLastThreeMonthsWorkoutStatisticsSelected()) {
-      this.selectedWorkoutStatistics.set(WORKOUT_STATISTICS.LAST_THREE_MONTHS);
-      this.getWorkoutStatsOfLastMonths(2);
-    }
+    this.selectWorkoutStatistics(
+      WORKOUT_STATISTICS.LAST_THREE_MONTHS,
+      startOfMonth(subMonths(new Date(), 2)),
+      endOfMonth(new Date())
+    );
   }
 
   public getWorkoutsStatsOfLastSixMonths(): void {
-    if (!this.isLastSixMonthsWorkoutStatisticsSelected()) {
-      this.selectedWorkoutStatistics.set(WORKOUT_STATISTICS.LAST_SIX_MONTHS);
-      this.getWorkoutStatsOfLastMonths(5);
-    }
+    this.selectWorkoutStatistics(
+      WORKOUT_STATISTICS.LAST_SIX_MONTHS,
+      startOfMonth(subMonths(new Date(), 5)),
+      endOfMonth(new Date())
+    );
   }
 
   public getWorkoutsStatsOfPastYear(): void {
-    if (!this.isLastYearWorkoutStatisticsSelected()) {
-      this.selectedWorkoutStatistics.set(WORKOUT_STATISTICS.LAST_YEAR);
-      const today = new Date();
-      const lastYear = new Date(today.getFullYear() - 1, 0, 1);
-      this.getWorkoutStatsOfInterval(startOfYear(lastYear), endOfYear(lastYear));
-    }
+    const lastYear = subYears(new Date(), 1);
+    this.selectWorkoutStatistics(
+      WORKOUT_STATISTICS.LAST_YEAR,
+      startOfYear(lastYear),
+      endOfYear(lastYear)
+    );
   }
 
-  private getWorkoutStatsOfLastMonths(numberOfMonthsAgo: number): void {
-    const today = new Date();
-    const monthsAgo = subMonths(today, numberOfMonthsAgo);
-    this.getWorkoutStatsOfInterval(startOfMonth(monthsAgo), endOfMonth(today));
+  private selectWorkoutStatistics(
+    workoutStatistics: WORKOUT_STATISTICS,
+    dateIntervalStart: Date,
+    dateIntervalEnd: Date
+  ): void {
+    if (this.selectedWorkoutStatistics() !== workoutStatistics) {
+      this.selectedWorkoutStatistics.set(workoutStatistics);
+      this.getWorkoutStatsOfInterval(dateIntervalStart, dateIntervalEnd);
+    }
   }
 
   private getWorkoutStatsOfInterval(dateIntervalStart: Date, dateIntervalEnd: Date): void {
@@ -278,9 +278,7 @@ export class WorkoutWidgetComponent {
     this.workoutWidgetService
       .getWorkoutStatsByPeriod(startOfMonth(date), endOfMonth(date))
       .subscribe({
-        next: (workoutStatsByMonth) => {
-          this.workoutStatsByMonth.set(workoutStatsByMonth);
-        },
+        next: (workoutStatsByMonth) => this.workoutStatsByMonth.set(workoutStatsByMonth),
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)
       });

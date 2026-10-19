@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../../widget.tokens";
 import { environment } from "../../../../environments/environment";
 
 import { provideHttpClient } from "@angular/common/http";
@@ -24,7 +25,7 @@ describe("WeatherMiniWidgetComponent", () => {
         ErrorHandlerService,
         WidgetService,
         MiniWidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
     }).compileComponents();
 
@@ -43,7 +44,7 @@ describe("WeatherMiniWidgetComponent", () => {
     expect(component.isWidgetLoaded()).toEqual(false);
 
     const city = "Paris";
-    component.city.set(city);
+    component.config.update((config) => ({ ...config, city: city }));
 
     expect(component.getWidgetData()).toEqual({ city: city });
     expect(component.isFormValid()).toEqual(true);
@@ -58,7 +59,7 @@ describe("WeatherMiniWidgetComponent", () => {
 
   it("Should not refresh widget because of error", () => {
     const city = "Paris";
-    component.city.set(city);
+    component.config.update((config) => ({ ...config, city: city }));
 
     component.refreshWidget();
     httpTestingController

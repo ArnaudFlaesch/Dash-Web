@@ -1,8 +1,4 @@
-<dash-widget
-  [widgetData]="getWidgetData()"
-  (refreshWidgetAction)="this.refreshWidget()"
-  [isWidgetLoaded]="isWidgetLoaded()"
->
+<dash-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="refreshWidget()" [isWidgetLoaded]="isWidgetLoaded()">
   <ng-template #headerIcon>
     <mat-icon>electric_bolt</mat-icon>
   </ng-template>

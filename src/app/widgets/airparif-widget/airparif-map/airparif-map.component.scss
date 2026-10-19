@@ -1,35 +1,32 @@
-.map-container {
+@use "mixins" as *;
+
+.map-container,
+.map-frame,
+#map {
   height: 100%;
+}
 
-  .map-frame {
-    border: 2px solid #000;
-    height: 100%;
+.map-frame {
+  border: 2px solid #000;
+}
 
-    #map {
-      height: 100%;
-
-      .sidebar {
-        z-index: 1000;
-      }
-    }
-  }
+#map .sidebar {
+  z-index: 1000;
 }
 
 #forecast-indices-data {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.4em;
+  @include flex-column(0.4em);
+
   max-width: fit-content;
 
   #forecast-select-buttons {
     display: flex;
-    flex-direction: row;
     column-gap: 0.2em;
   }
 
   #sidepanel-indices {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
+
     width: fit-content;
 
     .airparif-indice {
@@ -39,12 +36,10 @@
   }
 
   #indices-list {
-    display: flex;
-    flex-direction: column;
-    row-gap: 0.1em;
+    @include flex-column(0.1em);
 
     .indice-label {
-      border-radius: 0.25rem;
+      border-radius: $border-radius;
     }
   }
 }

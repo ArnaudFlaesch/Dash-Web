@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import {
   endOfMonth,
   endOfWeek,
@@ -38,7 +39,7 @@ describe("WorkoutWidgetComponent", () => {
         AuthService,
         ErrorHandlerService,
         WidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
     }).compileComponents();
 

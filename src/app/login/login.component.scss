@@ -1,17 +1,17 @@
+@use "mixins" as *;
+
 #login-page {
   display: flex;
   height: 100%;
 
   #login-container {
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem 4rem;
-    background-color: #fff;
-    border-color: #000;
-    border-width: 2px;
-    border-radius: 0.25rem;
+    @include flex-column;
+
     align-items: center;
     margin: auto;
+    padding: 1.5rem 4rem;
+    border-radius: $border-radius;
+    background-color: #fff;
 
     #logo-container {
       display: inline-block;
@@ -29,22 +29,16 @@
     }
 
     #login-form {
-      display: flex;
-      flex-direction: column;
+      @include flex-column(1rem);
+
       margin-top: 2.5rem;
-      row-gap: 1rem;
 
       #login-button-label {
         display: flex;
-        flex-direction: row;
         align-items: center;
 
         mat-spinner {
           margin-right: 1.25rem;
-
-          span {
-            margin: 0 auto;
-          }
         }
       }
     }

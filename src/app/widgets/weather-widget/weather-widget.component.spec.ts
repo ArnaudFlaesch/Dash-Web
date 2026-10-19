@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
@@ -148,7 +149,7 @@ describe("WeatherWidgetComponent", () => {
         DateUtilsService,
         ErrorHandlerService,
         WidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
     }).compileComponents();
 
@@ -169,7 +170,7 @@ describe("WeatherWidgetComponent", () => {
       expect(component.cityData()).toEqual(undefined);
       expect(component.forecastResponse()).toEqual([]);
       expect(component.isWidgetLoaded()).toEqual(false);
-      component.city.set(cityName);
+      component.config.update((config) => ({ ...config, city: cityName }));
       expect(component.isFormValid()).toEqual(true);
       expect(component.getWidgetData()).toEqual({ city: cityName });
       component.refreshWidget();
@@ -187,7 +188,7 @@ describe("WeatherWidgetComponent", () => {
   describe("Error cases", () => {
     it("should display error messages", () => {
       const cityName = "Paris";
-      component.city.set(cityName);
+      component.config.update((config) => ({ ...config, city: cityName }));
       component.refreshWidget();
       const requests = httpTestingController.match({ method: "GET" });
       requests[0].error(new ProgressEvent("Server error"));

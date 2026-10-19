@@ -1,12 +1,22 @@
-#workout-sessions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+@use "mixins" as *;
 
-  @media (width >=400px) {
+// One column on small widgets, two columns otherwise
+%two-columns-grid {
+  @include grid-columns(1);
+
+  @media (width >= 300px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+#workout-sessions-grid {
+  @include grid-columns(2);
+
+  @media (width >= 400px) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  @media (width >=640px) {
+  @media (width >= $breakpoint-sm) {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
@@ -20,12 +30,7 @@
 }
 
 #workout-types-grid {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-
-  @media (width >=300px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  @extend %two-columns-grid;
 }
 
 #workout-stats-by-week-container,
@@ -37,11 +42,6 @@
   }
 
   .stats-container {
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-
-    @media (width >=300px) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+    @extend %two-columns-grid;
   }
 }

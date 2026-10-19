@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { format } from "date-fns";
 import { IActivity } from "../IStrava";
 import { fr } from "date-fns/locale/fr";
@@ -12,7 +12,6 @@ import {
 @Component({
   selector: "dash-strava-activities",
   templateUrl: "./strava-activities.component.html",
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

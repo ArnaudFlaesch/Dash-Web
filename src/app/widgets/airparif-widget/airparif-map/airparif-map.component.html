@@ -17,70 +17,51 @@
         </div>
       </div>
 
-      @if (this.airParifForecast().length > 0) {
+      @if (airParifForecast().length > 0) {
         <div id="forecast-indices-data">
           <div id="forecast-select-buttons">
-            <button
-              mat-raised-button
-              [color]="this.isForecastModeToday() ? 'primary' : ''"
-              (click)="this.selectTodayForecast()"
-            >
+            <button mat-raised-button [color]="isForecastModeToday() ? 'primary' : ''" (click)="selectTodayForecast()">
               Aujourd'hui
             </button>
-            @if (this.airParifForecast().length > 1) {
+            @if (airParifForecast().length > 1) {
               <button
                 mat-raised-button
-                [color]="this.isForecastModeTomorrow() ? 'primary' : ''"
-                (click)="this.selectTomorrowForecast()"
+                [color]="isForecastModeTomorrow() ? 'primary' : ''"
+                (click)="selectTomorrowForecast()"
               >
                 Demain
               </button>
             }
           </div>
 
-          @if (this.forecastToDisplay(); as forecastToDisplay) {
+          @if (forecastToDisplay(); as forecastToDisplay) {
             <div id="sidepanel-indices">
               <div
                 class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.indice) }"
+                [style]="{ 'background-color': getColorFromIndice(forecastToDisplay.indice) }"
               >
                 <span>Indice global</span><span>{{ forecastToDisplay.indice }}</span>
               </div>
-              <div
-                class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.no2) }"
-              >
+              <div class="airparif-indice" [style]="{ 'background-color': getColorFromIndice(forecastToDisplay.no2) }">
                 <span>Dioxyde d'Azote (NO₂)</span><span>{{ forecastToDisplay.no2 }}</span>
               </div>
-              <div
-                class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.o3) }"
-              >
+              <div class="airparif-indice" [style]="{ 'background-color': getColorFromIndice(forecastToDisplay.o3) }">
                 <span>Ozone (O₃)</span><span>{{ forecastToDisplay.o3 }}</span>
               </div>
-              <div
-                class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.pm10) }"
-              >
+              <div class="airparif-indice" [style]="{ 'background-color': getColorFromIndice(forecastToDisplay.pm10) }">
                 <span>Particules (diamètre inférieur à 10µm) (PM₁₀)</span><span>{{ forecastToDisplay.pm10 }}</span>
               </div>
-              <div
-                class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.pm25) }"
-              >
+              <div class="airparif-indice" [style]="{ 'background-color': getColorFromIndice(forecastToDisplay.pm25) }">
                 <span>pm25</span><span>{{ forecastToDisplay.pm25 }}</span>
               </div>
-              <div
-                class="airparif-indice"
-                [style]="{ 'background-color': this.getColorFromIndice(forecastToDisplay.so2) }"
-              >
+              <div class="airparif-indice" [style]="{ 'background-color': getColorFromIndice(forecastToDisplay.so2) }">
                 <span>Dioxyde de soufre (SO₂)</span><span>{{ forecastToDisplay.so2 }}</span>
               </div>
             </div>
           }
 
           <div id="indices-list">
-            @for (indice of this.airParifCouleursIndices(); track indice.name) {
+            @for (indice of airParifCouleursIndices(); track indice.name) {
               <span class="indice-label" [style]="{ 'background-color': indice.color }">
                 {{ indice.name }}
               </span>

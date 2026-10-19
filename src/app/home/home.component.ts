@@ -1,53 +1,43 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
-import { Location, NgClass } from "@angular/common";
+import { Location } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  OnInit,
-  signal,
-  WritableSignal
-} from "@angular/core";
+import { Component, DestroyRef, inject, linkedSignal, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormField, form } from "@angular/forms/signals";
+import { form, FormField } from "@angular/forms/signals";
+import { MatMiniFabButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
+import { MatDivider } from "@angular/material/divider";
+import { MatIcon } from "@angular/material/icon";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatSlideToggle } from "@angular/material/slide-toggle";
+import { MatTooltip } from "@angular/material/tooltip";
 import { ActivatedRoute, Router } from "@angular/router";
+import { filter, switchMap } from "rxjs";
 import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
-import { ErrorHandlerService } from "../services/error.handler.service";
-import { TabService } from "../services/tab.service/tab.service";
-import { ThemeService } from "../services/theme.service/theme.service";
-import { WidgetService } from "../services/widget.service/widget.service";
 import { CreateWidgetModalComponent } from "../modals/create-widget-modal/create-widget-modal.component";
 import { ImportConfigModalComponent } from "../modals/import-config-modal/import-config-modal.component";
 import { IWidgetConfig } from "../model/IWidgetConfig";
 import { ITab } from "../model/Tab";
+import { NotificationsComponent } from "../notifications/notifications.component";
 import { AuthService } from "../services/auth.service/auth.service";
 import { ConfigService } from "../services/config.service/config.service";
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { WidgetListComponent } from "../widgets/widget-list/widget-list.component";
-import { MiniWidgetListComponent } from "../widgets/miniwidget-list/miniwidget-list.component";
-import { MatDivider } from "@angular/material/divider";
-import { MatSlideToggle } from "@angular/material/slide-toggle";
-import { NotificationsComponent } from "../notifications/notifications.component";
-import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
-import { MatIcon } from "@angular/material/icon";
-import { MatTooltip } from "@angular/material/tooltip";
-import { MatMiniFabButton } from "@angular/material/button";
+import { ErrorHandlerService } from "../services/error.handler.service";
+import { TabService } from "../services/tab.service/tab.service";
+import { ThemeService } from "../services/theme.service/theme.service";
+import { WidgetService } from "../services/widget.service/widget.service";
 import { TabComponent } from "../tab/tab.component";
+import { MiniWidgetListComponent } from "../widgets/miniwidget-list/miniwidget-list.component";
+import { WidgetListComponent } from "../widgets/widget-list/widget-list.component";
 
 @Component({
   selector: "dash-home",
   templateUrl: "./home.component.html",
-  styleUrls: ["./home.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./home.component.scss",
   imports: [
     CdkDropList,
     TabComponent,
     CdkDrag,
-    NgClass,
     MatMiniFabButton,
     MatTooltip,
     MatIcon,
@@ -63,22 +53,18 @@ import { TabComponent } from "../tab/tab.component";
     FormField
   ]
 })
-export class HomeComponent implements OnInit {
-  public tabs: WritableSignal<ITab[]> = signal([]);
-  public activeWidgets: WritableSignal<IWidgetConfig[]> = signal([]);
-  public activeTab = signal(-1);
-  public isDashboardLoaded = signal(false);
-  public areWidgetsLoaded = signal(false);
-  public editModeEnabled = signal(false);
-  public isDarkTheme = signal(false);
-  public toggleThemeForm = form(this.isDarkTheme);
-  public cashManagerApplicationUrl = "https://arnaudflaesch.github.io/CashManager/";
+export class HomeComponent {
+  public readonly tabs = signal<ITab[]>([]);
+  public readonly activeWidgets = signal<IWidgetConfig[]>([]);
+  public readonly activeTab = signal(-1);
+  public readonly isDashboardLoaded = signal(false);
+  public readonly areWidgetsLoaded = signal(false);
+  public readonly editModeEnabled = signal(false);
+  public readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
+  public readonly toggleThemeForm = form(this.isDarkTheme);
+  public readonly cashManagerApplicationUrl = "https://arnaudflaesch.github.io/CashManager/";
+  public readonly canUserSeeNotifications = inject(AuthService).isUserAdmin;
 
-  public readonly canUserSeeNotifications = computed(() => this.authService.isUserAdmin());
-
-  private refreshInterval: number | undefined;
-
-  private readonly destroyRef = inject(DestroyRef);
   private readonly ERROR_MESSAGE_INIT_DASHBOARD = "Erreur lors de l'initialisation du dashboard.";
   private readonly ERROR_EXPORT_CONFIGURATION = "Erreur lors de l'export de la configuration.";
   private readonly ERROR_MESSAGE_GET_WIDGETS = "Erreur lors de la récupération des widgets.";
@@ -89,7 +75,7 @@ export class HomeComponent implements OnInit {
   private readonly ERROR_MESSAGE_ADD_TAB = "Erreur lors de l'ajout d'un onglet.";
   private readonly ERROR_UPDATING_TABS = "Erreurs lors de la mise à jour des onglets";
   private readonly ERROR_MESSAGE_DELETE_TAB = "Erreur lors de la suppression d'un onglet.";
-  private readonly refreshTimeout = 600000; // 10 minutes
+  private readonly REFRESH_INTERVAL = 600000; // 10 minutes
 
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -104,31 +90,18 @@ export class HomeComponent implements OnInit {
 
   public constructor() {
     this.initDashboard();
-    this.destroyRef.onDestroy(() => this.clearWidgetAutoRefresh());
-  }
 
-  public ngOnInit(): void {
-    this.widgetService.widgetDeleted.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (widgetId) => this.deleteWidgetFromDashboard(widgetId)
-    });
-    this.setupWidgetAutoRefresh();
-    this.isDarkTheme.set(this.themeService.isPreferredThemeDarkMode());
-  }
+    this.widgetService.widgetDeleted
+      .pipe(takeUntilDestroyed())
+      .subscribe((widgetId) => this.deleteWidgetFromDashboard(widgetId));
 
-  public setupWidgetAutoRefresh(): void {
-    this.refreshInterval = setInterval(this.refreshAllWidgets.bind(this), this.refreshTimeout);
-  }
-
-  public clearWidgetAutoRefresh(): void {
-    if (this.refreshInterval) {
-      clearInterval(this.refreshInterval);
-    }
+    const refreshInterval = setInterval(() => this.refreshAllWidgets(), this.REFRESH_INTERVAL);
+    inject(DestroyRef).onDestroy(() => clearInterval(refreshInterval));
   }
 
   public addNewTab(): void {
-    const newTabLabel = "Nouvel onglet";
-    this.tabService.addTab(newTabLabel).subscribe({
-      next: (insertedTab: ITab) => {
+    this.tabService.addTab("Nouvel onglet").subscribe({
+      next: (insertedTab) => {
         this.tabs.update((tabs) => [...tabs, insertedTab]);
         this.activeTab.set(insertedTab.id);
         this.activeWidgets.set([]);
@@ -142,13 +115,10 @@ export class HomeComponent implements OnInit {
     if (this.activeTab() !== tabId) {
       this.activeTab.set(tabId);
       const url = this.router
-        .createUrlTree([], {
-          relativeTo: this.activatedRoute,
-          queryParams: { tabId: tabId }
-        })
+        .createUrlTree([], { relativeTo: this.activatedRoute, queryParams: { tabId } })
         .toString();
       this.location.go(url);
-      this.loadWidgets(this.activeTab());
+      this.loadWidgets(tabId);
     }
   }
 
@@ -157,9 +127,9 @@ export class HomeComponent implements OnInit {
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_WIDGET),
       complete: () =>
-        this.activeWidgets.update((activeWidgets) => {
-          return activeWidgets.filter((widget: IWidgetConfig) => widget.id !== id);
-        })
+        this.activeWidgets.update((activeWidgets) =>
+          activeWidgets.filter((widget) => widget.id !== id)
+        )
     });
   }
 
@@ -172,44 +142,37 @@ export class HomeComponent implements OnInit {
   }
 
   public openCreateWidgetModal(): void {
-    const dialogRef = this.dialog.open(CreateWidgetModalComponent, {
-      height: "400px",
-      width: "600px"
-    });
-
-    dialogRef.afterClosed().subscribe((result: WidgetTypeEnum) => {
-      if (result) {
-        const type = WidgetTypeEnum[result];
-        this.widgetService.addWidget(type, this.activeTab()).subscribe({
-          next: (response: IWidgetConfig) => {
-            this.activeWidgets.update((activeWidgets) => [...activeWidgets, response]);
-          },
-          error: (error: HttpErrorResponse) =>
-            this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_WIDGET)
-        });
-      }
-    });
+    this.dialog
+      .open(CreateWidgetModalComponent, { height: "400px", width: "600px" })
+      .afterClosed()
+      .pipe(
+        filter(Boolean),
+        switchMap((type: keyof typeof WidgetTypeEnum) =>
+          this.widgetService.addWidget(WidgetTypeEnum[type], this.activeTab())
+        )
+      )
+      .subscribe({
+        next: (widget) => this.activeWidgets.update((activeWidgets) => [...activeWidgets, widget]),
+        error: (error: HttpErrorResponse) =>
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_WIDGET)
+      });
   }
 
   public refreshAllWidgets(): void {
-    this.widgetService._refreshWidgetsAction.next(null);
+    this.widgetService.refreshAllWidgets();
   }
 
   public openImportConfigModal(): void {
-    this.dialog.open(ImportConfigModalComponent, {
-      height: "400px",
-      width: "600px"
-    });
+    this.dialog.open(ImportConfigModalComponent, { height: "400px", width: "600px" });
   }
 
   public downloadConfig(): void {
     this.configService.exportConfig().subscribe({
       next: (response) => {
         console.info("Configuration exportée");
-        const url = window.URL.createObjectURL(new Blob([response]));
         const downloadLink = document.createElement("a");
-        downloadLink.href = url;
-        downloadLink.setAttribute("download", "dashboardConfig.json");
+        downloadLink.href = URL.createObjectURL(new Blob([response]));
+        downloadLink.download = "dashboardConfig.json";
         document.body.appendChild(downloadLink);
         downloadLink.click();
         URL.revokeObjectURL(downloadLink.href);
@@ -233,20 +196,17 @@ export class HomeComponent implements OnInit {
   }
 
   public drop(event: CdkDragDrop<ITab[]>): void {
-    const tabsCopy = [...this.tabs()];
-    moveItemInArray(tabsCopy, event.previousIndex, event.currentIndex);
-    const updatedTabs = tabsCopy.map((tab: ITab, index: number) => {
-      tab.tabOrder = index;
-      return tab;
-    });
+    const tabs = [...this.tabs()];
+    moveItemInArray(tabs, event.previousIndex, event.currentIndex);
+    const updatedTabs = tabs.map((tab, index) => ({ ...tab, tabOrder: index }));
     this.tabService.updateTabs(updatedTabs).subscribe({
-      next: (tabs: ITab[]) => this.tabs.set(tabs),
+      next: (tabs) => this.tabs.set(tabs),
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_UPDATING_TABS)
     });
   }
 
   public toggleEditMode(): void {
-    this.editModeEnabled.set(!this.editModeEnabled());
+    this.editModeEnabled.update((editModeEnabled) => !editModeEnabled);
   }
 
   public toggleTheme(isToggleChecked: boolean): void {
@@ -258,14 +218,10 @@ export class HomeComponent implements OnInit {
       next: (tabs) => {
         this.tabs.set(tabs);
         if (tabs.length) {
-          this.activatedRoute.queryParams.subscribe((params) => {
-            const tabIdParam = params["tabId"];
-            if (tabIdParam && tabs.some((tab) => tab.id === Number.parseInt(tabIdParam))) {
-              this.activeTab.set(Number.parseInt(tabIdParam));
-            } else {
-              this.activeTab.set(tabs[0].id);
-            }
-          });
+          const tabIdParam = Number.parseInt(
+            this.activatedRoute.snapshot.queryParamMap.get("tabId") ?? ""
+          );
+          this.activeTab.set(tabs.some((tab) => tab.id === tabIdParam) ? tabIdParam : tabs[0].id);
           this.loadWidgets(this.activeTab());
         } else {
           this.areWidgetsLoaded.set(true);
@@ -293,16 +249,15 @@ export class HomeComponent implements OnInit {
   }
 
   private deleteTabFromDashboard(tabId: number): void {
-    this.activeWidgets.set(
-      this.activeWidgets().filter((widget: IWidgetConfig) => widget.tabId !== tabId)
-    );
-    if (this.tabs().length > 1) {
-      if (this.tabs()[0].id === tabId) {
-        this.selectTab(this.tabs()[1].id);
+    const tabs = this.tabs();
+    this.activeWidgets.update((widgets) => widgets.filter((widget) => widget.tabId !== tabId));
+    if (tabs.length > 1) {
+      if (tabs[0].id === tabId) {
+        this.selectTab(tabs[1].id);
       } else if (this.activeTab() === tabId) {
-        this.selectTab(this.tabs()[0].id);
+        this.selectTab(tabs[0].id);
       }
     }
-    this.tabs.set(this.tabs().filter((tab) => tab.id !== tabId));
+    this.tabs.set(tabs.filter((tab) => tab.id !== tabId));
   }
 }

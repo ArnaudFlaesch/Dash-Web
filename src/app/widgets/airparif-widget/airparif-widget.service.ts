@@ -1,13 +1,13 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { Observable } from "rxjs";
-import authorizationBearer from "../../services/authorizationBearer/authorizationBearer";
 import { environment } from "../../../environments/environment";
 import { IAirParifCouleur, IForecast } from "./model/IAirParif";
 
-@Injectable()
+@Service()
 export class AirParifWidgetService {
   private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.backend_url}/airParifWidget`;
 
   public getAirParifWebsiteUrl(): string {
     return "https://www.airparif.asso.fr";
@@ -15,22 +15,11 @@ export class AirParifWidgetService {
 
   public getCommunePrevision(communeInseeCode: string): Observable<IForecast[]> {
     return this.http.get<IForecast[]>(
-      `${environment.backend_url}/airParifWidget/previsionCommune?commune=${communeInseeCode}`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
+      `${this.baseUrl}/previsionCommune?commune=${communeInseeCode}`
     );
   }
 
   public getColors(): Observable<IAirParifCouleur[]> {
-    return this.http.get<IAirParifCouleur[]>(`${environment.backend_url}/airParifWidget/couleurs`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      }
-    });
+    return this.http.get<IAirParifCouleur[]>(`${this.baseUrl}/couleurs`);
   }
 }

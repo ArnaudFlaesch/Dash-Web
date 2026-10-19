@@ -1,20 +1,31 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
+import { MatButton } from "@angular/material/button";
+import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
 import {
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
   MatDialogTitle
 } from "@angular/material/dialog";
-import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
-import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
+import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
+
+const WIDGET_TYPE_ICONS: Record<keyof typeof WidgetTypeEnum, string> = {
+  WEATHER: "sunny",
+  RSS: "feed",
+  CALENDAR: "calendar_month",
+  STRAVA: "directions_run",
+  STEAM: "sports_esports",
+  WORKOUT: "fitness_center",
+  AIRPARIF: "air",
+  ECOWATT: "electric_bolt",
+  INCIDENT: "priority_high"
+};
 
 @Component({
   selector: "dash-create-widget-modal",
   templateUrl: "./create-widget-modal.component.html",
-  styleUrls: ["./create-widget-modal.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "../create-widget-modal.scss",
   imports: [
     MatDialogTitle,
     MatDialogContent,
@@ -28,42 +39,8 @@ import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card"
   ]
 })
 export class CreateWidgetModalComponent {
-  public widgetTypeEnumKeys: { type: string; icon: string }[] = Object.keys(WidgetTypeEnum)
-    .filter((key) => Number.isNaN(Number.parseInt(key, 10)))
-    .map((type: string) => {
-      return { type: type, icon: this.getWidgetTypeEnumIconToDisplay(type) };
-    });
-
-  public getWidgetTypeEnumIconToDisplay(widgetType: unknown): string {
-    const widgetTypeEnumKey = WidgetTypeEnum[widgetType as WidgetTypeEnum];
-    switch (widgetTypeEnumKey as unknown as WidgetTypeEnum) {
-      case WidgetTypeEnum.RSS: {
-        return "feed";
-      }
-      case WidgetTypeEnum.WEATHER: {
-        return "sunny";
-      }
-      case WidgetTypeEnum.STRAVA: {
-        return "directions_run";
-      }
-      case WidgetTypeEnum.CALENDAR: {
-        return "calendar_month";
-      }
-      case WidgetTypeEnum.STEAM: {
-        return "sports_esports";
-      }
-      case WidgetTypeEnum.WORKOUT: {
-        return "fitness_center";
-      }
-      case WidgetTypeEnum.AIRPARIF: {
-        return "air";
-      }
-      case WidgetTypeEnum.ECOWATT: {
-        return "electric_bolt";
-      }
-      case WidgetTypeEnum.INCIDENT: {
-        return "priority_high";
-      }
-    }
-  }
+  public readonly widgetTypes = Object.entries(WIDGET_TYPE_ICONS).map(([type, icon]) => ({
+    type,
+    icon
+  }));
 }

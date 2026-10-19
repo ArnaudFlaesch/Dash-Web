@@ -1,7 +1,7 @@
 <dash-widget
   [widgetData]="getWidgetData()"
   [isFormValid]="isFormValid()"
-  (refreshWidgetAction)="this.refreshWidget()"
+  (refreshWidgetAction)="refreshWidget()"
   [isWidgetLoaded]="true"
 >
   <ng-template #headerIcon>
@@ -24,7 +24,7 @@
       <input
         matInput
         id="steamUserIdInput"
-        [formField]="steamUserIdForm"
+        [formField]="configForm.steamUserId"
         placeholder="Saisissez l'user ID du joueur Steam'"
       />
     </mat-form-field>
@@ -37,16 +37,16 @@
         <input matInput [formField]="searchForm" />
       </mat-form-field>
 
-      @if (this.searchQuery()) {
-        <button mat-icon-button matTooltip="Annuler la recherche" id="reset-form-button" (click)="this.resetForm()">
+      @if (searchQuery()) {
+        <button mat-icon-button matTooltip="Annuler la recherche" id="reset-form-button" (click)="resetForm()">
           <mat-icon aria-hidden="false">close</mat-icon>
         </button>
       }
     </form>
 
-    @if (this.steamUserId(); as steamUserId) {
-      @if (this.playerData(); as playerData) {
-        @for (game of this.ownedGamesDisplay(); track game.appid) {
+    @if (config().steamUserId; as steamUserId) {
+      @if (playerData(); as playerData) {
+        @for (game of ownedGamesDisplay(); track game.appid) {
           <dash-game-details [steamUserId]="steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
         }
       }
@@ -56,7 +56,7 @@
       (page)="onPageChanged($event)"
       [length]="gameCount()"
       [pageSize]="pageSize"
-      [pageIndex]="pageNumber"
+      [pageIndex]="pageNumber()"
       [pageSizeOptions]="pageSizeOptions"
       aria-label="Sélectionnez une page"
     />

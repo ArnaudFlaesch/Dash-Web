@@ -1,17 +1,15 @@
 <h1 mat-dialog-title>Ajouter un widget</h1>
 
 <mat-dialog-content>
-  <div id="widget-types-list">
-    @for (widgetType of widgetTypeEnumKeys; track widgetType.type) {
+  <div class="widget-types-list">
+    @for (widgetType of widgetTypes; track widgetType.type) {
       <mat-card>
-        <mat-card-content>
-          <div class="widget-type-container">
-            <mat-icon>{{ widgetType.icon }}</mat-icon>
-            <span> {{ widgetType.type }}</span>
-          </div>
+        <mat-card-content class="widget-type-container">
+          <mat-icon>{{ widgetType.icon }}</mat-icon>
+          <span>{{ widgetType.type }}</span>
         </mat-card-content>
         <mat-card-actions>
-          <button id="{{ widgetType.type }}" mat-raised-button color="primary" [mat-dialog-close]="widgetType.type">
+          <button [id]="widgetType.type" mat-raised-button color="primary" [mat-dialog-close]="widgetType.type">
             Ajouter
           </button>
         </mat-card-actions>
@@ -20,4 +18,4 @@
   </div>
 </mat-dialog-content>
 
-<mat-dialog-actions> <button mat-raised-button mat-dialog-close color="warn">Fermer</button> </mat-dialog-actions>
+<mat-dialog-actions><button mat-raised-button mat-dialog-close color="warn">Fermer</button></mat-dialog-actions>

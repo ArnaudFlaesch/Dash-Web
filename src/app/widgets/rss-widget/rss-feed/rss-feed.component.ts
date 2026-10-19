@@ -1,9 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from "@angular/core";
-import { isThisYear, isToday } from "date-fns";
-import { IArticle } from "../IArticle";
-import { SafePipe } from "../../../pipes/safe.pipe";
-import { DateFormatPipe } from "../../../pipes/date-format.pipe";
-import { NgClass } from "@angular/common";
+import { Component, input, output, signal } from "@angular/core";
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -11,18 +6,20 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from "@angular/material/expansion";
+import { isThisYear, isToday } from "date-fns";
+import { DateFormatPipe } from "../../../pipes/date-format.pipe";
+import { SafePipe } from "../../../pipes/safe.pipe";
+import { IArticle } from "../IArticle";
 
 @Component({
   selector: "dash-rss-feed",
   templateUrl: "./rss-feed.component.html",
-  styleUrls: ["./rss-feed.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./rss-feed.component.scss",
   imports: [
     MatAccordion,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
-    NgClass,
     MatExpansionPanelContent,
     DateFormatPipe,
     SafePipe
@@ -41,10 +38,8 @@ export class RssFeedComponent {
   }
 
   public formatTitleForArticle(article: IArticle): string {
-    const articlePubDate = article.pubDate ? article.pubDate : article.updated;
-    const articleDate = new Date(articlePubDate ?? "");
-    const date = this.getPublicationDateToDisplay(articleDate);
-    return `${date} ${article.title}`;
+    const articleDate = new Date(article.pubDate || article.updated || "");
+    return `${this.getPublicationDateToDisplay(articleDate)} ${article.title}`;
   }
 
   public isArticleRead(guid: string): boolean {
@@ -52,7 +47,7 @@ export class RssFeedComponent {
   }
 
   public isArticleOpened(guid: string): boolean {
-    return this.currentOpenedArticle() !== undefined && this.currentOpenedArticle() === guid;
+    return this.currentOpenedArticle() === guid;
   }
 
   public onOpenDetail(guid: string): void {
@@ -68,21 +63,12 @@ export class RssFeedComponent {
 
   private getPublicationDateToDisplay(articleDate: Date): string {
     if (isToday(articleDate)) {
-      return articleDate.toLocaleTimeString("fr", {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-    } else if (isThisYear(articleDate)) {
-      return articleDate.toLocaleTimeString("fr", {
-        day: "2-digit",
-        month: "2-digit"
-      });
-    } else {
-      return articleDate.toLocaleTimeString("fr", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric"
-      });
+      return articleDate.toLocaleTimeString("fr", { hour: "2-digit", minute: "2-digit" });
     }
+    return articleDate.toLocaleTimeString("fr", {
+      day: "2-digit",
+      month: "2-digit",
+      ...(isThisYear(articleDate) ? {} : { year: "numeric" as const })
+    });
   }
 }

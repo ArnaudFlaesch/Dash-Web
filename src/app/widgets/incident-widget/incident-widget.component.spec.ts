@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { startOfYesterday } from "date-fns";
@@ -21,7 +22,7 @@ describe("IncidentWidgetComponent", () => {
         ErrorHandlerService,
         IncidentWidgetService,
         WidgetService,
-        { provide: "widgetId", useValue: widgetId }
+        { provide: WIDGET_ID, useValue: widgetId }
       ]
     }).compileComponents();
 
@@ -64,7 +65,7 @@ describe("IncidentWidgetComponent", () => {
     );
     startStreakRequest.flush(incidentWidgetConfig);
 
-    component.incidentName.set("Incident test");
+    component.config.update((config) => ({ ...config, incidentName: "Incident test" }));
 
     expect(component.isFormValid()).toEqual(true);
 

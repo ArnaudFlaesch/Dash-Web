@@ -1,28 +1,22 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-  WritableSignal
-} from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { forkJoin } from "rxjs";
 import { SafePipe } from "../../pipes/safe.pipe";
 import { WidgetComponent } from "../widget/widget.component";
+import { injectWidgetData } from "../widget.tokens";
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { AirParifMapComponent } from "./airparif-map/airparif-map.component";
 import { AirParifWidgetService } from "./airparif-widget.service";
 import { IAirParifCouleur, IForecast } from "./model/IAirParif";
-import { FormField, form } from "@angular/forms/signals";
+import { form, FormField } from "@angular/forms/signals";
+import { requiredText } from "../../utils/form-validators";
 
 @Component({
   selector: "dash-airparif-widget",
   templateUrl: "./airparif-widget.component.html",
-  styleUrls: ["./airparif-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./airparif-widget.component.scss",
   imports: [
     WidgetComponent,
     MatIcon,
@@ -35,17 +29,19 @@ import { FormField, form } from "@angular/forms/signals";
   ]
 })
 export class AirParifWidgetComponent {
-  public airParifApiKey = signal<string>("");
-  public communeInseeCode = signal<string>("");
-  public airParifApiKeyForm = form(this.airParifApiKey);
-  public communeInseeCodeForm = form(this.communeInseeCode);
-  public airParifCouleursIndices: WritableSignal<IAirParifCouleur[]> = signal([]);
-  public airParifForecast: WritableSignal<IForecast[]> = signal([]);
-  public isWidgetLoaded = signal(true);
+  public readonly config = signal({
+    airParifApiKey: injectWidgetData("airParifApiKey", ""),
+    communeInseeCode: injectWidgetData("communeInseeCode", "")
+  });
+  public readonly configForm = form(this.config, (path) => {
+    requiredText(path.airParifApiKey);
+    requiredText(path.communeInseeCode);
+  });
+  public readonly airParifCouleursIndices = signal<IAirParifCouleur[]>([]);
+  public readonly airParifForecast = signal<IForecast[]>([]);
+  public readonly isWidgetLoaded = signal(true);
 
-  public readonly isFormValid = computed(
-    () => this.airParifApiKey().trim().length > 0 && this.communeInseeCode().trim().length > 0
-  );
+  public readonly isFormValid = computed(() => this.configForm().valid());
 
   public readonly airParifWidgetService = inject(AirParifWidgetService);
 
@@ -54,11 +50,9 @@ export class AirParifWidgetComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public refreshWidget(): void {
-    const apiKey = this.airParifApiKey();
-    const inseeCode = this.communeInseeCode();
-    if (apiKey && inseeCode) {
+    if (this.isFormValid()) {
       forkJoin([
-        this.airParifWidgetService.getCommunePrevision(inseeCode),
+        this.airParifWidgetService.getCommunePrevision(this.config().communeInseeCode),
         this.airParifWidgetService.getColors()
       ]).subscribe({
         next: ([forecast, airParifColors]) => {
@@ -71,19 +65,7 @@ export class AirParifWidgetComponent {
     }
   }
 
-  public getWidgetData():
-    | {
-        airParifApiKey: string;
-        communeInseeCode: string;
-      }
-    | undefined {
-    const apiKey = this.airParifApiKey();
-    const inseeCode = this.communeInseeCode();
-    return apiKey && inseeCode
-      ? {
-          airParifApiKey: apiKey,
-          communeInseeCode: inseeCode
-        }
-      : undefined;
+  public getWidgetData(): { airParifApiKey: string; communeInseeCode: string } | undefined {
+    return this.isFormValid() ? this.config() : undefined;
   }
 }

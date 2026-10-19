@@ -7,7 +7,6 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "changeDetection": "OnPush",
           "style": "scss"
         },
         "@schematics/angular:application": {
@@ -102,7 +101,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "coverageReporters": ["lcov",  "text-summary"],
+            "coverageReporters": ["lcov", "text-summary"],
             "coverageExclude": ["**/*.spec.ts"]
           }
         }

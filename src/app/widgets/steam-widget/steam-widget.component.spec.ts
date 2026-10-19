@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { PageEvent } from "@angular/material/paginator";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
@@ -23,7 +24,7 @@ describe("SteamWidgetComponent", () => {
         SteamWidgetService,
         WidgetService,
         ErrorHandlerService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
     }).compileComponents();
 
@@ -77,7 +78,7 @@ describe("SteamWidgetComponent", () => {
     expect(component.ownedGamesDisplay()).toEqual([]);
     const steamUserId = "1337";
     expect(component.isFormValid()).toEqual(false);
-    component.steamUserId.set(steamUserId);
+    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
     expect(component.isFormValid()).toEqual(true);
     component.refreshWidget();
 
@@ -96,7 +97,7 @@ describe("SteamWidgetComponent", () => {
 
   it("Should load new data on page navigation", () => {
     expect(component.ownedGamesDisplay()).toEqual([]);
-    expect(component.pageNumber).toEqual(0);
+    expect(component.pageNumber()).toEqual(0);
     const pageIndex = 2;
     const pageEvent = {
       pageIndex: pageIndex,
@@ -104,13 +105,13 @@ describe("SteamWidgetComponent", () => {
       length: 150
     } as PageEvent;
     component.onPageChanged(pageEvent);
-    expect(component.pageNumber).toEqual(0);
+    expect(component.pageNumber()).toEqual(0);
     const steamUserId = "1337";
-    component.steamUserId.set(steamUserId);
+    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
     const searchValue = "Mario";
     component.searchQuery.set(searchValue);
     component.onPageChanged(pageEvent);
-    expect(component.pageNumber).toEqual(pageIndex);
+    expect(component.pageNumber()).toEqual(pageIndex);
 
     httpTestingController.expectOne(
       environment.backend_url +
@@ -125,7 +126,7 @@ describe("SteamWidgetComponent", () => {
     expect(component.getWidgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     const steamUserId = "1337";
-    component.steamUserId.set(steamUserId);
+    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
     expect(component.getWidgetData()).toEqual({
       steamUserId: steamUserId
     });

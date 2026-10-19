@@ -1,15 +1,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  signal,
-  WritableSignal
-} from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { toObservable, takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormField, form } from "@angular/forms/signals";
+import { form, FormField } from "@angular/forms/signals";
+import { requiredText } from "../../utils/form-validators";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
@@ -21,16 +14,15 @@ import { GameDetailsComponent } from "./game-details/game-details.component";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatIconButton } from "@angular/material/button";
-
 import { MatInput } from "@angular/material/input";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { WidgetComponent } from "../widget/widget.component";
+import { injectWidgetData } from "../widget.tokens";
 
 @Component({
   selector: "dash-steam-widget",
   templateUrl: "./steam-widget.component.html",
-  styleUrls: ["./steam-widget.component.scss", "../widget/widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./steam-widget.component.scss",
   imports: [
     WidgetComponent,
     MatFormField,
@@ -52,46 +44,45 @@ export class SteamWidgetComponent {
   public readonly isPlayerDataLoaded = signal(false);
   public readonly areGamesLoaded = signal(false);
 
-  public gameCount = signal(0);
-  public pageSize = 25;
-  public pageSizeOptions = [this.pageSize];
-  public pageNumber = 0;
+  public readonly gameCount = signal(0);
+  public readonly pageSize = 25;
+  public readonly pageSizeOptions = [this.pageSize];
+  public readonly pageNumber = signal(0);
 
-  public readonly steamUserId = signal<string>("");
-  public readonly steamUserIdForm = form(this.steamUserId);
+  public readonly config = signal({ steamUserId: injectWidgetData("steamUserId", "") });
+  public readonly configForm = form(this.config, (path) => requiredText(path.steamUserId));
   public readonly searchQuery = signal("");
   public readonly searchForm = form(this.searchQuery);
 
-  public readonly isFormValid = computed(() => this.steamUserId().trim().length > 0);
+  public readonly isFormValid = computed(() => this.configForm().valid());
 
-  private readonly ownedGames: WritableSignal<IGameInfoResponse[]> = signal([]);
+  private readonly ownedGames = signal<IGameInfoResponse[]>([]);
 
   private readonly ERROR_GETTING_PLAYER_DATA =
     "Erreur lors de la récupération de vos informations Steam.";
   private readonly ERROR_GETTING_OWNED_GAMES =
     "Erreur lors de la récupération de la liste des jeux.";
 
-  private readonly destroyRef = inject(DestroyRef);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
   public constructor() {
     toObservable(this.searchQuery)
-      .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(500), distinctUntilChanged())
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed())
       .subscribe((searchValue) => {
-        const steamUserId = this.steamUserId();
+        const { steamUserId } = this.config();
         if (steamUserId) {
-          this.pageNumber = 0;
+          this.pageNumber.set(0);
           this.getOwnedGames(steamUserId, searchValue || undefined);
         }
       });
   }
 
   public refreshWidget(): void {
-    const steamUserId = this.steamUserId();
+    const { steamUserId } = this.config();
     if (steamUserId) {
       this.getPlayerData(steamUserId);
-      this.getOwnedGames(steamUserId, this.searchQuery() || undefined, this.pageNumber);
+      this.getOwnedGames(steamUserId, this.searchQuery() || undefined, this.pageNumber());
     }
   }
 
@@ -108,10 +99,10 @@ export class SteamWidgetComponent {
   }
 
   public onPageChanged(event: PageEvent): void {
-    const steamUserId = this.steamUserId();
+    const { steamUserId } = this.config();
     if (steamUserId) {
-      this.pageNumber = event.pageIndex;
-      this.getOwnedGames(steamUserId, this.searchQuery() || undefined, this.pageNumber);
+      this.pageNumber.set(event.pageIndex);
+      this.getOwnedGames(steamUserId, this.searchQuery() || undefined, this.pageNumber());
     }
   }
 
@@ -119,13 +110,8 @@ export class SteamWidgetComponent {
     this.searchQuery.set("");
   }
 
-  public getWidgetData():
-    | {
-        steamUserId: string;
-      }
-    | undefined {
-    const steamUserId = this.steamUserId();
-    return steamUserId ? { steamUserId } : undefined;
+  public getWidgetData(): { steamUserId: string } | undefined {
+    return this.isFormValid() ? this.config() : undefined;
   }
 
   private getOwnedGames(steamUserId: string, search?: string, pageNumber?: number): void {
@@ -143,13 +129,8 @@ export class SteamWidgetComponent {
 
   private gameInfoResponseToGameInfoDisplay(gameInfoResponse: IGameInfoResponse): IGameInfoDisplay {
     const appIdLink = this.steamWidgetService.STEAM_COMMUNITY_URL + gameInfoResponse.appid;
-    const playerAchievementUrl = `${this.playerData()?.profileurl}stats/${gameInfoResponse?.appid}/achievements/`;
+    const playerAchievementUrl = `${this.playerData()?.profileurl}stats/${gameInfoResponse.appid}/achievements/`;
     const gameImgSrc = `${this.steamWidgetService.STEAM_IMAGE_URL}${gameInfoResponse.appid}/${gameInfoResponse.imgIconUrl}.jpg`;
-    return {
-      ...gameInfoResponse,
-      appIdLink: appIdLink,
-      playerAchievementUrl: playerAchievementUrl,
-      gameImgSrc: gameImgSrc
-    };
+    return { ...gameInfoResponse, appIdLink, playerAchievementUrl, gameImgSrc };
   }
 }

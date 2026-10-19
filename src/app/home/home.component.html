@@ -1,16 +1,16 @@
-@if (this.isDashboardLoaded()) {
+@if (isDashboardLoaded()) {
   <div id="home-header-container">
     <div id="home-header-top-bar">
       <div id="tab-list-container">
         <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)">
-          @for (tab of this.tabs(); track tab.id) {
+          @for (tab of tabs(); track tab.id) {
             <dash-tab
               class="tab"
               (keydown)="selectTab(tab.id)"
               (click)="selectTab(tab.id)"
               (tabDeletedEvent)="deleteTabFromDash($event)"
               [cdkDragDisabled]="!editModeEnabled()"
-              [ngClass]="{ 'selected-item': activeTab() === tab.id }"
+              [class.selected-item]="activeTab() === tab.id"
               [tab]="tab"
               cdkDrag
               cdkDropListOrientation="horizontal"
@@ -19,7 +19,7 @@
           }
         </div>
         <button
-          (click)="this.addNewTab()"
+          (click)="addNewTab()"
           matTooltip="Ajouter un nouvel onglet"
           id="addNewTabButton"
           mat-mini-fab
@@ -34,13 +34,13 @@
           <mat-icon>apps</mat-icon>
         </button>
 
-        @if (this.canUserSeeNotifications()) {
+        @if (canUserSeeNotifications()) {
           <dash-notifications />
         }
 
         @if (editModeEnabled()) {
           <button
-            (click)="this.toggleEditMode()"
+            (click)="toggleEditMode()"
             matTooltip="Valider l'ordre des widgets"
             id="validateWidgetListButton"
             mat-mini-fab
@@ -50,7 +50,7 @@
           </button>
         } @else {
           <button
-            (click)="this.toggleEditMode()"
+            (click)="toggleEditMode()"
             matTooltip="Changer l'ordre des widgets"
             id="toggleEditModeButton"
             mat-mini-fab
@@ -61,9 +61,9 @@
         }
 
         <button
-          [disabled]="this.tabs().length < 1"
+          [disabled]="tabs().length < 1"
           matTooltip="Ajouter un nouveau widget"
-          (click)="this.openCreateWidgetModal()"
+          (click)="openCreateWidgetModal()"
           id="openAddWidgetModal"
           color="primary"
           mat-mini-fab
@@ -71,7 +71,7 @@
           <mat-icon aria-hidden="false">add_circle_outline</mat-icon>
         </button>
         <button
-          (click)="this.refreshAllWidgets()"
+          (click)="refreshAllWidgets()"
           matTooltip="Réactualiser tous les widgets"
           mat-mini-fab
           id="reloadAllWidgetsButton"
@@ -106,11 +106,11 @@
             </div>
           </div>
           <mat-divider />
-          <button mat-menu-item (click)="this.downloadConfig()" id="downloadConfigButton">
+          <button mat-menu-item (click)="downloadConfig()" id="downloadConfigButton">
             <mat-icon>download</mat-icon>
             <span>Télécharger la configuration</span>
           </button>
-          <button mat-menu-item (click)="this.openImportConfigModal()" id="openImportConfigModal">
+          <button mat-menu-item (click)="openImportConfigModal()" id="openImportConfigModal">
             <mat-icon>upload</mat-icon>
             <span>Importer une configuration</span>
           </button>
@@ -127,11 +127,11 @@
       <dash-miniwidget-list />
     </div>
   </div>
-  @if (this.areWidgetsLoaded()) {
+  @if (areWidgetsLoaded()) {
     <dash-widget-list
-      [widgetList]="this.activeWidgets()"
+      [widgetList]="activeWidgets()"
       [toggleEditMode]="editModeEnabled()"
-      (updateWidgetsOrderEvent)="this.updateWidgetOrder($event)"
+      (updateWidgetsOrderEvent)="updateWidgetOrder($event)"
     />
   } @else {
     <div class="loading-spinner-container">

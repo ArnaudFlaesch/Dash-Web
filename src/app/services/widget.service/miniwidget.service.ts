@@ -1,62 +1,38 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { Observable, ReplaySubject } from "rxjs";
-
+import { inject, Service } from "@angular/core";
+import { Observable, Subject } from "rxjs";
+import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
 import { environment } from "../../../environments/environment";
 import { IMiniWidgetConfig } from "../../model/IMiniWidgetConfig";
-import authorizationBearer from "../authorizationBearer/authorizationBearer";
 
-@Injectable()
+@Service()
 export class MiniWidgetService {
-  public _miniWidgetDeletedEvent: ReplaySubject<number> = new ReplaySubject(0);
-  public readonly miniWidgetDeleted: Observable<number> =
-    this._miniWidgetDeletedEvent.asObservable();
   private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.backend_url}/miniWidget`;
 
-  public getMiniWidgets(): Observable<IMiniWidgetConfig[]> {
-    return this.http.get<IMiniWidgetConfig[]>(`${environment.backend_url}/miniWidget/`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      }
-    });
+  private readonly miniWidgetDeletedEvent = new Subject<number>();
+
+  public get miniWidgetDeleted(): Observable<number> {
+    return this.miniWidgetDeletedEvent.asObservable();
   }
 
-  public addMiniWidget(type: string): Observable<IMiniWidgetConfig> {
-    return this.http.post<IMiniWidgetConfig>(
-      `${environment.backend_url}/miniWidget/addMiniWidget`,
-      { type: type },
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+  public notifyMiniWidgetDeleted(miniWidgetId: number): void {
+    this.miniWidgetDeletedEvent.next(miniWidgetId);
+  }
+
+  public getMiniWidgets(): Observable<IMiniWidgetConfig[]> {
+    return this.http.get<IMiniWidgetConfig[]>(`${this.baseUrl}/`);
+  }
+
+  public addMiniWidget(type: MiniWidgetTypeEnum): Observable<IMiniWidgetConfig> {
+    return this.http.post<IMiniWidgetConfig>(`${this.baseUrl}/addMiniWidget`, { type });
   }
 
   public updateWidgetData(id: number, data: unknown): Observable<IMiniWidgetConfig> {
-    return this.http.patch<IMiniWidgetConfig>(
-      `${environment.backend_url}/miniWidget/updateWidgetData/${id}`,
-      { data: data },
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.patch<IMiniWidgetConfig>(`${this.baseUrl}/updateWidgetData/${id}`, { data });
   }
 
   public deleteMiniWidget(widgetId: number): Observable<void> {
-    return this.http.delete<void>(
-      `${environment.backend_url}/miniWidget/deleteMiniWidget?widgetId=${widgetId}`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.delete<void>(`${this.baseUrl}/deleteMiniWidget?widgetId=${widgetId}`);
   }
 }

@@ -1,8 +1,8 @@
-@if (this.currentWorkoutSessionToEdit() && this.workoutExercisesLoaded()) {
+@if (currentWorkoutSessionToEdit() && workoutExercisesLoaded()) {
   <div id="workout-widget-header">
     <h3 id="workoutSessionDate">Session du {{ currentWorkoutSessionToEdit().workoutDate | dateFormat: "short" }}</h3>
 
-    @if (this.sessionEditMode()) {
+    @if (sessionEditMode()) {
       <button id="validate-session-button" mat-icon-button (click)="toggleSessionEditMode()">
         <mat-icon>check</mat-icon>
       </button>
@@ -14,8 +14,8 @@
   </div>
 
   <div id="workout-sessions-grid">
-    @for (workoutType of this.workoutTypes(); track workoutType.id) {
-      <div class="workout-exercise-container" [ngClass]="{ 'edit-mode': this.sessionEditMode() }">
+    @for (workoutType of workoutTypes(); track workoutType.id) {
+      <div class="workout-exercise-container" [class.edit-mode]="sessionEditMode()">
         <span class="workout-type-name">{{ workoutType.name }}</span>
         <div class="edit-reps-container">
           @if (sessionEditMode()) {
@@ -30,7 +30,7 @@
           }
 
           @if (getExerciceNumberOfReps(workoutType.id) > 0) {
-            <span class="workout-number-of-reps" [ngClass]="{ 'edit-mode': this.sessionEditMode() }">{{
+            <span class="workout-number-of-reps" [class.edit-mode]="sessionEditMode()">{{
               getExerciceNumberOfReps(workoutType.id)
             }}</span>
           }

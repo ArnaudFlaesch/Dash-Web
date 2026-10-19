@@ -1,9 +1,8 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
+import { format } from "date-fns";
 import { Observable } from "rxjs";
-
 import { environment } from "../../../environments/environment";
-import authorizationBearer from "../../services/authorizationBearer/authorizationBearer";
 import {
   IWorkoutExercise,
   IWorkoutSession,
@@ -16,51 +15,29 @@ import {
   ICreateWorkoutSessionPayload,
   IUpdateWorkoutExercisePayload
 } from "./payload/WorkoutPayload";
-import { format } from "date-fns";
 
-@Injectable()
+@Service()
 export class WorkoutWidgetService {
   private readonly http = inject(HttpClient);
-
+  private readonly baseUrl = `${environment.backend_url}/workoutWidget`;
   private readonly dateFormat = "yyyy-MM-dd";
 
   public getWorkoutTypes(): Observable<IWorkoutType[]> {
-    return this.http.get<IWorkoutType[]>(`${environment.backend_url}/workoutWidget/workoutTypes`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      }
-    });
+    return this.http.get<IWorkoutType[]>(`${this.baseUrl}/workoutTypes`);
   }
 
   public getWorkoutSessions(
     dateIntervalStart: Date,
     dateIntervalEnd: Date
   ): Observable<IWorkoutSession[]> {
-    return this.http.get<IWorkoutSession[]>(
-      `${environment.backend_url}/workoutWidget/workoutSessions`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        },
-        params: {
-          dateIntervalStart: format(dateIntervalStart, this.dateFormat),
-          dateIntervalEnd: format(dateIntervalEnd, this.dateFormat)
-        }
-      }
-    );
+    return this.http.get<IWorkoutSession[]>(`${this.baseUrl}/workoutSessions`, {
+      params: this.getIntervalParams(dateIntervalStart, dateIntervalEnd)
+    });
   }
 
   public getWorkoutExercises(workoutSessionId: number): Observable<IWorkoutExercise[]> {
     return this.http.get<IWorkoutExercise[]>(
-      `${environment.backend_url}/workoutWidget/workoutExercises?workoutSessionId=${workoutSessionId}`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
+      `${this.baseUrl}/workoutExercises?workoutSessionId=${workoutSessionId}`
     );
   }
 
@@ -68,70 +45,28 @@ export class WorkoutWidgetService {
     dateIntervalStart: Date,
     dateIntervalEnd: Date
   ): Observable<IWorkoutStatsByPeriod[]> {
-    return this.http.get<IWorkoutStatsByPeriod[]>(
-      `${environment.backend_url}/workoutWidget/workoutStatsByPeriod`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        },
-        params: {
-          dateIntervalStart: format(dateIntervalStart, this.dateFormat),
-          dateIntervalEnd: format(dateIntervalEnd, this.dateFormat)
-        }
-      }
-    );
+    return this.http.get<IWorkoutStatsByPeriod[]>(`${this.baseUrl}/workoutStatsByPeriod`, {
+      params: this.getIntervalParams(dateIntervalStart, dateIntervalEnd)
+    });
   }
 
   public getWorkoutStatsByMonth(
     dateIntervalStart: Date,
     dateIntervalEnd: Date
   ): Observable<IWorkoutStatByMonth[]> {
-    return this.http.get<IWorkoutStatByMonth[]>(
-      `${environment.backend_url}/workoutWidget/workoutStatsByMonth`,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        },
-        params: {
-          dateIntervalStart: format(dateIntervalStart, this.dateFormat),
-          dateIntervalEnd: format(dateIntervalEnd, this.dateFormat)
-        }
-      }
-    );
+    return this.http.get<IWorkoutStatByMonth[]>(`${this.baseUrl}/workoutStatsByMonth`, {
+      params: this.getIntervalParams(dateIntervalStart, dateIntervalEnd)
+    });
   }
 
-  public addWorkoutType(newWorkoutType: string): Observable<IWorkoutType> {
-    const addWorkoutTypePayload: IAddWorkoutTypePayload = {
-      workoutType: newWorkoutType
-    };
-    return this.http.post<IWorkoutType>(
-      `${environment.backend_url}/workoutWidget/addWorkoutType`,
-      addWorkoutTypePayload,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+  public addWorkoutType(workoutType: string): Observable<IWorkoutType> {
+    const payload: IAddWorkoutTypePayload = { workoutType };
+    return this.http.post<IWorkoutType>(`${this.baseUrl}/addWorkoutType`, payload);
   }
 
-  public createWorkoutSession(workoutSessionDate: Date): Observable<IWorkoutSession> {
-    const createWorkoutSessionPayload: ICreateWorkoutSessionPayload = {
-      workoutDate: workoutSessionDate
-    };
-    return this.http.post<IWorkoutSession>(
-      `${environment.backend_url}/workoutWidget/createWorkoutSession`,
-      createWorkoutSessionPayload,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+  public createWorkoutSession(workoutDate: Date): Observable<IWorkoutSession> {
+    const payload: ICreateWorkoutSessionPayload = { workoutDate };
+    return this.http.post<IWorkoutSession>(`${this.baseUrl}/createWorkoutSession`, payload);
   }
 
   public updateWorkoutExercise(
@@ -139,21 +74,21 @@ export class WorkoutWidgetService {
     workoutTypeId: number,
     numberOfReps: number
   ): Observable<IWorkoutExercise> {
-    const updateWorkoutExercisePayload: IUpdateWorkoutExercisePayload = {
-      workoutSessionId: workoutSessionId,
-      workoutTypeId: workoutTypeId,
-      numberOfReps: numberOfReps
+    const payload: IUpdateWorkoutExercisePayload = {
+      workoutSessionId,
+      workoutTypeId,
+      numberOfReps
     };
+    return this.http.post<IWorkoutExercise>(`${this.baseUrl}/updateWorkoutExercise`, payload);
+  }
 
-    return this.http.post<IWorkoutExercise>(
-      `${environment.backend_url}/workoutWidget/updateWorkoutExercise`,
-      updateWorkoutExercisePayload,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+  private getIntervalParams(
+    dateIntervalStart: Date,
+    dateIntervalEnd: Date
+  ): { dateIntervalStart: string; dateIntervalEnd: string } {
+    return {
+      dateIntervalStart: format(dateIntervalStart, this.dateFormat),
+      dateIntervalEnd: format(dateIntervalEnd, this.dateFormat)
+    };
   }
 }

@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
@@ -21,7 +22,7 @@ describe("RssWidgetComponent", () => {
         DateUtilsService,
         WidgetService,
         ErrorHandlerService,
-        { provide: "widgetId", useValue: widgetId }
+        { provide: WIDGET_ID, useValue: widgetId }
       ]
     }).compileComponents();
 
@@ -97,7 +98,7 @@ describe("RssWidgetComponent", () => {
 
   it("Should read all articles", () => {
     expect(component.rssFeedResult()?.item).toEqual(undefined);
-    component.urlFeed.set(urlFeed);
+    component.config.update((config) => ({ ...config, url: urlFeed }));
     component.refreshWidget();
 
     expect(component.isWidgetLoaded()).toEqual(false);
@@ -127,13 +128,13 @@ describe("RssWidgetComponent", () => {
     expect(component.getWidgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     const url = "localhost";
-    component.urlFeed.set(url);
+    component.config.update((config) => ({ ...config, url: url }));
     expect(component.getWidgetData()).toEqual({ url: url });
     expect(component.isFormValid()).toEqual(true);
   });
 
   it("Should fail to mark all articles as read", () => {
-    component.urlFeed.set(urlFeed);
+    component.config.update((config) => ({ ...config, url: urlFeed }));
     component.refreshWidget();
 
     const request = httpTestingController.expectOne(

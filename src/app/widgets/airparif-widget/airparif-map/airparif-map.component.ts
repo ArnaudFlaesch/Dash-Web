@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   computed,
   ElementRef,
@@ -19,7 +18,6 @@ import { fromLonLat, transformExtent } from "ol/proj";
 import OSM from "ol/source/OSM";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
-
 import { AirParifWidgetService } from "../airparif-widget.service";
 import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from "../model/IAirParif";
 import { SidebarControl } from "../SidebarControl";
@@ -32,18 +30,17 @@ export interface SidebarOptions {
 @Component({
   selector: "dash-airparif-map",
   templateUrl: "./airparif-map.component.html",
-  styleUrls: ["./airparif-map.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./airparif-map.component.scss",
   imports: [MatIcon, MatButton]
 })
 export class AirParifMapComponent implements AfterViewInit, OnDestroy {
-  public readonly mapContainer = viewChild<ElementRef>("map");
-  public readonly sidebarContainer = viewChild<ElementRef>("sidebar");
+  public readonly mapContainer = viewChild<ElementRef<HTMLElement>>("map");
+  public readonly sidebarContainer = viewChild<ElementRef<HTMLElement>>("sidebar");
   public readonly airParifCouleursIndices = input.required<IAirParifCouleur[]>();
   public readonly airParifForecast = input.required<IForecast[]>();
   public readonly airParifApiKey = input<string>();
 
-  public readonly forecastMode = signal<ForecastMode>(ForecastMode.TODAY);
+  public readonly forecastMode = signal(ForecastMode.TODAY);
   public readonly forecastToDisplay = linkedSignal<IForecast | undefined>(
     () => this.airParifForecast()[0]
   );
@@ -54,31 +51,11 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   );
 
   private readonly airParifWidgetService = inject(AirParifWidgetService);
+  private readonly airParifUrl = "https://magellan.airparif.asso.fr/geoserver/siteweb/wms";
 
-  private readonly airParifUrl = "https://magellan.airparif.asso.fr/geoserver/";
   private map: Map | undefined;
-  private readonly airParifForecastTodayLayer: TileLayer<TileWMS>;
-  private readonly airParifForecastTomorrowLayer: TileLayer<TileWMS>;
   private sidebarControl: SidebarControl | undefined;
-
-  public constructor() {
-    this.airParifForecastTodayLayer = new TileLayer({
-      opacity: 0.5,
-      source: new TileWMS({
-        url: this.airParifUrl + "siteweb/wms",
-        params: this.getAirParifWmsParams("siteweb:vue_indice_atmo_2020_com"),
-        attributions: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`
-      })
-    });
-    this.airParifForecastTomorrowLayer = new TileLayer({
-      opacity: 0.5,
-      source: new TileWMS({
-        url: this.airParifUrl + "siteweb/wms",
-        params: this.getAirParifWmsParams("siteweb:vue_indice_atmo_2020_com_jp1"),
-        attributions: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`
-      })
-    });
-  }
+  private forecastLayers: Record<ForecastMode, TileLayer<TileWMS>> | undefined;
 
   public ngAfterViewInit(): void {
     this.initMap();
@@ -93,17 +70,11 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   }
 
   public selectTodayForecast(): void {
-    this.map?.removeLayer(this.airParifForecastTomorrowLayer);
-    this.forecastMode.set(ForecastMode.TODAY);
-    this.forecastToDisplay.set(this.airParifForecast()[0]);
-    this.map?.addLayer(this.airParifForecastTodayLayer);
+    this.selectForecast(ForecastMode.TODAY);
   }
 
   public selectTomorrowForecast(): void {
-    this.map?.removeLayer(this.airParifForecastTodayLayer);
-    this.forecastMode.set(ForecastMode.TOMORROW);
-    this.forecastToDisplay.set(this.airParifForecast()[1]);
-    this.map?.addLayer(this.airParifForecastTomorrowLayer);
+    this.selectForecast(ForecastMode.TOMORROW);
   }
 
   public getColorFromIndice(indice: AirParifIndiceEnum): string {
@@ -113,36 +84,42 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
     );
   }
 
+  private selectForecast(forecastMode: ForecastMode): void {
+    if (this.forecastLayers) {
+      this.map?.removeLayer(this.forecastLayers[this.forecastMode()]);
+      this.map?.addLayer(this.forecastLayers[forecastMode]);
+    }
+    this.forecastMode.set(forecastMode);
+    this.forecastToDisplay.set(
+      this.airParifForecast()[forecastMode === ForecastMode.TODAY ? 0 : 1]
+    );
+  }
+
   private initMap(): void {
     const mapContainer = this.mapContainer();
     if (!mapContainer) {
       return;
     }
 
-    const maxExtent = transformExtent([1.44, 48.12, 3.56, 49.24], "EPSG:4326", "EPSG:3857");
+    // Layers are created here, once the API key input is available
+    this.forecastLayers = {
+      [ForecastMode.TODAY]: this.createForecastLayer("siteweb:vue_indice_atmo_2020_com"),
+      [ForecastMode.TOMORROW]: this.createForecastLayer("siteweb:vue_indice_atmo_2020_com_jp1")
+    };
 
-    const openStreetMapLayer = new TileLayer({
-      source: new OSM()
-    });
-
-    const sidebarElement =
-      this.sidebarContainer()?.nativeElement ?? document.getElementById("sidebar");
-
+    const sidebarElement = this.sidebarContainer()?.nativeElement;
     if (sidebarElement) {
-      this.sidebarControl = new SidebarControl({
-        element: sidebarElement,
-        position: "left"
-      });
+      this.sidebarControl = new SidebarControl({ element: sidebarElement, position: "left" });
     }
 
     this.map = new Map({
       target: mapContainer.nativeElement,
-      layers: [openStreetMapLayer, this.airParifForecastTodayLayer],
+      layers: [new TileLayer({ source: new OSM() }), this.forecastLayers[this.forecastMode()]],
       view: new View({
         center: fromLonLat([2.3488, 48.8502]),
         zoom: 11,
         maxZoom: 18,
-        extent: maxExtent
+        extent: transformExtent([1.44, 48.12, 3.56, 49.24], "EPSG:4326", "EPSG:3857")
       })
     });
 
@@ -151,20 +128,24 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private getAirParifWmsParams(layer: string): Record<string, unknown> {
-    const params: Record<string, unknown> = {
-      SERVICE: "WMS",
-      VERSION: "1.3.0",
-      LAYERS: layer,
-      TILED: true,
-      TRANSPARENT: true,
-      FORMAT: "image/png8",
-      STYLES: "nouvel_indice_polygones"
-    };
+  private createForecastLayer(layer: string): TileLayer<TileWMS> {
     const apiKey = this.airParifApiKey();
-    if (apiKey) {
-      params["authkey"] = apiKey;
-    }
-    return params;
+    return new TileLayer({
+      opacity: 0.5,
+      source: new TileWMS({
+        url: this.airParifUrl,
+        params: {
+          SERVICE: "WMS",
+          VERSION: "1.3.0",
+          LAYERS: layer,
+          TILED: true,
+          TRANSPARENT: true,
+          FORMAT: "image/png8",
+          STYLES: "nouvel_indice_polygones",
+          ...(apiKey ? { authkey: apiKey } : {})
+        },
+        attributions: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`
+      })
+    });
   }
 }

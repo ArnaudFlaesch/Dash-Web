@@ -1,31 +1,29 @@
+@use "mixins" as *;
+
 #calendar-urls-list-container {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.75rem;
+  @include flex-column(0.75rem);
+
   align-items: center;
 
   .calendar-url-container {
     display: flex;
-    flex-direction: row;
     column-gap: 1em;
   }
 }
 
 #calendar-actions-container {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   margin: 0.25rem;
 
   #date-navigation-container {
     display: flex;
-    flex-direction: row;
     column-gap: 0.25rem;
   }
 
   #calendar-view-switch-container {
     display: flex;
-    flex-flow: row wrap;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: 0.25rem;
   }

@@ -2,14 +2,14 @@
   [widgetData]="getWidgetData()"
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
-  (refreshWidgetAction)="this.refreshWidget()"
+  (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
-    <img class="rss-widget-header" src="{{ this.rssFeedResult()?.image?.url }}" alt="logo" />
+    <img class="rss-widget-header" src="{{ rssFeedResult()?.image?.url }}" alt="logo" />
   </ng-template>
 
   <ng-template #headerTitle>
-    @if (this.rssFeedResult(); as rssFeedResult) {
+    @if (rssFeedResult(); as rssFeedResult) {
       @if (rssFeedResult.image && rssFeedResult.image.link !== undefined) {
         <a [href]="rssFeedResult.image.link | safe: 'url'">
           <div class="rss-title">{{ rssFeedResult.title }}</div>
@@ -21,7 +21,7 @@
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>URL</mat-label>
-      <input matInput id="rssFeedUrl" [formField]="urlFeedForm" placeholder="Saisissez l'URL du flux RSS" />
+      <input matInput id="rssFeedUrl" [formField]="configForm.url" placeholder="Saisissez l'URL du flux RSS" />
     </mat-form-field>
   </ng-template>
 
@@ -37,13 +37,13 @@
   </ng-template>
 
   <ng-template #body>
-    @if (this.urlFeed()) {
+    @if (config().url) {
       <div class="rss-widget-body">
-        <div class="rss-widget-description">{{ this.rssFeedResult()?.description }}</div>
+        <div class="rss-widget-description">{{ rssFeedResult()?.description }}</div>
         <dash-rss-feed
-          [feed]="this.rssFeedResult()?.item ?? []"
-          [readArticles]="this.readArticles()"
-          (markArticleAsReadEvent)="this.markArticleAsRead($event)"
+          [feed]="rssFeedResult()?.item ?? []"
+          [readArticles]="readArticles()"
+          (markArticleAsReadEvent)="markArticleAsRead($event)"
         />
       </div>
     }

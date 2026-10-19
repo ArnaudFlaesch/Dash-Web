@@ -1,9 +1,4 @@
 export default function authorizationBearer(): string {
-  const userData = localStorage.getItem("user") ?? "{}";
-  const user = JSON.parse(userData);
-  if (user.accessToken) {
-    return "Bearer " + user.accessToken;
-  } else {
-    return "";
-  }
+  const user = JSON.parse(localStorage.getItem("user") ?? "{}");
+  return user.accessToken ? `Bearer ${user.accessToken}` : "";
 }

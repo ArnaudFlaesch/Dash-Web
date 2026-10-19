@@ -3,10 +3,11 @@
     <mat-expansion-panel hideToggle class="rss-article" (opened)="onOpenDetail(article.guid)" (closed)="onClosePanel()">
       <mat-expansion-panel-header>
         <mat-panel-title
-          [ngClass]="{ 'article-opened': isArticleOpened(article.guid), 'is-read': isArticleRead(article.guid) }"
+          [class.article-opened]="isArticleOpened(article.guid)"
+          [class.is-read]="isArticleRead(article.guid)"
           class="article-title"
         >
-          <p>{{ this.formatTitleForArticle(article) }}</p>
+          <p>{{ formatTitleForArticle(article) }}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>

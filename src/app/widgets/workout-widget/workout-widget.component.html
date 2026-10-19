@@ -2,7 +2,7 @@
   [widgetData]="getWidgetData()"
   [isFormValid]="true"
   [isWidgetLoaded]="isWidgetLoaded()"
-  (refreshWidgetAction)="this.refreshWidget()"
+  (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
     <mat-icon>fitness_center</mat-icon>
@@ -14,12 +14,12 @@
 
   <ng-template #body>
     <div>
-      @switch (WIDGET_VIEW()) {
+      @switch (widgetView()) {
         @case (widgetViewEnum.WORKOUT_SESSIONS_LIST_VIEW) {
           <div>
             <div>
               <h2>Sessions</h2>
-              <button mat-raised-button (click)="this.goToStatisticsView()">Statistiques</button>
+              <button mat-raised-button (click)="goToStatisticsView()">Statistiques</button>
               <mat-form-field appearance="fill">
                 <mat-label>Sélectionnez un mois</mat-label>
                 <input matInput [matDatepicker]="picker" [formField]="selectedMonthForm" />
@@ -28,11 +28,11 @@
                   #picker
                   startView="multi-year"
                   (monthSelected)="setMonthAndYear($event, picker)"
-                  [startAt]="this.selectedMonthInput()"
+                  [startAt]="selectedMonthInput()"
                 />
               </mat-form-field>
               <div id="workout-sessions-grid">
-                @for (workoutSession of this.workoutSessions(); track workoutSession.id) {
+                @for (workoutSession of workoutSessions(); track workoutSession.id) {
                   <button
                     class="workout-session"
                     (keydown)="editWorkoutSession(workoutSession)"
@@ -53,27 +53,28 @@
               <button
                 mat-raised-button
                 id="createWorkoutSessionButton"
+                [disabled]="workoutDateForm().invalid()"
                 (click)="createWorkoutSession()"
                 color="primary"
               >
                 Créer
               </button>
             </div>
-            @if (this.workoutStatsByWeek().length) {
+            @if (workoutStatsByWeek().length) {
               <div id="workout-stats-by-week-container">
                 <div class="workout-stats-header">Cette semaine :</div>
                 <div class="stats-container">
-                  @for (workoutStat of this.workoutStatsByWeek(); track workoutStat.workoutTypeName) {
+                  @for (workoutStat of workoutStatsByWeek(); track workoutStat.workoutTypeName) {
                     <div>{{ workoutStat.workoutTypeName }} : {{ workoutStat.totalNumberOfReps }}</div>
                   }
                 </div>
               </div>
             }
-            @if (this.workoutStatsByMonth().length) {
+            @if (workoutStatsByMonth().length) {
               <div id="workout-stats-by-month-container">
                 <div class="workout-stats-header">Ce mois-ci</div>
                 <div class="stats-container">
-                  @for (workoutStat of this.workoutStatsByMonth(); track workoutStat.workoutTypeName) {
+                  @for (workoutStat of workoutStatsByMonth(); track workoutStat.workoutTypeName) {
                     <div>{{ workoutStat.workoutTypeName }} :{{ workoutStat.totalNumberOfReps }}</div>
                   }
                 </div>
@@ -81,7 +82,7 @@
             }
             <h2>Types d'exercices</h2>
             <div id="workout-types-grid">
-              @for (workoutType of this.workoutTypes(); track workoutType.id) {
+              @for (workoutType of workoutTypes(); track workoutType.id) {
                 <span class="workoutTypeName"> {{ workoutType.name }}</span>
               }
             </div>
@@ -94,7 +95,13 @@
                 aria-label="Nouveau type d'exercice"
               />
             </div>
-            <button mat-raised-button id="addWorkoutTypeButton" (click)="addWorkoutType()" color="primary">
+            <button
+              mat-raised-button
+              id="addWorkoutTypeButton"
+              [disabled]="workoutNameForm().invalid()"
+              (click)="addWorkoutType()"
+              color="primary"
+            >
               Valider
             </button>
           </div>
@@ -107,14 +114,14 @@
             <div>
               <button
                 mat-raised-button
-                [color]="this.isLastYearWorkoutStatisticsSelected() ? 'primary' : ''"
+                [color]="isLastYearWorkoutStatisticsSelected() ? 'primary' : ''"
                 (click)="getWorkoutsStatsOfPastYear()"
               >
                 Année dernière
               </button>
               <button
                 mat-raised-button
-                [color]="this.isCurrentYearWorkoutStatisticsSelected() ? 'primary' : ''"
+                [color]="isCurrentYearWorkoutStatisticsSelected() ? 'primary' : ''"
                 (click)="getWorkoutsStatsOfCurrentYear()"
               >
                 Cette année
@@ -123,33 +130,30 @@
             <div>
               <button
                 mat-raised-button
-                [color]="this.isLastSixMonthsWorkoutStatisticsSelected() ? 'primary' : ''"
+                [color]="isLastSixMonthsWorkoutStatisticsSelected() ? 'primary' : ''"
                 (click)="getWorkoutsStatsOfLastSixMonths()"
               >
                 6 derniers mois
               </button>
               <button
                 mat-raised-button
-                [color]="this.isLastThreeMonthsWorkoutStatisticsSelected() ? 'primary' : ''"
+                [color]="isLastThreeMonthsWorkoutStatisticsSelected() ? 'primary' : ''"
                 (click)="getWorkoutsStatsOfLastThreeMonths()"
               >
                 3 derniers mois
               </button>
             </div>
-            <dash-workout-statistics
-              [workoutTypes]="this.workoutTypes()"
-              [workoutStatsByMonth]="this.workoutStatsOfMonths()"
-            />
+            <dash-workout-statistics [workoutTypes]="workoutTypes()" [workoutStatsByMonth]="workoutStatsOfMonths()" />
           </div>
         }
         @case (widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW) {
-          @if (this.currentWorkoutSessionToEdit(); as currentWorkoutSessionToEdit) {
+          @if (currentWorkoutSessionToEdit(); as currentWorkoutSessionToEdit) {
             <div>
               <button mat-icon-button (click)="backToWorkoutSessionsList()">
                 <mat-icon>arrow_back</mat-icon>
               </button>
               <dash-workout-session-edit
-                [workoutTypes]="this.workoutTypes()"
+                [workoutTypes]="workoutTypes()"
                 [currentWorkoutSessionToEdit]="currentWorkoutSessionToEdit"
               />
             </div>

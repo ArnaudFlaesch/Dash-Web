@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { AuthService } from "./services/auth.service/auth.service";
 import { ThemeService } from "./services/theme.service/theme.service";
@@ -6,7 +6,6 @@ import { ThemeService } from "./services/theme.service/theme.service";
 @Component({
   selector: "dash-root",
   templateUrl: "./app.component.html",
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {

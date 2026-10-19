@@ -1,38 +1,46 @@
-import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  input,
-  signal,
-  WritableSignal
-} from "@angular/core";
-import { ErrorHandlerService } from "../../../services/error.handler.service";
-import { WorkoutWidgetService } from "../workout.widget.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import { DateFormatPipe } from "../../../pipes/date-format.pipe";
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { MatIcon } from "@angular/material/icon";
+import { Component, computed, inject, input, signal } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
 import { MatIconButton } from "@angular/material/button";
-import { NgClass } from "@angular/common";
+import { MatIcon } from "@angular/material/icon";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { catchError, of } from "rxjs";
+import { DateFormatPipe } from "../../../pipes/date-format.pipe";
+import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
+import { WorkoutWidgetService } from "../workout.widget.service";
 
 @Component({
   selector: "dash-workout-session-edit",
   templateUrl: "./workout-session-edit.component.html",
-  styleUrls: ["./workout-session-edit.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIconButton, MatIcon, NgClass, MatProgressSpinner, DateFormatPipe]
+  styleUrl: "./workout-session-edit.component.scss",
+  imports: [MatIconButton, MatIcon, MatProgressSpinner, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
   public readonly workoutTypes = input.required<IWorkoutType[]>();
   public readonly currentWorkoutSessionToEdit = input.required<IWorkoutSession>();
 
-  public workoutExercises: WritableSignal<IWorkoutExercise[]> = signal([]);
+  public readonly sessionEditMode = signal(false);
+  public readonly isWidgetUpdating = signal(false);
 
-  public sessionEditMode = signal(false);
-  public isWidgetUpdating = signal(false);
-  public workoutExercisesLoaded = signal(false);
+  /** Exercises of the edited session, reloaded whenever the session changes. */
+  public readonly workoutExercisesResource = rxResource({
+    params: () => this.currentWorkoutSessionToEdit().id || undefined,
+    stream: ({ params: workoutSessionId }) =>
+      this.workoutWidgetService.getWorkoutExercises(workoutSessionId).pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_EXERCISES);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as IWorkoutExercise[]
+  });
+
+  public readonly workoutExercises = this.workoutExercisesResource.value;
+  // "local" once the exercises have been updated in place after a rep change
+  public readonly workoutExercisesLoaded = computed(() =>
+    ["resolved", "local"].includes(this.workoutExercisesResource.status())
+  );
 
   private readonly ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
   private readonly ERROR_GETTING_WORKOUT_EXERCISES =
@@ -40,15 +48,6 @@ export class WorkoutSessionEditComponent {
 
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
-
-  public constructor() {
-    effect(() => {
-      const currentSession = this.currentWorkoutSessionToEdit();
-      if (currentSession?.id) {
-        this.fetchWorkoutExercisesBySessionId(currentSession.id);
-      }
-    });
-  }
 
   public decrementExerciceNumberOfReps(workoutTypeId: number): void {
     this.updateNumberOfReps(workoutTypeId, -1);
@@ -59,58 +58,34 @@ export class WorkoutSessionEditComponent {
   }
 
   public getExerciceNumberOfReps(workoutTypeId: number): number {
-    const workoutType = this.workoutExercises().find(
-      (workoutExercise) => workoutExercise.workoutTypeId === workoutTypeId
+    return (
+      this.workoutExercises().find((exercise) => exercise.workoutTypeId === workoutTypeId)
+        ?.numberOfReps ?? 0
     );
-    return workoutType ? workoutType.numberOfReps : 0;
   }
 
   public toggleSessionEditMode(): void {
-    this.sessionEditMode.set(!this.sessionEditMode());
+    this.sessionEditMode.update((sessionEditMode) => !sessionEditMode);
   }
 
-  private fetchWorkoutExercisesBySessionId(workoutSessionId: number): void {
-    this.workoutExercisesLoaded.set(false);
-    this.workoutWidgetService.getWorkoutExercises(workoutSessionId).subscribe({
-      next: (workoutExercises) => {
-        this.workoutExercises.set(workoutExercises);
-        this.workoutExercisesLoaded.set(true);
-      },
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_EXERCISES)
-    });
-  }
-
-  private updateWorkoutExercise(
-    workoutSessionId: number,
-    workoutTypeId: number,
-    numberOfReps: number
-  ): void {
+  private updateNumberOfReps(workoutTypeId: number, numberOfRepsToAdd: number): void {
     this.isWidgetUpdating.set(true);
     this.workoutWidgetService
-      .updateWorkoutExercise(workoutSessionId, workoutTypeId, numberOfReps)
+      .updateWorkoutExercise(
+        this.currentWorkoutSessionToEdit().id,
+        workoutTypeId,
+        this.getExerciceNumberOfReps(workoutTypeId) + numberOfRepsToAdd
+      )
       .subscribe({
-        next: (addedWorkoutExercise) => {
-          this.workoutExercises.update((oldWorkoutExercises) => [
-            ...oldWorkoutExercises.filter((ex) => ex.workoutTypeId !== workoutTypeId),
-            addedWorkoutExercise
+        next: (updatedWorkoutExercise) => {
+          this.workoutExercises.update((workoutExercises) => [
+            ...workoutExercises.filter((exercise) => exercise.workoutTypeId !== workoutTypeId),
+            updatedWorkoutExercise
           ]);
           this.isWidgetUpdating.set(false);
         },
         error: (error) =>
           this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_EXERCISE)
       });
-  }
-
-  private updateNumberOfReps(workoutTypeId: number, numberOfRepsToAdd: number): void {
-    const oldNumberOfReps = this.getExerciceNumberOfReps(workoutTypeId);
-    const currentWorkoutSessionToEdit = this.currentWorkoutSessionToEdit();
-    if (currentWorkoutSessionToEdit) {
-      this.updateWorkoutExercise(
-        this.currentWorkoutSessionToEdit().id,
-        workoutTypeId,
-        oldNumberOfReps + numberOfRepsToAdd
-      );
-    }
   }
 }

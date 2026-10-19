@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { CalendarView, DateAdapter } from "angular-calendar";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
@@ -24,7 +25,7 @@ describe("CalendarWidgetComponent", () => {
         DateUtilsService,
         ErrorHandlerService,
         WidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
     }).compileComponents();
 
@@ -38,11 +39,11 @@ describe("CalendarWidgetComponent", () => {
   });
 
   it("should create", () => {
-    expect(component.calendarUrls()).toEqual([]);
+    expect(component.config().calendarUrls).toEqual([]);
     component.refreshWidget();
     expect(component.events()).toEqual([]);
     expect(component.isCalendarViewMonth()).toEqual(true);
-    component.calendarUrls().push("https://calendar.ical");
+    component.config.set({ calendarUrls: ["https://calendar.ical"] });
     component.refreshWidget();
     const getCalendarDataRequest = httpTestingController.expectOne(
       environment.backend_url + `/calendarWidget/`
@@ -93,12 +94,12 @@ describe("CalendarWidgetComponent", () => {
   });
 
   it("Should update the calendar urls", () => {
-    expect(component.calendarUrls()).toEqual([]);
+    expect(component.config().calendarUrls).toEqual([]);
     expect(component.getWidgetConfig()).toEqual(undefined);
     component.onCalendarUrlAdded();
-    expect(component.calendarUrls()).toEqual([""]);
+    expect(component.config().calendarUrls).toEqual([""]);
     expect(component.getWidgetConfig()).toEqual({ calendarUrls: [""] });
-    component.removeCalendarUrl("");
+    component.removeCalendarUrl(0);
     expect(component.getWidgetConfig()).toEqual(undefined);
   });
 });

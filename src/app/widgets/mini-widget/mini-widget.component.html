@@ -3,7 +3,7 @@
     <div class="edit-mini-widget">
       <ng-container *ngTemplateOutlet="editComponent() ?? null" />
 
-      @if (this.isWidgetLoaded() && this.widgetData()) {
+      @if (isWidgetLoaded() && widgetData()) {
         <button class="cancelButton" matTooltip="Annuler" mat-icon-button (click)="cancelEdition()">
           <mat-icon>undo</mat-icon>
         </button>
@@ -15,11 +15,11 @@
         mat-icon-button
         (click)="onValidation()"
         color="primary"
-        [disabled]="!this.isFormValid()"
+        [disabled]="!isFormValid()"
       >
         <mat-icon>check</mat-icon>
       </button>
-      <button mat-icon-button matTooltip="Supprimer le widget" (click)="this.toDeleteMode()" color="alert">
+      <button mat-icon-button matTooltip="Supprimer le widget" (click)="toDeleteMode()" color="alert">
         <mat-icon aria-hidden="false">delete</mat-icon>
       </button>
     </div>
@@ -37,9 +37,9 @@
   }
 
   @if (isModeRead()) {
-    <div (dblclick)="this.toEditMode()">
+    <div (dblclick)="toEditMode()">
       <div class="read-mini-widget-body-container">
-        @if (this.isWidgetLoaded()) {
+        @if (isWidgetLoaded()) {
           <ng-container *ngTemplateOutlet="body()" />
         } @else {
           <div class="loading-spinner">

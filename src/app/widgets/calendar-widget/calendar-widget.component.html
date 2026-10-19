@@ -2,7 +2,7 @@
   [widgetData]="getWidgetConfig()"
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
-  (refreshWidgetAction)="this.refreshWidget()"
+  (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
     <mat-icon>calendar_month</mat-icon>
@@ -14,18 +14,10 @@
 
   <ng-template #editComponent>
     <div id="calendar-urls-list-container">
-      @for (calendarUrl of this.calendarUrls(); track calendarUrl; let index = $index) {
+      @for (calendarUrlField of configForm.calendarUrls; track calendarUrlField; let index = $index) {
         <div class="calendar-url-container">
-          <input
-            id="{{ index.toString() }}"
-            (change)="onCalendarUrlUpdated($event)"
-            [value]="calendarUrl"
-            placeholder="Saisissez une URL"
-          />
-
-          <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(calendarUrl)">
-            Supprimer
-          </button>
+          <input [id]="index" [formField]="calendarUrlField" placeholder="Saisissez une URL" />
+          <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(index)">Supprimer</button>
         </div>
       }
     </div>
@@ -63,32 +55,24 @@
       </div>
 
       <div id="calendar-view-switch-container">
-        <button
-          mat-raised-button
-          (click)="setView(calendarView.Day)"
-          [color]="this.isCalendarViewDay() ? 'primary' : ''"
-        >
+        <button mat-raised-button (click)="setView(calendarView.Day)" [color]="isCalendarViewDay() ? 'primary' : ''">
           Jour
         </button>
         <button
           mat-raised-button
           (click)="setView(calendarView.Month)"
-          [color]="this.isCalendarViewMonth() ? 'primary' : ''"
+          [color]="isCalendarViewMonth() ? 'primary' : ''"
         >
           Mois
         </button>
-        <button
-          mat-raised-button
-          (click)="setView(calendarView.Week)"
-          [color]="this.isCalendarViewWeek() ? 'primary' : ''"
-        >
+        <button mat-raised-button (click)="setView(calendarView.Week)" [color]="isCalendarViewWeek() ? 'primary' : ''">
           Semaine
         </button>
       </div>
     </div>
 
     <div id="calendar-selected-date">
-      <h3>{{ viewDate | calendarDate: view() + "ViewTitle" : "fr" | initialUppercase }}</h3>
+      <h3>{{ viewDate() | calendarDate: view() + "ViewTitle" : "fr" | initialUppercase }}</h3>
     </div>
 
     <div>
@@ -96,7 +80,7 @@
         @case (calendarView.Month) {
           <mwl-calendar-month-view
             [locale]="locale"
-            [viewDate]="viewDate"
+            [viewDate]="viewDate()"
             [events]="events()"
             [weekStartsOn]="weekStartsOn"
             [refresh]="refresh"
@@ -107,7 +91,7 @@
         }
         @case (calendarView.Week) {
           <mwl-calendar-week-view
-            [viewDate]="viewDate"
+            [viewDate]="viewDate()"
             [weekStartsOn]="weekStartsOn"
             [locale]="locale"
             [events]="events()"
@@ -118,7 +102,7 @@
         }
         @case (calendarView.Day) {
           <mwl-calendar-day-view
-            [viewDate]="viewDate"
+            [viewDate]="viewDate()"
             [locale]="locale"
             [events]="events()"
             [refresh]="refresh"

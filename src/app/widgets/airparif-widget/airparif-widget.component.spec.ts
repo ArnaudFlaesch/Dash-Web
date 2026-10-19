@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
@@ -69,7 +70,7 @@ describe("AirParifWidgetComponent", () => {
         AirParifWidgetService,
         ErrorHandlerService,
         WidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
     }).compileComponents();
 
@@ -83,12 +84,12 @@ describe("AirParifWidgetComponent", () => {
   });
 
   it("Should create an AirParif Widget", () => {
-    expect(component.airParifApiKey()).toEqual("");
-    expect(component.communeInseeCode()).toEqual("");
+    expect(component.config().airParifApiKey).toEqual("");
+    expect(component.config().communeInseeCode).toEqual("");
     expect(component.isFormValid()).toEqual(false);
     expect(component.getWidgetData()).toEqual(undefined);
-    component.airParifApiKey.set(airParifToken);
-    component.communeInseeCode.set(communeInseeCode);
+    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
+    component.config.update((config) => ({ ...config, communeInseeCode: communeInseeCode }));
     expect(component.isFormValid()).toEqual(true);
     const widgetData = component.getWidgetData();
     expect(widgetData?.airParifApiKey).toBe(airParifToken);
@@ -109,8 +110,8 @@ describe("AirParifWidgetComponent", () => {
   });
 
   it("Should get errors from API", () => {
-    component.airParifApiKey.set(airParifToken);
-    component.communeInseeCode.set(communeInseeCode);
+    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
+    component.config.update((config) => ({ ...config, communeInseeCode: communeInseeCode }));
     expect(component.airParifForecast()).toEqual([]);
     expect(component.airParifCouleursIndices()).toEqual([]);
     component.refreshWidget();

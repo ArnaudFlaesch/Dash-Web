@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { addDays, getTime } from "date-fns";
 
@@ -31,7 +32,7 @@ describe("StravaWidgetComponent", () => {
         StravaWidgetService,
         ErrorHandlerService,
         WidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
     }).compileComponents();
 
@@ -164,14 +165,14 @@ describe("StravaWidgetComponent", () => {
       `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=2&numberOfActivities=25`
     );
     getNextActivitiesRequest.flush([]);
-    expect(component.pageNumber).toEqual(2);
+    expect(component.pageNumber()).toEqual(2);
 
     component.getNextActivitiesPage();
     const getPreviousActivitiesRequest = httpTestingController.expectOne(
       `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`
     );
     getPreviousActivitiesRequest.flush([]);
-    expect(component.pageNumber).toEqual(1);
+    expect(component.pageNumber()).toEqual(1);
   });
 
   it("Should display athlete url", () => {
