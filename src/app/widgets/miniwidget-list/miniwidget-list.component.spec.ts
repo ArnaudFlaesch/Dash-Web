@@ -73,7 +73,7 @@ describe("MiniWidgetListComponent", () => {
 
   it("should have no widgets", async () => {
     await loadMiniWidgets();
-    expect(component.miniWidgetList().length).toEqual(1);
+    expect(component.miniWidgetList()).toHaveLength(1);
   });
 
   it("Should handle an error while loading the mini widgets", async () => {
@@ -100,6 +100,7 @@ describe("MiniWidgetListComponent", () => {
   it("Should not add a mini widget when the modal is closed", () => {
     component.openCreateMiniWidgetModal();
     httpTestingController.expectNone(miniWidgetPath + "addMiniWidget");
+    expect(component.miniWidgetList()).toEqual([]);
   });
 
   it("Should delete a mini widget", async () => {

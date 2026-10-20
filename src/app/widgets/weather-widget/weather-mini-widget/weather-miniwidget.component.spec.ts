@@ -48,7 +48,7 @@ describe("WeatherMiniWidgetComponent", () => {
   }
 
   it("Should create widget", async () => {
-    expect(component.getWidgetData()).toEqual(undefined);
+    expect(component.getWidgetData()).toBeUndefined();
     expect(component.isFormValid()).toEqual(false);
     expect(component.isWidgetLoaded()).toEqual(false);
 
@@ -78,6 +78,8 @@ describe("WeatherMiniWidgetComponent", () => {
       .expectOne(environment.backend_url + "/weatherWidget/weather?city=" + city)
       .error(new ProgressEvent("Server error"));
     await flushResources();
+    expect(component.weather()).toBeNull();
+    expect(component.isWidgetLoaded()).toBe(false);
   });
 
   it("Should get weather icons", () => {
