@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { computed, inject, Service, signal } from "@angular/core";
-import { jwtDecode } from "jwt-decode";
 import { Observable, tap } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { RoleEnum } from "../../model/RoleEnum";
@@ -13,6 +12,16 @@ interface IJwt {
 }
 
 const USER_STORAGE_KEY = "user";
+
+/** Reads the payload of a JWT, without verifying it. Throws if the token is malformed. */
+function decodeJwtPayload(token: string): IJwt {
+  const payload = token.split(".")[1];
+  if (!payload) {
+    throw new Error("Invalid token");
+  }
+  // The payload is encoded in base64url
+  return JSON.parse(atob(payload.replaceAll("-", "+").replaceAll("_", "/")));
+}
 
 @Service()
 export class AuthService {
@@ -48,7 +57,7 @@ export class AuthService {
       return false;
     }
     try {
-      return Date.now() < jwtDecode<IJwt>(accessToken).exp * 1000;
+      return Date.now() < decodeJwtPayload(accessToken).exp * 1000;
     } catch {
       return false;
     }

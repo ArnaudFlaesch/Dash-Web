@@ -24,27 +24,13 @@ $header-height: 2.5rem;
   }
 }
 
-.header {
+// The projected icon and title are styled in styles/_widget.scss
+.widget-header {
   flex: 0 1 60%;
   height: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 600;
-
-  ::ng-deep img {
-    max-height: 2.25rem;
-    max-width: 2.25rem;
-    border-radius: $border-radius;
-  }
-
-  ::ng-deep a {
-    display: flex;
-    height: 100%;
-
-    > * {
-      margin: auto 0;
-    }
-  }
 }
 
 .header-actions {

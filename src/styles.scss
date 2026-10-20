@@ -1,5 +1,6 @@
 @use "@angular/material" as mat;
 @use "layout";
+@use "widget";
 @include mat.core;
 
 $light-theme: mat.define-theme(

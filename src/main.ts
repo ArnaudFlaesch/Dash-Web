@@ -10,7 +10,19 @@ import { provideServiceWorker } from "@angular/service-worker";
 import { DateAdapter, provideCalendar } from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
 import { fr } from "date-fns/locale";
-import { provideCharts, withDefaultRegisterables } from "ng2-charts";
+import {
+  BarController,
+  BarElement,
+  CategoryScale,
+  Colors,
+  Legend,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Tooltip
+} from "chart.js";
+import { provideCharts } from "ng2-charts";
 import { AppComponent } from "./app/app.component";
 import { AuthService } from "./app/services/auth.service/auth.service";
 import { authInterceptor } from "./app/services/auth.interceptor/auth.interceptor";
@@ -40,7 +52,21 @@ bootstrapApplication(AppComponent, {
     { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: "fr-FR" },
     provideRouter(routes),
-    provideCharts(withDefaultRegisterables()),
+    // Only the bar (Strava) and line (workout statistics) charts are used
+    provideCharts({
+      registerables: [
+        BarController,
+        BarElement,
+        LineController,
+        LineElement,
+        PointElement,
+        CategoryScale,
+        LinearScale,
+        Colors,
+        Legend,
+        Tooltip
+      ]
+    }),
     provideDateFnsAdapter(),
     provideHttpClient(withXhr(), withInterceptors([authInterceptor]))
   ]
