@@ -1,5 +1,6 @@
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, computed, inject } from "@angular/core";
+import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { isToday } from "date-fns";
 import {
   INotification,
@@ -10,6 +11,7 @@ import { ErrorHandlerService } from "../services/error.handler.service";
 import { NotificationService } from "../services/notification.service/NotificationService";
 import { WidgetService } from "../services/widget.service/widget.service";
 import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
+import { catchError, map, of } from "rxjs";
 
 const NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
   [NotificationTypeEnum.INFO]: "info",
@@ -21,8 +23,21 @@ const NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
   templateUrl: "./notifications.component.html",
   imports: [NotificationsListComponent]
 })
-export class NotificationsComponent implements OnInit {
-  public readonly notificationsFromDatabase = signal<INotification[]>([]);
+export class NotificationsComponent {
+  /** Notifications, reloaded each time the widgets are refreshed. */
+  public readonly notificationsResource = rxResource({
+    stream: () =>
+      this.notificationService.getNotifications().pipe(
+        map((notifications) => notifications.content),
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_NOTIFICATIONS);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as INotification[]
+  });
+
+  public readonly notificationsFromDatabase = this.notificationsResource.value;
   public readonly notificationsToDisplay = computed<INotificationToDisplay[]>(() =>
     this.notificationsFromDatabase().map((notification) => ({
       ...notification,
@@ -37,15 +52,13 @@ export class NotificationsComponent implements OnInit {
   private readonly notificationService = inject(NotificationService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
+  private readonly ERROR_GETTING_NOTIFICATIONS =
+    "Erreur lors de la récupération des notifications.";
 
   public constructor() {
     inject(WidgetService)
       .refreshWidgetsAction.pipe(takeUntilDestroyed())
-      .subscribe(() => this.fetchNotificationsFromDatabase());
-  }
-
-  public ngOnInit(): void {
-    this.fetchNotificationsFromDatabase();
+      .subscribe(() => this.notificationsResource.reload());
   }
 
   public markNotificationAsRead(notificationId: number): void {
@@ -73,12 +86,6 @@ export class NotificationsComponent implements OnInit {
       error: (error) =>
         this.errorHandlerService.handleError(error, this.ERROR_MARKING_NOTIFICATION_AS_READ)
     });
-  }
-
-  private fetchNotificationsFromDatabase(): void {
-    this.notificationService
-      .getNotifications()
-      .subscribe((notifications) => this.notificationsFromDatabase.set(notifications.content));
   }
 
   private computeDateToDisplay(date: string): string {

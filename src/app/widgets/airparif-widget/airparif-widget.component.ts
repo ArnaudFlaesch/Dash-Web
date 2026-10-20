@@ -1,8 +1,10 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
-import { forkJoin } from "rxjs";
+import { catchError, forkJoin, of } from "rxjs";
 import { SafePipe } from "../../pipes/safe.pipe";
 import { WidgetComponent } from "../widget/widget.component";
 import { injectWidgetData } from "../widget.tokens";
@@ -36,13 +38,33 @@ export class AirParifWidgetComponent {
     requiredText(path.airParifApiKey);
     requiredText(path.communeInseeCode);
   });
-  public readonly airParifCouleursIndices = signal<IAirParifCouleur[]>([]);
-  public readonly airParifForecast = signal<IForecast[]>([]);
+
+  /** Forecast of the commune saved on the last refresh, with the colors of the indices. */
+  public readonly airParifResource = rxResource({
+    params: () => this.refreshedCommune(),
+    stream: ({ params: { communeInseeCode } }) =>
+      forkJoin([
+        this.airParifWidgetService.getCommunePrevision(communeInseeCode),
+        this.airParifWidgetService.getColors()
+      ]).pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_AIRPARIF_FORECAST);
+          return of<[IForecast[], IAirParifCouleur[]]>([[], []]);
+        })
+      ),
+    defaultValue: [[], []] as [IForecast[], IAirParifCouleur[]]
+  });
+
+  public readonly airParifForecast = computed(() => this.airParifResource.value()[0]);
+  public readonly airParifCouleursIndices = computed(() => this.airParifResource.value()[1]);
   public readonly isWidgetLoaded = signal(true);
 
   public readonly isFormValid = computed(() => this.configForm().valid());
 
   public readonly airParifWidgetService = inject(AirParifWidgetService);
+
+  // A new object on each refresh, so that the resource reloads even if the commune is unchanged
+  private readonly refreshedCommune = signal<{ communeInseeCode: string } | undefined>(undefined);
 
   private readonly ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
@@ -50,17 +72,7 @@ export class AirParifWidgetComponent {
 
   public refreshWidget(): void {
     if (this.isFormValid()) {
-      forkJoin([
-        this.airParifWidgetService.getCommunePrevision(this.config().communeInseeCode),
-        this.airParifWidgetService.getColors()
-      ]).subscribe({
-        next: ([forecast, airParifColors]) => {
-          this.airParifForecast.set(forecast);
-          this.airParifCouleursIndices.set(airParifColors);
-        },
-        error: (error) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_AIRPARIF_FORECAST)
-      });
+      this.refreshedCommune.set({ communeInseeCode: this.config().communeInseeCode });
     }
   }
 

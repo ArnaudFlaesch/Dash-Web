@@ -39,7 +39,10 @@ describe("MiniWidgetListComponent", () => {
           }
         }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(MiniWidgetListComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(MiniWidgetListComponent);
     component = fixture.componentInstance;
@@ -50,8 +53,14 @@ describe("MiniWidgetListComponent", () => {
     httpTestingController.verify();
   });
 
-  function loadMiniWidgets(): void {
-    component.ngOnInit();
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
+  async function loadMiniWidgets(): Promise<void> {
+    TestBed.tick();
     httpTestingController.expectOne(miniWidgetPath).flush([
       {
         id: 70,
@@ -59,25 +68,27 @@ describe("MiniWidgetListComponent", () => {
         data: { city: "Paris" }
       }
     ]);
+    await flushResources();
   }
 
-  it("should have no widgets", () => {
-    loadMiniWidgets();
+  it("should have no widgets", async () => {
+    await loadMiniWidgets();
     expect(component.miniWidgetList().length).toEqual(1);
   });
 
-  it("Should handle an error while loading the mini widgets", () => {
+  it("Should handle an error while loading the mini widgets", async () => {
     const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
-    component.ngOnInit();
+    TestBed.tick();
     httpTestingController
       .expectOne(miniWidgetPath)
       .flush(null, { status: 500, statusText: "Server error" });
+    await flushResources();
     expect(handleErrorSpy).toHaveBeenCalled();
     expect(component.miniWidgetList()).toEqual([]);
   });
 
-  it("Should add a mini widget from the creation modal", () => {
-    loadMiniWidgets();
+  it("Should add a mini widget from the creation modal", async () => {
+    await loadMiniWidgets();
     dialogResult = "WEATHER";
     component.openCreateMiniWidgetModal();
     const request = httpTestingController.expectOne(miniWidgetPath + "addMiniWidget");
@@ -91,15 +102,15 @@ describe("MiniWidgetListComponent", () => {
     httpTestingController.expectNone(miniWidgetPath + "addMiniWidget");
   });
 
-  it("Should delete a mini widget", () => {
-    loadMiniWidgets();
+  it("Should delete a mini widget", async () => {
+    await loadMiniWidgets();
     TestBed.inject(MiniWidgetService).notifyMiniWidgetDeleted(70);
     httpTestingController.expectOne(miniWidgetPath + "deleteMiniWidget?widgetId=70").flush(null);
     expect(component.miniWidgetList()).toEqual([]);
   });
 
-  it("Should provide the mini widget id and data to each mini widget", () => {
-    loadMiniWidgets();
+  it("Should provide the mini widget id and data to each mini widget", async () => {
+    await loadMiniWidgets();
     const miniWidget = component.miniWidgetList()[0];
     const injector = component.getMiniWidgetInjector(miniWidget);
     expect(injector.get(WIDGET_ID)).toEqual(70);

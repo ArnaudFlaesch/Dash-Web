@@ -24,7 +24,10 @@ describe("NotificationsComponent", () => {
         provideHttpClientTesting(),
         NotificationService
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(NotificationsComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(NotificationsComponent);
     component = fixture.componentInstance;
@@ -34,6 +37,12 @@ describe("NotificationsComponent", () => {
   afterEach(() => {
     httpTestingController.verify();
   });
+
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
 
   const notificationDate = new Date();
   const notificationsData = {
@@ -67,12 +76,13 @@ describe("NotificationsComponent", () => {
     number: 0
   } as IPage<INotification>;
 
-  it("should create component and get notifications", () => {
-    component.ngOnInit();
+  it("should create component and get notifications", async () => {
+    TestBed.tick();
     const notificationsRequest = httpTestingController.expectOne(
       environment.backend_url + "/notifications/"
     );
     notificationsRequest.flush(notificationsData);
+    await flushResources();
 
     expect(component.notificationsFromDatabase()).toEqual(notificationsData.content);
     expect(component.notificationsToDisplay()[0].notificationTypeToDisplay).toEqual("warning");
@@ -81,12 +91,13 @@ describe("NotificationsComponent", () => {
     expect(component.unreadNotificationsForBadge()).toEqual(2);
   });
 
-  it("Should mark all notifications as read", () => {
-    component.ngOnInit();
+  it("Should mark all notifications as read", async () => {
+    TestBed.tick();
     const notificationsRequest = httpTestingController.expectOne(
       environment.backend_url + "/notifications/"
     );
     notificationsRequest.flush(notificationsData);
+    await flushResources();
 
     component.markAllNotificationsAsRead();
 

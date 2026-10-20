@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, input, signal } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
 import {
   MatExpansionPanel,
   MatExpansionPanelContent,
@@ -7,6 +8,7 @@ import {
   MatExpansionPanelTitle
 } from "@angular/material/expansion";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { catchError, map, of } from "rxjs";
 import { IAchievement, IGameInfoDisplay } from "../ISteam";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
 import { SteamWidgetService } from "../steam.widget.service";
@@ -28,7 +30,24 @@ export class GameDetailsComponent {
   public readonly steamUserId = input.required<string>();
   public readonly profileUrl = input.required<string>();
 
-  public readonly achievements = signal<IAchievement[]>([]);
+  /** Achievements of the player for this game, loaded once the panel has been opened. */
+  public readonly achievementsResource = rxResource({
+    params: () =>
+      this.isPanelOpened()
+        ? { steamUserId: this.steamUserId(), appId: this.gameInfo().appid }
+        : undefined,
+    stream: ({ params: { steamUserId, appId } }) =>
+      this.steamWidgetService.getAchievementList(steamUserId, appId).pipe(
+        map((response) => response.playerstats.achievements ?? []),
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACHIEVEMENTS_DATA);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as IAchievement[]
+  });
+
+  public readonly achievements = this.achievementsResource.value;
   public readonly completedAchievements = computed(() =>
     this.achievements().filter((achievement) => achievement.achieved === 1)
   );
@@ -38,19 +57,13 @@ export class GameDetailsComponent {
       : undefined
   );
 
+  private readonly isPanelOpened = signal(false);
+
   private readonly ERROR_GETTING_ACHIEVEMENTS_DATA = "Erreur lors de la récupération des succès.";
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
-  public loadAchievementsData(steamUserId: string, gameInfo: IGameInfoDisplay): void {
-    this.steamWidgetService.getAchievementList(steamUserId, gameInfo.appid).subscribe({
-      next: (response) => {
-        if (response.playerstats.achievements) {
-          this.achievements.set(response.playerstats.achievements);
-        }
-      },
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACHIEVEMENTS_DATA)
-    });
+  public loadAchievementsData(): void {
+    this.isPanelOpened.set(true);
   }
 }

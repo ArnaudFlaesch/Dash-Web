@@ -27,7 +27,10 @@ describe("WeatherMiniWidgetComponent", () => {
         MiniWidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(WeatherMiniWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(WeatherMiniWidgetComponent);
     component = fixture.componentInstance;
@@ -38,7 +41,13 @@ describe("WeatherMiniWidgetComponent", () => {
     httpTestingController.verify();
   });
 
-  it("Should create widget", () => {
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
+  it("Should create widget", async () => {
     expect(component.getWidgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     expect(component.isWidgetLoaded()).toEqual(false);
@@ -50,21 +59,25 @@ describe("WeatherMiniWidgetComponent", () => {
     expect(component.isFormValid()).toEqual(true);
 
     component.refreshWidget();
+    TestBed.tick();
     const request = httpTestingController.expectOne(
       environment.backend_url + "/weatherWidget/weather?city=" + city
     );
     request.flush({});
+    await flushResources();
     expect(component.isWidgetLoaded()).toEqual(true);
   });
 
-  it("Should not refresh widget because of error", () => {
+  it("Should not refresh widget because of error", async () => {
     const city = "Paris";
     component.config.update((config) => ({ ...config, city: city }));
 
     component.refreshWidget();
+    TestBed.tick();
     httpTestingController
       .expectOne(environment.backend_url + "/weatherWidget/weather?city=" + city)
       .error(new ProgressEvent("Server error"));
+    await flushResources();
   });
 
   it("Should get weather icons", () => {

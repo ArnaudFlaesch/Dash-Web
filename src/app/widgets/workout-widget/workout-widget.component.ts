@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
 import { form, FormField, required } from "@angular/forms/signals";
 import {
   MatDatepicker,
@@ -10,6 +11,7 @@ import {
   endOfMonth,
   endOfWeek,
   endOfYear,
+  isValid,
   startOfISOWeek,
   startOfMonth,
   startOfYear,
@@ -35,6 +37,7 @@ import {
 import { WorkoutSessionEditComponent } from "./workout-session-edit/workout-session-edit.component";
 import { WorkoutStatisticsComponent } from "./workout-statistics/workout-statistics.component";
 import { WorkoutWidgetService } from "./workout.widget.service";
+import { catchError, Observable, of } from "rxjs";
 
 enum WORKOUT_WIDGET_VIEW {
   WORKOUT_SESSIONS_LIST_VIEW = 1,
@@ -73,14 +76,8 @@ enum WORKOUT_STATISTICS {
   ]
 })
 export class WorkoutWidgetComponent {
-  public readonly workoutTypes = signal<IWorkoutType[]>([]);
-  public readonly workoutSessions = signal<IWorkoutSession[]>([]);
-  public readonly workoutStatsByWeek = signal<IWorkoutStatsByPeriod[]>([]);
-  public readonly workoutStatsByMonth = signal<IWorkoutStatsByPeriod[]>([]);
-  public readonly workoutStatsOfMonths = signal<IWorkoutStatByMonth[]>([]);
   public readonly currentWorkoutSessionToEdit = signal<IWorkoutSession | undefined>(undefined);
   public readonly selectedWorkoutStatistics = signal<WORKOUT_STATISTICS | undefined>(undefined);
-  public readonly isWidgetLoaded = signal(false);
   public readonly widgetView = signal(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
 
   public readonly dateFormat = DEFAULT_DATE_FORMAT;
@@ -92,6 +89,80 @@ export class WorkoutWidgetComponent {
   public readonly workoutDateForm = form(this.workoutDateInput, (path) => required(path));
   public readonly selectedMonthInput = signal<Date>(startOfMonth(new Date()));
   public readonly selectedMonthForm = form(this.selectedMonthInput);
+
+  public readonly workoutTypesResource = rxResource({
+    params: () => this.refreshRequest(),
+    stream: () =>
+      this.handleError(
+        this.workoutWidgetService.getWorkoutTypes(),
+        this.ERROR_GETTING_WORKOUT_TYPES
+      ),
+    defaultValue: [] as IWorkoutType[]
+  });
+
+  /** Workout sessions of the selected month. */
+  public readonly workoutSessionsResource = rxResource({
+    params: () => this.getSelectedMonthParams(),
+    stream: ({ params: { selectedMonth } }) =>
+      this.handleError(
+        this.workoutWidgetService.getWorkoutSessions(
+          startOfMonth(selectedMonth),
+          endOfMonth(selectedMonth)
+        ),
+        this.ERROR_GETTING_WORKOUT_SESSIONS
+      ),
+    defaultValue: [] as IWorkoutSession[]
+  });
+
+  public readonly workoutStatsByWeekResource = rxResource({
+    params: () => this.refreshRequest(),
+    stream: () => {
+      const today = new Date();
+      return this.handleError(
+        this.workoutWidgetService.getWorkoutStatsByPeriod(startOfISOWeek(today), endOfWeek(today)),
+        this.ERROR_GETTING_WORKOUT_STATS
+      );
+    },
+    defaultValue: [] as IWorkoutStatsByPeriod[]
+  });
+
+  /** Workout statistics of the selected month. */
+  public readonly workoutStatsByMonthResource = rxResource({
+    params: () => this.getSelectedMonthParams(),
+    stream: ({ params: { selectedMonth } }) =>
+      this.handleError(
+        this.workoutWidgetService.getWorkoutStatsByPeriod(
+          startOfMonth(selectedMonth),
+          endOfMonth(selectedMonth)
+        ),
+        this.ERROR_GETTING_WORKOUT_STATS
+      ),
+    defaultValue: [] as IWorkoutStatsByPeriod[]
+  });
+
+  /** Workout statistics by month over the period selected in the statistics view. */
+  public readonly workoutStatsOfMonthsResource = rxResource({
+    params: () => {
+      const selectedWorkoutStatistics = this.selectedWorkoutStatistics();
+      return selectedWorkoutStatistics && this.getStatisticsInterval(selectedWorkoutStatistics);
+    },
+    stream: ({ params: [dateIntervalStart, dateIntervalEnd] }) =>
+      this.handleError(
+        this.workoutWidgetService.getWorkoutStatsByMonth(dateIntervalStart, dateIntervalEnd),
+        this.ERROR_GETTING_WORKOUT_STATS
+      ),
+    defaultValue: [] as IWorkoutStatByMonth[]
+  });
+
+  public readonly workoutTypes = this.workoutTypesResource.value;
+  public readonly workoutSessions = this.workoutSessionsResource.value;
+  public readonly workoutStatsByWeek = this.workoutStatsByWeekResource.value;
+  public readonly workoutStatsByMonth = this.workoutStatsByMonthResource.value;
+  public readonly workoutStatsOfMonths = this.workoutStatsOfMonthsResource.value;
+  // Stays loaded while the widget is refreshed
+  public readonly isWidgetLoaded = computed(() =>
+    ["resolved", "reloading", "local"].includes(this.workoutTypesResource.status())
+  );
 
   public readonly isLastYearWorkoutStatisticsSelected = computed(
     () => this.selectedWorkoutStatistics() === WORKOUT_STATISTICS.LAST_YEAR
@@ -115,23 +186,15 @@ export class WorkoutWidgetComponent {
     "Erreur lors de la création d'une session d'exercices.";
   private readonly ERROR_GETTING_WORKOUT_STATS = "Erreur lors de la récupération des statistiques.";
 
+  // A new object on each refresh, so that the resources reload
+  private readonly refreshRequest = signal<object | undefined>(undefined);
+
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
   private readonly dateUtilsService = inject(DateUtilsService);
 
   public refreshWidget(): void {
-    this.workoutWidgetService.getWorkoutTypes().subscribe({
-      next: (workoutTypes) => {
-        this.workoutTypes.set(workoutTypes);
-        this.isWidgetLoaded.set(true);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_TYPES);
-        this.isWidgetLoaded.set(true);
-      }
-    });
-    this.selectMonth(this.selectedMonthInput());
-    this.getWorkoutStatsOfCurrentWeek();
+    this.refreshRequest.set({});
   }
 
   public editWorkoutSession(workoutSession: IWorkoutSession): void {
@@ -191,8 +254,6 @@ export class WorkoutWidgetComponent {
 
   public selectMonth(monthDate: Date): void {
     this.selectedMonthInput.set(monthDate);
-    this.getWorkoutSessionsOfMonth(monthDate);
-    this.getWorkoutStatsOfMonth(monthDate);
   }
 
   public setMonthAndYear(normalizedMonthAndYear: Date, datepicker: MatDatepicker<Date>): void {
@@ -203,84 +264,47 @@ export class WorkoutWidgetComponent {
   }
 
   public getWorkoutsStatsOfCurrentYear(): void {
-    const today = new Date();
-    this.selectWorkoutStatistics(
-      WORKOUT_STATISTICS.CURRENT_YEAR,
-      startOfYear(today),
-      endOfYear(today)
-    );
+    this.selectedWorkoutStatistics.set(WORKOUT_STATISTICS.CURRENT_YEAR);
   }
 
   public getWorkoutsStatsOfLastThreeMonths(): void {
-    this.selectWorkoutStatistics(
-      WORKOUT_STATISTICS.LAST_THREE_MONTHS,
-      startOfMonth(subMonths(new Date(), 2)),
-      endOfMonth(new Date())
-    );
+    this.selectedWorkoutStatistics.set(WORKOUT_STATISTICS.LAST_THREE_MONTHS);
   }
 
   public getWorkoutsStatsOfLastSixMonths(): void {
-    this.selectWorkoutStatistics(
-      WORKOUT_STATISTICS.LAST_SIX_MONTHS,
-      startOfMonth(subMonths(new Date(), 5)),
-      endOfMonth(new Date())
-    );
+    this.selectedWorkoutStatistics.set(WORKOUT_STATISTICS.LAST_SIX_MONTHS);
   }
 
   public getWorkoutsStatsOfPastYear(): void {
-    const lastYear = subYears(new Date(), 1);
-    this.selectWorkoutStatistics(
-      WORKOUT_STATISTICS.LAST_YEAR,
-      startOfYear(lastYear),
-      endOfYear(lastYear)
-    );
+    this.selectedWorkoutStatistics.set(WORKOUT_STATISTICS.LAST_YEAR);
   }
 
-  private selectWorkoutStatistics(
-    workoutStatistics: WORKOUT_STATISTICS,
-    dateIntervalStart: Date,
-    dateIntervalEnd: Date
-  ): void {
-    if (this.selectedWorkoutStatistics() !== workoutStatistics) {
-      this.selectedWorkoutStatistics.set(workoutStatistics);
-      this.getWorkoutStatsOfInterval(dateIntervalStart, dateIntervalEnd);
+  private getSelectedMonthParams(): { selectedMonth: Date } | undefined {
+    const selectedMonth = this.selectedMonthInput();
+    // Read the refresh request so that a new object is returned, and the resources reloaded, on each refresh
+    return this.refreshRequest() && isValid(selectedMonth) ? { selectedMonth } : undefined;
+  }
+
+  private getStatisticsInterval(workoutStatistics: WORKOUT_STATISTICS): [Date, Date] {
+    const today = new Date();
+    switch (workoutStatistics) {
+      case WORKOUT_STATISTICS.LAST_YEAR:
+        return [startOfYear(subYears(today, 1)), endOfYear(subYears(today, 1))];
+      case WORKOUT_STATISTICS.CURRENT_YEAR:
+        return [startOfYear(today), endOfYear(today)];
+      case WORKOUT_STATISTICS.LAST_SIX_MONTHS:
+        return [startOfMonth(subMonths(today, 5)), endOfMonth(today)];
+      case WORKOUT_STATISTICS.LAST_THREE_MONTHS:
+        return [startOfMonth(subMonths(today, 2)), endOfMonth(today)];
     }
   }
 
-  private getWorkoutStatsOfInterval(dateIntervalStart: Date, dateIntervalEnd: Date): void {
-    this.workoutWidgetService.getWorkoutStatsByMonth(dateIntervalStart, dateIntervalEnd).subscribe({
-      next: (workoutStatsOfMonths) => this.workoutStatsOfMonths.set(workoutStatsOfMonths)
-    });
-  }
-
-  private getWorkoutSessionsOfMonth(selectedMonth: Date): void {
-    this.workoutWidgetService
-      .getWorkoutSessions(startOfMonth(selectedMonth), endOfMonth(selectedMonth))
-      .subscribe({
-        next: (workoutSessions) => this.workoutSessions.set(workoutSessions),
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_SESSIONS)
-      });
-  }
-
-  private getWorkoutStatsOfCurrentWeek(): void {
-    const today = new Date();
-    this.workoutWidgetService
-      .getWorkoutStatsByPeriod(startOfISOWeek(today), endOfWeek(today))
-      .subscribe({
-        next: (workoutStatsByWeek) => this.workoutStatsByWeek.set(workoutStatsByWeek),
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)
-      });
-  }
-
-  private getWorkoutStatsOfMonth(date: Date): void {
-    this.workoutWidgetService
-      .getWorkoutStatsByPeriod(startOfMonth(date), endOfMonth(date))
-      .subscribe({
-        next: (workoutStatsByMonth) => this.workoutStatsByMonth.set(workoutStatsByMonth),
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_STATS)
-      });
+  private handleError<T>(request: Observable<T[]>, errorMessage: string): Observable<T[]> {
+    return request.pipe(
+      catchError((error: HttpErrorResponse) => {
+        this.errorHandlerService.handleError(error, errorMessage);
+        return of([]);
+      })
+    );
   }
 }

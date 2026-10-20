@@ -151,7 +151,10 @@ describe("WeatherWidgetComponent", () => {
         WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(WeatherWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(WeatherWidgetComponent);
     component = fixture.componentInstance;
@@ -162,8 +165,14 @@ describe("WeatherWidgetComponent", () => {
     httpTestingController.verify();
   });
 
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
   describe("Normal cases", () => {
-    it("should create", () => {
+    it("should create", async () => {
       expect(component.getWidgetData()).toEqual(undefined);
       expect(component.isFormValid()).toEqual(false);
       const cityName = "Paris";
@@ -174,10 +183,13 @@ describe("WeatherWidgetComponent", () => {
       expect(component.isFormValid()).toEqual(true);
       expect(component.getWidgetData()).toEqual({ city: cityName });
       component.refreshWidget();
+      TestBed.tick();
 
       const requests = httpTestingController.match({ method: "GET" });
       requests[0].flush(weatherData);
+      await flushResources();
       requests[1].flush(forecastData);
+      await flushResources();
 
       expect(component.cityData()?.name).toEqual(cityName);
       expect(component.forecastResponse().length).toEqual(forecastData.list.length);
@@ -186,12 +198,14 @@ describe("WeatherWidgetComponent", () => {
   });
 
   describe("Error cases", () => {
-    it("should display error messages", () => {
+    it("should display error messages", async () => {
       const cityName = "Paris";
       component.config.update((config) => ({ ...config, city: cityName }));
       component.refreshWidget();
+      TestBed.tick();
       const requests = httpTestingController.match({ method: "GET" });
       requests[0].error(new ProgressEvent("Server error"));
+      await flushResources();
 
       expect(component.weather()).toEqual(undefined);
       expect(component.forecastResponse()).toEqual([]);

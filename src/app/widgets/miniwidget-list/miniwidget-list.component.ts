@@ -1,12 +1,12 @@
 import { NgComponentOutlet } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject, Injector, OnInit, signal, Type } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Component, inject, Injector, Type } from "@angular/core";
+import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatMiniFabButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { filter, switchMap } from "rxjs";
+import { catchError, filter, of, switchMap } from "rxjs";
 import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
 import { CreateMiniWidgetModalComponent } from "../../modals/create-mini-widget-modal/create-mini-widget-modal.component";
 import { IMiniWidgetConfig } from "../../model/IMiniWidgetConfig";
@@ -25,8 +25,19 @@ const MINI_WIDGET_COMPONENTS: Record<MiniWidgetTypeEnum, Type<unknown>> = {
   styleUrl: "./miniwidget-list.component.scss",
   imports: [MatMiniFabButton, MatTooltip, MatIcon, NgComponentOutlet]
 })
-export class MiniWidgetListComponent implements OnInit {
-  public readonly miniWidgetList = signal<IMiniWidgetConfig[]>([]);
+export class MiniWidgetListComponent {
+  public readonly miniWidgetsResource = rxResource({
+    stream: () =>
+      this.miniWidgetService.getMiniWidgets().pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_MINI_WIDGETS);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as IMiniWidgetConfig[]
+  });
+
+  public readonly miniWidgetList = this.miniWidgetsResource.value;
   public readonly miniWidgetComponents = MINI_WIDGET_COMPONENTS;
 
   private readonly injector = inject(Injector);
@@ -45,14 +56,6 @@ export class MiniWidgetListComponent implements OnInit {
     this.miniWidgetService.miniWidgetDeleted
       .pipe(takeUntilDestroyed())
       .subscribe((miniWidgetId) => this.deleteMiniWidget(miniWidgetId));
-  }
-
-  public ngOnInit(): void {
-    this.miniWidgetService.getMiniWidgets().subscribe({
-      next: (miniWidgets) => this.miniWidgetList.set(miniWidgets),
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_MINI_WIDGETS)
-    });
   }
 
   public openCreateMiniWidgetModal(): void {

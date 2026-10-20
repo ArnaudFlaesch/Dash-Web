@@ -27,7 +27,10 @@ describe("CalendarWidgetComponent", () => {
         WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(CalendarWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(CalendarWidgetComponent);
     component = fixture.componentInstance;
@@ -38,13 +41,21 @@ describe("CalendarWidgetComponent", () => {
     httpTestingController.verify();
   });
 
-  it("should create", () => {
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
+  it("should create", async () => {
     expect(component.config().calendarUrls).toEqual([]);
     component.refreshWidget();
+    TestBed.tick();
     expect(component.events()).toEqual([]);
     expect(component.isCalendarViewMonth()).toEqual(true);
     component.config.set({ calendarUrls: ["https://calendar.ical"] });
     component.refreshWidget();
+    TestBed.tick();
     const getCalendarDataRequest = httpTestingController.expectOne(
       environment.backend_url + `/calendarWidget/`
     );
@@ -81,6 +92,7 @@ describe("CalendarWidgetComponent", () => {
       }
     ];
     getCalendarDataRequest.flush(getCalendarData);
+    await flushResources();
     expect(component.events().length).toEqual(6);
     const calendarEvent = component.events()[0];
     expect(calendarEvent.title).toEqual("La Toussaint");

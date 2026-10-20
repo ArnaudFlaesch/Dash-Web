@@ -76,47 +76,63 @@ describe("HomeComponent", () => {
           }
         }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(HomeComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     httpTestingController = TestBed.inject(HttpTestingController);
+    TestBed.tick();
   });
 
   afterEach(() => {
     httpTestingController.verify();
   });
 
-  it("Should display two tabs with two widgets on the first one", () => {
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
+  it("Should display two tabs with two widgets on the first one", async () => {
     expect(component.tabs()).toEqual([]);
     const request = httpTestingController.expectOne(environment.backend_url + tabPath);
     request.flush(tabData);
+    await flushResources();
     expect(component.tabs()).toEqual(tabData);
     const getWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getWidgetsRequest.flush(firstTabWidgetData);
+    await flushResources();
     expect(component.tabs().length).toEqual(2);
     expect(component.activeWidgets().length).toEqual(2);
     expect(component.activeTab()).toEqual(tabData[0].id);
 
     // Select second tab
     component.selectTab(tabData[1].id);
+    TestBed.tick();
     expect(component.activeTab()).toEqual(tabData[1].id);
     const getSecondTabWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getSecondTabWidgetsRequest.flush([]);
+    await flushResources();
   });
 
-  it("Should display two tabs then delete a widget and the second tab", () => {
+  it("Should display two tabs then delete a widget and the second tab", async () => {
     const request = httpTestingController.expectOne(environment.backend_url + tabPath);
     request.flush(tabData);
+    await flushResources();
     expect(component.tabs()).toEqual(tabData);
     const getWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getWidgetsRequest.flush(firstTabWidgetData);
+    await flushResources();
     expect(component.tabs().length).toEqual(2);
     expect(component.activeWidgets().length).toEqual(2);
 
@@ -139,7 +155,7 @@ describe("HomeComponent", () => {
     expect(component.tabs().length).toEqual(1);
   });
 
-  it("Should delete the last tab and select the first after", () => {
+  it("Should delete the last tab and select the first after", async () => {
     const tabsFromDatabase = [
       { id: 1, label: "Home", tabOrder: 1 },
       { id: 2, label: "RSS", tabOrder: 2 },
@@ -148,15 +164,17 @@ describe("HomeComponent", () => {
 
     const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush(tabsFromDatabase);
+    await flushResources();
 
     const getWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getWidgetsRequest.flush([]);
+    await flushResources();
     expect(component.activeTab()).toEqual(tabsFromDatabase[0].id);
   });
 
-  it("Should delete the first tab and select the second after", () => {
+  it("Should delete the first tab and select the second after", async () => {
     const tabsFromDatabase = [
       { id: 1, label: "Home", tabOrder: 1 },
       { id: 2, label: "RSS", tabOrder: 2 },
@@ -165,11 +183,13 @@ describe("HomeComponent", () => {
 
     const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush(tabsFromDatabase);
+    await flushResources();
 
     const getWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getWidgetsRequest.flush([]);
+    await flushResources();
 
     const tabIdToDelete = component.tabs()[0].id;
     component.deleteTabFromDash(tabIdToDelete);
@@ -178,15 +198,17 @@ describe("HomeComponent", () => {
     );
     deleteTabRequest.flush(null);
 
+    TestBed.tick();
     const getTabWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getTabWidgetsRequest.flush([]);
+    await flushResources();
 
     expect(component.activeTab()).toEqual(component.tabs()[0].id);
   });
 
-  it("Should delete the active tab and select the first one after", () => {
+  it("Should delete the active tab and select the first one after", async () => {
     const tabsFromDatabase = [
       { id: 1, label: "Home", tabOrder: 1 },
       { id: 2, label: "RSS", tabOrder: 2 },
@@ -195,18 +217,22 @@ describe("HomeComponent", () => {
 
     const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush(tabsFromDatabase);
+    await flushResources();
 
     const getWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getWidgetsRequest.flush([]);
+    await flushResources();
 
     component.selectTab(component.tabs()[1].id);
+    TestBed.tick();
 
     const getSecondTabWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.tabs()[1].id}`
     );
     getSecondTabWidgetsRequest.flush([]);
+    await flushResources();
 
     const tabIdToDelete = component.activeTab();
 
@@ -216,23 +242,27 @@ describe("HomeComponent", () => {
     );
     deleteTabRequest.flush(null);
 
+    TestBed.tick();
     const getTabWidgetRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getTabWidgetRequest.flush([]);
+    await flushResources();
     expect(component.activeTab()).toEqual(tabsFromDatabase[0].id);
   });
 
-  it("Should delete a tab", () => {
+  it("Should delete a tab", async () => {
     const tabsFromDatabase = [{ id: 1, label: "Home", tabOrder: 1 }];
 
     const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush(tabsFromDatabase);
+    await flushResources();
 
     const getWidgetsRequest = httpTestingController.expectOne(
       `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
     );
     getWidgetsRequest.flush([]);
+    await flushResources();
 
     const lastTabToDelete = component.activeTab();
     component.deleteTabFromDash(lastTabToDelete);
@@ -242,9 +272,10 @@ describe("HomeComponent", () => {
     deleteLastTabRequest.flush(null);
   });
 
-  it("Should switch between light and dark mode", () => {
+  it("Should switch between light and dark mode", async () => {
     const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
     getTabsRequest.flush([]);
+    await flushResources();
     component.toggleTheme(true);
     expect(localStorage.getItem("preferredTheme")).toEqual("dark");
     component.toggleTheme(true);
@@ -253,27 +284,32 @@ describe("HomeComponent", () => {
     expect(localStorage.getItem("preferredTheme")).toEqual("light");
   });
 
-  function loadDashboard(widgets: IWidgetConfig[] = firstTabWidgetData): void {
+  async function loadDashboard(widgets: IWidgetConfig[] = firstTabWidgetData): Promise<void> {
     httpTestingController.expectOne(environment.backend_url + tabPath).flush(tabData);
+    await flushResources();
     httpTestingController
       .expectOne(`${environment.backend_url}/widget/?tabId=${tabData[0].id}`)
       .flush(widgets);
+    await flushResources();
   }
 
-  it("Should add a new tab and select it", () => {
-    loadDashboard();
+  it("Should add a new tab and select it", async () => {
+    await loadDashboard();
     component.addNewTab();
     const request = httpTestingController.expectOne(`${environment.backend_url}/tab/addTab`);
     expect(request.request.body).toEqual({ label: "Nouvel onglet" });
     request.flush({ id: 3, label: "Nouvel onglet", tabOrder: 3 });
+    TestBed.tick();
+    httpTestingController.expectOne(`${environment.backend_url}/widget/?tabId=3`).flush([]);
+    await flushResources();
 
     expect(component.tabs().length).toEqual(3);
     expect(component.activeTab()).toEqual(3);
     expect(component.activeWidgets()).toEqual([]);
   });
 
-  it("Should add the widget selected in the creation modal", () => {
-    loadDashboard();
+  it("Should add the widget selected in the creation modal", async () => {
+    await loadDashboard();
     dialogResult = "WEATHER";
     component.openCreateWidgetModal();
     const request = httpTestingController.expectOne(`${environment.backend_url}/widget/addWidget`);
@@ -282,15 +318,15 @@ describe("HomeComponent", () => {
     expect(component.activeWidgets().length).toEqual(3);
   });
 
-  it("Should not add a widget when the creation modal is closed", () => {
-    loadDashboard();
+  it("Should not add a widget when the creation modal is closed", async () => {
+    await loadDashboard();
     component.openCreateWidgetModal();
     httpTestingController.expectNone(`${environment.backend_url}/widget/addWidget`);
     expect(component.activeWidgets().length).toEqual(2);
   });
 
-  it("Should reorder the tabs", () => {
-    loadDashboard();
+  it("Should reorder the tabs", async () => {
+    await loadDashboard();
     component.drop({ previousIndex: 0, currentIndex: 1 } as CdkDragDrop<ITab[]>);
     const request = httpTestingController.expectOne(`${environment.backend_url}/tab/updateTabs`);
     expect(request.request.body).toEqual([
@@ -301,16 +337,16 @@ describe("HomeComponent", () => {
     expect(component.tabs().map((tab) => tab.id)).toEqual([2, 1]);
   });
 
-  it("Should save the widgets order", () => {
-    loadDashboard();
+  it("Should save the widgets order", async () => {
+    await loadDashboard();
     component.updateWidgetOrder(firstTabWidgetData);
     httpTestingController
       .expectOne(`${environment.backend_url}/widget/updateWidgetsOrder`)
       .flush(firstTabWidgetData);
   });
 
-  it("Should delete a widget when its deletion is requested", () => {
-    loadDashboard();
+  it("Should delete a widget when its deletion is requested", async () => {
+    await loadDashboard();
     TestBed.inject(WidgetService).notifyWidgetDeleted(firstTabWidgetData[0].id);
     httpTestingController
       .expectOne(`${environment.backend_url}/widget/deleteWidget?id=${firstTabWidgetData[0].id}`)
@@ -318,8 +354,8 @@ describe("HomeComponent", () => {
     expect(component.activeWidgets().map((widget) => widget.id)).toEqual([2]);
   });
 
-  it("Should refresh all the widgets and toggle the edit mode", () => {
-    loadDashboard();
+  it("Should refresh all the widgets and toggle the edit mode", async () => {
+    await loadDashboard();
     const refreshSpy = vi.fn();
     TestBed.inject(WidgetService).refreshWidgetsAction.subscribe(refreshSpy);
     component.refreshAllWidgets();
@@ -330,8 +366,8 @@ describe("HomeComponent", () => {
     expect(component.editModeEnabled()).toBe(true);
   });
 
-  it("Should export the configuration", () => {
-    loadDashboard();
+  it("Should export the configuration", async () => {
+    await loadDashboard();
     const createObjectURL = vi.fn(() => "blob:config");
     const revokeObjectURL = vi.fn();
     vi.stubGlobal("URL", Object.assign(URL, { createObjectURL, revokeObjectURL }));
@@ -349,11 +385,12 @@ describe("HomeComponent", () => {
     vi.unstubAllGlobals();
   });
 
-  it("Should display errors when the dashboard actions fail", () => {
+  it("Should display errors when the dashboard actions fail", async () => {
     const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
     httpTestingController
       .expectOne(environment.backend_url + tabPath)
       .flush(null, { status: 500, statusText: "Server error" });
+    await flushResources();
     expect(component.isDashboardLoaded()).toBe(true);
 
     component.addNewTab();
@@ -370,7 +407,7 @@ describe("HomeComponent", () => {
   });
 
   it("Should log out the user", async () => {
-    loadDashboard();
+    await loadDashboard();
     localStorage.setItem("user", JSON.stringify({ accessToken: "token" }));
     const navigateSpy = vi.spyOn(TestBed.inject(Router), "navigate").mockResolvedValue(true);
     await component.logout();

@@ -1,8 +1,8 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
 import { Location } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, DestroyRef, inject, linkedSignal, signal } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Component, computed, DestroyRef, inject, linkedSignal, signal } from "@angular/core";
+import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { form, FormField } from "@angular/forms/signals";
 import { MatMiniFabButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
@@ -13,7 +13,7 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { MatTooltip } from "@angular/material/tooltip";
 import { ActivatedRoute, Router } from "@angular/router";
-import { filter, switchMap } from "rxjs";
+import { catchError, filter, of, switchMap } from "rxjs";
 import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
 import { CreateWidgetModalComponent } from "../modals/create-widget-modal/create-widget-modal.component";
 import { ImportConfigModalComponent } from "../modals/import-config-modal/import-config-modal.component";
@@ -54,11 +54,46 @@ import { WidgetListComponent } from "../widgets/widget-list/widget-list.componen
   ]
 })
 export class HomeComponent {
-  public readonly tabs = signal<ITab[]>([]);
-  public readonly activeWidgets = signal<IWidgetConfig[]>([]);
-  public readonly activeTab = signal(-1);
-  public readonly isDashboardLoaded = signal(false);
-  public readonly areWidgetsLoaded = signal(false);
+  public readonly tabsResource = rxResource({
+    stream: () =>
+      this.tabService.getTabs().pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_INIT_DASHBOARD);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as ITab[]
+  });
+
+  public readonly tabs = this.tabsResource.value;
+  // The tab from the url once the tabs are loaded, then kept as long as it exists, else the first tab
+  public readonly activeTab = linkedSignal<ITab[], number>({
+    source: this.tabs,
+    computation: (tabs, previous) => {
+      const tabId =
+        previous && previous.value !== -1
+          ? previous.value
+          : Number.parseInt(this.activatedRoute.snapshot.queryParamMap.get("tabId") ?? "");
+      return tabs.some((tab) => tab.id === tabId) ? tabId : (tabs.at(0)?.id ?? -1);
+    }
+  });
+
+  /** Widgets of the active tab, reloaded when another tab is selected. */
+  public readonly widgetsResource = rxResource({
+    params: () => (this.activeTab() === -1 ? undefined : { tabId: this.activeTab() }),
+    stream: ({ params: { tabId } }) =>
+      this.widgetService.getWidgets(tabId).pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_WIDGETS);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as IWidgetConfig[]
+  });
+
+  public readonly activeWidgets = this.widgetsResource.value;
+  public readonly isDashboardLoaded = computed(() => !this.tabsResource.isLoading());
+  public readonly areWidgetsLoaded = computed(() => !this.widgetsResource.isLoading());
   public readonly editModeEnabled = signal(false);
   public readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
   public readonly toggleThemeForm = form(this.isDarkTheme);
@@ -89,8 +124,6 @@ export class HomeComponent {
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public constructor() {
-    this.initDashboard();
-
     this.widgetService.widgetDeleted
       .pipe(takeUntilDestroyed())
       .subscribe((widgetId) => this.deleteWidgetFromDashboard(widgetId));
@@ -104,7 +137,6 @@ export class HomeComponent {
       next: (insertedTab) => {
         this.tabs.update((tabs) => [...tabs, insertedTab]);
         this.activeTab.set(insertedTab.id);
-        this.activeWidgets.set([]);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_TAB)
@@ -118,7 +150,6 @@ export class HomeComponent {
         .createUrlTree([], { relativeTo: this.activatedRoute, queryParams: { tabId } })
         .toString();
       this.location.go(url);
-      this.loadWidgets(tabId);
     }
   }
 
@@ -211,41 +242,6 @@ export class HomeComponent {
 
   public toggleTheme(isToggleChecked: boolean): void {
     this.themeService.selectDarkMode(isToggleChecked);
-  }
-
-  private initDashboard(): void {
-    this.tabService.getTabs().subscribe({
-      next: (tabs) => {
-        this.tabs.set(tabs);
-        if (tabs.length) {
-          const tabIdParam = Number.parseInt(
-            this.activatedRoute.snapshot.queryParamMap.get("tabId") ?? ""
-          );
-          this.activeTab.set(tabs.some((tab) => tab.id === tabIdParam) ? tabIdParam : tabs[0].id);
-          this.loadWidgets(this.activeTab());
-        } else {
-          this.areWidgetsLoaded.set(true);
-        }
-        this.isDashboardLoaded.set(true);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_INIT_DASHBOARD);
-        this.isDashboardLoaded.set(true);
-      }
-    });
-  }
-
-  private loadWidgets(activeTabId: number): void {
-    this.activeWidgets.set([]);
-    this.areWidgetsLoaded.set(false);
-    this.widgetService.getWidgets(activeTabId).subscribe({
-      next: (widgets) => {
-        this.activeWidgets.set(widgets);
-        this.areWidgetsLoaded.set(true);
-      },
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_WIDGETS)
-    });
   }
 
   private deleteTabFromDashboard(tabId: number): void {

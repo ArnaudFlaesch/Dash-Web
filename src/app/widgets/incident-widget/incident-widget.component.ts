@@ -1,7 +1,9 @@
-import { Component, computed, inject, signal } from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
-import { IIncidentStreak, IIncidentViewEnum } from "./IIncident";
+import { IIncident, IIncidentStreak, IIncidentViewEnum } from "./IIncident";
 import { IncidentWidgetService } from "./incident.widget.service";
 import { differenceInDays } from "date-fns";
 import { MatDialog } from "@angular/material/dialog";
@@ -16,7 +18,7 @@ import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { WidgetComponent } from "../widget/widget.component";
 import { injectWidgetData, WIDGET_ID } from "../widget.tokens";
-import { switchMap } from "rxjs";
+import { catchError, map, of } from "rxjs";
 
 @Component({
   selector: "dash-incident-widget",
@@ -36,9 +38,47 @@ import { switchMap } from "rxjs";
 export class IncidentWidgetComponent {
   public readonly config = signal({ incidentName: injectWidgetData("incidentName", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.incidentName));
-  public readonly lastIncidentDate = signal<string | undefined>(undefined);
-  public readonly streaks = signal<IIncidentStreak[]>([]);
-  public readonly isWidgetLoaded = signal(false);
+
+  /** Incident configuration of the widget, reloaded on each refresh. */
+  public readonly incidentConfigResource = rxResource({
+    params: () => this.refreshRequest(),
+    stream: () =>
+      this.incidentWidgetService.getIncidentConfigForWidget(this.widgetId).pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS);
+          return of(undefined);
+        })
+      ),
+    defaultValue: undefined as IIncident | undefined
+  });
+
+  /** Past streaks of the incident, most recent first, reloaded with the incident configuration. */
+  public readonly streaksResource = rxResource({
+    params: () => this.incidentConfigResource.value(),
+    stream: ({ params: incidentConfig }) =>
+      this.incidentWidgetService.getIncidentStreaks(incidentConfig.id).pipe(
+        map((incidentStreaks) =>
+          incidentStreaks.toSorted(
+            (streakA, streakB) =>
+              Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
+          )
+        ),
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as IIncidentStreak[]
+  });
+
+  public readonly streaks = this.streaksResource.value;
+  // Also updated when a streak is started or ended
+  public readonly lastIncidentDate = linkedSignal(
+    () => this.incidentConfigResource.value()?.lastIncidentDate
+  );
+  public readonly isWidgetLoaded = computed(() =>
+    ["resolved", "local"].includes(this.incidentConfigResource.status())
+  );
 
   public readonly isWidgetViewCurrentStreak = computed(
     () => this.widgetView() === IIncidentViewEnum.CURRENT_STREAK
@@ -54,6 +94,8 @@ export class IncidentWidgetComponent {
   });
 
   private readonly widgetView = signal(IIncidentViewEnum.CURRENT_STREAK);
+  // A new object on each refresh, so that the resources reload
+  private readonly refreshRequest = signal<object | undefined>(undefined);
 
   private readonly ERROR_STARTING_NEW_STREAK = "Erreur lors du démarrage de la série.";
   private readonly ERROR_ENDING_NEW_STREAK = "Erreur lors de la clôture de la série.";
@@ -65,27 +107,7 @@ export class IncidentWidgetComponent {
   private readonly widgetId = inject(WIDGET_ID);
 
   public refreshWidget(): void {
-    this.isWidgetLoaded.set(false);
-    this.incidentWidgetService
-      .getIncidentConfigForWidget(this.widgetId)
-      .pipe(
-        switchMap((incidentConfig) => {
-          this.lastIncidentDate.set(incidentConfig.lastIncidentDate);
-          this.isWidgetLoaded.set(true);
-          return this.incidentWidgetService.getIncidentStreaks(incidentConfig.id);
-        })
-      )
-      .subscribe({
-        next: (incidentStreaks) =>
-          this.streaks.set(
-            incidentStreaks.toSorted(
-              (streakA, streakB) =>
-                Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
-            )
-          ),
-        error: (error) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS)
-      });
+    this.refreshRequest.set({});
   }
 
   public startNewStreak(): void {
