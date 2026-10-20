@@ -66,15 +66,20 @@ describe("LoginComponent", () => {
     expect(loginSpy).toHaveBeenCalledWith("demo", "demo");
   });
 
-  it("Should fail to login with wrong credentials", () => {
+  it("Should fail to login with wrong credentials", async () => {
     const userName = "userName";
+    const handleLoginErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleLoginError");
 
     component.credentials.set({ username: userName, password: "password" });
-    component.handleLogin();
+    const login = component.handleLogin();
     const request = httpTestingController.expectOne(environment.backend_url + "/auth/login");
     request.flush("Bad credentials", {
       status: 400,
       statusText: "Bad Request"
     });
+    await login;
+
+    expect(handleLoginErrorSpy).toHaveBeenCalled();
+    expect(component.isLoading()).toBe(false);
   });
 });

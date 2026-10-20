@@ -84,7 +84,7 @@ describe("SteamWidgetComponent", () => {
   };
 
   it("should create", async () => {
-    expect(component.playerData()).toEqual(undefined);
+    expect(component.playerData()).toBeUndefined();
     expect(component.ownedGamesDisplay()).toEqual([]);
     const steamUserId = "1337";
     expect(component.isFormValid()).toEqual(false);
@@ -105,7 +105,7 @@ describe("SteamWidgetComponent", () => {
     await flushResources();
 
     expect(component.playerData()?.personaname).toEqual(playerData[0].personaname);
-    expect(component.ownedGamesDisplay().length).toEqual(3);
+    expect(component.ownedGamesDisplay()).toHaveLength(3);
   });
 
   it("Should load new data on page navigation and search", async () => {
@@ -159,7 +159,7 @@ describe("SteamWidgetComponent", () => {
   });
 
   it("Should get widget data and check form", () => {
-    expect(component.getWidgetData()).toEqual(undefined);
+    expect(component.getWidgetData()).toBeUndefined();
     expect(component.isFormValid()).toEqual(false);
     const steamUserId = "1337";
     component.config.update((config) => ({ ...config, steamUserId: steamUserId }));

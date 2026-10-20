@@ -108,8 +108,8 @@ describe("HomeComponent", () => {
     );
     getWidgetsRequest.flush(firstTabWidgetData);
     await flushResources();
-    expect(component.tabs().length).toEqual(2);
-    expect(component.activeWidgets().length).toEqual(2);
+    expect(component.tabs()).toHaveLength(2);
+    expect(component.activeWidgets()).toHaveLength(2);
     expect(component.activeTab()).toEqual(tabData[0].id);
 
     // Select second tab
@@ -133,8 +133,8 @@ describe("HomeComponent", () => {
     );
     getWidgetsRequest.flush(firstTabWidgetData);
     await flushResources();
-    expect(component.tabs().length).toEqual(2);
-    expect(component.activeWidgets().length).toEqual(2);
+    expect(component.tabs()).toHaveLength(2);
+    expect(component.activeWidgets()).toHaveLength(2);
 
     // Delete second widget
     const widgetIdToDelete = component.activeWidgets()[1].id;
@@ -143,7 +143,7 @@ describe("HomeComponent", () => {
       `${environment.backend_url}/widget/deleteWidget?id=${widgetIdToDelete}`
     );
     deleteWidgetRequest.flush(null, { status: 200, statusText: "OK" });
-    expect(component.activeWidgets().length).toEqual(1);
+    expect(component.activeWidgets()).toHaveLength(1);
 
     // Delete second tab
     const tabIdToDelete = component.tabs()[1].id;
@@ -152,7 +152,7 @@ describe("HomeComponent", () => {
       `${environment.backend_url}/tab/deleteTab?id=${tabIdToDelete}`
     );
     deleteTabRequest.flush(null, { status: 200, statusText: "OK" });
-    expect(component.tabs().length).toEqual(1);
+    expect(component.tabs()).toHaveLength(1);
   });
 
   it("Should delete the last tab and select the first after", async () => {
@@ -270,6 +270,8 @@ describe("HomeComponent", () => {
       `${environment.backend_url}/tab/deleteTab?id=${lastTabToDelete}`
     );
     deleteLastTabRequest.flush(null);
+    expect(component.tabs()).toEqual([]);
+    expect(component.activeWidgets()).toEqual([]);
   });
 
   it("Should switch between light and dark mode", async () => {
@@ -303,7 +305,7 @@ describe("HomeComponent", () => {
     httpTestingController.expectOne(`${environment.backend_url}/widget/?tabId=3`).flush([]);
     await flushResources();
 
-    expect(component.tabs().length).toEqual(3);
+    expect(component.tabs()).toHaveLength(3);
     expect(component.activeTab()).toEqual(3);
     expect(component.activeWidgets()).toEqual([]);
   });
@@ -315,14 +317,14 @@ describe("HomeComponent", () => {
     const request = httpTestingController.expectOne(`${environment.backend_url}/widget/addWidget`);
     expect(request.request.body).toEqual({ type: WidgetTypeEnum.WEATHER, tabId: tabData[0].id });
     request.flush({ id: 3, type: WidgetTypeEnum.WEATHER, tabId: 1, widgetOrder: 3 });
-    expect(component.activeWidgets().length).toEqual(3);
+    expect(component.activeWidgets()).toHaveLength(3);
   });
 
   it("Should not add a widget when the creation modal is closed", async () => {
     await loadDashboard();
     component.openCreateWidgetModal();
     httpTestingController.expectNone(`${environment.backend_url}/widget/addWidget`);
-    expect(component.activeWidgets().length).toEqual(2);
+    expect(component.activeWidgets()).toHaveLength(2);
   });
 
   it("Should reorder the tabs", async () => {
@@ -340,9 +342,11 @@ describe("HomeComponent", () => {
   it("Should save the widgets order", async () => {
     await loadDashboard();
     component.updateWidgetOrder(firstTabWidgetData);
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/updateWidgetsOrder`)
-      .flush(firstTabWidgetData);
+    const request = httpTestingController.expectOne(
+      `${environment.backend_url}/widget/updateWidgetsOrder`
+    );
+    expect(request.request.body).toEqual(firstTabWidgetData);
+    request.flush(firstTabWidgetData);
   });
 
   it("Should delete a widget when its deletion is requested", async () => {
