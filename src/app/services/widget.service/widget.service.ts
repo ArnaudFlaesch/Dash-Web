@@ -1,74 +1,51 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { Observable, ReplaySubject } from "rxjs";
+import { inject, Service } from "@angular/core";
+import { Observable, Subject } from "rxjs";
+import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 import { environment } from "../../../environments/environment";
-import authorizationBearer from "../authorizationBearer/authorizationBearer";
 import { IWidgetConfig } from "../../model/IWidgetConfig";
 
-@Injectable()
+@Service()
 export class WidgetService {
-  public _widgetDeletedEvent: ReplaySubject<number> = new ReplaySubject(0);
-  public _refreshWidgetsAction: ReplaySubject<unknown> = new ReplaySubject(0);
-  public readonly widgetDeleted: Observable<number> = this._widgetDeletedEvent.asObservable();
-  public readonly refreshWidgetsAction: Observable<unknown> =
-    this._refreshWidgetsAction.asObservable();
-
   private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.backend_url}/widget`;
 
-  public getWidgets(tabId: number): Observable<IWidgetConfig[]> {
-    return this.http.get<IWidgetConfig[]>(`${environment.backend_url}/widget/?tabId=${tabId}`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      }
-    });
+  private readonly widgetDeletedEvent = new Subject<number>();
+  private readonly refreshWidgetsEvent = new Subject<void>();
+
+  public get widgetDeleted(): Observable<number> {
+    return this.widgetDeletedEvent.asObservable();
   }
 
-  public addWidget(type: string, tabId: number): Observable<IWidgetConfig> {
-    return this.http.post<IWidgetConfig>(
-      `${environment.backend_url}/widget/addWidget`,
-      { type: type, tabId: tabId },
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+  public get refreshWidgetsAction(): Observable<void> {
+    return this.refreshWidgetsEvent.asObservable();
+  }
+
+  public notifyWidgetDeleted(widgetId: number): void {
+    this.widgetDeletedEvent.next(widgetId);
+  }
+
+  public refreshAllWidgets(): void {
+    this.refreshWidgetsEvent.next();
+  }
+
+  public getWidgets(tabId: number): Observable<IWidgetConfig[]> {
+    return this.http.get<IWidgetConfig[]>(`${this.baseUrl}/?tabId=${tabId}`);
+  }
+
+  public addWidget(type: WidgetTypeEnum, tabId: number): Observable<IWidgetConfig> {
+    return this.http.post<IWidgetConfig>(`${this.baseUrl}/addWidget`, { type, tabId });
   }
 
   public updateWidgetData(id: number, data: unknown): Observable<IWidgetConfig> {
-    return this.http.patch<IWidgetConfig>(
-      `${environment.backend_url}/widget/updateWidgetData/${id}`,
-      { data: data },
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.patch<IWidgetConfig>(`${this.baseUrl}/updateWidgetData/${id}`, { data });
   }
 
   public updateWidgetsOrder(widgetsData: IWidgetConfig[]): Observable<IWidgetConfig[]> {
-    return this.http.post<IWidgetConfig[]>(
-      `${environment.backend_url}/widget/updateWidgetsOrder`,
-      widgetsData,
-      {
-        headers: {
-          Authorization: authorizationBearer(),
-          "Content-type": "application/json"
-        }
-      }
-    );
+    return this.http.post<IWidgetConfig[]>(`${this.baseUrl}/updateWidgetsOrder`, widgetsData);
   }
 
   public deleteWidget(id: number): Observable<void> {
-    return this.http.delete<void>(`${environment.backend_url}/widget/deleteWidget?id=${id}`, {
-      headers: {
-        Authorization: authorizationBearer(),
-        "Content-type": "application/json"
-      }
-    });
+    return this.http.delete<void>(`${this.baseUrl}/deleteWidget?id=${id}`);
   }
 }

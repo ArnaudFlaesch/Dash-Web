@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
 import { ForecastMode, IForecast } from "../IWeather";
 import { WeatherWidgetService } from "../weather.widget.service";
@@ -9,8 +9,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 @Component({
   selector: "dash-weather-forecast",
   templateUrl: "./weather-forecast.component.html",
-  styleUrls: ["./weather-forecast.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./weather-forecast.component.scss",
   imports: [MatTooltip, MatIcon, InitialUppercasePipe]
 })
 export class WeatherForecastComponent {

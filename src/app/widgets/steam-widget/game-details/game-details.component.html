@@ -1,21 +1,17 @@
-<mat-expansion-panel
-  [title]="gameInfo().name"
-  (opened)="loadAchievementsData(this.steamUserId(), this.gameInfo())"
-  hideToggle
->
+<mat-expansion-panel [title]="gameInfo().name" (opened)="loadAchievementsData()" hideToggle>
   <mat-expansion-panel-header>
     <mat-panel-title>
-      <div class="game-info">
+      <div class="game-info row items-center">
         <img [src]="gameInfo().gameImgSrc" alt="game icon" />
         <p>{{ gameInfo().name }}</p>
       </div>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>
-    <div class="game-data-container">
-      @if (this.achievements() && this.completedAchievements() && this.achievements().length) {
-        <div class="game-achievements-data-container">
-          <a href="{{ gameInfo().playerAchievementUrl }}" class="game-achievements-data">
+    <div class="game-data-container row justify-between">
+      @if (achievements().length) {
+        <div class="game-achievements-data-container column">
+          <a href="{{ gameInfo().playerAchievementUrl }}" class="game-achievements-data column">
             <div class="totalachievements">Succès : {{ achievements().length }}</div>
             <div class="completedAchievements">Succès complétés : {{ completedAchievements().length }}</div>
           </a>
@@ -23,14 +19,8 @@
         </div>
 
         <a href="{{ gameInfo().playerAchievementUrl }}" class="spinner-container">
-          <div class="progress-value">{{ this.completionStatus() }}%</div>
-          <mat-progress-spinner
-            #spinner
-            [title]="'test'"
-            [color]="'primary'"
-            [mode]="'determinate'"
-            [value]="this.completionStatus()"
-          />
+          <div class="progress-value centered">{{ completionStatus() }}%</div>
+          <mat-progress-spinner color="primary" mode="determinate" [value]="completionStatus()" />
         </a>
       }
     </div>

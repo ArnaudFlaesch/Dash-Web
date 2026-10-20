@@ -1,12 +1,9 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { jwtDecode } from "jwt-decode";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-
-import { RoleEnum } from "../../../app/model/RoleEnum";
+import { computed, inject, Service, signal } from "@angular/core";
+import { Observable, tap } from "rxjs";
 import { environment } from "../../../environments/environment";
-import { IUser } from "./../../model/User";
+import { RoleEnum } from "../../model/RoleEnum";
+import { IUser } from "../../model/User";
 
 interface IJwt {
   sub: string;
@@ -14,64 +11,60 @@ interface IJwt {
   exp: number;
 }
 
-@Injectable()
-export class AuthService {
-  private readonly http = inject(HttpClient);
+const USER_STORAGE_KEY = "user";
 
-  private readonly headers = {
-    "Content-type": "application/json"
-  };
+/** Reads the payload of a JWT, without verifying it. Throws if the token is malformed. */
+function decodeJwtPayload(token: string): IJwt {
+  const payload = token.split(".")[1];
+  if (!payload) {
+    throw new Error("Invalid token");
+  }
+  // The payload is encoded in base64url
+  return JSON.parse(atob(payload.replaceAll("-", "+").replaceAll("_", "/")));
+}
+
+@Service()
+export class AuthService {
+  public readonly isUserAdmin = computed(
+    () => this.currentUser()?.roles.includes(RoleEnum.ROLE_ADMIN) ?? false
+  );
+
+  private readonly http = inject(HttpClient);
+  private readonly currentUser = signal<IUser | null>(this.readStoredUser());
 
   public login(username: string, password: string): Observable<IUser> {
     return this.http
-      .post<IUser>(
-        `${environment.backend_url}/auth/login`,
-        {
-          username,
-          password
-        },
-        {
-          headers: this.headers
-        }
-      )
+      .post<IUser>(`${environment.backend_url}/auth/login`, { username, password })
       .pipe(
-        map((response) => {
-          if (response.accessToken) {
-            localStorage.setItem("user", JSON.stringify(response));
+        tap((user) => {
+          if (user.accessToken) {
+            localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+            this.currentUser.set(user);
           }
-          return response;
         })
       );
   }
 
   public logout(): void {
-    localStorage.removeItem("user");
+    localStorage.removeItem(USER_STORAGE_KEY);
+    this.currentUser.set(null);
   }
 
   public userHasValidToken(): boolean {
-    const authenticatedUser = this.getCurrentUserData();
-    let result = false;
-    if (authenticatedUser?.accessToken) {
-      try {
-        result = Date.now() < jwtDecode<IJwt>(authenticatedUser.accessToken).exp * 1000;
-      } catch {
-        result = false;
-      }
+    // Read from the storage, as the token can be removed outside of this service
+    const accessToken = this.readStoredUser()?.accessToken;
+    if (!accessToken) {
+      return false;
     }
-    return result;
+    try {
+      return Date.now() < decodeJwtPayload(accessToken).exp * 1000;
+    } catch {
+      return false;
+    }
   }
 
-  public isUserAdmin(): boolean {
-    const authenticatedUser = this.getCurrentUserData();
-    return authenticatedUser?.roles.includes(RoleEnum.ROLE_ADMIN) ?? false;
-  }
-
-  private getCurrentUserData(): IUser | null {
-    const userData = localStorage.getItem("user");
-    if (!userData) {
-      return null;
-    } else {
-      return JSON.parse(userData);
-    }
+  private readStoredUser(): IUser | null {
+    const userData = localStorage.getItem(USER_STORAGE_KEY);
+    return userData ? JSON.parse(userData) : null;
   }
 }

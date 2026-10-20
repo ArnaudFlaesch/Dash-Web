@@ -1,55 +1,20 @@
-.weather-today-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+.weather-container {
+  flex: 1 0 40%;
 
-  .weather-container {
-    display: flex;
-    flex-direction: row;
-    place-items: center;
-    flex: 1 0 40%;
-
-    img {
-      width: 4rem;
-    }
-
-    .current-temperature-container {
-      display: flex;
-      flex-direction: column;
-
-      .current-temperature {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-    }
+  img {
+    width: 4rem;
   }
+}
 
-  .time-data-container {
-    display: flex;
-    flex-direction: column;
-    margin: auto 0;
-    flex: 1 0 50%;
+.time-data-container {
+  flex: 1 0 50%;
+  margin: auto 0;
+}
 
-    .sunrise-time {
-      color: #ffbe0a;
-    }
+.sunrise-time {
+  color: #ffbe0a;
+}
 
-    .sunset-time {
-      color: rgb(161 155 155);
-    }
-
-    .day-data-container {
-      display: flex;
-      flex-direction: row;
-      column-gap: 1.5em;
-    }
-
-    .time-container {
-      display: flex;
-      flex-direction: row;
-      column-gap: 10px;
-      place-items: center;
-    }
-  }
+.sunset-time {
+  color: rgb(161 155 155);
 }

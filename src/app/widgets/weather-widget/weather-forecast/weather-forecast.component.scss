@@ -1,49 +1,39 @@
+@use "mixins" as *;
+
 .forecast-row {
-  display: flex;
-  flex-direction: row;
   overflow-x: auto;
-  border-radius: 0.25rem;
+  padding: $space-sm;
+  border-radius: $border-radius;
   background-color: #4693af;
-  padding: 0.5em;
+}
 
-  .forecast-container {
-    display: grid;
-    align-items: center;
-    flex: 0 0 calc(100% / 4);
+.forecast-container {
+  display: grid;
+  flex: 0 0 25%;
+  align-items: center;
+}
 
-    .forecast {
-      display: flex;
-      flex-direction: row;
+.forecast-time {
+  margin: auto 0;
+}
 
-      .forecast-time {
-        margin: auto 0;
-      }
-    }
-
-    .current-weather-icon {
-      max-height: 3.5rem;
-      max-width: 3rem;
-    }
-
-    .forecast-icons {
-      display: flex;
-      flex-direction: column;
-
-      .temp-min {
-        color: blue;
-      }
-
-      .temp-max {
-        color: crimson;
-      }
-
-      .humidity {
-        color: lightblue;
-      }
-    }
-  }
+.current-weather-icon {
+  max-height: 3.5rem;
+  max-width: 3rem;
 }
 
 .weather-widget-icon {
   vertical-align: middle;
+}
+
+.temp-min {
+  color: blue;
+}
+
+.temp-max {
+  color: crimson;
+}
+
+.humidity {
+  color: lightblue;
 }

@@ -1,18 +1,16 @@
-@if (this.editMode()) {
-  <div class="tab-input">
+@if (editMode()) {
+  <div class="tab-input row">
     <input
       id="tabNameInput"
       aria-label="Tab name"
-      (keydown)="this.enterSaveTabName($event)"
-      (dblclick)="this.saveTabName(this.tab().id, this.tabLabel(), this.tab().tabOrder)"
-      [formField]="this.tabLabelForm"
+      (keydown)="enterSaveTabName($event)"
+      (dblclick)="saveTabName()"
+      [formField]="tabLabelForm"
     />
-    <mat-icon class="deleteTabButton" (keydown)="this.deleteTabFromDash()" (click)="this.deleteTabFromDash()">
-      delete
-    </mat-icon>
+    <mat-icon class="deleteTabButton" (keydown)="deleteTabFromDash()" (click)="deleteTabFromDash()"> delete </mat-icon>
   </div>
 } @else {
-  <div class="tab-label" (dblclick)="this.toggleEditMode()">
-    {{ this.tabLabel() }}
+  <div class="tab-label" (dblclick)="toggleEditMode()">
+    {{ tabLabel() }}
   </div>
 }

@@ -1,7 +1,9 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { PageEvent } from "@angular/material/paginator";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { vi } from "vitest";
 import { IPage } from "../../model/IPage";
 import { environment } from "../../../environments/environment";
 import { ErrorHandlerService } from "../../services/error.handler.service";
@@ -23,9 +25,12 @@ describe("SteamWidgetComponent", () => {
         SteamWidgetService,
         WidgetService,
         ErrorHandlerService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(SteamWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(SteamWidgetComponent);
     component = fixture.componentInstance;
@@ -35,6 +40,12 @@ describe("SteamWidgetComponent", () => {
   afterEach(() => {
     httpTestingController.verify();
   });
+
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
 
   const playerData: IPlayerDataResponse[] = [
     {
@@ -72,31 +83,36 @@ describe("SteamWidgetComponent", () => {
     number: 0
   };
 
-  it("should create", () => {
+  it("should create", async () => {
     expect(component.playerData()).toEqual(undefined);
     expect(component.ownedGamesDisplay()).toEqual([]);
     const steamUserId = "1337";
     expect(component.isFormValid()).toEqual(false);
-    component.steamUserId.set(steamUserId);
+    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
     expect(component.isFormValid()).toEqual(true);
     component.refreshWidget();
+    TestBed.tick();
 
     const playerDataRequest = httpTestingController.expectOne(
       `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`
     );
     playerDataRequest.flush(playerData);
+    await flushResources();
     const getOwnedGamesRequest = httpTestingController.expectOne(
       `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`
     );
     getOwnedGamesRequest.flush(ownedGamesData);
+    await flushResources();
 
     expect(component.playerData()?.personaname).toEqual(playerData[0].personaname);
     expect(component.ownedGamesDisplay().length).toEqual(3);
   });
 
-  it("Should load new data on page navigation", () => {
+  it("Should load new data on page navigation and search", async () => {
+    // Only the timers of the search debounce are faked
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
     expect(component.ownedGamesDisplay()).toEqual([]);
-    expect(component.pageNumber).toEqual(0);
+    expect(component.pageNumber()).toEqual(0);
     const pageIndex = 2;
     const pageEvent = {
       pageIndex: pageIndex,
@@ -104,28 +120,49 @@ describe("SteamWidgetComponent", () => {
       length: 150
     } as PageEvent;
     component.onPageChanged(pageEvent);
-    expect(component.pageNumber).toEqual(0);
+    expect(component.pageNumber()).toEqual(0);
+
     const steamUserId = "1337";
-    component.steamUserId.set(steamUserId);
+    const ownedGamesUrl = `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`;
+    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
+    component.refreshWidget();
+    TestBed.tick();
+    httpTestingController
+      .expectOne(`${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`)
+      .flush(playerData);
+    await flushResources();
+    httpTestingController.expectOne(ownedGamesUrl).flush(ownedGamesData);
+    await flushResources();
+
+    component.onPageChanged(pageEvent);
+    TestBed.tick();
+    expect(component.pageNumber()).toEqual(pageIndex);
+    httpTestingController
+      .expectOne(`${ownedGamesUrl}&pageNumber=${pageIndex}`)
+      .flush(ownedGamesData);
+    await flushResources();
+
+    // The search is debounced, then goes back to the first page
     const searchValue = "Mario";
     component.searchQuery.set(searchValue);
-    component.onPageChanged(pageEvent);
-    expect(component.pageNumber).toEqual(pageIndex);
-
-    httpTestingController.expectOne(
-      environment.backend_url +
-        `/steamWidget/ownedGames?steamUserId=${steamUserId}&search=${searchValue}&pageNumber=${pageIndex}`
-    );
+    TestBed.tick();
+    httpTestingController.expectNone(`${ownedGamesUrl}&search=${searchValue}`);
+    vi.advanceTimersByTime(500);
+    TestBed.tick();
+    expect(component.pageNumber()).toEqual(0);
+    httpTestingController.expectOne(`${ownedGamesUrl}&search=${searchValue}`).flush(ownedGamesData);
+    await flushResources();
 
     component.resetForm();
     expect(component.searchQuery()).toEqual("");
+    vi.useRealTimers();
   });
 
   it("Should get widget data and check form", () => {
     expect(component.getWidgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     const steamUserId = "1337";
-    component.steamUserId.set(steamUserId);
+    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
     expect(component.getWidgetData()).toEqual({
       steamUserId: steamUserId
     });

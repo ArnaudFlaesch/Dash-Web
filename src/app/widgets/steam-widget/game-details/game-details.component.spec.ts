@@ -22,7 +22,10 @@ describe("GameDetailsComponent", () => {
         provideHttpClientTesting(),
         ErrorHandlerService
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(GameDetailsComponent, "")
+      .compileComponents();
 
     fixture = TestBed.createComponent(GameDetailsComponent);
     component = fixture.componentInstance;
@@ -35,8 +38,14 @@ describe("GameDetailsComponent", () => {
     httpTestingController.verify();
   });
 
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
   describe("Normal cases", () => {
-    it("should create", () => {
+    it("should create", async () => {
       const steamUserId = "1237";
       const appId = "1337";
       const achievementsData = {
@@ -80,7 +89,9 @@ describe("GameDetailsComponent", () => {
         name: "Super Game"
       } as IGameInfoDisplay);
 
-      component.loadAchievementsData(steamUserId, component.gameInfo());
+      componentRef.setInput("steamUserId", steamUserId);
+      component.loadAchievementsData();
+      TestBed.tick();
       const getAchievementsRequest = httpTestingController.expectOne(
         environment.backend_url +
           "/steamWidget/achievementList?steamUserId=" +
@@ -89,6 +100,7 @@ describe("GameDetailsComponent", () => {
           appId
       );
       getAchievementsRequest.flush(achievementsData);
+      await flushResources();
       expect(component.achievements().length).toEqual(5);
       expect(component.completedAchievements().length).toEqual(4);
       expect(component.completionStatus()).toEqual(80);
@@ -96,7 +108,7 @@ describe("GameDetailsComponent", () => {
   });
 
   describe("Error cases", () => {
-    it("should display error messages", () => {
+    it("should display error messages", async () => {
       const steamUserId = "1237";
       const appId = "1337";
 
@@ -105,7 +117,9 @@ describe("GameDetailsComponent", () => {
         name: "Super Game"
       } as IGameInfoDisplay);
 
-      component.loadAchievementsData(steamUserId, component.gameInfo());
+      componentRef.setInput("steamUserId", steamUserId);
+      component.loadAchievementsData();
+      TestBed.tick();
       httpTestingController
         .expectOne(
           environment.backend_url +
@@ -115,6 +129,7 @@ describe("GameDetailsComponent", () => {
             appId
         )
         .error(new ProgressEvent("Server error"));
+      await flushResources();
       expect(component.achievements()).toHaveLength(0);
     });
   });

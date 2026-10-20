@@ -1,19 +1,19 @@
 <div class="widget">
   @if (isModeEdit()) {
-    <div class="widget-edit-mode">
-      <div class="header-container">
-        <div class="header-actions">
-          <button class="deleteButton" mat-icon-button matTooltip="Supprimer le widget" (click)="this.toDeleteMode()">
+    <div class="widget-edit-mode column items-center full-size">
+      <div class="header-container row items-center">
+        <div class="header-actions row">
+          <button class="deleteButton" mat-icon-button matTooltip="Supprimer le widget" (click)="toDeleteMode()">
             <mat-icon aria-hidden="false">delete</mat-icon>
           </button>
         </div>
       </div>
-      <div class="widget-body">
+      <div class="widget-body column">
         <div class="widget-edit-component-container">
           <ng-container *ngTemplateOutlet="editComponent() ?? null" />
         </div>
-        <div class="edit-component-actions">
-          @if (this.isWidgetLoaded() && this.widgetData()) {
+        <div class="edit-component-actions row">
+          @if (isWidgetLoaded() && widgetData()) {
             <button class="cancelButton" mat-raised-button (click)="cancelEdition()">Annuler</button>
           }
           <button
@@ -21,7 +21,7 @@
             mat-raised-button
             (click)="onValidation()"
             color="primary"
-            [disabled]="!this.isFormValid()"
+            [disabled]="!isFormValid()"
           >
             Valider
           </button>
@@ -30,45 +30,40 @@
     </div>
   }
 
-  @if (this.isModeDelete()) {
+  @if (isModeDelete()) {
     <dash-delete-widget (cancelWidgetDeletion)="toReadMode()" (validateWidgetDeletion)="deleteWidget()" />
   }
 
-  @if (this.isModeRead()) {
-    <div class="widget-read-mode">
-      <div class="header-container">
-        <div class="header">
+  @if (isModeRead()) {
+    <div class="widget-read-mode column full-height">
+      <div class="header-container row items-center">
+        <div class="widget-header row items-center gap-xs">
           <div *ngTemplateOutlet="headerIcon()"></div>
           <div *ngTemplateOutlet="headerTitle()"></div>
         </div>
 
-        <div class="header-actions">
+        <div class="header-actions row">
           @if (additionalActions()) {
             <span>
               <ng-container *ngTemplateOutlet="additionalActions() ?? null" />
             </span>
           }
 
-          <button
-            mat-icon-button
-            matTooltip="Actualiser le widget"
-            (click)="this.refreshWidget()"
-            class="refreshButton"
-          >
+          <button mat-icon-button matTooltip="Actualiser le widget" (click)="refreshWidget()" class="refreshButton">
             <mat-icon aria-hidden="false">refresh</mat-icon>
           </button>
-          @if (this.editComponent()) {
-            <button mat-icon-button matTooltip="Modifier le widget" (click)="this.toEditMode()" class="editButton">
+          @if (editComponent()) {
+            <button mat-icon-button matTooltip="Modifier le widget" (click)="toEditMode()" class="editButton">
               <mat-icon>settings</mat-icon>
             </button>
           }
         </div>
       </div>
-      <div class="widget-body">
-        @if (this.isWidgetLoaded()) {
+      <div class="widget-body column">
+        @if (isWidgetLoaded()) {
           <ng-container *ngTemplateOutlet="body()" />
         } @else {
-          <div class="widget-loading-spinner">
+          <div class="loading-spinner">
             <mat-spinner />
           </div>
         }

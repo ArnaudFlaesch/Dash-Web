@@ -1,0 +1,69 @@
+@use "mixins" as *;
+
+// Global layout classes, combined in the templates (e.g. class="row items-center gap-sm")
+
+.row {
+  display: flex;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.centered {
+  @include centered;
+}
+
+.gap-xs {
+  gap: $space-xs;
+}
+
+.gap-sm {
+  gap: $space-sm;
+}
+
+.gap-md {
+  gap: $space-md;
+}
+
+.gap-lg {
+  gap: $space-lg;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-size {
+  height: 100%;
+  width: 100%;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+// Container of a loading spinner, centered in the available space
+.loading-spinner {
+  @include centered;
+
+  height: 100%;
+  margin: auto;
+}

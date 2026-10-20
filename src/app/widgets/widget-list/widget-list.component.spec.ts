@@ -17,6 +17,9 @@ import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
 import { HomeComponent } from "../../home/home.component";
+import { CdkDragDrop } from "@angular/cdk/drag-drop";
+import { IWidgetConfig } from "../../model/IWidgetConfig";
+import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
 
 describe("WidgetListComponent", () => {
   let component: WidgetListComponent;
@@ -111,5 +114,39 @@ describe("WidgetListComponent", () => {
     ];
     fixture.componentRef.setInput("widgetList", widgetListConfig);
     expect(component).toBeTruthy();
+  });
+
+  const widgets: IWidgetConfig[] = [
+    { id: 1, type: WidgetTypeEnum.WEATHER, widgetOrder: 0, tabId: 1, data: { city: "Paris" } },
+    { id: 2, type: WidgetTypeEnum.RSS, widgetOrder: 1, tabId: 1 },
+    { id: 3, type: WidgetTypeEnum.STEAM, widgetOrder: 2, tabId: 1 }
+  ];
+
+  it("Should reorder the widgets and emit the new order", () => {
+    fixture.componentRef.setInput(
+      "widgetList",
+      widgets.map((widget) => ({ ...widget }))
+    );
+    let emittedWidgets: IWidgetConfig[] = [];
+    component.updateWidgetsOrderEvent.subscribe(
+      (updatedWidgets) => (emittedWidgets = updatedWidgets)
+    );
+
+    component.drop({ previousIndex: 0, currentIndex: 2 } as CdkDragDrop<IWidgetConfig[]>);
+
+    expect(component.widgets().map((widget) => widget.id)).toEqual([2, 3, 1]);
+    expect(emittedWidgets.map((widget) => [widget.id, widget.widgetOrder])).toEqual([
+      [2, 0],
+      [3, 1],
+      [1, 2]
+    ]);
+  });
+
+  it("Should provide the widget id and data to each widget", () => {
+    const injector = component.getWidgetInjector(widgets[0]);
+    expect(injector.get(WIDGET_ID)).toEqual(1);
+    expect(injector.get(WIDGET_DATA)).toEqual({ city: "Paris" });
+    expect(component.getWidgetInjector(widgets[0])).toBe(injector);
+    expect(component.getWidgetInjector(widgets[1]).get(WIDGET_DATA)).toEqual({});
   });
 });

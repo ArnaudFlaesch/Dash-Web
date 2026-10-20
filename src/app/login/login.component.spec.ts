@@ -44,8 +44,8 @@ describe("LoginComponent", () => {
 
   it("Should prevent login", () => {
     const loginSpy = vi.spyOn(component.authService, "login");
-    expect(component.inputUsername()).toBe("");
-    expect(component.inputPassword()).toBe("");
+    expect(component.credentials()).toEqual({ username: "", password: "" });
+    expect(component.loginForm().invalid()).toBe(true);
     component.handleLogin();
     expect(loginSpy).toHaveBeenCalledTimes(0);
   });
@@ -69,8 +69,7 @@ describe("LoginComponent", () => {
   it("Should fail to login with wrong credentials", () => {
     const userName = "userName";
 
-    component.inputUsername.set(userName);
-    component.inputPassword.set("password");
+    component.credentials.set({ username: userName, password: "password" });
     component.handleLogin();
     const request = httpTestingController.expectOne(environment.backend_url + "/auth/login");
     request.flush("Bad credentials", {

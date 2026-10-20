@@ -1,27 +1,27 @@
-import { Injectable } from "@angular/core";
+import { computed, DOCUMENT, inject, Service, signal } from "@angular/core";
 
-@Injectable()
+@Service()
 export class ThemeService {
   public readonly DARK_MODE_CLASS_NAME = "dark-mode";
   public readonly PREFERRED_THEME_LOCALSTORAGE_KEY = "preferredTheme";
 
-  private isDarkModeEnabled = false;
+  public readonly isDarkModeEnabled = computed(() => this.darkModeEnabled());
+
+  private readonly document = inject(DOCUMENT);
+  private readonly darkModeEnabled = signal(false);
 
   public selectDarkMode(isDarkModeEnabled: boolean): void {
-    if (this.isDarkModeEnabled !== isDarkModeEnabled) {
-      const preferredTheme = isDarkModeEnabled ? "dark" : "light";
-      this.isDarkModeEnabled = isDarkModeEnabled;
-      if (isDarkModeEnabled) {
-        document.body.classList.add(this.DARK_MODE_CLASS_NAME);
-      } else {
-        document.body.classList.remove(this.DARK_MODE_CLASS_NAME);
-      }
-      localStorage.setItem(this.PREFERRED_THEME_LOCALSTORAGE_KEY, preferredTheme);
+    if (this.darkModeEnabled() !== isDarkModeEnabled) {
+      this.darkModeEnabled.set(isDarkModeEnabled);
+      this.document.body.classList.toggle(this.DARK_MODE_CLASS_NAME, isDarkModeEnabled);
+      localStorage.setItem(
+        this.PREFERRED_THEME_LOCALSTORAGE_KEY,
+        isDarkModeEnabled ? "dark" : "light"
+      );
     }
   }
 
   public isPreferredThemeDarkMode(): boolean {
-    const preferredTheme = localStorage.getItem(this.PREFERRED_THEME_LOCALSTORAGE_KEY);
-    return preferredTheme !== null && preferredTheme === "dark";
+    return localStorage.getItem(this.PREFERRED_THEME_LOCALSTORAGE_KEY) === "dark";
   }
 }

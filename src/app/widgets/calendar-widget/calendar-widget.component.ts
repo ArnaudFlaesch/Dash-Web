@@ -1,12 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  LOCALE_ID,
-  signal,
-  WritableSignal
-} from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, computed, inject, LOCALE_ID, signal } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
 import {
   CalendarDatePipe,
@@ -20,7 +14,7 @@ import {
   CalendarWeekViewComponent
 } from "angular-calendar";
 import { endOfDay, format, startOfDay } from "date-fns";
-import { Subject } from "rxjs";
+import { catchError, defaultIfEmpty, forkJoin, map, of, Subject } from "rxjs";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { CalendarWidgetService } from "./calendar-widget.service";
@@ -30,17 +24,18 @@ import { fr } from "date-fns/locale";
 import { InitialUppercasePipe } from "../../pipes/initial.uppercase.pipe";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatButton } from "@angular/material/button";
-
 import { MatIcon } from "@angular/material/icon";
+import { form, FormField, minLength } from "@angular/forms/signals";
 import { WidgetComponent } from "../widget/widget.component";
+import { injectWidgetData } from "../widget.tokens";
 
 @Component({
   selector: "dash-calendar-widget",
   templateUrl: "./calendar-widget.component.html",
-  styleUrls: ["./calendar-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./calendar-widget.component.scss",
   imports: [
     WidgetComponent,
+    FormField,
     MatIcon,
     MatButton,
     MatTooltip,
@@ -55,11 +50,34 @@ import { WidgetComponent } from "../widget/widget.component";
   ]
 })
 export class CalendarWidgetComponent {
-  public viewDate: Date = new Date();
-  public refresh: Subject<unknown> = new Subject();
-  public readonly calendarUrls: WritableSignal<string[]> = signal([]);
+  public readonly viewDate = signal(new Date());
+  public readonly refresh = new Subject<void>();
+  public readonly config = signal({ calendarUrls: injectWidgetData<string[]>("calendarUrls", []) });
+  public readonly configForm = form(this.config, (path) => minLength(path.calendarUrls, 1));
   public readonly isWidgetLoaded = signal(true);
-  public readonly events: WritableSignal<CalendarEvent[]> = signal([]);
+
+  /** Events of all the calendars saved on the last refresh, a failing calendar is skipped. */
+  public readonly eventsResource = rxResource({
+    params: () => this.refreshedCalendarUrls(),
+    stream: ({ params: { calendarUrls } }) =>
+      forkJoin(
+        calendarUrls.map((calendarUrl) =>
+          this.calendarWidgetService.getCalendarEvents(calendarUrl).pipe(
+            map((calendarData) => this.parseEvents(calendarData)),
+            catchError((error: HttpErrorResponse) => {
+              this.errorHandlerService.handleError(error, this.ERROR_PARSING_EVENTS);
+              return of([]);
+            })
+          )
+        )
+      ).pipe(
+        map((eventsByCalendar) => eventsByCalendar.flat()),
+        defaultIfEmpty([])
+      ),
+    defaultValue: [] as CalendarEvent[]
+  });
+
+  public readonly events = this.eventsResource.value;
   public readonly view = signal(CalendarView.Month);
   public readonly activeDayIsOpen = signal(true);
   public readonly locale = inject(LOCALE_ID);
@@ -67,10 +85,15 @@ export class CalendarWidgetComponent {
   public readonly isCalendarViewMonth = computed(() => this.view() === CalendarView.Month);
   public readonly isCalendarViewWeek = computed(() => this.view() === CalendarView.Week);
   public readonly isCalendarViewDay = computed(() => this.view() === CalendarView.Day);
-  public readonly isFormValid = computed(() => (this.calendarUrls()?.length ?? 0) > 0);
+  public readonly isFormValid = computed(() => this.configForm().valid());
 
   public readonly calendarView = CalendarView;
   public readonly weekStartsOn = 1;
+
+  // A new object on each refresh, so that the resource reloads even if the urls are unchanged
+  private readonly refreshedCalendarUrls = signal<{ calendarUrls: string[] } | undefined>(
+    undefined
+  );
 
   private readonly dialog = inject(MatDialog);
   private readonly calendarWidgetService = inject(CalendarWidgetService);
@@ -79,41 +102,25 @@ export class CalendarWidgetComponent {
   private readonly ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
   public refreshWidget(): void {
-    this.events.set([]);
-    this.calendarUrls()?.forEach((calendarUrl: string) => {
-      this.calendarWidgetService.getCalendarEvents(calendarUrl).subscribe({
-        next: (calendarData) => {
-          this.events.set([...this.events(), ...this.parseEvents(calendarData)]);
-          this.isWidgetLoaded.set(true);
-        },
-        error: (error) => this.errorHandlerService.handleError(error, this.ERROR_PARSING_EVENTS)
-      });
-    });
+    this.refreshedCalendarUrls.set({ calendarUrls: this.config().calendarUrls });
   }
 
   public getWidgetConfig(): { calendarUrls: string[] } | undefined {
-    return this.calendarUrls()?.length ? { calendarUrls: this.calendarUrls() } : undefined;
+    return this.isFormValid() ? this.config() : undefined;
   }
 
   public onCalendarUrlAdded(): void {
-    this.calendarUrls.update((calendarUrls) => [...calendarUrls, ""]);
+    this.config.update(({ calendarUrls }) => ({ calendarUrls: [...calendarUrls, ""] }));
   }
 
-  public removeCalendarUrl(calendarUrl: string): void {
-    this.calendarUrls.set(this.calendarUrls().filter((url) => url !== calendarUrl));
+  public removeCalendarUrl(indexToRemove: number): void {
+    this.config.update(({ calendarUrls }) => ({
+      calendarUrls: calendarUrls.filter((_, index) => index !== indexToRemove)
+    }));
   }
 
   public displayTodaysDate(): string {
     return format(new Date(), "eee dd", { locale: fr });
-  }
-
-  public onCalendarUrlUpdated(event: Event): void {
-    this.calendarUrls.set(
-      this.calendarUrls().map((url: string, index: number) => {
-        const eventTarget = event.target as HTMLInputElement;
-        return index.toString() === eventTarget?.id ? eventTarget.value : url;
-      })
-    );
   }
 
   public closeOpenMonthViewDay(): void {

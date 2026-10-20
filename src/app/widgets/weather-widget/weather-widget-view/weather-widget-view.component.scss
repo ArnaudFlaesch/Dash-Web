@@ -1,20 +1,15 @@
-.weather-forecast-container {
-  display: flex;
-  flex-direction: column;
+@use "mixins" as *;
 
-  .forecast-data-container {
-    margin: 0.5rem;
+.forecast-data-container {
+  margin: $space-sm;
+}
 
-    .forecast-selector {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.5rem;
-      margin: 0 auto;
-    }
+.forecast-selector {
+  @include grid-columns(4, $space-sm);
 
-    .toggle-forecast {
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
-    }
-  }
+  margin: 0 auto;
+}
+
+.toggle-forecast {
+  margin: $space-md 0 $space-sm;
 }

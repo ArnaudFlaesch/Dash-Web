@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { startOfYesterday } from "date-fns";
@@ -21,9 +22,12 @@ describe("IncidentWidgetComponent", () => {
         ErrorHandlerService,
         IncidentWidgetService,
         WidgetService,
-        { provide: "widgetId", useValue: widgetId }
+        { provide: WIDGET_ID, useValue: widgetId }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(IncidentWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(IncidentWidgetComponent);
     component = fixture.componentInstance;
@@ -34,9 +38,15 @@ describe("IncidentWidgetComponent", () => {
     httpTestingController.verify();
   });
 
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
   const widgetId = "37";
 
-  it("should create", () => {
+  it("should create", async () => {
     expect(component.getDaysSinceLastIncident()).toEqual(0);
 
     const incidentWidgetConfig = {
@@ -46,17 +56,20 @@ describe("IncidentWidgetComponent", () => {
 
     expect(component.getWidgetConfig()).toEqual(undefined);
     component.refreshWidget();
+    TestBed.tick();
 
     expect(component.isWidgetLoaded()).toEqual(false);
     const request = httpTestingController.expectOne(
       environment.backend_url + "/incidentWidget/incidentWidgetConfig?widgetId=" + widgetId
     );
     request.flush(incidentWidgetConfig);
+    await flushResources();
 
     const getStreaksRequest = httpTestingController.expectOne(
       environment.backend_url + "/incidentWidget/streaks?incidentId=" + incidentWidgetConfig.id
     );
     getStreaksRequest.flush([]);
+    await flushResources();
 
     component.startNewStreak();
     const startStreakRequest = httpTestingController.expectOne(
@@ -64,7 +77,7 @@ describe("IncidentWidgetComponent", () => {
     );
     startStreakRequest.flush(incidentWidgetConfig);
 
-    component.incidentName.set("Incident test");
+    component.config.update((config) => ({ ...config, incidentName: "Incident test" }));
 
     expect(component.isFormValid()).toEqual(true);
 

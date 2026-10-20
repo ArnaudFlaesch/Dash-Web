@@ -1,0 +1,19 @@
+@use "mixins" as *;
+
+// Header icon and title, projected into the widget header by each widget
+.widget-header {
+  img {
+    max-height: 2.25rem;
+    max-width: 2.25rem;
+    border-radius: $border-radius;
+  }
+
+  a {
+    display: flex;
+    height: 100%;
+
+    > * {
+      margin: auto 0;
+    }
+  }
+}

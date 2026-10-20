@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
@@ -21,9 +22,12 @@ describe("RssWidgetComponent", () => {
         DateUtilsService,
         WidgetService,
         ErrorHandlerService,
-        { provide: "widgetId", useValue: widgetId }
+        { provide: WIDGET_ID, useValue: widgetId }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(RssWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(RssWidgetComponent);
     component = fixture.componentInstance;
@@ -33,6 +37,12 @@ describe("RssWidgetComponent", () => {
   afterEach(() => {
     httpTestingController.verify();
   });
+
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
 
   const urlFeed = "https://www.jeuxvideo.com/rss/rss-pc.xml";
   const widgetId = "37";
@@ -95,16 +105,18 @@ describe("RssWidgetComponent", () => {
     }
   };
 
-  it("Should read all articles", () => {
+  it("Should read all articles", async () => {
     expect(component.rssFeedResult()?.item).toEqual(undefined);
-    component.urlFeed.set(urlFeed);
+    component.config.update((config) => ({ ...config, url: urlFeed }));
     component.refreshWidget();
+    TestBed.tick();
 
     expect(component.isWidgetLoaded()).toEqual(false);
     const request = httpTestingController.expectOne(
       environment.backend_url + "/rssWidget/?url=" + urlFeed
     );
     request.flush(rssFeedData);
+    await flushResources();
     const feedLength = rssFeedData.channel.item.length;
     expect(component.rssFeedResult()?.item.length).toEqual(feedLength);
     const allArticlesGuids = rssFeedData.channel.item.map((item) => item.guid);
@@ -127,19 +139,21 @@ describe("RssWidgetComponent", () => {
     expect(component.getWidgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     const url = "localhost";
-    component.urlFeed.set(url);
+    component.config.update((config) => ({ ...config, url: url }));
     expect(component.getWidgetData()).toEqual({ url: url });
     expect(component.isFormValid()).toEqual(true);
   });
 
-  it("Should fail to mark all articles as read", () => {
-    component.urlFeed.set(urlFeed);
+  it("Should fail to mark all articles as read", async () => {
+    component.config.update((config) => ({ ...config, url: urlFeed }));
     component.refreshWidget();
+    TestBed.tick();
 
     const request = httpTestingController.expectOne(
       environment.backend_url + "/rssWidget/?url=" + urlFeed
     );
     request.flush(rssFeedData);
+    await flushResources();
 
     component.markAllFeedAsRead();
     httpTestingController

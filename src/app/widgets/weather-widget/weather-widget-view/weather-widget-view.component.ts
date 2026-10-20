@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  linkedSignal,
-  signal
-} from "@angular/core";
+import { Component, computed, inject, input, linkedSignal, signal } from "@angular/core";
 import { FormField, form } from "@angular/forms/signals";
 import { MatButton } from "@angular/material/button";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
@@ -28,7 +20,6 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
     MatSlideToggle,
     WeatherForecastComponent
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./weather-widget-view.component.html",
   styleUrl: "./weather-widget-view.component.scss"
 })

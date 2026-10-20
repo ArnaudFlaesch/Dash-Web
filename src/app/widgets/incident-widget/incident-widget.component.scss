@@ -1,22 +1,17 @@
-#incident-widget-body-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
+@use "mixins" as *;
 
 #go-to-current-streak-button {
   margin-left: auto;
 }
 
 #past-streaks-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  @include grid-columns(3);
 }
 
 #incident-widget-body {
+  display: grid;
+  place-content: center;
+  row-gap: $space-lg;
   height: 100%;
   text-align: center;
-  place-content: center;
-  display: grid;
-  row-gap: 2em;
 }

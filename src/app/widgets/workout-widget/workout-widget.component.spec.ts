@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import {
   endOfMonth,
   endOfWeek,
@@ -38,9 +39,12 @@ describe("WorkoutWidgetComponent", () => {
         AuthService,
         ErrorHandlerService,
         WidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(WorkoutWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(WorkoutWidgetComponent);
     component = fixture.componentInstance;
@@ -51,6 +55,12 @@ describe("WorkoutWidgetComponent", () => {
   afterEach(() => {
     httpTestingController.verify();
   });
+
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
 
   beforeEach(() => {
     const userData = {
@@ -64,7 +74,7 @@ describe("WorkoutWidgetComponent", () => {
     window.localStorage.setItem("user", JSON.stringify(userData));
   });
 
-  it("should create", () => {
+  it("should create", async () => {
     expect(component.workoutTypes()).toEqual([]);
     expect(component.workoutSessions()).toEqual([]);
     expect(component.isWidgetLoaded()).toEqual(false);
@@ -72,11 +82,13 @@ describe("WorkoutWidgetComponent", () => {
     const workoutTypesFromDB = [{ id: 1, name: "Abdos" }];
 
     component.refreshWidget();
+    TestBed.tick();
 
     const workoutTypesRequest = httpTestingController.expectOne(
       environment.backend_url + `/workoutWidget/workoutTypes`
     );
     workoutTypesRequest.flush(workoutTypesFromDB);
+    await flushResources();
     const workoutSessionsRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutSessions?dateIntervalStart=${format(
@@ -85,6 +97,7 @@ describe("WorkoutWidgetComponent", () => {
         )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
     );
     workoutSessionsRequest.flush([]);
+    await flushResources();
     const workoutStatsWeekRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
@@ -93,6 +106,7 @@ describe("WorkoutWidgetComponent", () => {
         )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`
     );
     workoutStatsWeekRequest.flush([]);
+    await flushResources();
     const workoutStatsMonthRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
@@ -101,6 +115,7 @@ describe("WorkoutWidgetComponent", () => {
         )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
     );
     workoutStatsMonthRequest.flush([]);
+    await flushResources();
 
     expect(component.isWidgetLoaded()).toEqual(true);
     expect(component.workoutTypes()).toEqual(workoutTypesFromDB);
@@ -124,15 +139,17 @@ describe("WorkoutWidgetComponent", () => {
     expect(component.workoutTypes()).toEqual([addWorkoutTypeResponse]);
   });
 
-  it("Should create widget with errors from webservices", () => {
+  it("Should create widget with errors from webservices", async () => {
     expect(component.workoutTypes()).toEqual([]);
     expect(component.workoutSessions()).toEqual([]);
 
     component.refreshWidget();
+    TestBed.tick();
 
     httpTestingController
       .expectOne(environment.backend_url + `/workoutWidget/workoutTypes`)
       .error(new ProgressEvent("Server error"));
+    await flushResources();
 
     httpTestingController
       .expectOne(
@@ -143,6 +160,7 @@ describe("WorkoutWidgetComponent", () => {
           )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
       )
       .error(new ProgressEvent("Server error"));
+    await flushResources();
 
     httpTestingController
       .expectOne(
@@ -153,6 +171,7 @@ describe("WorkoutWidgetComponent", () => {
           )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`
       )
       .error(new ProgressEvent("Server error"));
+    await flushResources();
 
     httpTestingController
       .expectOne(
@@ -163,6 +182,7 @@ describe("WorkoutWidgetComponent", () => {
           )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
       )
       .error(new ProgressEvent("Server error"));
+    await flushResources();
   });
 
   it("Should create a new workout session", () => {
@@ -190,9 +210,25 @@ describe("WorkoutWidgetComponent", () => {
     expect(component.currentWorkoutSessionToEdit()).toEqual(undefined);
   });
 
-  it("Should check month selected", () => {
+  it("Should check month selected", async () => {
     const selectedMonth = new Date(2022, 10, 20);
+    component.refreshWidget();
     component.selectMonth(selectedMonth);
+    TestBed.tick();
+    httpTestingController
+      .expectOne(environment.backend_url + "/workoutWidget/workoutTypes")
+      .flush([]);
+    await flushResources();
+    httpTestingController
+      .expectOne(
+        environment.backend_url +
+          `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
+            startOfISOWeek(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfWeek(new Date()), dateFormat)}`
+      )
+      .flush([]);
+    await flushResources();
 
     const workoutStatsWeekRequest = httpTestingController.expectOne(
       environment.backend_url +
@@ -202,6 +238,7 @@ describe("WorkoutWidgetComponent", () => {
         )}&dateIntervalEnd=${format(endOfMonth(selectedMonth), dateFormat)}`
     );
     workoutStatsWeekRequest.flush([]);
+    await flushResources();
     const workoutStatsMonthRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(
@@ -210,12 +247,14 @@ describe("WorkoutWidgetComponent", () => {
         )}&dateIntervalEnd=${format(endOfMonth(selectedMonth), dateFormat)}`
     );
     workoutStatsMonthRequest.flush([]);
+    await flushResources();
 
     expect(component.selectedMonthInput()).toEqual(selectedMonth);
   });
 
-  it("Should switch between statistics views", () => {
+  it("Should switch between statistics views", async () => {
     component.goToStatisticsView();
+    TestBed.tick();
     const today = startOfMonth(new Date());
     const lastThreeMonthsStatsRequest = httpTestingController.expectOne(
       environment.backend_url +
@@ -226,9 +265,11 @@ describe("WorkoutWidgetComponent", () => {
     );
 
     lastThreeMonthsStatsRequest.flush([]);
+    await flushResources();
     expect(component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(true);
 
     component.getWorkoutsStatsOfCurrentYear();
+    TestBed.tick();
     const currentYearStatsRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
@@ -237,10 +278,12 @@ describe("WorkoutWidgetComponent", () => {
         )}&dateIntervalEnd=${format(endOfYear(today), dateFormat)}`
     );
     currentYearStatsRequest.flush([]);
+    await flushResources();
     expect(component.isLastThreeMonthsWorkoutStatisticsSelected()).toEqual(false);
     expect(component.isCurrentYearWorkoutStatisticsSelected()).toEqual(true);
 
     component.getWorkoutsStatsOfLastSixMonths();
+    TestBed.tick();
     const lastSixMonthsStatsRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
@@ -250,10 +293,12 @@ describe("WorkoutWidgetComponent", () => {
     );
 
     lastSixMonthsStatsRequest.flush([]);
+    await flushResources();
     expect(component.isCurrentYearWorkoutStatisticsSelected()).toEqual(false);
     expect(component.isLastSixMonthsWorkoutStatisticsSelected()).toEqual(true);
 
     component.getWorkoutsStatsOfPastYear();
+    TestBed.tick();
     const lastYear = subYears(today, 1);
     const lastYearStatsRequest = httpTestingController.expectOne(
       environment.backend_url +
@@ -264,6 +309,7 @@ describe("WorkoutWidgetComponent", () => {
     );
 
     lastYearStatsRequest.flush([]);
+    await flushResources();
     expect(component.isLastYearWorkoutStatisticsSelected()).toEqual(true);
   });
 });

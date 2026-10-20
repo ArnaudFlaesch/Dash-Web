@@ -1,20 +1,4 @@
-.mini-widget-weather-container {
-  display: flex;
-  flex-direction: row;
-
-  .current-weather-icon {
-    height: 3.5rem;
-    width: 3.5rem;
-  }
-
-  .weather-data-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    .temperature-container {
-      display: flex;
-      flex-direction: row;
-    }
-  }
+.current-weather-icon {
+  height: 3.5rem;
+  width: 3.5rem;
 }

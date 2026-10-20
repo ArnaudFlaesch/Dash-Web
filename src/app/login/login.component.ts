@@ -1,51 +1,50 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
+import { form, FormField } from "@angular/forms/signals";
 import { MatButton } from "@angular/material/button";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { AuthService } from "../services/auth.service/auth.service";
 import { ErrorHandlerService } from "../services/error.handler.service";
-import { FormField, form } from "@angular/forms/signals";
+import { requiredText } from "../utils/form-validators";
 
 @Component({
   selector: "dash-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./login.component.scss",
   imports: [RouterLink, MatButton, MatProgressSpinner, FormField]
 })
 export class LoginComponent {
   public readonly isLoading = signal(false);
 
-  public readonly inputUsername = signal("");
-  public readonly inputPassword = signal("");
+  public readonly credentials = signal({ username: "", password: "" });
+  public readonly loginForm = form(this.credentials, (path) => {
+    requiredText(path.username);
+    requiredText(path.password);
+  });
 
-  public readonly usernameForm = form(this.inputUsername);
-  public readonly passwordForm = form(this.inputPassword);
-
-  public authService = inject(AuthService);
+  public readonly authService = inject(AuthService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly router = inject(Router);
 
   public async handleLogin(): Promise<void> {
-    const username = this.inputUsername();
-    const password = this.inputPassword();
-    if (username && password) {
-      this.isLoading.set(true);
-      try {
-        await firstValueFrom(this.authService.login(username, password));
-        this.isLoading.set(false);
-        await this.router.navigate(["home"]);
-      } catch (error) {
-        this.isLoading.set(false);
-        this.errorHandlerService.handleLoginError(error as Error);
-      }
+    if (this.loginForm().invalid()) {
+      return;
+    }
+    const { username, password } = this.credentials();
+    this.isLoading.set(true);
+    try {
+      await firstValueFrom(this.authService.login(username, password));
+      await this.router.navigate(["home"]);
+    } catch (error) {
+      this.errorHandlerService.handleLoginError(error as Error);
+    } finally {
+      this.isLoading.set(false);
     }
   }
 
   public async loginAsDemoAccount(): Promise<void> {
-    this.inputUsername.set("demo");
-    this.inputPassword.set("demo");
+    this.credentials.set({ username: "demo", password: "demo" });
     await this.handleLogin();
   }
 }

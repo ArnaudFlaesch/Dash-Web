@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { addDays, getTime } from "date-fns";
 
@@ -31,9 +32,12 @@ describe("StravaWidgetComponent", () => {
         StravaWidgetService,
         ErrorHandlerService,
         WidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(StravaWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(StravaWidgetComponent);
     component = fixture.componentInstance;
@@ -47,6 +51,12 @@ describe("StravaWidgetComponent", () => {
   afterEach(() => {
     httpTestingController.verify();
   });
+
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
 
   const STRAVA_TOKEN = "FAKE_TOKEN";
   const STRAVA_REFRESH_TOKEN = "FAKE_REFRESH_TOKEN";
@@ -128,7 +138,7 @@ describe("StravaWidgetComponent", () => {
     expect(component.isUserLoggedIn()).toBe(false);
   });
 
-  it("should create a widget with a token and a refresh token", () => {
+  it("should create a widget with a token and a refresh token", async () => {
     window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
     window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
@@ -136,15 +146,18 @@ describe("StravaWidgetComponent", () => {
     expect(component.isWidgetLoaded()).toEqual(true);
     expect(component.activities()).toEqual([]);
     component.refreshWidget();
+    TestBed.tick();
     const getAthleteDataRequest = httpTestingController.expectOne(
       `${environment.backend_url}/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`
     );
     getAthleteDataRequest.flush(athleteData);
+    await flushResources();
 
     const getActivitiesRequest = httpTestingController.expectOne(
       `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`
     );
     getActivitiesRequest.flush(activitiesData);
+    await flushResources();
 
     expect(component.isWidgetLoaded()).toEqual(true);
     expect(component.activities()).toHaveLength(25);
@@ -159,19 +172,23 @@ describe("StravaWidgetComponent", () => {
     expect(statsFromActivities[0].y).toEqual(268);
 
     component.getPreviousActivitiesPage();
+    TestBed.tick();
 
     const getNextActivitiesRequest = httpTestingController.expectOne(
       `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=2&numberOfActivities=25`
     );
     getNextActivitiesRequest.flush([]);
-    expect(component.pageNumber).toEqual(2);
+    await flushResources();
+    expect(component.pageNumber()).toEqual(2);
 
     component.getNextActivitiesPage();
+    TestBed.tick();
     const getPreviousActivitiesRequest = httpTestingController.expectOne(
       `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`
     );
     getPreviousActivitiesRequest.flush([]);
-    expect(component.pageNumber).toEqual(1);
+    await flushResources();
+    expect(component.pageNumber()).toEqual(1);
   });
 
   it("Should display athlete url", () => {
@@ -180,7 +197,7 @@ describe("StravaWidgetComponent", () => {
     );
   });
 
-  it("Should get refresh token", () => {
+  it("Should get refresh token", async () => {
     window.localStorage.removeItem(STRAVA_TOKEN_KEY);
     window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
     component.getUserData();
@@ -204,5 +221,14 @@ describe("StravaWidgetComponent", () => {
     );
     getRefreshTokenDataRequest.flush(response);
     expect(component.isUserLoggedIn()).toEqual(true);
+
+    // The activities of the athlete are then loaded with the new token
+    TestBed.tick();
+    httpTestingController
+      .expectOne(
+        `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${response.accessToken}&pageNumber=1&numberOfActivities=25`
+      )
+      .flush([]);
+    await flushResources();
   });
 });

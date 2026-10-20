@@ -1,11 +1,11 @@
-<div class="weather-forecast-container">
-  <dash-weather-today [weather]="this.weather()" />
+<div class="weather-forecast-container column">
+  <dash-weather-today [weather]="weather()" />
   @if (cityData() && forecastResponse()) {
     <div class="forecast-data-container">
       <div class="forecast-selector">
         @for (date of forecastDays(); track date.getTime()) {
           <button
-            [color]="this.isSelectedDay(date) ? 'primary' : ''"
+            [color]="isSelectedDay(date) ? 'primary' : ''"
             mat-raised-button
             (click)="selectDayForecast(date)"
             class="selectForecast"
@@ -15,7 +15,7 @@
         }
 
         <button
-          [color]="this.isForecastModeWeek() ? 'primary' : ''"
+          [color]="isForecastModeWeek() ? 'primary' : ''"
           mat-raised-button
           id="toggleWeekForecast"
           (click)="selectWeekForecast()"
@@ -28,11 +28,11 @@
           Afficher les prévisions complètes
         </mat-slide-toggle>
       </div>
-      @if (this.cityData()) {
+      @if (cityData()) {
         <dash-weather-forecast
-          [forecast]="this.forecastToDisplay()"
-          [forecastMode]="this.forecastMode()"
-          [timezone]="this.cityData().timezone"
+          [forecast]="forecastToDisplay()"
+          [forecastMode]="forecastMode()"
+          [timezone]="cityData().timezone"
         />
       }
     </div>

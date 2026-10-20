@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+import { Component, computed, input } from "@angular/core";
 import { ChartData, ChartTypeRegistry } from "chart.js";
 import { format, startOfMonth } from "date-fns";
 import { fr } from "date-fns/locale/fr";
@@ -8,8 +8,6 @@ import { IWorkoutStatByMonth, IWorkoutType } from "../model/Workout";
 @Component({
   selector: "dash-workout-statistics",
   templateUrl: "./workout-statistics.component.html",
-  styleUrls: ["./workout-statistics.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [BaseChartDirective]
 })
 export class WorkoutStatisticsComponent {

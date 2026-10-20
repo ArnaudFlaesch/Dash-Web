@@ -2,14 +2,14 @@
   [widgetData]="getWidgetData()"
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
-  (refreshWidgetAction)="this.refreshWidget()"
+  (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
     <mat-icon>air</mat-icon>
   </ng-template>
 
   <ng-template #headerTitle>
-    <a [href]="[this.airParifWidgetService.getAirParifWebsiteUrl() | safe: 'url']">
+    <a [href]="[airParifWidgetService.getAirParifWebsiteUrl() | safe: 'url']">
       <div>AirParif</div>
     </a>
   </ng-template>
@@ -20,7 +20,7 @@
       <input
         matInput
         id="airParifApiKey"
-        [formField]="airParifApiKeyForm"
+        [formField]="configForm.airParifApiKey"
         placeholder="Saisissez la clé d'API AirParif"
       />
     </mat-form-field>
@@ -29,7 +29,7 @@
       <input
         matInput
         id="communeInseeCode"
-        [formField]="communeInseeCodeForm"
+        [formField]="configForm.communeInseeCode"
         placeholder="Saisissez le code commune"
       />
     </mat-form-field>
@@ -37,10 +37,10 @@
 
   <ng-template #body>
     <dash-airparif-map
-      class="airparif-map"
-      [airParifApiKey]="this.airParifApiKey()"
-      [airParifForecast]="this.airParifForecast()"
-      [airParifCouleursIndices]="this.airParifCouleursIndices()"
+      class="airparif-map full-height"
+      [airParifApiKey]="config().airParifApiKey"
+      [airParifForecast]="airParifForecast()"
+      [airParifCouleursIndices]="airParifCouleursIndices()"
     />
   </ng-template>
 </dash-widget>

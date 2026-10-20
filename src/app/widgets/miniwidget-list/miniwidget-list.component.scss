@@ -1,20 +1,12 @@
-#miniwidget-list-container {
-  display: flex;
-  flex-direction: row;
-  column-gap: 5px;
-  align-items: center;
+@use "mixins" as *;
 
-  #miniwidget-list {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    max-width: 95%;
-    column-gap: 5px;
+#miniwidget-list {
+  max-width: 95%;
+  overflow-x: auto;
+}
 
-    .miniwidget-container {
-      background-color: white;
-      border: 1px solid black;
-      border-radius: 0.25rem;
-    }
-  }
+.miniwidget-container {
+  border: 1px solid black;
+  border-radius: $border-radius;
+  background-color: white;
 }

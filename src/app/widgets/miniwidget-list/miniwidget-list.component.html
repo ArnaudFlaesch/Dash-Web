@@ -1,13 +1,15 @@
-<div id="miniwidget-list-container">
-  <div id="miniwidget-list">
-    @for (miniWidget of this.miniWidgetList(); track miniWidget.id) {
+<div id="miniwidget-list-container" class="row items-center gap-xs">
+  <div id="miniwidget-list" class="row gap-xs">
+    @for (miniWidget of miniWidgetList(); track miniWidget.id) {
       <div class="miniwidget-container">
-        <ng-template #dynamic />
+        <ng-container
+          *ngComponentOutlet="miniWidgetComponents[miniWidget.type]; injector: getMiniWidgetInjector(miniWidget)"
+        />
       </div>
     }
   </div>
   <button
-    (click)="this.openCreateMiniWidgetModal()"
+    (click)="openCreateMiniWidgetModal()"
     matTooltip="Ajouter un nouveau mini widget"
     id="add-mini-widget-button"
     color="primary"

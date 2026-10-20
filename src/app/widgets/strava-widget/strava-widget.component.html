@@ -1,8 +1,8 @@
 <dash-widget
   [widgetData]="{}"
-  (refreshWidgetAction)="this.refreshWidget()"
+  (refreshWidgetAction)="refreshWidget()"
   [isFormValid]="true"
-  [isWidgetLoaded]="this.isWidgetLoaded()"
+  [isWidgetLoaded]="isWidgetLoaded()"
 >
   <ng-template #headerIcon>
     @if (athlete(); as athlete) {
@@ -23,26 +23,26 @@
   </ng-template>
 
   <ng-template #body>
-    @if (this.isUserLoggedIn()) {
-      @if (this.activities().length) {
+    @if (isUserLoggedIn()) {
+      @if (activities().length) {
         <div>
-          <div id="strava-activities-container">
-            <div id="activities-pagination-container">
-              @if (this.pageNumber > 1) {
-                <button (click)="this.getNextActivitiesPage()" matTooltip="Page suivante" mat-icon-button>
+          <div id="strava-activities-container" class="row">
+            <div id="activities-pagination-container" class="column">
+              @if (pageNumber() > 1) {
+                <button (click)="getNextActivitiesPage()" matTooltip="Page suivante" mat-icon-button>
                   <mat-icon>arrow_forward</mat-icon>
                 </button>
               }
-              @if (this.activities().length === this.paginationActivities) {
-                <button (click)="this.getPreviousActivitiesPage()" matTooltip="Page précédente" mat-icon-button>
+              @if (activities().length === paginationActivities) {
+                <button (click)="getPreviousActivitiesPage()" matTooltip="Page précédente" mat-icon-button>
                   <mat-icon>arrow_back</mat-icon>
                 </button>
               }
             </div>
-            <dash-strava-activities [activities]="this.activities()" />
+            <dash-strava-activities [activities]="activities()" />
           </div>
           <div id="strava-statistics">
-            <canvas baseChart [data]="this.activitiesChartData()" [type]="'bar'"></canvas>
+            <canvas baseChart [data]="activitiesChartData()" [type]="'bar'"></canvas>
           </div>
         </div>
       }

@@ -9,38 +9,43 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <div>Incident {{ incidentName() }}</div>
+    <div>Incident {{ config().incidentName }}</div>
   </ng-template>
 
   <ng-template #editComponent>
     <mat-form-field appearance="fill">
       <mat-label>Type d'incident</mat-label>
-      <input id="incidentName" matInput [formField]="incidentNameForm" placeholder="Saisissez le type d'incident" />
+      <input
+        id="incidentName"
+        matInput
+        [formField]="configForm.incidentName"
+        placeholder="Saisissez le type d'incident"
+      />
     </mat-form-field>
   </ng-template>
 
   <ng-template #body>
-    @if (this.lastIncidentDate(); as lastIncidentDate) {
-      @if (this.isWidgetViewCurrentStreak()) {
-        <div id="incident-widget-body-header">
+    @if (lastIncidentDate(); as lastIncidentDate) {
+      @if (isWidgetViewCurrentStreak()) {
+        <div id="incident-widget-body-header" class="row justify-between">
           <div>Dernier incident le {{ lastIncidentDate | dateFormat: "short" }}</div>
-          @if (this.streaks().length > 0) {
-            <button (click)="this.goToPastStreaksView()" mat-raised-button>Séries précédentes</button>
+          @if (streaks().length > 0) {
+            <button (click)="goToPastStreaksView()" mat-raised-button>Séries précédentes</button>
           }
         </div>
 
         <div id="incident-widget-body">
-          <div id="number-of-days-since-last-incident">{{ this.getDaysSinceLastIncident() }} jours</div>
+          <div id="number-of-days-since-last-incident">{{ getDaysSinceLastIncident() }} jours</div>
           <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">Terminer</button>
         </div>
       } @else {
-        <button id="go-to-current-streak-button" (click)="this.goToCurrentStreakView()" mat-raised-button>
+        <button id="go-to-current-streak-button" (click)="goToCurrentStreakView()" mat-raised-button>
           Série actuelle
         </button>
 
         <div id="past-streaks-list">
-          @for (streak of this.streaks(); track streak.streakStartDate) {
-            <div>{{ this.getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate) }} jours</div>
+          @for (streak of streaks(); track streak.streakStartDate) {
+            <div>{{ getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate) }} jours</div>
           }
         </div>
       }

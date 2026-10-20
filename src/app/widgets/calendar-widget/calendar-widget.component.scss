@@ -1,38 +1,15 @@
-#calendar-urls-list-container {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.75rem;
-  align-items: center;
-
-  .calendar-url-container {
-    display: flex;
-    flex-direction: row;
-    column-gap: 1em;
-  }
-}
+@use "mixins" as *;
 
 #calendar-actions-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 0.25rem;
+  margin: $space-xs;
+}
 
-  #date-navigation-container {
-    display: flex;
-    flex-direction: row;
-    column-gap: 0.25rem;
-  }
-
-  #calendar-view-switch-container {
-    display: flex;
-    flex-flow: row wrap;
-    align-items: flex-start;
-    gap: 0.25rem;
-  }
+#calendar-view-switch-container {
+  align-items: flex-start;
 }
 
 #calendar-selected-date {
-  margin-left: 0.5rem;
+  margin-left: $space-sm;
 
   h3 {
     font-weight: 900;

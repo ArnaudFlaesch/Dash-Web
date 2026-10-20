@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 
-@Injectable()
+@Service()
 export class DateUtilsService {
   public formatDateFromTimestamp(timestamp: number, offset = 0): Date {
     return new Date(timestamp * 1000 + offset * 1000);

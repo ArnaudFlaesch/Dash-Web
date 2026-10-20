@@ -1,3 +1,4 @@
+import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
@@ -69,9 +70,12 @@ describe("AirParifWidgetComponent", () => {
         AirParifWidgetService,
         ErrorHandlerService,
         WidgetService,
-        { provide: "widgetId", useValue: 1 }
+        { provide: WIDGET_ID, useValue: 1 }
       ]
-    }).compileComponents();
+    })
+      // Not rendered, so that the resources are only loaded by the test, not by the child components
+      .overrideTemplate(AirParifWidgetComponent, "")
+      .compileComponents();
 
     const fixture = TestBed.createComponent(AirParifWidgetComponent);
     component = fixture.componentInstance;
@@ -82,13 +86,19 @@ describe("AirParifWidgetComponent", () => {
     httpTestingController.verify();
   });
 
-  it("Should create an AirParif Widget", () => {
-    expect(component.airParifApiKey()).toEqual("");
-    expect(component.communeInseeCode()).toEqual("");
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
+  it("Should create an AirParif Widget", async () => {
+    expect(component.config().airParifApiKey).toEqual("");
+    expect(component.config().communeInseeCode).toEqual("");
     expect(component.isFormValid()).toEqual(false);
     expect(component.getWidgetData()).toEqual(undefined);
-    component.airParifApiKey.set(airParifToken);
-    component.communeInseeCode.set(communeInseeCode);
+    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
+    component.config.update((config) => ({ ...config, communeInseeCode: communeInseeCode }));
     expect(component.isFormValid()).toEqual(true);
     const widgetData = component.getWidgetData();
     expect(widgetData?.airParifApiKey).toBe(airParifToken);
@@ -97,28 +107,33 @@ describe("AirParifWidgetComponent", () => {
     expect(component.airParifCouleursIndices()).toEqual([]);
 
     component.refreshWidget();
+    TestBed.tick();
 
     const requests = httpTestingController.match({
       method: "GET"
     });
     requests[0].flush(forecastData);
+    await flushResources();
     requests[1].flush(couleursIndicesData);
+    await flushResources();
 
     expect(component.airParifForecast()).toEqual(forecastData);
     expect(component.airParifCouleursIndices()).toEqual(couleursIndicesData);
   });
 
-  it("Should get errors from API", () => {
-    component.airParifApiKey.set(airParifToken);
-    component.communeInseeCode.set(communeInseeCode);
+  it("Should get errors from API", async () => {
+    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
+    component.config.update((config) => ({ ...config, communeInseeCode: communeInseeCode }));
     expect(component.airParifForecast()).toEqual([]);
     expect(component.airParifCouleursIndices()).toEqual([]);
     component.refreshWidget();
+    TestBed.tick();
 
     const requests = httpTestingController.match({
       method: "GET"
     });
     requests[0].error(new ProgressEvent("Server error"));
+    await flushResources();
 
     expect(component.airParifForecast()).toEqual([]);
     expect(component.airParifCouleursIndices()).toEqual([]);

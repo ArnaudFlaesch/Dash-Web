@@ -1,12 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  OnInit,
-  signal,
-  WritableSignal
-} from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, computed, inject } from "@angular/core";
+import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { isToday } from "date-fns";
 import {
   INotification,
@@ -17,21 +11,38 @@ import { ErrorHandlerService } from "../services/error.handler.service";
 import { NotificationService } from "../services/notification.service/NotificationService";
 import { WidgetService } from "../services/widget.service/widget.service";
 import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { catchError, map, of } from "rxjs";
+
+const NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
+  [NotificationTypeEnum.INFO]: "info",
+  [NotificationTypeEnum.WARN]: "warning"
+};
 
 @Component({
   selector: "dash-notifications",
   templateUrl: "./notifications.component.html",
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NotificationsListComponent]
 })
-export class NotificationsComponent implements OnInit {
-  public readonly notificationsFromDatabase: WritableSignal<INotification[]> = signal([]);
+export class NotificationsComponent {
+  /** Notifications, reloaded each time the widgets are refreshed. */
+  public readonly notificationsResource = rxResource({
+    stream: () =>
+      this.notificationService.getNotifications().pipe(
+        map((notifications) => notifications.content),
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_NOTIFICATIONS);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as INotification[]
+  });
+
+  public readonly notificationsFromDatabase = this.notificationsResource.value;
   public readonly notificationsToDisplay = computed<INotificationToDisplay[]>(() =>
     this.notificationsFromDatabase().map((notification) => ({
       ...notification,
       notificationDateToDisplay: this.computeDateToDisplay(notification.notificationDate),
-      notificationTypeToDisplay: this.computeTypeToDisplay(notification.notificationType)
+      notificationTypeToDisplay: NOTIFICATION_TYPE_ICONS[notification.notificationType]
     }))
   );
   public readonly unreadNotificationsForBadge = computed(
@@ -39,18 +50,15 @@ export class NotificationsComponent implements OnInit {
   );
 
   private readonly notificationService = inject(NotificationService);
-  private readonly widgetService = inject(WidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
+  private readonly ERROR_GETTING_NOTIFICATIONS =
+    "Erreur lors de la récupération des notifications.";
 
   public constructor() {
-    this.widgetService.refreshWidgetsAction.pipe(takeUntilDestroyed()).subscribe({
-      next: () => this.fetchNotificationsFromDatabase()
-    });
-  }
-
-  public ngOnInit(): void {
-    this.fetchNotificationsFromDatabase();
+    inject(WidgetService)
+      .refreshWidgetsAction.pipe(takeUntilDestroyed())
+      .subscribe(() => this.notificationsResource.reload());
   }
 
   public markNotificationAsRead(notificationId: number): void {
@@ -64,53 +72,26 @@ export class NotificationsComponent implements OnInit {
   private markNotificationsAsRead(notificationIds: number[]): void {
     this.notificationService.markNotificationAsRead(notificationIds).subscribe({
       next: (updatedNotifications) => {
-        this.notificationsFromDatabase.update((oldNotifications) => {
-          return [
-            ...oldNotifications.filter(
-              (notification) =>
-                !updatedNotifications.map((notif) => notif.id).includes(notification.id)
-            ),
+        const updatedIds = new Set(updatedNotifications.map((notification) => notification.id));
+        this.notificationsFromDatabase.update((oldNotifications) =>
+          [
+            ...oldNotifications.filter((notification) => !updatedIds.has(notification.id)),
             ...updatedNotifications
-          ].sort((timeA, timeB) => {
-            if (timeA === timeB) return 0;
-            return Date.parse(timeB.notificationDate) - Date.parse(timeA.notificationDate);
-          });
-        });
+          ].sort(
+            (notifA, notifB) =>
+              Date.parse(notifB.notificationDate) - Date.parse(notifA.notificationDate)
+          )
+        );
       },
       error: (error) =>
         this.errorHandlerService.handleError(error, this.ERROR_MARKING_NOTIFICATION_AS_READ)
     });
   }
 
-  private fetchNotificationsFromDatabase(): void {
-    this.notificationService.getNotifications().subscribe({
-      next: (notifications) => {
-        this.notificationsFromDatabase.set(notifications.content);
-      }
-    });
-  }
-
   private computeDateToDisplay(date: string): string {
     const parsedDate = new Date(Date.parse(date));
-    if (isToday(parsedDate)) {
-      return parsedDate.toLocaleTimeString("fr", {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-    } else {
-      return parsedDate.toLocaleString("fr", {
-        day: "2-digit",
-        month: "2-digit"
-      });
-    }
-  }
-
-  private computeTypeToDisplay(notificationType: NotificationTypeEnum): string {
-    switch (notificationType) {
-      case NotificationTypeEnum.INFO:
-        return "info";
-      case NotificationTypeEnum.WARN:
-        return "warning";
-    }
+    return isToday(parsedDate)
+      ? parsedDate.toLocaleTimeString("fr", { hour: "2-digit", minute: "2-digit" })
+      : parsedDate.toLocaleString("fr", { day: "2-digit", month: "2-digit" });
   }
 }

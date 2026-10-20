@@ -9,42 +9,36 @@
 </button>
 
 <mat-menu #notificationsMenu="matMenu">
-  @if (this.unreadNotificationsForBadge()) {
+  @if (unreadNotificationsForBadge()) {
     <button
       id="mark-all-notifications-as-read-button"
       matTooltip="Marquer tout comme lu"
-      (click)="markAllNotificationsAsRead()"
+      (click)="markAllNotificationsAsReadEvent.emit()"
       mat-icon-button
     >
       <mat-icon>check</mat-icon>
     </button>
   }
-  @for (notification of this.notificationsList(); track notification.id) {
+  @for (notification of notificationsList(); track notification.id) {
     <div
-      class="notification-container"
-      [ngClass]="{
-        'unread-notification': !notification.isRead,
-        info: notification.notificationType.toString() === notificationTypeEnum.INFO,
-        warn: notification.notificationType.toString() === notificationTypeEnum.WARN
-      }"
+      class="notification-container row items-center gap-xs"
+      [class.unread-notification]="!notification.isRead"
+      [class.info]="notification.notificationType === notificationTypeEnum.INFO"
+      [class.warn]="notification.notificationType === notificationTypeEnum.WARN"
     >
       <span>{{ notification.message }}</span>
-      <span [matTooltip]="notification.notificationDate | dateFormat: 'short'" class="notification-date">{{
-        notification.notificationDateToDisplay
-      }}</span>
-      <span
-        ><mat-icon>{{ notification.notificationTypeToDisplay }}</mat-icon></span
-      >
+      <span [matTooltip]="notification.notificationDate | dateFormat: 'short'" class="notification-date">
+        {{ notification.notificationDateToDisplay }}
+      </span>
+      <mat-icon>{{ notification.notificationTypeToDisplay }}</mat-icon>
       @if (!notification.isRead) {
-        <span
-          ><button
-            class="mark-notification-as-read-button"
-            (click)="markNotificationAsRead(notification.id)"
-            mat-icon-button
-          >
-            <mat-icon>check</mat-icon>
-          </button></span
+        <button
+          class="mark-notification-as-read-button"
+          (click)="markNotificationAsReadEvent.emit(notification.id)"
+          mat-icon-button
         >
+          <mat-icon>check</mat-icon>
+        </button>
       }
     </div>
   }

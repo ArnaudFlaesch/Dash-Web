@@ -1,59 +1,43 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostListener,
-  afterNextRender,
-  signal,
-  viewChild
-} from "@angular/core";
-import { SafePipe } from "../../pipes/safe.pipe";
+import { afterNextRender, Component, ElementRef, signal, viewChild } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
+import { SafePipe } from "../../pipes/safe.pipe";
 import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
   selector: "dash-ecowatt-widget",
   templateUrl: "./ecowatt-widget.component.html",
-  styleUrls: ["./ecowatt-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [WidgetComponent, MatIcon, SafePipe]
+  imports: [WidgetComponent, MatIcon, SafePipe],
+  host: { "(window:resize)": "resizeWidget()" }
 })
 export class EcowattWidgetComponent {
-  public readonly iframeContainer = viewChild<ElementRef>("iframeContainer");
+  public readonly iframeContainer = viewChild<ElementRef<HTMLElement>>("iframeContainer");
 
-  public ecowattIframeUrl =
+  public readonly ecowattIframeUrl =
     "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
 
-  public isWidgetLoaded = signal(true);
-  public iframeContainerHeight = signal(0);
-  public iframeContainerWidth = signal(0);
+  public readonly isWidgetLoaded = signal(true);
+  public readonly iframeContainerHeight = signal(0);
+  public readonly iframeContainerWidth = signal(0);
 
   public constructor() {
     afterNextRender(() => this.resizeWidget());
   }
 
-  @HostListener("window:resize", [])
-  public onResize(): void {
-    this.resizeWidget();
-  }
-
   public resizeWidget(): void {
-    const iframeContainer = this.iframeContainer();
-    if (iframeContainer) {
-      this.iframeContainerHeight.set(iframeContainer.nativeElement.offsetHeight);
-      this.iframeContainerWidth.set(iframeContainer.nativeElement.offsetWidth);
+    const container = this.iframeContainer()?.nativeElement;
+    if (container) {
+      this.iframeContainerHeight.set(container.offsetHeight);
+      this.iframeContainerWidth.set(container.offsetWidth);
     }
   }
 
   public refreshWidget(): void {
     this.resizeWidget();
-    const iframeContainer = this.iframeContainer();
-    if (iframeContainer) {
-      const iframe = iframeContainer.nativeElement.getElementsByTagName("iframe")[0];
-      if (iframe) {
-        const src = iframe.src;
-        iframe.src = src;
-      }
+    const iframe = this.iframeContainer()?.nativeElement.querySelector("iframe");
+    if (iframe) {
+      // Reassigning the source reloads the iframe
+      const src = iframe.src;
+      iframe.src = src;
     }
   }
 

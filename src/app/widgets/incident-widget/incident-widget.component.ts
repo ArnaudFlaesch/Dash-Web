@@ -1,14 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-  WritableSignal
-} from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
 
 import { ErrorHandlerService } from "../../services/error.handler.service";
-import { IIncidentStreak, IIncidentViewEnum } from "./IIncident";
+import { IIncident, IIncidentStreak, IIncidentViewEnum } from "./IIncident";
 import { IncidentWidgetService } from "./incident.widget.service";
 import { differenceInDays } from "date-fns";
 import { MatDialog } from "@angular/material/dialog";
@@ -16,18 +11,19 @@ import { ConfirmModalComponent } from "../../modals/confirm-modal/confirm-modal.
 import { DateFormatPipe } from "../../pipes/date-format.pipe";
 import { MatButton } from "@angular/material/button";
 
-import { FormField, form } from "@angular/forms/signals";
+import { form, FormField } from "@angular/forms/signals";
+import { requiredText } from "../../utils/form-validators";
 import { MatInput } from "@angular/material/input";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { WidgetComponent } from "../widget/widget.component";
-import { switchMap } from "rxjs";
+import { injectWidgetData, WIDGET_ID } from "../widget.tokens";
+import { catchError, map, of } from "rxjs";
 
 @Component({
   selector: "dash-incident-widget",
   templateUrl: "./incident-widget.component.html",
-  styleUrls: ["./incident-widget.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: "./incident-widget.component.scss",
   imports: [
     WidgetComponent,
     MatIcon,
@@ -40,11 +36,49 @@ import { switchMap } from "rxjs";
   ]
 })
 export class IncidentWidgetComponent {
-  public readonly incidentName = signal<string>("");
-  public readonly incidentNameForm = form(this.incidentName);
-  public lastIncidentDate = signal<string | undefined>(undefined);
-  public streaks: WritableSignal<IIncidentStreak[]> = signal([]);
-  public isWidgetLoaded = signal(false);
+  public readonly config = signal({ incidentName: injectWidgetData("incidentName", "") });
+  public readonly configForm = form(this.config, (path) => requiredText(path.incidentName));
+
+  /** Incident configuration of the widget, reloaded on each refresh. */
+  public readonly incidentConfigResource = rxResource({
+    params: () => this.refreshRequest(),
+    stream: () =>
+      this.incidentWidgetService.getIncidentConfigForWidget(this.widgetId).pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS);
+          return of(undefined);
+        })
+      ),
+    defaultValue: undefined as IIncident | undefined
+  });
+
+  /** Past streaks of the incident, most recent first, reloaded with the incident configuration. */
+  public readonly streaksResource = rxResource({
+    params: () => this.incidentConfigResource.value(),
+    stream: ({ params: incidentConfig }) =>
+      this.incidentWidgetService.getIncidentStreaks(incidentConfig.id).pipe(
+        map((incidentStreaks) =>
+          incidentStreaks.toSorted(
+            (streakA, streakB) =>
+              Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
+          )
+        ),
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS);
+          return of([]);
+        })
+      ),
+    defaultValue: [] as IIncidentStreak[]
+  });
+
+  public readonly streaks = this.streaksResource.value;
+  // Also updated when a streak is started or ended
+  public readonly lastIncidentDate = linkedSignal(
+    () => this.incidentConfigResource.value()?.lastIncidentDate
+  );
+  public readonly isWidgetLoaded = computed(() =>
+    ["resolved", "local"].includes(this.incidentConfigResource.status())
+  );
 
   public readonly isWidgetViewCurrentStreak = computed(
     () => this.widgetView() === IIncidentViewEnum.CURRENT_STREAK
@@ -52,7 +86,7 @@ export class IncidentWidgetComponent {
   public readonly isWidgetViewPastStreaks = computed(
     () => this.widgetView() === IIncidentViewEnum.PAST_STREAKS
   );
-  public readonly isFormValid = computed(() => this.incidentName().trim().length > 0);
+  public readonly isFormValid = computed(() => this.configForm().valid());
   public readonly daysSinceLastIncident = computed(() => {
     const lastIncidentDate = this.lastIncidentDate();
     if (!lastIncidentDate) return 0;
@@ -60,6 +94,8 @@ export class IncidentWidgetComponent {
   });
 
   private readonly widgetView = signal(IIncidentViewEnum.CURRENT_STREAK);
+  // A new object on each refresh, so that the resources reload
+  private readonly refreshRequest = signal<object | undefined>(undefined);
 
   private readonly ERROR_STARTING_NEW_STREAK = "Erreur lors du démarrage de la série.";
   private readonly ERROR_ENDING_NEW_STREAK = "Erreur lors de la clôture de la série.";
@@ -68,32 +104,10 @@ export class IncidentWidgetComponent {
   private readonly dialog = inject(MatDialog);
   private readonly incidentWidgetService = inject(IncidentWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly widgetId = inject<number>("widgetId" as never);
+  private readonly widgetId = inject(WIDGET_ID);
 
   public refreshWidget(): void {
-    this.isWidgetLoaded.set(false);
-    this.incidentWidgetService
-      .getIncidentConfigForWidget(this.widgetId)
-      .pipe(
-        switchMap((incidentConfig) => {
-          this.lastIncidentDate.set(incidentConfig.lastIncidentDate);
-          this.isWidgetLoaded.set(true);
-          return this.incidentWidgetService.getIncidentStreaks(incidentConfig.id);
-        })
-      )
-      .subscribe({
-        next: (incidentStreaks) =>
-          this.streaks.set(
-            incidentStreaks
-              .slice()
-              .sort(
-                (streakA: IIncidentStreak, streakB: IIncidentStreak) =>
-                  Date.parse(streakB.streakEndDate) - Date.parse(streakA.streakEndDate)
-              )
-          ),
-        error: (error) =>
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS)
-      });
+    this.refreshRequest.set({});
   }
 
   public startNewStreak(): void {
@@ -119,15 +133,11 @@ export class IncidentWidgetComponent {
   }
 
   public goToCurrentStreakView(): void {
-    if (!this.isWidgetViewCurrentStreak()) {
-      this.widgetView.set(IIncidentViewEnum.CURRENT_STREAK);
-    }
+    this.widgetView.set(IIncidentViewEnum.CURRENT_STREAK);
   }
 
   public goToPastStreaksView(): void {
-    if (!this.isWidgetViewPastStreaks()) {
-      this.widgetView.set(IIncidentViewEnum.PAST_STREAKS);
-    }
+    this.widgetView.set(IIncidentViewEnum.PAST_STREAKS);
   }
 
   public getDaysSinceLastIncident(): number {
@@ -139,8 +149,7 @@ export class IncidentWidgetComponent {
   }
 
   public getWidgetConfig(): { incidentName: string } | undefined {
-    const incidentName = this.incidentName();
-    return incidentName ? { incidentName } : undefined;
+    return this.isFormValid() ? this.config() : undefined;
   }
 
   private endCurrentStreak(): void {

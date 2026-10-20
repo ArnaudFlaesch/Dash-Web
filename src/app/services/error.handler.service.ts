@@ -1,9 +1,9 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
 
-@Injectable()
+@Service()
 export class ErrorHandlerService {
   private readonly router = inject(Router);
   private readonly snackbar = inject(MatSnackBar);

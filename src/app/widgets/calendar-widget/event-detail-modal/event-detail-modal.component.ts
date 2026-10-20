@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -13,7 +13,6 @@ import { MatButton } from "@angular/material/button";
 @Component({
   selector: "dash-event-detail-modal",
   templateUrl: "./event-detail-modal.component.html",
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDialogTitle,
     MatDialogContent,
