@@ -91,24 +91,47 @@ describe("HomeComponent", () => {
     httpTestingController.verify();
   });
 
+  const threeTabs = [
+    { id: 1, label: "Home", tabOrder: 1 },
+    { id: 2, label: "RSS", tabOrder: 2 },
+    { id: 3, label: "Weather", tabOrder: 3 }
+  ];
+
   /** Lets the resources receive the flushed responses, then load the requests depending on them. */
   async function flushResources(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve));
     TestBed.tick();
   }
 
+  /** Answers the request loading the widgets of the active tab. */
+  async function flushActiveTabWidgets(widgets: IWidgetConfig[] = []): Promise<void> {
+    httpTestingController
+      .expectOne(`${environment.backend_url}/widget/?tabId=${component.activeTab()}`)
+      .flush(widgets);
+    await flushResources();
+  }
+
+  /** Loads the tabs, then the widgets of the first tab. */
+  async function loadDashboard(
+    tabs: ITab[] = tabData,
+    widgets: IWidgetConfig[] = firstTabWidgetData
+  ): Promise<void> {
+    httpTestingController.expectOne(environment.backend_url + tabPath).flush(tabs);
+    await flushResources();
+    await flushActiveTabWidgets(widgets);
+  }
+
+  function deleteTab(tabId: number): void {
+    component.deleteTabFromDash(tabId);
+    httpTestingController
+      .expectOne(`${environment.backend_url}/tab/deleteTab?id=${tabId}`)
+      .flush(null, { status: 200, statusText: "OK" });
+  }
+
   it("Should display two tabs with two widgets on the first one", async () => {
     expect(component.tabs()).toEqual([]);
-    const request = httpTestingController.expectOne(environment.backend_url + tabPath);
-    request.flush(tabData);
-    await flushResources();
+    await loadDashboard();
     expect(component.tabs()).toEqual(tabData);
-    const getWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getWidgetsRequest.flush(firstTabWidgetData);
-    await flushResources();
-    expect(component.tabs()).toHaveLength(2);
     expect(component.activeWidgets()).toHaveLength(2);
     expect(component.activeTab()).toEqual(tabData[0].id);
 
@@ -116,25 +139,11 @@ describe("HomeComponent", () => {
     component.selectTab(tabData[1].id);
     TestBed.tick();
     expect(component.activeTab()).toEqual(tabData[1].id);
-    const getSecondTabWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getSecondTabWidgetsRequest.flush([]);
-    await flushResources();
+    await flushActiveTabWidgets();
   });
 
   it("Should display two tabs then delete a widget and the second tab", async () => {
-    const request = httpTestingController.expectOne(environment.backend_url + tabPath);
-    request.flush(tabData);
-    await flushResources();
-    expect(component.tabs()).toEqual(tabData);
-    const getWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getWidgetsRequest.flush(firstTabWidgetData);
-    await flushResources();
-    expect(component.tabs()).toHaveLength(2);
-    expect(component.activeWidgets()).toHaveLength(2);
+    await loadDashboard();
 
     // Delete second widget
     const widgetIdToDelete = component.activeWidgets()[1].id;
@@ -146,137 +155,48 @@ describe("HomeComponent", () => {
     expect(component.activeWidgets()).toHaveLength(1);
 
     // Delete second tab
-    const tabIdToDelete = component.tabs()[1].id;
-    component.deleteTabFromDash(tabIdToDelete);
-    const deleteTabRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/tab/deleteTab?id=${tabIdToDelete}`
-    );
-    deleteTabRequest.flush(null, { status: 200, statusText: "OK" });
+    deleteTab(component.tabs()[1].id);
     expect(component.tabs()).toHaveLength(1);
   });
 
   it("Should delete the last tab and select the first after", async () => {
-    const tabsFromDatabase = [
-      { id: 1, label: "Home", tabOrder: 1 },
-      { id: 2, label: "RSS", tabOrder: 2 },
-      { id: 3, label: "Weather", tabOrder: 3 }
-    ];
-
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
-    getTabsRequest.flush(tabsFromDatabase);
-    await flushResources();
-
-    const getWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getWidgetsRequest.flush([]);
-    await flushResources();
-    expect(component.activeTab()).toEqual(tabsFromDatabase[0].id);
+    await loadDashboard(threeTabs, []);
+    expect(component.activeTab()).toEqual(threeTabs[0].id);
   });
 
   it("Should delete the first tab and select the second after", async () => {
-    const tabsFromDatabase = [
-      { id: 1, label: "Home", tabOrder: 1 },
-      { id: 2, label: "RSS", tabOrder: 2 },
-      { id: 3, label: "Weather", tabOrder: 3 }
-    ];
+    await loadDashboard(threeTabs, []);
 
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
-    getTabsRequest.flush(tabsFromDatabase);
-    await flushResources();
-
-    const getWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getWidgetsRequest.flush([]);
-    await flushResources();
-
-    const tabIdToDelete = component.tabs()[0].id;
-    component.deleteTabFromDash(tabIdToDelete);
-    const deleteTabRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/tab/deleteTab?id=${tabIdToDelete}`
-    );
-    deleteTabRequest.flush(null);
-
+    deleteTab(component.tabs()[0].id);
     TestBed.tick();
-    const getTabWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getTabWidgetsRequest.flush([]);
-    await flushResources();
+    await flushActiveTabWidgets();
 
     expect(component.activeTab()).toEqual(component.tabs()[0].id);
   });
 
   it("Should delete the active tab and select the first one after", async () => {
-    const tabsFromDatabase = [
-      { id: 1, label: "Home", tabOrder: 1 },
-      { id: 2, label: "RSS", tabOrder: 2 },
-      { id: 3, label: "Weather", tabOrder: 3 }
-    ];
-
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
-    getTabsRequest.flush(tabsFromDatabase);
-    await flushResources();
-
-    const getWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getWidgetsRequest.flush([]);
-    await flushResources();
+    await loadDashboard(threeTabs, []);
 
     component.selectTab(component.tabs()[1].id);
     TestBed.tick();
+    await flushActiveTabWidgets();
 
-    const getSecondTabWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.tabs()[1].id}`
-    );
-    getSecondTabWidgetsRequest.flush([]);
-    await flushResources();
-
-    const tabIdToDelete = component.activeTab();
-
-    component.deleteTabFromDash(tabIdToDelete);
-    const deleteTabRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/tab/deleteTab?id=${tabIdToDelete}`
-    );
-    deleteTabRequest.flush(null);
-
+    deleteTab(component.activeTab());
     TestBed.tick();
-    const getTabWidgetRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getTabWidgetRequest.flush([]);
-    await flushResources();
-    expect(component.activeTab()).toEqual(tabsFromDatabase[0].id);
+    await flushActiveTabWidgets();
+    expect(component.activeTab()).toEqual(threeTabs[0].id);
   });
 
   it("Should delete a tab", async () => {
-    const tabsFromDatabase = [{ id: 1, label: "Home", tabOrder: 1 }];
+    await loadDashboard([{ id: 1, label: "Home", tabOrder: 1 }], []);
 
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
-    getTabsRequest.flush(tabsFromDatabase);
-    await flushResources();
-
-    const getWidgetsRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/?tabId=${component.activeTab()}`
-    );
-    getWidgetsRequest.flush([]);
-    await flushResources();
-
-    const lastTabToDelete = component.activeTab();
-    component.deleteTabFromDash(lastTabToDelete);
-    const deleteLastTabRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/tab/deleteTab?id=${lastTabToDelete}`
-    );
-    deleteLastTabRequest.flush(null);
+    deleteTab(component.activeTab());
     expect(component.tabs()).toEqual([]);
     expect(component.activeWidgets()).toEqual([]);
   });
 
   it("Should switch between light and dark mode", async () => {
-    const getTabsRequest = httpTestingController.expectOne(environment.backend_url + "/tab/");
-    getTabsRequest.flush([]);
+    httpTestingController.expectOne(environment.backend_url + tabPath).flush([]);
     await flushResources();
     component.toggleTheme(true);
     expect(localStorage.getItem("preferredTheme")).toEqual("dark");
@@ -286,15 +206,6 @@ describe("HomeComponent", () => {
     expect(localStorage.getItem("preferredTheme")).toEqual("light");
   });
 
-  async function loadDashboard(widgets: IWidgetConfig[] = firstTabWidgetData): Promise<void> {
-    httpTestingController.expectOne(environment.backend_url + tabPath).flush(tabData);
-    await flushResources();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/?tabId=${tabData[0].id}`)
-      .flush(widgets);
-    await flushResources();
-  }
-
   it("Should add a new tab and select it", async () => {
     await loadDashboard();
     component.addNewTab();
@@ -302,8 +213,7 @@ describe("HomeComponent", () => {
     expect(request.request.body).toEqual({ label: "Nouvel onglet" });
     request.flush({ id: 3, label: "Nouvel onglet", tabOrder: 3 });
     TestBed.tick();
-    httpTestingController.expectOne(`${environment.backend_url}/widget/?tabId=3`).flush([]);
-    await flushResources();
+    await flushActiveTabWidgets();
 
     expect(component.tabs()).toHaveLength(3);
     expect(component.activeTab()).toEqual(3);
