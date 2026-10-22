@@ -39,7 +39,7 @@
     "@angular/router": "22.2.3",
     "@angular/service-worker": "22.2.3",
     "angular-calendar": "0.32.2",
-    "chart.js": "4.5.1",
+    "chart.js": "4.6.1",
     "date-fns": "4.4.0",
     "ng2-charts": "11.0.0",
     "ol": "10.11.0",
