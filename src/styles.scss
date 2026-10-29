@@ -8,17 +8,22 @@
 @use "app/home/home.theme";
 @use "app/login/login.theme";
 @use "app/modals/create-widget-modal.theme";
+@use "app/notifications/notifications-list/notifications-list.theme";
 @use "app/tab/tab.theme";
 @use "app/widgets/mini-widget/mini-widget.theme";
 @use "app/widgets/miniwidget-list/miniwidget-list.theme";
 @use "app/widgets/rss-widget/rss-widget.theme";
 @use "app/widgets/rss-widget/rss-feed/rss-feed.theme";
 @use "app/widgets/steam-widget/steam-widget.theme";
+@use "app/widgets/strava-widget/strava-widget.theme";
+@use "app/widgets/strava-widget/strava-activities/strava-activities.theme";
 @use "app/widgets/steam-widget/game-details/game-details.theme";
 @use "app/widgets/weather-widget/weather-forecast/weather-forecast.theme";
 @use "app/widgets/weather-widget/weather-mini-widget/weather-miniwidget.theme";
 @use "app/widgets/weather-widget/weather-today/weather-today.theme";
 @use "app/widgets/widget-list/widget-list.theme";
+@use "app/widgets/workout-widget/workout-widget.theme";
+@use "app/widgets/workout-widget/workout-session-edit/workout-session-edit.theme";
 @use "app/widgets/widget/widget.theme" as widget-theme;
 @include mat.core;
 

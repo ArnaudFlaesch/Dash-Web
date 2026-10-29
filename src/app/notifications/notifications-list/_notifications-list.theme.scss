@@ -1,0 +1,19 @@
+@use "@angular/material" as mat;
+@use "mixins" as *;
+
+// Material 3 small badge (a dot), like CashManager: the size set by the legacy prebuilt theme is removed
+#display-notifications-button {
+  @include mat.badge-overrides(
+    (
+      legacy-small-size-container-size: initial
+    )
+  );
+}
+
+// Theme colors of the notifications, displayed in the overlay of the menu with this class
+.notifications-menu .notification-container.unread-notification.info {
+  @include themed {
+    border-left-color: $color-accent;
+    background-color: $color-accent-soft;
+  }
+}

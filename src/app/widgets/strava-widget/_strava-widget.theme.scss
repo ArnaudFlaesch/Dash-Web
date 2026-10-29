@@ -1,0 +1,18 @@
+@use "mixins" as *;
+
+// Theme colors of the Strava widget
+dash-strava-widget {
+  @include themed {
+    .strava-summary-item {
+      border: 1px solid $color-border;
+      background-color: $color-background;
+    }
+
+    .strava-summary-label,
+    .strava-page-number,
+    .strava-empty,
+    .strava-login p {
+      color: $color-muted-text;
+    }
+  }
+}

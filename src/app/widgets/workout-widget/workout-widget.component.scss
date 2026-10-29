@@ -1,40 +1,120 @@
 @use "mixins" as *;
 
-// One column on small widgets, two columns otherwise
-%two-columns-grid {
-  @include grid-columns(1);
+// The theme colors are set in _workout-widget.theme.scss
+.workout-view {
+  padding-bottom: $space-sm;
+}
 
-  @media (width >= 300px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.workout-section-title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.workout-month-field {
+  width: 12rem;
 }
 
 #workout-sessions-grid {
-  @include grid-columns(2);
-
-  @media (width >= 400px) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  @media (width >= $breakpoint-sm) {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-xs;
 }
 
 .workout-session {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-xs;
+  padding: $space-xs 0.75rem $space-xs $space-sm;
+  border-radius: $border-radius-pill;
+  font: inherit;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 
-  :hover {
-    font-weight: bold;
+  mat-icon {
+    height: 1rem;
+    width: 1rem;
+    font-size: 1rem;
   }
 }
 
-#workout-types-grid,
-.stats-container {
-  @extend %two-columns-grid;
+.workout-empty-message {
+  font-size: 0.85rem;
 }
 
-#workout-stats-by-week-container,
-#workout-stats-by-month-container {
-  margin-top: $space-sm;
+// Date or exercise name field with its button on the same line
+.workout-inline-form {
+  mat-form-field {
+    flex: 1;
+    min-width: 0;
+  }
+
+  button {
+    flex: 0 0 auto;
+  }
+}
+
+// "This week" and "This month" side by side, stacked in narrow widgets
+.workout-stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: $space-sm;
+}
+
+.workout-stats-card {
+  padding: $space-sm 0.75rem;
+  border-radius: $border-radius-lg;
+
+  .workout-stats-header {
+    margin-bottom: $space-xs;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .workout-stat {
+    padding: 0.15rem 0;
+    font-size: 0.9rem;
+
+    &-reps {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
+
+#workout-types-grid {
+  flex-wrap: wrap;
+}
+
+.workout-type-name {
+  padding: 0.2rem 0.75rem;
+  border-radius: $border-radius-pill;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+// Periods of the statistics, displayed as a group of chips
+.workout-periods {
+  flex-wrap: wrap;
+}
+
+.workout-period {
+  padding: $space-xs 0.75rem;
+  border-radius: $border-radius-pill;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.workout-back-button {
+  align-self: flex-start;
 }

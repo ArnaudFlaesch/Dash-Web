@@ -22,6 +22,7 @@ import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
+import { MatTooltip } from "@angular/material/tooltip";
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { DEFAULT_DATE_FORMAT } from "../../utils/Constants";
 import { requiredText } from "../../utils/form-validators";
@@ -72,7 +73,8 @@ enum WORKOUT_STATISTICS {
     WorkoutStatisticsComponent,
     WorkoutSessionEditComponent,
     DateFormatPipe,
-    FormField
+    FormField,
+    MatTooltip
   ]
 })
 export class WorkoutWidgetComponent {

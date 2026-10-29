@@ -13,148 +13,170 @@
   </ng-template>
 
   <ng-template #body>
-    <div>
-      @switch (widgetView()) {
-        @case (widgetViewEnum.WORKOUT_SESSIONS_LIST_VIEW) {
-          <div>
-            <div>
-              <h2>Sessions</h2>
-              <button mat-raised-button (click)="goToStatisticsView()">Statistiques</button>
-              <mat-form-field appearance="fill">
-                <mat-label>Sélectionnez un mois</mat-label>
-                <input matInput [matDatepicker]="picker" [formField]="selectedMonthForm" />
-                <mat-datepicker-toggle matIconSuffix [for]="picker" />
-                <mat-datepicker
-                  #picker
-                  startView="multi-year"
-                  (monthSelected)="setMonthAndYear($event, picker)"
-                  [startAt]="selectedMonthInput()"
-                />
-              </mat-form-field>
-              <div id="workout-sessions-grid">
-                @for (workoutSession of workoutSessions(); track workoutSession.id) {
-                  <button
-                    class="workout-session"
-                    (keydown)="editWorkoutSession(workoutSession)"
-                    (click)="editWorkoutSession(workoutSession)"
-                  >
-                    {{ workoutSession.workoutDate | dateFormat: "short" }}
-                  </button>
-                }
-              </div>
-              <h4>Créer une session</h4>
-              <mat-form-field id="workout-date-picker-field" appearance="fill">
-                <mat-label>Sélectionnez la date</mat-label>
+    @switch (widgetView()) {
+      @case (widgetViewEnum.WORKOUT_SESSIONS_LIST_VIEW) {
+        <div class="workout-view column gap-md">
+          <section class="workout-section column gap-sm">
+            <div class="row items-center justify-between">
+              <h3 class="workout-section-title">Sessions</h3>
+              <button mat-stroked-button (click)="goToStatisticsView()">
+                <mat-icon>insights</mat-icon>
+                Statistiques
+              </button>
+            </div>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="workout-month-field">
+              <mat-label>Mois</mat-label>
+              <input matInput [matDatepicker]="picker" [formField]="selectedMonthForm" />
+              <mat-datepicker-toggle matIconSuffix [for]="picker" />
+              <mat-datepicker
+                #picker
+                startView="multi-year"
+                (monthSelected)="setMonthAndYear($event, picker)"
+                [startAt]="selectedMonthInput()"
+              />
+            </mat-form-field>
+
+            <div id="workout-sessions-grid">
+              @for (workoutSession of workoutSessions(); track workoutSession.id) {
+                <button class="workout-session" (click)="editWorkoutSession(workoutSession)">
+                  <mat-icon>event</mat-icon>
+                  {{ workoutSession.workoutDate | dateFormat: "short" }}
+                </button>
+              } @empty {
+                <span class="workout-empty-message">Aucune session ce mois-ci.</span>
+              }
+            </div>
+
+            <div class="workout-inline-form row items-center gap-sm">
+              <mat-form-field id="workout-date-picker-field" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Nouvelle session</mat-label>
                 <input [formField]="workoutDateForm" matInput [matDatepicker]="workoutDatePicker" />
                 <mat-hint>{{ dateFormat }}</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="workoutDatePicker" />
                 <mat-datepicker #workoutDatePicker />
               </mat-form-field>
               <button
-                mat-raised-button
+                mat-flat-button
                 id="create-workout-session-button"
                 [disabled]="workoutDateForm().invalid()"
                 (click)="createWorkoutSession()"
-                color="primary"
               >
+                <mat-icon>add</mat-icon>
                 Créer
               </button>
             </div>
-            @if (workoutStatsByWeek().length) {
-              <div id="workout-stats-by-week-container">
-                <div class="workout-stats-header bold">Cette semaine :</div>
-                <div class="stats-container">
+          </section>
+
+          @if (workoutStatsByWeek().length || workoutStatsByMonth().length) {
+            <section class="workout-stats-cards">
+              @if (workoutStatsByWeek().length) {
+                <div id="workout-stats-by-week-container" class="workout-stats-card">
+                  <div class="workout-stats-header">Cette semaine</div>
                   @for (workoutStat of workoutStatsByWeek(); track workoutStat.workoutTypeName) {
-                    <div>{{ workoutStat.workoutTypeName }} : {{ workoutStat.totalNumberOfReps }}</div>
+                    <div class="workout-stat row justify-between">
+                      <span>{{ workoutStat.workoutTypeName }}</span>
+                      <span class="workout-stat-reps">{{ workoutStat.totalNumberOfReps }}</span>
+                    </div>
                   }
                 </div>
-              </div>
-            }
-            @if (workoutStatsByMonth().length) {
-              <div id="workout-stats-by-month-container">
-                <div class="workout-stats-header bold">Ce mois-ci</div>
-                <div class="stats-container">
+              }
+              @if (workoutStatsByMonth().length) {
+                <div id="workout-stats-by-month-container" class="workout-stats-card">
+                  <div class="workout-stats-header">Ce mois-ci</div>
                   @for (workoutStat of workoutStatsByMonth(); track workoutStat.workoutTypeName) {
-                    <div>{{ workoutStat.workoutTypeName }} :{{ workoutStat.totalNumberOfReps }}</div>
+                    <div class="workout-stat row justify-between">
+                      <span>{{ workoutStat.workoutTypeName }}</span>
+                      <span class="workout-stat-reps">{{ workoutStat.totalNumberOfReps }}</span>
+                    </div>
                   }
                 </div>
-              </div>
-            }
-            <h2>Types d'exercices</h2>
-            <div id="workout-types-grid">
+              }
+            </section>
+          }
+
+          <section class="workout-section column gap-sm">
+            <h3 class="workout-section-title">Types d'exercices</h3>
+            <div id="workout-types-grid" class="row gap-xs">
               @for (workoutType of workoutTypes(); track workoutType.id) {
-                <span class="workout-type-name"> {{ workoutType.name }}</span>
+                <span class="workout-type-name">{{ workoutType.name }}</span>
+              } @empty {
+                <span class="workout-empty-message">Aucun type d'exercice.</span>
               }
             </div>
-            <div>
-              <h4><label for="add-workout-input">Ajouter un type d'exercice</label></h4>
-              <input id="add-workout-input" [formField]="workoutNameForm" placeholder="Nouveau type d'exercice" />
+            <div class="workout-inline-form row items-center gap-sm">
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Ajouter un type d'exercice</mat-label>
+                <input matInput id="add-workout-input" [formField]="workoutNameForm" placeholder="Pompes, tractions…" />
+              </mat-form-field>
+              <button
+                mat-flat-button
+                id="add-workout-type-button"
+                [disabled]="workoutNameForm().invalid()"
+                (click)="addWorkoutType()"
+              >
+                <mat-icon>add</mat-icon>
+                Ajouter
+              </button>
             </div>
-            <button
-              mat-raised-button
-              id="add-workout-type-button"
-              [disabled]="workoutNameForm().invalid()"
-              (click)="addWorkoutType()"
-              color="primary"
-            >
-              Valider
-            </button>
-          </div>
-        }
-        @case (widgetViewEnum.WORKOUT_STATISTICS_VIEW) {
-          <div>
-            <button mat-icon-button (click)="backToWorkoutSessionsList()">
+          </section>
+        </div>
+      }
+      @case (widgetViewEnum.WORKOUT_STATISTICS_VIEW) {
+        <div class="workout-view column gap-sm">
+          <div class="row items-center gap-xs">
+            <button mat-icon-button matTooltip="Retour aux sessions" (click)="backToWorkoutSessionsList()">
               <mat-icon>arrow_back</mat-icon>
             </button>
-            <div>
-              <button
-                mat-raised-button
-                [color]="isLastYearWorkoutStatisticsSelected() ? 'primary' : ''"
-                (click)="getWorkoutsStatsOfPastYear()"
-              >
-                Année dernière
-              </button>
-              <button
-                mat-raised-button
-                [color]="isCurrentYearWorkoutStatisticsSelected() ? 'primary' : ''"
-                (click)="getWorkoutsStatsOfCurrentYear()"
-              >
-                Cette année
-              </button>
-            </div>
-            <div>
-              <button
-                mat-raised-button
-                [color]="isLastSixMonthsWorkoutStatisticsSelected() ? 'primary' : ''"
-                (click)="getWorkoutsStatsOfLastSixMonths()"
-              >
-                6 derniers mois
-              </button>
-              <button
-                mat-raised-button
-                [color]="isLastThreeMonthsWorkoutStatisticsSelected() ? 'primary' : ''"
-                (click)="getWorkoutsStatsOfLastThreeMonths()"
-              >
-                3 derniers mois
-              </button>
-            </div>
-            <dash-workout-statistics [workoutTypes]="workoutTypes()" [workoutStatsByMonth]="workoutStatsOfMonths()" />
+            <h3 class="workout-section-title">Statistiques</h3>
+          </div>
+          <div class="workout-periods row gap-xs">
+            <button
+              class="workout-period"
+              [class.selected-period]="isLastThreeMonthsWorkoutStatisticsSelected()"
+              (click)="getWorkoutsStatsOfLastThreeMonths()"
+            >
+              3 derniers mois
+            </button>
+            <button
+              class="workout-period"
+              [class.selected-period]="isLastSixMonthsWorkoutStatisticsSelected()"
+              (click)="getWorkoutsStatsOfLastSixMonths()"
+            >
+              6 derniers mois
+            </button>
+            <button
+              class="workout-period"
+              [class.selected-period]="isCurrentYearWorkoutStatisticsSelected()"
+              (click)="getWorkoutsStatsOfCurrentYear()"
+            >
+              Cette année
+            </button>
+            <button
+              class="workout-period"
+              [class.selected-period]="isLastYearWorkoutStatisticsSelected()"
+              (click)="getWorkoutsStatsOfPastYear()"
+            >
+              Année dernière
+            </button>
+          </div>
+          <dash-workout-statistics [workoutTypes]="workoutTypes()" [workoutStatsByMonth]="workoutStatsOfMonths()" />
+        </div>
+      }
+      @case (widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW) {
+        @if (currentWorkoutSessionToEdit(); as currentWorkoutSessionToEdit) {
+          <div class="workout-view column gap-sm">
+            <button mat-button class="workout-back-button" (click)="backToWorkoutSessionsList()">
+              <mat-icon>arrow_back</mat-icon>
+              Sessions
+            </button>
+            <dash-workout-session-edit
+              [workoutTypes]="workoutTypes()"
+              [currentWorkoutSessionToEdit]="currentWorkoutSessionToEdit"
+            />
           </div>
         }
-        @case (widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW) {
-          @if (currentWorkoutSessionToEdit(); as currentWorkoutSessionToEdit) {
-            <div>
-              <button mat-icon-button (click)="backToWorkoutSessionsList()">
-                <mat-icon>arrow_back</mat-icon>
-              </button>
-              <dash-workout-session-edit
-                [workoutTypes]="workoutTypes()"
-                [currentWorkoutSessionToEdit]="currentWorkoutSessionToEdit"
-              />
-            </div>
-          }
-        }
       }
-    </div>
+    }
   </ng-template>
 </dash-widget>

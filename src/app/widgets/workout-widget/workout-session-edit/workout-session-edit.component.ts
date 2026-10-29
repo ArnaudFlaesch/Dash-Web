@@ -4,6 +4,7 @@ import { rxResource } from "@angular/core/rxjs-interop";
 import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatTooltip } from "@angular/material/tooltip";
 import { catchError, of } from "rxjs";
 import { DateFormatPipe } from "../../../pipes/date-format.pipe";
 import { ErrorHandlerService } from "../../../services/error.handler.service";
@@ -14,7 +15,7 @@ import { WorkoutWidgetService } from "../workout.widget.service";
   selector: "dash-workout-session-edit",
   templateUrl: "./workout-session-edit.component.html",
   styleUrl: "./workout-session-edit.component.scss",
-  imports: [MatIconButton, MatIcon, MatProgressSpinner, DateFormatPipe]
+  imports: [MatIconButton, MatIcon, MatProgressSpinner, MatTooltip, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
   public readonly workoutTypes = input.required<IWorkoutType[]>();
