@@ -1,39 +1,63 @@
 @use "mixins" as *;
 
+// Horizontally scrollable list of forecast cards
 .forecast-row {
+  gap: $space-sm;
   overflow-x: auto;
-  padding: $space-sm;
-  border-radius: $border-radius;
-  background-color: #4693af;
+  padding-bottom: $space-xs;
+  scroll-snap-type: x proximity;
 }
 
 .forecast-container {
   display: grid;
-  flex: 0 0 25%;
+  flex: 0 0 calc(25% - #{$space-sm});
+  min-width: 5.5rem;
   align-items: center;
+  padding: $space-sm;
+  border: 1px solid var(--dash-border-color);
+  border-radius: $border-radius-lg;
+  background-color: var(--dash-background-color);
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+.forecast {
+  align-items: center;
+  justify-content: space-between;
 }
 
 .forecast-time {
   margin: auto 0;
+  white-space: nowrap;
+  font-weight: 500;
 }
 
 .current-weather-icon {
-  max-height: 3.5rem;
+  max-height: 3rem;
   max-width: 3rem;
 }
 
+.forecast-icons {
+  gap: 0.15rem;
+  white-space: nowrap;
+  font-size: 0.9em;
+}
+
 .weather-widget-icon {
+  height: 1.1rem;
+  width: 1.1rem;
+  font-size: 1.1rem;
   vertical-align: middle;
 }
 
 .temp-min {
-  color: blue;
+  color: #3b82f6;
 }
 
 .temp-max {
-  color: crimson;
+  color: #ef4444;
 }
 
 .humidity {
-  color: lightblue;
+  color: #38bdf8;
 }

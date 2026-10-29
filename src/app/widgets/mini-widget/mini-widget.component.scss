@@ -1,11 +1,27 @@
 @use "mixins" as *;
 
 .mini-widget {
-  border-radius: $border-radius;
+  border-radius: $border-radius-lg;
   background-color: var(--widget-background-color);
 }
 
 .read-mini-widget-body-container {
-  padding: 0.15em;
+  padding: $space-xs;
   overflow-y: auto;
+  cursor: default;
+}
+
+// Room is kept above the field for its floating label
+.edit-mini-widget {
+  align-items: center;
+  gap: $space-xs;
+  padding: $space-sm $space-xs $space-xs $space-sm;
+}
+
+.delete-mini-widget {
+  padding: $space-sm $space-md;
+
+  h4 {
+    margin: 0 0 $space-sm;
+  }
 }

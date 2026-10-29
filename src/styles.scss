@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@use "mixins" as *;
 @use "layout";
 @use "widget";
 @include mat.core;
@@ -15,7 +16,7 @@ $dark-theme: mat.define-theme(
   (
     color: (
       theme-type: dark,
-      primary: mat.$red-palette
+      primary: mat.$azure-palette
     )
   )
 );
@@ -27,38 +28,88 @@ body {
 
 // Colors used by the dashboard and the widgets, overridden in dark mode
 body {
-  --dash-background-color: #4e4945;
-  --widget-header-color: #000;
-  --widget-header-text-color: #fff;
-  --widget-background-color: #fff;
+  --dash-background-color: #eef1f6;
+  --dash-surface-color: #fff;
+  --dash-text-color: #1f2937;
+  --dash-muted-text-color: #6b7280;
+  --dash-border-color: #e2e6ee;
+  --dash-accent-color: #2563eb;
+  --dash-accent-soft-color: #dbe7ff;
+  --dash-shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 4px 16px rgb(15 23 42 / 6%);
+  --dash-shadow-hover:
+    0 2px 4px rgb(15 23 42 / 8%), 0 10px 28px rgb(15 23 42 / 12%);
+  --widget-header-color: #f7f9fc;
+  --widget-header-text-color: var(--dash-text-color);
+  --widget-background-color: var(--dash-surface-color);
 
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--dash-text-color);
   background-color: var(--dash-background-color);
+  transition: background-color 0.2s ease;
 
-  @include mat.core-theme($light-theme);
-  @include mat.button-color($light-theme);
+  // All the components use the Material 3 theme (overriding the prebuilt one),
+  // and keep supporting the color="primary|accent|warn" inputs
+  @include mat.all-component-themes($light-theme);
+  @include mat.color-variants-backwards-compatibility($light-theme);
 
   &.dark-mode {
-    --dash-background-color: #282a33;
-    --widget-header-color: #2b5182;
-    --widget-header-text-color: #000;
-    --widget-background-color: hsl(208.4deg 17.6% 42.4%);
+    --dash-background-color: #12141a;
+    --dash-surface-color: #1c1f27;
+    --dash-text-color: #e5e7eb;
+    --dash-muted-text-color: #9ca3af;
+    --dash-border-color: #2c313c;
+    --dash-accent-color: #60a5fa;
+    --dash-accent-soft-color: #1e3a5f;
+    --dash-shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 16px rgb(0 0 0 / 25%);
+    --dash-shadow-hover:
+      0 2px 4px rgb(0 0 0 / 35%), 0 10px 28px rgb(0 0 0 / 40%);
+    --widget-header-color: #222631;
 
-    @include mat.all-component-themes($dark-theme);
+    @include mat.all-component-colors($dark-theme);
+    @include mat.color-variants-backwards-compatibility($dark-theme);
 
     .widget :is(mat-expansion-panel, .cal-cell-row) {
       background-color: var(--widget-background-color) !important;
     }
+
+    // The logo is dark, so it is lightened to stay visible
+    #brand-logo,
+    #dash-logo {
+      filter: invert(1) brightness(1.4);
+    }
   }
+}
+
+// Dialogs never overflow small screens
+.cdk-overlay-pane.mat-mdc-dialog-panel {
+  max-width: calc(100vw - #{$space-md * 2}) !important;
+  max-height: calc(100dvh - #{$space-md * 2});
 }
 
 mat-expansion-panel-header:hover,
 a.hoverable-link:hover {
-  font-weight: bold;
+  color: var(--dash-accent-color);
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+// Thin, discreet scrollbars for the scrollable areas of the dashboard
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--dash-border-color) transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--dash-accent-color);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }

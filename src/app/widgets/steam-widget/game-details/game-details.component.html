@@ -1,27 +1,40 @@
-<mat-expansion-panel [title]="gameInfo().name" (opened)="loadAchievementsData()" hideToggle>
+<mat-expansion-panel class="game-panel" [title]="gameInfo().name" (opened)="loadAchievementsData()">
   <mat-expansion-panel-header>
     <mat-panel-title>
-      <div class="game-info row items-center">
+      <div class="game-info row items-center gap-sm">
         <img [src]="gameInfo().gameImgSrc" alt="game icon" />
         <p>{{ gameInfo().name }}</p>
       </div>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>
-    <div class="game-data-container row justify-between">
+    <div class="game-data-container column gap-sm">
       @if (achievements().length) {
-        <div class="game-achievements-data-container column">
+        <a href="{{ gameInfo().playerAchievementUrl }}" class="achievements-progress row items-center gap-sm">
+          <mat-progress-bar mode="determinate" [value]="completionStatus()" />
+          <span class="progress-value">{{ completionStatus() }}%</span>
+        </a>
+
+        <div class="row items-center justify-between gap-sm">
           <a href="{{ gameInfo().playerAchievementUrl }}" class="game-achievements-data column">
             <div class="totalachievements">Succès : {{ achievements().length }}</div>
             <div class="completedAchievements">Succès complétés : {{ completedAchievements().length }}</div>
           </a>
-          <a href="{{ gameInfo().appIdLink }}" class="hoverable-link"> Community hub </a>
+          <a mat-stroked-button href="{{ gameInfo().appIdLink }}" class="community-hub-link">
+            <mat-icon>forum</mat-icon>
+            Community hub
+          </a>
         </div>
-
-        <a href="{{ gameInfo().playerAchievementUrl }}" class="spinner-container">
-          <div class="progress-value centered">{{ completionStatus() }}%</div>
-          <mat-progress-spinner color="primary" mode="determinate" [value]="completionStatus()" />
-        </a>
+      } @else if (achievementsResource.isLoading()) {
+        <div class="centered">
+          <mat-progress-spinner mode="indeterminate" diameter="28" />
+        </div>
+      } @else {
+        <div class="no-achievements row items-center gap-sm">
+          <mat-icon>emoji_events</mat-icon>
+          <span>Aucun succès pour ce jeu.</span>
+          <a href="{{ gameInfo().appIdLink }}" class="hoverable-link">Community hub</a>
+        </div>
       }
     </div>
   </ng-template>

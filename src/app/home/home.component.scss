@@ -1,40 +1,176 @@
 @use "mixins" as *;
 
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+#home-header-container {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: $space-sm;
+  padding: $space-sm $space-md;
+  border-bottom: 1px solid var(--dash-border-color);
+  background-color: color-mix(
+    in srgb,
+    var(--dash-surface-color) 85%,
+    transparent
+  );
+  backdrop-filter: blur(12px);
+
+  @media (width <= $breakpoint-sm) {
+    padding: $space-xs $space-sm $space-sm;
+  }
+}
+
+// On small screens, the tabs go on their own line below the logo and the actions
 #home-header-top-bar {
-  margin: $space-xs $space-sm 0;
+  flex-wrap: wrap;
+
+  @media (width <= $breakpoint-md) {
+    #tab-list-container {
+      flex-basis: 100%;
+      order: 3;
+    }
+  }
+}
+
+#brand {
+  flex: 0 0 auto;
+  margin-right: $space-sm;
+}
+
+#brand-logo {
+  height: 2rem;
+  width: 2rem;
+  object-fit: contain;
+}
+
+#brand-name {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 #tab-list-container {
-  flex: 1 1 70%;
-  overflow: hidden;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 #tab-list {
+  min-width: 0;
+  padding: 2px;
   overflow-x: auto;
+  scrollbar-width: none;
 
   .tab {
+    flex: 0 0 auto;
     cursor: pointer;
-    padding: $space-sm;
-    border: 2px solid #1f2937;
-    border-radius: $border-radius;
-    background-color: #9ca3af;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid transparent;
+    border-radius: $border-radius-pill;
+    color: var(--dash-muted-text-color);
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
 
     &:hover {
-      background-color: #bfdbfe;
+      background-color: var(--dash-background-color);
+      color: var(--dash-text-color);
     }
 
     &.selected-item {
-      background-color: blue;
+      background-color: var(--dash-accent-soft-color);
+      color: var(--dash-accent-color);
+    }
+
+    &.draggable {
+      cursor: grab;
+      border-style: dashed;
+      border-color: var(--dash-border-color);
     }
   }
 }
 
 #action-bar-buttons {
+  flex: 0 0 auto;
+  margin-left: auto;
+
+  .add-widget-button {
+    margin-right: $space-xs;
+  }
+
+  .active-action {
+    background-color: var(--dash-accent-soft-color);
+    color: var(--dash-accent-color);
+  }
+
+  // Only the icon of the "add widget" button is kept on phones
   @media (width <= $breakpoint-sm) {
-    @include grid-columns(3);
+    gap: 0;
+
+    .add-widget-button {
+      min-width: 0;
+      padding: 0 $space-sm;
+
+      .button-label {
+        display: none;
+      }
+
+      mat-icon {
+        margin: 0;
+      }
+    }
   }
 }
 
-#mini-widgets-container {
-  margin: $space-xs;
+#dashboard-content {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: $space-md;
+
+  @media (width <= $breakpoint-sm) {
+    padding: $space-sm;
+  }
+}
+
+#edit-mode-banner {
+  margin-bottom: $space-md;
+  padding: $space-xs $space-xs $space-xs $space-md;
+  border: 1px dashed var(--dash-accent-color);
+  border-radius: $border-radius-lg;
+  background-color: var(--dash-accent-soft-color);
+  color: var(--dash-accent-color);
+}
+
+.empty-state {
+  @include surface;
+
+  max-width: 28rem;
+  margin: 3rem auto;
+  padding: $space-lg;
+  text-align: center;
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  p {
+    color: var(--dash-muted-text-color);
+  }
+}
+
+.empty-state-icon {
+  height: 3rem;
+  width: 3rem;
+  font-size: 3rem;
+  color: var(--dash-accent-color);
+}
+
+.loading-spinner {
+  min-height: 50vh;
 }

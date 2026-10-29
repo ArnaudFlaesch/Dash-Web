@@ -5,7 +5,7 @@
   (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #editComponent>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Ville</mat-label>
       <input id="cityNameInput" matInput [formField]="configForm.city" placeholder="Saisissez de nom de la ville" />
     </mat-form-field>
@@ -21,10 +21,10 @@
           [alt]="weather.weather[0].description"
         />
         <div class="weather-data-container column justify-center">
-          <div>{{ config().city }}</div>
+          <div class="city-name">{{ config().city }}</div>
           <div class="temperature-container row">
             <mat-icon matTooltip="Température actuelle">device_thermostat</mat-icon>
-            <div>{{ weather.main.temp }}°</div>
+            <div>{{ weather.main.temp | number: "1.0-1" }} °C</div>
           </div>
         </div>
       </div>

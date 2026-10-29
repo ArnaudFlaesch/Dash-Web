@@ -1,12 +1,27 @@
 @use "mixins" as *;
 
 #miniwidget-list {
-  max-width: 95%;
+  min-width: 0;
+  padding: 2px;
   overflow-x: auto;
+  scroll-snap-type: x proximity;
 }
 
 .miniwidget-container {
-  border: 1px solid black;
-  border-radius: $border-radius;
-  background-color: white;
+  flex: 0 0 auto;
+  border: 1px solid var(--dash-border-color);
+  border-radius: $border-radius-lg;
+  background-color: var(--dash-surface-color);
+  scroll-snap-align: start;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--dash-shadow);
+  }
+}
+
+#add-mini-widget-button {
+  flex: 0 0 auto;
+  border: 1px dashed var(--dash-border-color);
+  color: var(--dash-muted-text-color);
 }

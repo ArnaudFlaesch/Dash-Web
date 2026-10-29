@@ -1,3 +1,26 @@
-#reset-form-button {
-  justify-content: right;
+@use "mixins" as *;
+
+#search-game-form {
+  margin-bottom: $space-sm;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.no-game-found {
+  padding: $space-lg 0;
+  color: var(--dash-muted-text-color);
+
+  mat-icon {
+    height: 2rem;
+    width: 2rem;
+    font-size: 2rem;
+  }
+}
+
+.games-paginator {
+  margin-top: auto;
+  background-color: transparent;
+  color: var(--dash-muted-text-color);
 }

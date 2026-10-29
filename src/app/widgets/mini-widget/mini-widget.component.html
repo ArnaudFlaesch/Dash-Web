@@ -26,9 +26,10 @@
   }
 
   @if (isModeDelete()) {
-    <div>
+    <div class="delete-mini-widget">
       <h4>Êtes-vous sûr de vouloir supprimer ce widget ?</h4>
-      <div id="delete-mini-widget-actions">
+      <div id="delete-mini-widget-actions" class="row gap-sm">
+        <button (click)="toReadMode()" mat-button class="cancelButton">Annuler</button>
         <button (click)="deleteMiniWidget()" mat-raised-button color="warn" class="validateDeletionButton">
           Supprimer
         </button>
@@ -37,13 +38,13 @@
   }
 
   @if (isModeRead()) {
-    <div (dblclick)="toEditMode()">
+    <div (dblclick)="toEditMode()" matTooltip="Double-cliquez pour modifier" [matTooltipShowDelay]="800">
       <div class="read-mini-widget-body-container">
         @if (isWidgetLoaded()) {
           <ng-container *ngTemplateOutlet="body()" />
         } @else {
           <div class="loading-spinner">
-            <mat-spinner />
+            <mat-spinner diameter="32" />
           </div>
         }
       </div>

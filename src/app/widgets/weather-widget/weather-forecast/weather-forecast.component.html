@@ -19,11 +19,11 @@
       <div class="forecast-icons column">
         <div>
           <mat-icon matTooltip="Température maximum" class="weather-widget-icon temp-max">device_thermostat</mat-icon>
-          {{ forecastDay.main.tempMax }}°
+          {{ forecastDay.main.tempMax | number: "1.0-0" }} °C
         </div>
         <div>
           <mat-icon matTooltip="Température minimum" class="weather-widget-icon temp-min">device_thermostat</mat-icon>
-          {{ forecastDay.main.tempMin }}°
+          {{ forecastDay.main.tempMin | number: "1.0-0" }} °C
         </div>
         <div>
           <mat-icon matTooltip="Humidité" class="weather-widget-icon humidity">opacity</mat-icon>

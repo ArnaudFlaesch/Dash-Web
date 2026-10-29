@@ -13,15 +13,32 @@ import { IWidgetConfig } from "../../model/IWidgetConfig";
 import { ErrorHandlerService } from "../../services/error.handler.service";
 import { WidgetService } from "../../services/widget.service/widget.service";
 import { injectWidgetData, WIDGET_ID } from "../widget.tokens";
-import { IRSSHeader } from "./IArticle";
+import { IArticle, IRSSHeader } from "./IArticle";
 import { RssFeedComponent } from "./rss-feed/rss-feed.component";
 import { RssWidgetService } from "./rss.widget.service";
 import { catchError, map, of } from "rxjs";
 import { WidgetComponent } from "../widget/widget.component";
 
+/**
+ * Some feeds give the guid as an object (e.g. { isPermaLink: "true", "": "https://..." }),
+ * so it is converted to a string to be compared with the read articles.
+ */
+function guidToString(guid: unknown): string {
+  if (guid && typeof guid === "object") {
+    return String((guid as Record<string, unknown>)[""] ?? JSON.stringify(guid));
+  }
+  return String(guid ?? "");
+}
+
+/** Read articles guids as strings, without duplicates. */
+function toReadArticlesGuids(guids: unknown[]): string[] {
+  return [...new Set(guids.map(guidToString))];
+}
+
 @Component({
   selector: "dash-rss-widget",
   templateUrl: "./rss-widget.component.html",
+  styleUrl: "./rss-widget.component.scss",
   imports: [
     WidgetComponent,
     MatFormField,
@@ -45,6 +62,17 @@ export class RssWidgetComponent {
     stream: ({ params: { url } }) =>
       this.rssWidgetService.fetchDataFromRssFeed(url).pipe(
         map((apiResult) => (apiResult as { channel?: IRSSHeader } | null)?.channel),
+        map((channel) =>
+          channel
+            ? {
+                ...channel,
+                item: (channel.item ?? []).map((article): IArticle => ({
+                  ...article,
+                  guid: guidToString(article.guid)
+                }))
+              }
+            : undefined
+        ),
         catchError((error: HttpErrorResponse) => {
           this.errorHandlerService.handleError(error, this.ERROR_GETTING_RSS_FEED);
           return of(undefined);
@@ -57,7 +85,10 @@ export class RssWidgetComponent {
   public readonly isWidgetLoaded = computed(() =>
     ["resolved", "local"].includes(this.rssFeedResource.status())
   );
-  public readonly readArticles = signal(injectWidgetData<string[]>("readArticlesGuids", []));
+  public readonly isLogoBroken = signal(false);
+  public readonly readArticles = signal(
+    toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
+  );
 
   public readonly isFormValid = computed(() => this.configForm().valid());
 
@@ -79,7 +110,7 @@ export class RssWidgetComponent {
   }
 
   public markArticleAsRead(guid: string): void {
-    this.updateRssFeed([guid, ...this.readArticles()]);
+    this.updateRssFeed(toReadArticlesGuids([guid, ...this.readArticles()]));
   }
 
   public markAllFeedAsRead(): void {
@@ -91,6 +122,9 @@ export class RssWidgetComponent {
   }
 
   private updateRssFeed(readArticlesGuids: string[]): void {
+    // Displayed as read right away, restored if the update fails
+    const previousReadArticles = this.readArticles();
+    this.readArticles.set(readArticlesGuids);
     this.widgetService
       .updateWidgetData(this.widgetId, {
         url: this.config().url,
@@ -98,9 +132,13 @@ export class RssWidgetComponent {
       })
       .subscribe({
         next: (response: IWidgetConfig) =>
-          this.readArticles.set((response.data?.["readArticlesGuids"] as string[]) ?? []),
-        error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ)
+          this.readArticles.set(
+            toReadArticlesGuids((response.data?.["readArticlesGuids"] as unknown[]) ?? [])
+          ),
+        error: (error: HttpErrorResponse) => {
+          this.readArticles.set(previousReadArticles);
+          this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ);
+        }
       });
   }
 }

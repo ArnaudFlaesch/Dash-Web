@@ -5,7 +5,11 @@
   (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
-    <img class="rss-widget-header" src="{{ rssFeedResult()?.image?.url }}" alt="logo" />
+    @if (rssFeedResult()?.image?.url && !isLogoBroken()) {
+      <img class="rss-widget-header" [src]="rssFeedResult()?.image?.url" alt="logo" (error)="isLogoBroken.set(true)" />
+    } @else {
+      <mat-icon>rss_feed</mat-icon>
+    }
   </ng-template>
 
   <ng-template #headerTitle>
@@ -14,12 +18,14 @@
         <a [href]="rssFeedResult.image.link | safe: 'url'">
           <div class="rss-title">{{ rssFeedResult.title }}</div>
         </a>
+      } @else {
+        <div class="rss-title">{{ rssFeedResult.title }}</div>
       }
     }
   </ng-template>
 
   <ng-template #editComponent>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline">
       <mat-label>URL</mat-label>
       <input matInput id="rssFeedUrl" [formField]="configForm.url" placeholder="Saisissez l'URL du flux RSS" />
     </mat-form-field>
@@ -39,7 +45,7 @@
   <ng-template #body>
     @if (config().url) {
       <div class="rss-widget-body column gap-md">
-        <div class="rss-widget-description bold">{{ rssFeedResult()?.description }}</div>
+        <div class="rss-widget-description">{{ rssFeedResult()?.description }}</div>
         <dash-rss-feed
           [feed]="rssFeedResult()?.item ?? []"
           [readArticles]="readArticles()"

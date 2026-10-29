@@ -1,9 +1,8 @@
 @use "mixins" as *;
 
+// Three widgets per row on desktop, two on tablets and one on phones
 #widget-list {
-  @include grid-columns(3, 0.7em);
-
-  padding: 0.5em;
+  @include grid-columns(3, $space-md);
 
   @media (width < $breakpoint-lg) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -11,5 +10,27 @@
 
   @media (width < $breakpoint-md) {
     grid-template-columns: minmax(0, 1fr);
+    gap: $space-sm;
   }
+
+  &.edit-mode .widget-container {
+    cursor: grab;
+    border-radius: $border-radius-lg;
+    outline: 2px dashed var(--dash-accent-color);
+    outline-offset: 3px;
+  }
+}
+
+.widget-container.cdk-drag-preview {
+  box-shadow: var(--dash-shadow-hover);
+}
+
+.widget-container.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating,
+#widget-list.cdk-drop-list-dragging
+  .widget-container:not(.cdk-drag-placeholder) {
+  transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
 }

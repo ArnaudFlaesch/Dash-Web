@@ -1,7 +1,16 @@
 @use "mixins" as *;
 
+// Navigation and view switch buttons, kept compact so that they fit on one line when possible
 #calendar-actions-container {
+  flex-wrap: wrap;
+  gap: $space-sm;
   margin: $space-xs;
+
+  button {
+    min-width: 0;
+    padding: 0 0.75rem;
+    white-space: nowrap;
+  }
 }
 
 #calendar-view-switch-container {
@@ -12,6 +21,14 @@
   margin-left: $space-sm;
 
   h3 {
-    font-weight: 900;
+    font-weight: 500;
   }
+}
+
+#calendar-urls-list-container {
+  width: 100%;
+}
+
+.add-calendar-url-button {
+  align-self: flex-start;
 }

@@ -1,31 +1,78 @@
 @use "mixins" as *;
 
+#login-page {
+  min-height: 100dvh;
+  padding: $space-md;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 15% 20%, rgb(37 99 235 / 18%), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgb(14 165 233 / 18%), transparent 45%),
+    var(--dash-background-color);
+}
+
 #login-container {
-  margin: auto;
-  padding: 1.5rem 4rem;
-  border-radius: $border-radius;
-  background-color: #fff;
+  @include surface;
+
+  width: 100%;
+  max-width: 24rem;
+  padding: $space-lg;
+  box-sizing: border-box;
+  box-shadow: var(--dash-shadow-hover);
+
+  @media (width <= $breakpoint-sm) {
+    padding: $space-lg $space-md;
+  }
 }
 
 #logo-container {
   display: inline-block;
-  margin: $space-md;
 }
 
 #dash-logo {
   display: flex;
+  height: 4rem;
   margin: 0 auto;
 }
 
 #login-page-title {
+  margin: $space-sm 0 0;
   font-size: 2rem;
-  line-height: 1;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+#login-page-subtitle {
+  margin: $space-xs 0 0;
+  color: var(--dash-muted-text-color);
 }
 
 #login-form {
-  margin-top: 2.5rem;
+  width: 100%;
+  margin-top: $space-lg;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    height: 2.75rem;
+  }
 }
 
 #login-button-label mat-spinner {
-  margin-right: 1.25rem;
+  margin-right: $space-sm;
+}
+
+// "ou" between two horizontal lines
+#login-separator {
+  margin: $space-md 0;
+  color: var(--dash-muted-text-color);
+  font-size: 0.85rem;
+
+  &::before,
+  &::after {
+    flex: 1;
+    border-top: 1px solid var(--dash-border-color);
+    content: "";
+  }
 }

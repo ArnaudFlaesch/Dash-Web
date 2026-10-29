@@ -15,7 +15,8 @@ import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatIconButton } from "@angular/material/button";
 import { MatInput } from "@angular/material/input";
-import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatAccordion } from "@angular/material/expansion";
+import { MatFormField, MatLabel, MatPrefix, MatSuffix } from "@angular/material/form-field";
 import { WidgetComponent } from "../widget/widget.component";
 import { injectWidgetData } from "../widget.tokens";
 
@@ -27,12 +28,15 @@ import { injectWidgetData } from "../widget.tokens";
     WidgetComponent,
     MatFormField,
     MatLabel,
+    MatPrefix,
+    MatSuffix,
     MatInput,
     FormField,
     MatIconButton,
     MatTooltip,
     MatIcon,
     GameDetailsComponent,
+    MatAccordion,
     MatPaginator
   ]
 })

@@ -23,7 +23,7 @@ import { ICalendarData } from "./ICalendarData";
 import { fr } from "date-fns/locale";
 import { InitialUppercasePipe } from "../../pipes/initial.uppercase.pipe";
 import { MatTooltip } from "@angular/material/tooltip";
-import { MatButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { form, FormField, minLength } from "@angular/forms/signals";
 import { WidgetComponent } from "../widget/widget.component";
@@ -38,6 +38,7 @@ import { injectWidgetData } from "../widget.tokens";
     FormField,
     MatIcon,
     MatButton,
+    MatIconButton,
     MatTooltip,
     InitialUppercasePipe,
     CalendarDayViewComponent,

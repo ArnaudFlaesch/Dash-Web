@@ -2,7 +2,7 @@
 
 $breakpoint-sm: 640px;
 $breakpoint-md: 768px;
-$breakpoint-lg: 1280px;
+$breakpoint-lg: 1024px;
 $border-radius: 0.25rem;
 
 // Spacing scale
@@ -21,4 +21,15 @@ $space-lg: 2rem;
   display: grid;
   grid-template-columns: repeat($count, minmax(0, 1fr));
   gap: $gap;
+}
+
+$border-radius-lg: 0.75rem;
+$border-radius-pill: 999px;
+
+// Raised surface (card) using the theme colors
+@mixin surface {
+  border: 1px solid var(--dash-border-color);
+  border-radius: $border-radius-lg;
+  background-color: var(--dash-surface-color);
+  box-shadow: var(--dash-shadow);
 }

@@ -1,50 +1,58 @@
 @if (isDashboardLoaded()) {
-  <div id="home-header-container" class="column">
-    <div id="home-header-top-bar" class="row justify-between">
-      <div id="tab-list-container" class="row">
+  <header id="home-header-container" class="column">
+    <div id="home-header-top-bar" class="row items-center gap-sm">
+      <div id="brand" class="row items-center gap-sm">
+        <img src="assets/logo.png" alt="" id="brand-logo" />
+        <span id="brand-name">Dash</span>
+      </div>
+
+      <nav id="tab-list-container" class="row items-center gap-xs" aria-label="Onglets">
         <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)" class="row gap-xs">
           @for (tab of tabs(); track tab.id) {
             <dash-tab
               class="tab"
-              (keydown)="selectTab(tab.id)"
+              tabindex="0"
+              (keydown.enter)="selectTab(tab.id)"
               (click)="selectTab(tab.id)"
               (tabDeletedEvent)="deleteTabFromDash($event)"
               [cdkDragDisabled]="!editModeEnabled()"
               [class.selected-item]="activeTab() === tab.id"
+              [class.draggable]="editModeEnabled()"
+              [attr.aria-current]="activeTab() === tab.id ? 'page' : null"
               [tab]="tab"
+              matTooltip="Double-cliquez pour renommer"
+              [matTooltipShowDelay]="800"
               cdkDrag
               cdkDropListOrientation="horizontal"
               cdkDragBoundary="#tab-list"
             />
           }
         </div>
+        <button (click)="addNewTab()" matTooltip="Ajouter un nouvel onglet" id="addNewTabButton" mat-icon-button>
+          <mat-icon aria-hidden="false">add</mat-icon>
+        </button>
+      </nav>
+
+      <div id="action-bar-buttons" class="row items-center gap-xs">
         <button
-          (click)="addNewTab()"
-          matTooltip="Ajouter un nouvel onglet"
-          id="addNewTabButton"
-          mat-mini-fab
-          color="primary"
+          [disabled]="tabs().length < 1"
+          matTooltip="Ajouter un nouveau widget"
+          (click)="openCreateWidgetModal()"
+          id="openAddWidgetModal"
+          class="add-widget-button"
+          mat-flat-button
         >
-          <mat-icon aria-hidden="false"> add_circle_outline</mat-icon>
+          <mat-icon aria-hidden="false">add</mat-icon>
+          <span class="button-label">Widget</span>
         </button>
-      </div>
-
-      <div id="action-bar-buttons" class="row gap-xs">
-        <button mat-mini-fab matTooltip="Applications" [matMenuTriggerFor]="appsMenu" color="primary">
-          <mat-icon>apps</mat-icon>
-        </button>
-
-        @if (canUserSeeNotifications()) {
-          <dash-notifications />
-        }
 
         @if (editModeEnabled()) {
           <button
             (click)="toggleEditMode()"
             matTooltip="Valider l'ordre des widgets"
             id="validateWidgetListButton"
-            mat-mini-fab
-            color="primary"
+            class="active-action"
+            mat-icon-button
           >
             <mat-icon aria-hidden="false">check</mat-icon>
           </button>
@@ -53,45 +61,35 @@
             (click)="toggleEditMode()"
             matTooltip="Changer l'ordre des widgets"
             id="toggleEditModeButton"
-            mat-mini-fab
-            color="primary"
+            mat-icon-button
           >
-            <mat-icon aria-hidden="false">edit</mat-icon>
+            <mat-icon aria-hidden="false">drag_indicator</mat-icon>
           </button>
         }
 
         <button
-          [disabled]="tabs().length < 1"
-          matTooltip="Ajouter un nouveau widget"
-          (click)="openCreateWidgetModal()"
-          id="openAddWidgetModal"
-          color="primary"
-          mat-mini-fab
-        >
-          <mat-icon aria-hidden="false">add_circle_outline</mat-icon>
-        </button>
-        <button
           (click)="refreshAllWidgets()"
           matTooltip="Réactualiser tous les widgets"
-          mat-mini-fab
+          mat-icon-button
           id="reloadAllWidgetsButton"
-          color="primary"
         >
           <mat-icon aria-hidden="false">refresh</mat-icon>
         </button>
 
-        <button
-          id="dash-menu"
-          matTooltip="Menu utilisateur"
-          mat-mini-fab
-          [matMenuTriggerFor]="dashMenu"
-          color="primary"
-        >
+        @if (canUserSeeNotifications()) {
+          <dash-notifications />
+        }
+
+        <button mat-icon-button matTooltip="Applications" [matMenuTriggerFor]="appsMenu">
+          <mat-icon>apps</mat-icon>
+        </button>
+
+        <button id="dash-menu" matTooltip="Menu utilisateur" mat-icon-button [matMenuTriggerFor]="dashMenu">
           <mat-icon>account_circle</mat-icon>
         </button>
 
         <mat-menu #appsMenu="matMenu">
-          <a [href]="cashManagerApplicationUrl">
+          <a mat-menu-item [href]="cashManagerApplicationUrl">
             <mat-icon>savings</mat-icon>
             <span>CashManager</span>
           </a>
@@ -99,9 +97,13 @@
 
         <mat-menu #dashMenu="matMenu">
           <div mat-menu-item>
-            <div id="toggle-mode-container" class="row">
+            <div id="toggle-mode-container" class="row items-center gap-xs">
               <mat-icon>light_mode</mat-icon>
-              <mat-slide-toggle (change)="toggleTheme($event.checked)" [formField]="toggleThemeForm" />
+              <mat-slide-toggle
+                (change)="toggleTheme($event.checked)"
+                [formField]="toggleThemeForm"
+                aria-label="Thème sombre"
+              />
               <mat-icon>dark_mode</mat-icon>
             </div>
           </div>
@@ -126,18 +128,53 @@
     <div id="mini-widgets-container">
       <dash-miniwidget-list />
     </div>
-  </div>
-  @if (areWidgetsLoaded()) {
-    <dash-widget-list
-      [widgetList]="activeWidgets()"
-      [toggleEditMode]="editModeEnabled()"
-      (updateWidgetsOrderEvent)="updateWidgetOrder($event)"
-    />
-  } @else {
-    <div class="loading-spinner">
-      <mat-spinner />
-    </div>
-  }
+  </header>
+
+  <main id="dashboard-content">
+    @if (editModeEnabled()) {
+      <div id="edit-mode-banner" class="row items-center justify-between gap-sm" role="status">
+        <div class="row items-center gap-sm">
+          <mat-icon>open_with</mat-icon>
+          <span>Glissez-déposez les widgets et les onglets pour les réorganiser.</span>
+        </div>
+        <button mat-button (click)="toggleEditMode()">Terminer</button>
+      </div>
+    }
+
+    @if (areWidgetsLoaded()) {
+      @if (tabs().length < 1) {
+        <div class="empty-state column items-center gap-md">
+          <mat-icon class="empty-state-icon">tab</mat-icon>
+          <h2>Aucun onglet</h2>
+          <p>Créez un onglet pour commencer à composer votre dashboard.</p>
+          <button mat-flat-button (click)="addNewTab()">
+            <mat-icon>add</mat-icon>
+            Créer un onglet
+          </button>
+        </div>
+      } @else if (activeWidgets().length < 1) {
+        <div class="empty-state column items-center gap-md">
+          <mat-icon class="empty-state-icon">dashboard_customize</mat-icon>
+          <h2>Cet onglet est vide</h2>
+          <p>Ajoutez un widget : météo, flux RSS, agenda, Strava…</p>
+          <button mat-flat-button (click)="openCreateWidgetModal()">
+            <mat-icon>add</mat-icon>
+            Ajouter un widget
+          </button>
+        </div>
+      } @else {
+        <dash-widget-list
+          [widgetList]="activeWidgets()"
+          [toggleEditMode]="editModeEnabled()"
+          (updateWidgetsOrderEvent)="updateWidgetOrder($event)"
+        />
+      }
+    } @else {
+      <div class="loading-spinner">
+        <mat-spinner />
+      </div>
+    }
+  </main>
 } @else {
   <div class="loading-spinner">
     <mat-spinner />
