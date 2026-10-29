@@ -11,17 +11,17 @@
     font-size: 1rem;
     font-weight: 500;
   }
-}
 
-.delete-widget-icon {
-  height: 3rem;
-  width: 3rem;
-  font-size: 3rem;
-  color: #dc2626;
-}
+  .delete-widget-icon {
+    height: 3rem;
+    width: 3rem;
+    font-size: 3rem;
+    color: $color-danger;
+  }
 
-#delete-widget-actions {
-  justify-content: center;
-  gap: $space-sm;
-  width: 100%;
+  #delete-widget-actions {
+    justify-content: center;
+    gap: $space-sm;
+    width: 100%;
+  }
 }

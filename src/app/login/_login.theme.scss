@@ -1,0 +1,39 @@
+@use "mixins" as *;
+
+// Theme colors of the login page
+dash-login {
+  #login-container {
+    @include surface;
+  }
+
+  @include themed {
+    #login-page {
+      background:
+        radial-gradient(
+          circle at 15% 20%,
+          rgb(37 99 235 / 18%),
+          transparent 45%
+        ),
+        radial-gradient(
+          circle at 85% 80%,
+          rgb(14 165 233 / 18%),
+          transparent 45%
+        ),
+        $color-background;
+    }
+
+    #login-container {
+      box-shadow: $shadow-hover;
+    }
+
+    #login-page-subtitle,
+    #login-separator {
+      color: $color-muted-text;
+    }
+
+    #login-separator::before,
+    #login-separator::after {
+      border-top: 1px solid $color-border;
+    }
+  }
+}

@@ -39,11 +39,10 @@
           matTooltip="Ajouter un nouveau widget"
           (click)="openCreateWidgetModal()"
           id="open-add-widget-modal"
-          class="add-widget-button"
           mat-flat-button
         >
           <mat-icon aria-hidden="false">add</mat-icon>
-          <span class="button-label">Widget</span>
+          <span id="add-widget-button-label">Widget</span>
         </button>
 
         @if (editModeEnabled()) {
@@ -51,7 +50,6 @@
             (click)="toggleEditMode()"
             matTooltip="Valider l'ordre des widgets"
             id="validate-widget-list-button"
-            class="active-action"
             mat-icon-button
           >
             <mat-icon aria-hidden="false">check</mat-icon>
@@ -143,8 +141,8 @@
 
     @if (areWidgetsLoaded()) {
       @if (tabs().length < 1) {
-        <div class="empty-state column items-center gap-md">
-          <mat-icon class="empty-state-icon">tab</mat-icon>
+        <div id="no-tab-message" class="column items-center gap-md">
+          <mat-icon id="no-tab-icon">tab</mat-icon>
           <h2>Aucun onglet</h2>
           <p>Créez un onglet pour commencer à composer votre dashboard.</p>
           <button mat-flat-button (click)="addNewTab()">
@@ -153,8 +151,8 @@
           </button>
         </div>
       } @else if (activeWidgets().length < 1) {
-        <div class="empty-state column items-center gap-md">
-          <mat-icon class="empty-state-icon">dashboard_customize</mat-icon>
+        <div id="empty-tab-message" class="column items-center gap-md">
+          <mat-icon id="empty-tab-icon">dashboard_customize</mat-icon>
           <h2>Cet onglet est vide</h2>
           <p>Ajoutez un widget : météo, flux RSS, agenda, Strava…</p>
           <button mat-flat-button (click)="openCreateWidgetModal()">
@@ -170,13 +168,13 @@
         />
       }
     } @else {
-      <div class="loading-spinner">
+      <div id="widgets-loading-spinner" class="loading-spinner">
         <mat-spinner />
       </div>
     }
   </main>
 } @else {
-  <div class="loading-spinner">
+  <div id="dashboard-loading-spinner" class="loading-spinner">
     <mat-spinner />
   </div>
 }

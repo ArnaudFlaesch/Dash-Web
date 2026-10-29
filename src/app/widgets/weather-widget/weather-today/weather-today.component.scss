@@ -1,5 +1,7 @@
 @use "mixins" as *;
 
+// The theme colors are set in _weather-today.theme.scss
+
 // The sun times go below the current weather when the widget is narrow
 .weather-today-container {
   flex-wrap: wrap;
@@ -13,25 +15,24 @@
   img {
     width: 4rem;
   }
-}
 
-.temperature {
-  white-space: nowrap;
-  font-size: 1.5rem;
-  font-weight: 500;
+  .temperature {
+    white-space: nowrap;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
 }
 
 .time-data-container {
   flex: 0 0 auto;
   gap: $space-xs;
   margin: auto 0;
-  color: var(--dash-muted-text-color);
-}
 
-.sunrise-time {
-  color: #f59e0b;
-}
+  .sunrise-time {
+    color: #f59e0b;
+  }
 
-.sunset-time {
-  color: #94a3b8;
+  .sunset-time {
+    color: #94a3b8;
+  }
 }

@@ -1,25 +1,22 @@
 @use "mixins" as *;
 
+// The theme colors and the body of the expansion panel are styled in _game-details.theme.scss
+
 // Games displayed as a flat list separated by thin lines
 .game-panel {
-  border-bottom: 1px solid var(--dash-border-color);
   border-radius: 0 !important;
   box-shadow: none !important;
   background-color: transparent;
 
-  ::ng-deep .mat-expansion-panel-header {
+  // Written in the template of this component, so styled without ::ng-deep
+  .mat-expansion-panel-header {
     height: 3.25rem;
     padding: 0 $space-sm;
     border-radius: $border-radius;
   }
 
-  ::ng-deep .mat-expansion-panel-body {
-    padding: 0 $space-sm $space-md;
-  }
-
   &.mat-expanded {
     border-radius: $border-radius-lg !important;
-    background-color: var(--dash-background-color);
   }
 }
 
@@ -50,17 +47,15 @@
     border-radius: $border-radius-pill;
     overflow: hidden;
   }
-}
 
-.progress-value {
-  min-width: 2.75rem;
-  color: var(--dash-accent-color);
-  font-weight: 600;
-  text-align: right;
+  .progress-value {
+    min-width: 2.75rem;
+    font-weight: 600;
+    text-align: right;
+  }
 }
 
 .game-achievements-data {
-  color: var(--dash-muted-text-color);
   font-size: 0.85em;
   line-height: 1.5;
 }
@@ -69,15 +64,6 @@
   flex: 0 0 auto;
 }
 
-.no-achievements {
-  color: var(--dash-muted-text-color);
-
-  mat-icon {
-    color: var(--dash-border-color);
-  }
-
-  a {
-    margin-left: auto;
-    color: var(--dash-accent-color);
-  }
+.no-achievements a {
+  margin-left: auto;
 }

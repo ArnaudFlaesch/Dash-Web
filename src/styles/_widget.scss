@@ -15,7 +15,9 @@
   }
 
   mat-icon {
-    color: var(--dash-accent-color);
+    @include themed {
+      color: $color-accent;
+    }
   }
 
   a {

@@ -1,12 +1,9 @@
-@use "mixins" as *;
-
-// Description of the feed, limited to two lines
+// Description of the feed, limited to two lines (its color is set in _rss-widget.theme.scss)
 .rss-widget-description {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  color: var(--dash-muted-text-color);
   font-size: 0.9em;
   line-height: 1.4;
 }

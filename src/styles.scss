@@ -1,7 +1,25 @@
+@use "sass:map";
 @use "@angular/material" as mat;
 @use "mixins" as *;
 @use "layout";
 @use "widget";
+
+// Global styles of the components: their element and their theme colors
+@use "app/home/home.theme";
+@use "app/login/login.theme";
+@use "app/modals/create-widget-modal.theme";
+@use "app/tab/tab.theme";
+@use "app/widgets/mini-widget/mini-widget.theme";
+@use "app/widgets/miniwidget-list/miniwidget-list.theme";
+@use "app/widgets/rss-widget/rss-widget.theme";
+@use "app/widgets/rss-widget/rss-feed/rss-feed.theme";
+@use "app/widgets/steam-widget/steam-widget.theme";
+@use "app/widgets/steam-widget/game-details/game-details.theme";
+@use "app/widgets/weather-widget/weather-forecast/weather-forecast.theme";
+@use "app/widgets/weather-widget/weather-mini-widget/weather-miniwidget.theme";
+@use "app/widgets/weather-widget/weather-today/weather-today.theme";
+@use "app/widgets/widget-list/widget-list.theme";
+@use "app/widgets/widget/widget.theme" as widget-theme;
 @include mat.core;
 
 $light-theme: mat.define-theme(
@@ -26,26 +44,12 @@ body {
   height: 100%;
 }
 
-// Colors used by the dashboard and the widgets, overridden in dark mode
+// The dark-mode class is on the body itself, so its colors are not set with the `themed` mixin
 body {
-  --dash-background-color: #eef1f6;
-  --dash-surface-color: #fff;
-  --dash-text-color: #1f2937;
-  --dash-muted-text-color: #6b7280;
-  --dash-border-color: #e2e6ee;
-  --dash-accent-color: #2563eb;
-  --dash-accent-soft-color: #dbe7ff;
-  --dash-shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 4px 16px rgb(15 23 42 / 6%);
-  --dash-shadow-hover:
-    0 2px 4px rgb(15 23 42 / 8%), 0 10px 28px rgb(15 23 42 / 12%);
-  --widget-header-color: #f7f9fc;
-  --widget-header-text-color: var(--dash-text-color);
-  --widget-background-color: var(--dash-surface-color);
-
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  color: var(--dash-text-color);
-  background-color: var(--dash-background-color);
+  color: map.get($light-theme-colors, text);
+  background-color: map.get($light-theme-colors, background);
   transition: background-color 0.2s ease;
 
   // All the components use the Material 3 theme (overriding the prebuilt one),
@@ -54,23 +58,14 @@ body {
   @include mat.color-variants-backwards-compatibility($light-theme);
 
   &.dark-mode {
-    --dash-background-color: #12141a;
-    --dash-surface-color: #1c1f27;
-    --dash-text-color: #e5e7eb;
-    --dash-muted-text-color: #9ca3af;
-    --dash-border-color: #2c313c;
-    --dash-accent-color: #60a5fa;
-    --dash-accent-soft-color: #1e3a5f;
-    --dash-shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 16px rgb(0 0 0 / 25%);
-    --dash-shadow-hover:
-      0 2px 4px rgb(0 0 0 / 35%), 0 10px 28px rgb(0 0 0 / 40%);
-    --widget-header-color: #222631;
+    color: map.get($dark-theme-colors, text);
+    background-color: map.get($dark-theme-colors, background);
 
     @include mat.all-component-colors($dark-theme);
     @include mat.color-variants-backwards-compatibility($dark-theme);
 
     .widget :is(mat-expansion-panel, .cal-cell-row) {
-      background-color: var(--widget-background-color) !important;
+      background-color: map.get($dark-theme-colors, surface) !important;
     }
 
     // The logo is dark, so it is lightened to stay visible
@@ -89,7 +84,9 @@ body {
 
 mat-expansion-panel-header:hover,
 a.hoverable-link:hover {
-  color: var(--dash-accent-color);
+  @include themed {
+    color: $color-accent;
+  }
 }
 
 a {
@@ -100,12 +97,18 @@ a {
 // Thin, discreet scrollbars for the scrollable areas of the dashboard
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--dash-border-color) transparent;
+
+  @include themed {
+    scrollbar-color: $color-border transparent;
+  }
 }
 
 :focus-visible {
-  outline: 2px solid var(--dash-accent-color);
   outline-offset: 2px;
+
+  @include themed {
+    outline: 2px solid $color-accent;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

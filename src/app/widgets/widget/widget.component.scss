@@ -2,59 +2,35 @@
 
 $header-height: 3rem;
 
+// The theme colors and the projected edit form are styled in _widget.theme.scss
 .widget {
-  @include surface;
-
   height: 26rem;
   overflow: hidden;
-  background-color: var(--widget-background-color);
   transition:
     box-shadow 0.2s ease,
     transform 0.2s ease;
-
-  &:hover {
-    box-shadow: var(--dash-shadow-hover);
-  }
 }
 
 .header-container {
   height: $header-height;
   padding: 0 $space-xs 0 $space-md;
-  border-bottom: 1px solid var(--dash-border-color);
-  background-color: var(--widget-header-color);
-  color: var(--widget-header-text-color);
   box-sizing: border-box;
-}
 
-.widget-edit-mode {
-  .header-container {
-    width: 100%;
+  // The projected icon and title are styled in styles/_widget.scss
+  .widget-header {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    font-weight: 500;
+    white-space: nowrap;
   }
 
-  .edit-mode-icon {
-    color: var(--dash-accent-color);
+  .header-actions {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    margin-left: auto;
   }
-
-  .delete-button {
-    color: #dc2626;
-  }
-}
-
-// The projected icon and title are styled in styles/_widget.scss
-.widget-header {
-  flex: 1 1 auto;
-  min-width: 0;
-  height: 100%;
-  overflow: hidden;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.header-actions {
-  flex: 0 0 auto;
-  justify-content: flex-end;
-  margin-left: auto;
-  color: var(--dash-muted-text-color);
 }
 
 .widget-body {
@@ -64,40 +40,25 @@ $header-height: 3rem;
   box-sizing: border-box;
 }
 
-// Configuration form of the widget, its fields take the whole width
-.widget-edit-component-container {
-  flex: 1;
-  gap: $space-sm;
-  overflow-y: auto;
-  padding-top: $space-md;
-
-  ::ng-deep {
-    mat-form-field {
-      width: 100%;
-    }
-
-    // Plain inputs (e.g. the calendar URLs) look like the form fields
-    input:not(.mat-mdc-input-element) {
-      flex: 1;
-      min-width: 0;
-      padding: 0.6rem 0.75rem;
-      border: 1px solid var(--dash-border-color);
-      border-radius: $border-radius;
-      background-color: var(--dash-surface-color);
-      color: var(--dash-text-color);
-      font: inherit;
-
-      &:focus {
-        border-color: var(--dash-accent-color);
-        outline: none;
-      }
-    }
+.widget-edit-mode {
+  .header-container {
+    width: 100%;
   }
-}
 
-.edit-component-actions {
-  justify-content: flex-end;
-  gap: $space-sm;
-  padding-top: $space-sm;
-  border-top: 1px solid var(--dash-border-color);
+  .delete-button {
+    color: $color-danger;
+  }
+
+  .widget-edit-component-container {
+    flex: 1;
+    gap: $space-sm;
+    overflow-y: auto;
+    padding-top: $space-md;
+  }
+
+  .edit-component-actions {
+    justify-content: flex-end;
+    gap: $space-sm;
+    padding-top: $space-sm;
+  }
 }

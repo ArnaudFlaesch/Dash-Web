@@ -1,8 +1,8 @@
 @use "mixins" as *;
 
+// The theme colors are set in _mini-widget.theme.scss
 .mini-widget {
   border-radius: $border-radius-lg;
-  background-color: var(--widget-background-color);
 }
 
 .read-mini-widget-body-container {

@@ -1,5 +1,6 @@
 @use "mixins" as *;
 
+// The theme colors are set in _weather-miniwidget.theme.scss
 .mini-widget-weather-container {
   align-items: center;
   padding-right: $space-sm;
@@ -16,7 +17,6 @@
 
 .temperature-container {
   align-items: center;
-  color: var(--dash-muted-text-color);
 
   mat-icon {
     height: 1.25rem;

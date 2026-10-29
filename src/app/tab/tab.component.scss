@@ -1,12 +1,10 @@
 @use "mixins" as *;
 
+// The theme colors are set in _tab.theme.scss
 .tab-name-input {
   width: 8rem;
   padding: 0.1rem $space-sm;
-  border: 1px solid var(--dash-accent-color);
   border-radius: $border-radius-pill;
-  background-color: var(--dash-surface-color);
-  color: var(--dash-text-color);
   font: inherit;
   outline: none;
 }
@@ -18,10 +16,6 @@ mat-icon {
   cursor: pointer;
 }
 
-.save-tab-button {
-  color: var(--dash-accent-color);
-}
-
 .delete-tab-button {
-  color: #dc2626;
+  color: $color-danger;
 }

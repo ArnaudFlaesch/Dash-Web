@@ -1,7 +1,8 @@
 @use "mixins" as *;
 
-// Shared by the "create widget" and "create mini widget" modals
-.widget-types-list {
+// Shared by the "create widget" and "create mini widget" modals, the theme colors are set in
+// _create-widget-modal.theme.scss
+#widget-types-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
   gap: 0.75rem;
@@ -11,10 +12,7 @@
 .widget-type-tile {
   justify-content: center;
   padding: $space-md $space-sm;
-  border: 1px solid var(--dash-border-color);
   border-radius: $border-radius-lg;
-  background-color: var(--dash-surface-color);
-  color: var(--dash-text-color);
   font: inherit;
   font-weight: 500;
   cursor: pointer;
@@ -27,13 +25,10 @@
     height: 2rem;
     width: 2rem;
     font-size: 2rem;
-    color: var(--dash-accent-color);
   }
 
   &:hover,
   &:focus-visible {
-    border-color: var(--dash-accent-color);
-    background-color: var(--dash-accent-soft-color);
     transform: translateY(-2px);
   }
 }

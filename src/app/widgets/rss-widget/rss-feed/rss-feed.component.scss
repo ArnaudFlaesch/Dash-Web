@@ -1,17 +1,15 @@
 @use "mixins" as *;
 
+// The theme colors are set in _rss-feed.theme.scss
+
 // Articles displayed as a flat list separated by thin lines
 .rss-article {
-  border-bottom: 1px solid var(--dash-border-color);
   border-radius: 0 !important;
   box-shadow: none !important;
   background-color: transparent;
 
-  &:last-child {
-    border-bottom: none;
-  }
-
-  ::ng-deep .mat-expansion-panel-header {
+  // Written in the template of this component, so styled without ::ng-deep
+  .mat-expansion-panel-header {
     height: auto;
     padding: $space-sm $space-xs;
   }
@@ -30,7 +28,6 @@
     width: 0.4rem;
     height: 0.4rem;
     border-radius: 50%;
-    background-color: var(--dash-accent-color);
     content: "";
     transition: opacity 0.2s ease;
   }
@@ -45,7 +42,6 @@
   }
 
   &.is-read {
-    color: var(--dash-muted-text-color);
     font-weight: 400;
 
     &::before {
@@ -60,17 +56,14 @@
 
 .rss-feed-content {
   padding: $space-sm $space-md;
-  border-left: 3px solid var(--dash-accent-color);
   border-radius: $border-radius;
-  background-color: var(--dash-background-color);
-}
 
-.article-content {
-  line-height: 1.5;
-}
+  .article-content {
+    line-height: 1.5;
+  }
 
-.article-pubdate {
-  margin-top: $space-sm;
-  color: var(--dash-muted-text-color);
-  font-size: 0.85em;
+  .article-pubdate {
+    margin-top: $space-sm;
+    font-size: 0.85em;
+  }
 }

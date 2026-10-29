@@ -1,5 +1,7 @@
 @use "mixins" as *;
 
+// The theme colors are set in _widget-list.theme.scss
+
 // Three widgets per row on desktop, two on tablets and one on phones
 #widget-list {
   @include grid-columns(3, $space-md);
@@ -16,21 +18,21 @@
   &.edit-mode .widget-container {
     cursor: grab;
     border-radius: $border-radius-lg;
-    outline: 2px dashed var(--dash-accent-color);
     outline-offset: 3px;
+  }
+
+  &.cdk-drop-list-dragging .widget-container:not(.cdk-drag-placeholder) {
+    transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
   }
 }
 
-.widget-container.cdk-drag-preview {
-  box-shadow: var(--dash-shadow-hover);
-}
+// The dragged widget is a copy of this component's element, so it keeps these styles
+.widget-container {
+  &.cdk-drag-placeholder {
+    opacity: 0.3;
+  }
 
-.widget-container.cdk-drag-placeholder {
-  opacity: 0.3;
-}
-
-.cdk-drag-animating,
-#widget-list.cdk-drop-list-dragging
-  .widget-container:not(.cdk-drag-placeholder) {
-  transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+  &.cdk-drag-animating {
+    transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+  }
 }

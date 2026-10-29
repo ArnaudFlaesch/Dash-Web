@@ -1,0 +1,65 @@
+@use "sass:color";
+@use "mixins" as *;
+
+// Global styles of the home page: its element and its theme colors
+dash-home {
+  display: block;
+  min-height: 100%;
+
+  #no-tab-message,
+  #empty-tab-message {
+    @include surface;
+  }
+
+  #tab-list .tab {
+    border-color: transparent;
+  }
+
+  @include themed {
+    #home-header-container {
+      border-bottom: 1px solid $color-border;
+      background-color: color.change($color-surface, $alpha: 0.85);
+    }
+
+    #tab-list .tab {
+      color: $color-muted-text;
+
+      &:hover {
+        background-color: $color-background;
+        color: $color-text;
+      }
+
+      &.selected-item {
+        background-color: $color-accent-soft;
+        color: $color-accent;
+      }
+
+      &.draggable {
+        border-color: $color-border;
+      }
+    }
+
+    #validate-widget-list-button {
+      background-color: $color-accent-soft;
+      color: $color-accent;
+    }
+
+    #edit-mode-banner {
+      border: 1px dashed $color-accent;
+      background-color: $color-accent-soft;
+      color: $color-accent;
+    }
+
+    #no-tab-message,
+    #empty-tab-message {
+      p {
+        color: $color-muted-text;
+      }
+    }
+
+    #no-tab-icon,
+    #empty-tab-icon {
+      color: $color-accent;
+    }
+  }
+}

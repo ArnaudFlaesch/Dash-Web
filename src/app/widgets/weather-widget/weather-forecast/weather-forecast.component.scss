@@ -1,5 +1,7 @@
 @use "mixins" as *;
 
+// The theme colors are set in _weather-forecast.theme.scss
+
 // Horizontally scrollable list of forecast cards
 .forecast-row {
   gap: $space-sm;
@@ -14,33 +16,31 @@
   min-width: 5.5rem;
   align-items: center;
   padding: $space-sm;
-  border: 1px solid var(--dash-border-color);
   border-radius: $border-radius-lg;
-  background-color: var(--dash-background-color);
   box-sizing: border-box;
   scroll-snap-align: start;
-}
 
-.forecast {
-  align-items: center;
-  justify-content: space-between;
-}
+  .forecast {
+    align-items: center;
+    justify-content: space-between;
 
-.forecast-time {
-  margin: auto 0;
-  white-space: nowrap;
-  font-weight: 500;
-}
+    &-time {
+      margin: auto 0;
+      white-space: nowrap;
+      font-weight: 500;
+    }
 
-.current-weather-icon {
-  max-height: 3rem;
-  max-width: 3rem;
-}
+    &-icons {
+      gap: 0.15rem;
+      white-space: nowrap;
+      font-size: 0.9em;
+    }
+  }
 
-.forecast-icons {
-  gap: 0.15rem;
-  white-space: nowrap;
-  font-size: 0.9em;
+  .current-weather-icon {
+    max-height: 3rem;
+    max-width: 3rem;
+  }
 }
 
 .weather-widget-icon {
@@ -48,16 +48,16 @@
   width: 1.1rem;
   font-size: 1.1rem;
   vertical-align: middle;
-}
 
-.temp-min {
-  color: #3b82f6;
-}
+  &.temp-min {
+    color: #3b82f6;
+  }
 
-.temp-max {
-  color: #ef4444;
-}
+  &.temp-max {
+    color: #ef4444;
+  }
 
-.humidity {
-  color: #38bdf8;
+  &.humidity {
+    color: #38bdf8;
+  }
 }

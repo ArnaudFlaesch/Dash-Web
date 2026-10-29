@@ -1,8 +1,11 @@
 @use "mixins" as *;
 
-:host {
-  display: block;
-  min-height: 100%;
+// The element of the component and the theme colors are styled in _home.theme.scss
+
+// The spinners of the widgets keep their own size
+#dashboard-loading-spinner,
+#widgets-loading-spinner {
+  min-height: 50vh;
 }
 
 #home-header-container {
@@ -11,12 +14,6 @@
   z-index: 10;
   gap: $space-sm;
   padding: $space-sm $space-md;
-  border-bottom: 1px solid var(--dash-border-color);
-  background-color: color-mix(
-    in srgb,
-    var(--dash-surface-color) 85%,
-    transparent
-  );
   backdrop-filter: blur(12px);
 
   @media (width <= $breakpoint-sm) {
@@ -39,58 +36,47 @@
 #brand {
   flex: 0 0 auto;
   margin-right: $space-sm;
-}
 
-#brand-logo {
-  height: 2rem;
-  width: 2rem;
-  object-fit: contain;
-}
+  &-logo {
+    height: 2rem;
+    width: 2rem;
+    object-fit: contain;
+  }
 
-#brand-name {
-  font-size: 1.25rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  &-name {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
 }
 
 #tab-list-container {
   flex: 1 1 0;
   min-width: 0;
-}
 
-#tab-list {
-  min-width: 0;
-  padding: 2px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  #tab-list {
+    min-width: 0;
+    padding: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
 
-  .tab {
-    flex: 0 0 auto;
-    cursor: pointer;
-    padding: 0.4rem 0.9rem;
-    border: 1px solid transparent;
-    border-radius: $border-radius-pill;
-    color: var(--dash-muted-text-color);
-    font-weight: 500;
-    white-space: nowrap;
-    transition:
-      background-color 0.15s ease,
-      color 0.15s ease;
+    .tab {
+      flex: 0 0 auto;
+      cursor: pointer;
+      padding: 0.4rem 0.9rem;
+      border-width: 1px;
+      border-style: solid;
+      border-radius: $border-radius-pill;
+      font-weight: 500;
+      white-space: nowrap;
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
 
-    &:hover {
-      background-color: var(--dash-background-color);
-      color: var(--dash-text-color);
-    }
-
-    &.selected-item {
-      background-color: var(--dash-accent-soft-color);
-      color: var(--dash-accent-color);
-    }
-
-    &.draggable {
-      cursor: grab;
-      border-style: dashed;
-      border-color: var(--dash-border-color);
+      &.draggable {
+        cursor: grab;
+        border-style: dashed;
+      }
     }
   }
 }
@@ -99,24 +85,19 @@
   flex: 0 0 auto;
   margin-left: auto;
 
-  .add-widget-button {
+  #open-add-widget-modal {
     margin-right: $space-xs;
-  }
-
-  .active-action {
-    background-color: var(--dash-accent-soft-color);
-    color: var(--dash-accent-color);
   }
 
   // Only the icon of the "add widget" button is kept on phones
   @media (width <= $breakpoint-sm) {
     gap: 0;
 
-    .add-widget-button {
+    #open-add-widget-modal {
       min-width: 0;
       padding: 0 $space-sm;
 
-      .button-label {
+      #add-widget-button-label {
         display: none;
       }
 
@@ -135,42 +116,30 @@
   @media (width <= $breakpoint-sm) {
     padding: $space-sm;
   }
-}
 
-#edit-mode-banner {
-  margin-bottom: $space-md;
-  padding: $space-xs $space-xs $space-xs $space-md;
-  border: 1px dashed var(--dash-accent-color);
-  border-radius: $border-radius-lg;
-  background-color: var(--dash-accent-soft-color);
-  color: var(--dash-accent-color);
-}
-
-.empty-state {
-  @include surface;
-
-  max-width: 28rem;
-  margin: 3rem auto;
-  padding: $space-lg;
-  text-align: center;
-
-  h2,
-  p {
-    margin: 0;
+  #edit-mode-banner {
+    margin-bottom: $space-md;
+    padding: $space-xs $space-xs $space-xs $space-md;
+    border-radius: $border-radius-lg;
   }
 
-  p {
-    color: var(--dash-muted-text-color);
+  #no-tab-message,
+  #empty-tab-message {
+    max-width: 28rem;
+    margin: 3rem auto;
+    padding: $space-lg;
+    text-align: center;
+
+    h2,
+    p {
+      margin: 0;
+    }
+
+    #no-tab-icon,
+    #empty-tab-icon {
+      height: 3rem;
+      width: 3rem;
+      font-size: 3rem;
+    }
   }
-}
-
-.empty-state-icon {
-  height: 3rem;
-  width: 3rem;
-  font-size: 3rem;
-  color: var(--dash-accent-color);
-}
-
-.loading-spinner {
-  min-height: 50vh;
 }

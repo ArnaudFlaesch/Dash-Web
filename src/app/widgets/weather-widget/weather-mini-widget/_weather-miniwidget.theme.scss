@@ -1,0 +1,8 @@
+@use "mixins" as *;
+
+// Theme colors of the weather mini widget
+dash-weather-miniwidget .temperature-container {
+  @include themed {
+    color: $color-muted-text;
+  }
+}

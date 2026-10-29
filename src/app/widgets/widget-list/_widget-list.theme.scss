@@ -1,0 +1,15 @@
+@use "mixins" as *;
+
+// Theme colors of the list of widgets
+dash-widget-list #widget-list.edit-mode .widget-container {
+  @include themed {
+    outline: 2px dashed $color-accent;
+  }
+}
+
+// The dragged widget is moved at the end of the body, outside the component element
+.widget-container.cdk-drag-preview {
+  @include themed {
+    box-shadow: $shadow-hover;
+  }
+}
