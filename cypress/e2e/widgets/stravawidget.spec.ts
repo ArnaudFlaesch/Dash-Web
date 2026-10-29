@@ -44,7 +44,7 @@ describe("Strava Widget tests", () => {
               "contain.text",
               "Arnaud Flaesch"
             );
-            cy.get(".widget .stravaActivity", { timeout: 10000 })
+            cy.get(".widget .strava-activity", { timeout: 10000 })
               .should("have.length", 6)
               .first()
               .contains("Evening Run 10.7047 kms");

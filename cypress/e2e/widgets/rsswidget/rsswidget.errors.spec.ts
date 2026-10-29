@@ -16,7 +16,7 @@ describe("RSS Widget errors tests", () => {
   it("Should fail to create a RSS widget", () => {
     cy.intercept("POST", "/widget/addWidget", { statusCode: 500 })
       .as("addWidgetError")
-      .get("#openAddWidgetModal")
+      .get("#open-add-widget-modal")
       .click();
     cy.get("#RSS").click();
     cy.wait("@addWidgetError").then((request: Interception) => {

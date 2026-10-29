@@ -28,7 +28,7 @@
             />
           }
         </div>
-        <button (click)="addNewTab()" matTooltip="Ajouter un nouvel onglet" id="addNewTabButton" mat-icon-button>
+        <button (click)="addNewTab()" matTooltip="Ajouter un nouvel onglet" id="add-new-tab-button" mat-icon-button>
           <mat-icon aria-hidden="false">add</mat-icon>
         </button>
       </nav>
@@ -38,7 +38,7 @@
           [disabled]="tabs().length < 1"
           matTooltip="Ajouter un nouveau widget"
           (click)="openCreateWidgetModal()"
-          id="openAddWidgetModal"
+          id="open-add-widget-modal"
           class="add-widget-button"
           mat-flat-button
         >
@@ -50,7 +50,7 @@
           <button
             (click)="toggleEditMode()"
             matTooltip="Valider l'ordre des widgets"
-            id="validateWidgetListButton"
+            id="validate-widget-list-button"
             class="active-action"
             mat-icon-button
           >
@@ -60,7 +60,7 @@
           <button
             (click)="toggleEditMode()"
             matTooltip="Changer l'ordre des widgets"
-            id="toggleEditModeButton"
+            id="toggle-edit-mode-button"
             mat-icon-button
           >
             <mat-icon aria-hidden="false">drag_indicator</mat-icon>
@@ -71,7 +71,7 @@
           (click)="refreshAllWidgets()"
           matTooltip="Réactualiser tous les widgets"
           mat-icon-button
-          id="reloadAllWidgetsButton"
+          id="reload-all-widgets-button"
         >
           <mat-icon aria-hidden="false">refresh</mat-icon>
         </button>
@@ -108,16 +108,16 @@
             </div>
           </div>
           <mat-divider />
-          <button mat-menu-item (click)="downloadConfig()" id="downloadConfigButton">
+          <button mat-menu-item (click)="downloadConfig()" id="download-config-button">
             <mat-icon>download</mat-icon>
             <span>Télécharger la configuration</span>
           </button>
-          <button mat-menu-item (click)="openImportConfigModal()" id="openImportConfigModal">
+          <button mat-menu-item (click)="openImportConfigModal()" id="open-import-config-modal">
             <mat-icon>upload</mat-icon>
             <span>Importer une configuration</span>
           </button>
           <mat-divider />
-          <button mat-menu-item (click)="logout()" id="logoutButton">
+          <button mat-menu-item (click)="logout()" id="logout-button">
             <mat-icon>logout</mat-icon>
             <span>Déconnexion</span>
           </button>

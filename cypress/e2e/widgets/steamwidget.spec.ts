@@ -22,10 +22,10 @@ describe("Steam Widget tests", () => {
   });
 
   it("Should refresh Steam widget and validate data", () => {
-    cy.get(".validateButton").should("be.disabled");
-    cy.get("#steamUserIdLabel").click();
-    cy.get("#steamUserIdInput").type(steamUserId);
-    cy.get(".validateButton").click();
+    cy.get(".validate-button").should("be.disabled");
+    cy.get("#steam-user-id-label").click();
+    cy.get("#steam-user-id-input").type(steamUserId);
+    cy.get(".validate-button").click();
     cy.wait(["@getPlayerData", "@getGameData"]).then((requests: Interception[]) => {
       expect(requests[0]?.response?.statusCode).to.equal(200);
       expect(requests[1]?.response?.statusCode).to.equal(200);
@@ -38,7 +38,7 @@ describe("Steam Widget tests", () => {
         expect(request.response?.statusCode).to.equal(200);
         cy.get(".widget .totalachievements")
           .should("have.text", "Succès : 23")
-          .get(".completedAchievements")
+          .get(".completed-achievements")
           .should("have.text", "Succès complétés : 21")
           .get(".progress-value")
           .should("have.text", "91%");

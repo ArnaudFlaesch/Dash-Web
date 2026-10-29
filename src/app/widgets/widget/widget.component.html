@@ -8,7 +8,7 @@
         </div>
         <div class="header-actions row">
           <button
-            class="deleteButton delete-button"
+            class="delete-button"
             mat-icon-button
             matTooltip="Supprimer le widget"
             (click)="toDeleteMode()"
@@ -23,9 +23,9 @@
         </div>
         <div class="edit-component-actions row">
           @if (isWidgetLoaded() && widgetData()) {
-            <button class="cancelButton" mat-button (click)="cancelEdition()">Annuler</button>
+            <button class="cancel-button" mat-button (click)="cancelEdition()">Annuler</button>
           }
-          <button class="validateButton" mat-flat-button (click)="onValidation()" [disabled]="!isFormValid()">
+          <button class="validate-button" mat-flat-button (click)="onValidation()" [disabled]="!isFormValid()">
             <mat-icon>check</mat-icon>
             Valider
           </button>
@@ -53,11 +53,11 @@
             </span>
           }
 
-          <button mat-icon-button matTooltip="Actualiser le widget" (click)="refreshWidget()" class="refreshButton">
+          <button mat-icon-button matTooltip="Actualiser le widget" (click)="refreshWidget()" class="refresh-button">
             <mat-icon aria-hidden="false">refresh</mat-icon>
           </button>
           @if (editComponent()) {
-            <button mat-icon-button matTooltip="Modifier le widget" (click)="toEditMode()" class="editButton">
+            <button mat-icon-button matTooltip="Modifier le widget" (click)="toEditMode()" class="edit-button">
               <mat-icon>settings</mat-icon>
             </button>
           }

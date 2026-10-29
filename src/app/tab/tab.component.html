@@ -1,7 +1,7 @@
 @if (editMode()) {
   <div class="tab-input row items-center gap-xs">
     <input
-      id="tabNameInput"
+      id="tab-name-input"
       class="tab-name-input"
       aria-label="Tab name"
       (keydown)="enterSaveTabName($event)"
@@ -20,7 +20,7 @@
       check
     </mat-icon>
     <mat-icon
-      class="deleteTabButton delete-tab-button"
+      class="delete-tab-button"
       role="button"
       aria-label="Supprimer l'onglet"
       title="Supprimer l'onglet"

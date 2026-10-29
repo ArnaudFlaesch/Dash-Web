@@ -27,7 +27,7 @@
   <ng-template #editComponent>
     <mat-form-field appearance="outline">
       <mat-label>URL</mat-label>
-      <input matInput id="rssFeedUrl" [formField]="configForm.url" placeholder="Saisissez l'URL du flux RSS" />
+      <input matInput id="rss-feed-url" [formField]="configForm.url" placeholder="Saisissez l'URL du flux RSS" />
     </mat-form-field>
   </ng-template>
 
@@ -35,7 +35,7 @@
     <button
       mat-icon-button
       matTooltip="Marquer tout le flux comme lu"
-      class="markAllArticlesAsReadButton"
+      class="mark-all-articles-as-read-button"
       (click)="markAllFeedAsRead()"
     >
       <mat-icon>check</mat-icon>

@@ -6,7 +6,7 @@
 >
   <ng-template #headerIcon>
     @if (athlete(); as athlete) {
-      <a [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader">
+      <a [href]="getAthleteProfileUrl(athlete.id)" id="strava-widget-header">
         <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="Athlete profile" />
       </a>
     } @else {

@@ -68,7 +68,7 @@ function createNewTab(tabName: string): Cypress.Chainable {
     .wait("@getTabs")
     .then((getTabsResponse) => {
       expect(getTabsResponse?.response?.statusCode).to.equal(200);
-      cy.get("#addNewTabButton").click();
+      cy.get("#add-new-tab-button").click();
       cy.wait("@createTab").then((createTabResponse) => {
         expect(createTabResponse?.response?.statusCode).to.equal(200);
         cy.get(".tab:nth(-1) .tab-label").click();
@@ -91,7 +91,7 @@ function createNewTab(tabName: string): Cypress.Chainable {
 function deleteTab(tabName: string): Cypress.Chainable {
   cy.intercept("DELETE", "/tab/deleteTab*").as("deleteTab");
   cy.get(".tab").contains(tabName).dblclick();
-  cy.get(".deleteTabButton").click();
+  cy.get(".delete-tab-button").click();
   return cy.wait("@deleteTab").then((deleteTabResponse: Interception) => {
     expect(deleteTabResponse?.response?.statusCode).to.equal(200);
   });
@@ -99,7 +99,7 @@ function deleteTab(tabName: string): Cypress.Chainable {
 
 function createWidget(widgetType: string): Cypress.Chainable {
   cy.intercept("POST", "/widget/addWidget").as("addWidget");
-  cy.get("#openAddWidgetModal").click();
+  cy.get("#open-add-widget-modal").click();
   cy.get(`#${widgetType}`).click();
   return cy.wait("@addWidget").then((request: Interception) => {
     expect(request?.response?.statusCode).to.equal(200);

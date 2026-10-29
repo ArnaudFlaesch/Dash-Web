@@ -43,7 +43,7 @@
                 }
               </div>
               <h4>Créer une session</h4>
-              <mat-form-field id="workoutDatePickerField" appearance="fill">
+              <mat-form-field id="workout-date-picker-field" appearance="fill">
                 <mat-label>Sélectionnez la date</mat-label>
                 <input [formField]="workoutDateForm" matInput [matDatepicker]="workoutDatePicker" />
                 <mat-hint>{{ dateFormat }}</mat-hint>
@@ -52,7 +52,7 @@
               </mat-form-field>
               <button
                 mat-raised-button
-                id="createWorkoutSessionButton"
+                id="create-workout-session-button"
                 [disabled]="workoutDateForm().invalid()"
                 (click)="createWorkoutSession()"
                 color="primary"
@@ -83,16 +83,16 @@
             <h2>Types d'exercices</h2>
             <div id="workout-types-grid">
               @for (workoutType of workoutTypes(); track workoutType.id) {
-                <span class="workoutTypeName"> {{ workoutType.name }}</span>
+                <span class="workout-type-name"> {{ workoutType.name }}</span>
               }
             </div>
             <div>
-              <h4><label for="addWorkoutInput">Ajouter un type d'exercice</label></h4>
-              <input id="addWorkoutInput" [formField]="workoutNameForm" placeholder="Nouveau type d'exercice" />
+              <h4><label for="add-workout-input">Ajouter un type d'exercice</label></h4>
+              <input id="add-workout-input" [formField]="workoutNameForm" placeholder="Nouveau type d'exercice" />
             </div>
             <button
               mat-raised-button
-              id="addWorkoutTypeButton"
+              id="add-workout-type-button"
               [disabled]="workoutNameForm().invalid()"
               (click)="addWorkoutType()"
               color="primary"

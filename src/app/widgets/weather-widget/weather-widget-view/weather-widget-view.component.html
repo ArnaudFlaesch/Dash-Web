@@ -8,7 +8,7 @@
             [color]="isSelectedDay(date) ? 'primary' : ''"
             mat-raised-button
             (click)="selectDayForecast(date)"
-            class="selectForecast"
+            class="select-forecast"
           >
             {{ formatDate(date) | initialUppercase }}
           </button>
@@ -17,7 +17,7 @@
         <button
           [color]="isForecastModeWeek() ? 'primary' : ''"
           mat-raised-button
-          id="toggleWeekForecast"
+          id="toggle-week-forecast"
           (click)="selectWeekForecast()"
         >
           Semaine

@@ -12,7 +12,7 @@
         <mat-icon matPrefix>person</mat-icon>
         <input
           matInput
-          id="inputUsername"
+          id="input-username"
           placeholder="Username"
           autocomplete="username"
           [formField]="loginForm.username"
@@ -25,7 +25,7 @@
         <mat-icon matPrefix>lock</mat-icon>
         <input
           matInput
-          id="inputPassword"
+          id="input-password"
           placeholder="Password"
           [type]="isPasswordVisible() ? 'text' : 'password'"
           autocomplete="current-password"
@@ -45,7 +45,7 @@
 
       <button
         mat-flat-button
-        id="loginButton"
+        id="login-button"
         type="submit"
         [disabled]="loginForm().invalid() || isLoading()"
         color="primary"
