@@ -236,6 +236,20 @@ describe("StravaActivitiesComponent", () => {
     expect(component.roundDistance(10529.8)).toEqual(10.5298);
   });
 
+  it("Should get the icon of an activity type", () => {
+    expect(component.getActivityIcon("Ride")).toEqual("directions_bike");
+    expect(component.getActivityIcon("Yoga")).toEqual("fitness_center");
+  });
+
+  it("Should format a duration", () => {
+    expect(component.formatDuration(2520)).toEqual("42 min");
+    expect(component.formatDuration(3900)).toEqual("1 h 05");
+  });
+
+  it("Should convert a speed to kilometers per hour", () => {
+    expect(component.toKilometersPerHour(5)).toEqual(18);
+  });
+
   it("Should display activity title", () => {
     const activity = activitiesData[0];
     fixture.componentRef.setInput("activities", activitiesData);

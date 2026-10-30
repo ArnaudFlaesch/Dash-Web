@@ -44,10 +44,13 @@ describe("Strava Widget tests", () => {
               "contain.text",
               "Arnaud Flaesch"
             );
-            cy.get(".widget .strava-activity", { timeout: 10000 })
-              .should("have.length", 6)
+            cy.get(".widget .strava-activity", { timeout: 10000 }).should("have.length", 6);
+            cy.get(".widget .strava-activity .activity-name")
               .first()
-              .contains("Evening Run 10.7047 kms");
+              .should("have.text", "Evening Run");
+            cy.get(".widget .strava-activity .activity-meta")
+              .first()
+              .should("contain.text", "10,7 km");
           }
         );
       });

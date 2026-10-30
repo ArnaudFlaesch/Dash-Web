@@ -6,7 +6,10 @@ describe("Login tests", () => {
   beforeEach(() => cy.intercept("POST", "/auth/login").as("login").visit("/"));
 
   it("Should fail to login", () => {
-    cy.get("#login-button").should("be.disabled").get("#input-username").type("test");
+    // Focusing first floats the mat-label, which otherwise covers the empty input
+    cy.get("#login-button").should("be.disabled").get("#input-username").focus();
+    cy.get("#input-username").type("test");
+    cy.get("#input-password").focus();
     cy.get("#input-password").type("test");
     cy.get("#login-button").should("be.enabled").click();
     cy.wait("@login").then((request: Interception) => {
@@ -16,8 +19,10 @@ describe("Login tests", () => {
   });
 
   it("Should login and logout", () => {
+    cy.get("#input-username").focus();
     cy.get("#input-username").clear();
     cy.get("#input-username").type("admintest");
+    cy.get("#input-password").focus();
     cy.get("#input-password").clear();
     cy.get("#input-password").type("adminpassword");
     cy.get("#login-button").should("be.enabled").click();
