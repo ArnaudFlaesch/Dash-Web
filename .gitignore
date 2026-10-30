@@ -57,3 +57,5 @@ cypress/screenshots/
 .vscode/
 
 styleLintReport.json
+
+.claude/

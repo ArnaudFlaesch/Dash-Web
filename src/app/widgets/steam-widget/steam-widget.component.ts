@@ -17,6 +17,7 @@ import { MatIconButton } from "@angular/material/button";
 import { MatInput } from "@angular/material/input";
 import { MatAccordion } from "@angular/material/expansion";
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from "@angular/material/form-field";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { WidgetComponent } from "../widget/widget.component";
 import { injectWidgetData } from "../widget.tokens";
 
@@ -37,7 +38,8 @@ import { injectWidgetData } from "../widget.tokens";
     MatIcon,
     GameDetailsComponent,
     MatAccordion,
-    MatPaginator
+    MatPaginator,
+    MatProgressSpinner
   ]
 })
 export class SteamWidgetComponent {
@@ -89,6 +91,8 @@ export class SteamWidgetComponent {
   });
 
   public readonly playerData = this.playerDataResource.value;
+  // True while a page of games is loading, until the response or the error is received
+  public readonly isOwnedGamesLoading = this.ownedGamesResource.isLoading;
   public readonly gameCount = computed(() => this.ownedGamesResource.value()?.totalElements ?? 0);
   public readonly ownedGamesDisplay = computed<IGameInfoDisplay[]>(() =>
     (this.ownedGamesResource.value()?.content ?? []).map((game) =>

@@ -38,7 +38,13 @@
   }
 
   @if (isModeRead()) {
-    <div (dblclick)="toEditMode()" matTooltip="Double-cliquez pour modifier" [matTooltipShowDelay]="800">
+    <!-- Touch gestures are kept, so that the list of mini widgets can be scrolled on phones -->
+    <div
+      (dblclick)="toEditMode()"
+      matTooltip="Double-cliquez pour modifier"
+      [matTooltipShowDelay]="800"
+      matTooltipTouchGestures="off"
+    >
       <div class="read-mini-widget-body-container">
         @if (isWidgetLoaded()) {
           <ng-container *ngTemplateOutlet="body()" />

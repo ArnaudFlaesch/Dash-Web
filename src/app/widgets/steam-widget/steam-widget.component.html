@@ -53,16 +53,22 @@
 
     @if (config().steamUserId; as steamUserId) {
       @if (playerData(); as playerData) {
-        <mat-accordion class="games-list">
-          @for (game of ownedGamesDisplay(); track game.appid) {
-            <dash-game-details [steamUserId]="steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
-          } @empty {
-            <div class="no-game-found column items-center gap-xs">
-              <mat-icon>sports_esports</mat-icon>
-              <span>Aucun jeu trouvé</span>
-            </div>
-          }
-        </mat-accordion>
+        @if (isOwnedGamesLoading()) {
+          <div class="loading-spinner games-loading">
+            <mat-spinner diameter="32" />
+          </div>
+        } @else {
+          <mat-accordion class="games-list">
+            @for (game of ownedGamesDisplay(); track game.appid) {
+              <dash-game-details [steamUserId]="steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
+            } @empty {
+              <div class="no-game-found column items-center gap-xs">
+                <mat-icon>sports_esports</mat-icon>
+                <span>Aucun jeu trouvé</span>
+              </div>
+            }
+          </mat-accordion>
+        }
       }
     }
 
