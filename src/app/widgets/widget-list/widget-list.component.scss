@@ -22,7 +22,9 @@
   }
 
   &.cdk-drop-list-dragging .widget-container:not(.cdk-drag-placeholder) {
-    transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    @include motion-safe {
+      transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    }
   }
 }
 
@@ -33,6 +35,8 @@
   }
 
   &.cdk-drag-animating {
-    transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    @include motion-safe {
+      transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    }
   }
 }

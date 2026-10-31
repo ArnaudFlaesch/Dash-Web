@@ -6,9 +6,7 @@ $header-height: 3rem;
 .widget {
   height: 26rem;
   overflow: hidden;
-  transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+  transition: box-shadow 0.2s ease;
 }
 
 .header-container {

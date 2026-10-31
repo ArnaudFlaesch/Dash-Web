@@ -16,15 +16,21 @@
   font-weight: 500;
   transition:
     border-color 0.15s ease,
-    background-color 0.15s ease,
-    transform 0.15s ease;
+    background-color 0.15s ease;
 
   mat-icon {
     @include icon-size(2rem);
   }
 
-  &:hover,
-  &:focus-visible {
-    transform: translateY(-2px);
+  @include motion-safe {
+    transition:
+      border-color 0.15s ease,
+      background-color 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-2px);
+    }
   }
 }

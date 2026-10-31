@@ -1,3 +1,4 @@
+@use "@angular/material" as mat;
 @use "mixins" as *;
 
 // Building blocks shared by the components, combined with their own classes in the templates
@@ -53,10 +54,16 @@
 
 // Expansion panels displayed as a flat list separated by thin lines, the expanded one is
 // highlighted as an inset card. Material renders the body of the panel itself, so its padding is
-// set in the theme partial of each component.
+// set in the theme partial of each component. The shape and the shadow are overridden with the
+// Material tokens, which are also used by the accordion's rules.
 .mat-expansion-panel.flat-panel {
-  border-radius: 0 !important;
-  box-shadow: none !important;
+  @include mat.expansion-overrides(
+    (
+      container-shape: 0,
+      container-elevation-shadow: none
+    )
+  );
+
   background-color: transparent;
 
   @include themed {
@@ -68,7 +75,11 @@
   }
 
   &.highlight-expanded.mat-expanded {
-    border-radius: $border-radius-lg !important;
+    @include mat.expansion-overrides(
+      (
+        container-shape: $border-radius-lg
+      )
+    );
 
     @include themed {
       background-color: $color-background;

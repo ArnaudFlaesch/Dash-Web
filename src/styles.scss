@@ -63,8 +63,9 @@ body {
     @include mat.all-component-colors($dark-theme);
     @include mat.color-variants-backwards-compatibility($dark-theme);
 
+    // More specific than the hovered rows of angular-calendar
     .widget .cal-cell-row {
-      background-color: map.get($dark-theme-colors, surface) !important;
+      background-color: map.get($dark-theme-colors, surface);
     }
 
     // The logo is dark, so it is lightened to stay visible
@@ -72,12 +73,6 @@ body {
       filter: invert(1) brightness(1.4);
     }
   }
-}
-
-// Dialogs never overflow small screens
-.cdk-overlay-pane.mat-mdc-dialog-panel {
-  max-width: calc(100vw - #{$space-md * 2}) !important;
-  max-height: calc(100dvh - #{$space-md * 2});
 }
 
 mat-expansion-panel-header:hover,
@@ -106,11 +101,5 @@ a {
 
   @include themed {
     outline: 2px solid $color-accent;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
   }
 }

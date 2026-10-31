@@ -130,11 +130,11 @@
 
   <main id="dashboard-content">
     @if (editModeEnabled()) {
-      <div id="edit-mode-banner" class="accent-soft row items-center justify-between gap-sm" role="status">
-        <div class="row items-center gap-sm">
+      <div id="edit-mode-banner" class="accent-soft row items-center justify-between gap-sm">
+        <output class="row items-center gap-sm">
           <mat-icon>open_with</mat-icon>
           <span>Glissez-déposez les widgets et les onglets pour les réorganiser.</span>
-        </div>
+        </output>
         <button mat-button (click)="toggleEditMode()">Terminer</button>
       </div>
     }

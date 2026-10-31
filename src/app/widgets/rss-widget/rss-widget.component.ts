@@ -24,10 +24,17 @@ import { WidgetComponent } from "../widget/widget.component";
  * so it is converted to a string to be compared with the read articles.
  */
 function guidToString(guid: unknown): string {
-  if (guid && typeof guid === "object") {
-    return String((guid as Record<string, unknown>)[""] ?? JSON.stringify(guid));
+  if (typeof guid === "string") {
+    return guid;
   }
-  return String(guid ?? "");
+  if (typeof guid === "number") {
+    return guid.toString();
+  }
+  if (guid && typeof guid === "object") {
+    const value = (guid as Record<string, unknown>)[""];
+    return typeof value === "string" ? value : JSON.stringify(guid);
+  }
+  return "";
 }
 
 /** Read articles guids as strings, without duplicates. */

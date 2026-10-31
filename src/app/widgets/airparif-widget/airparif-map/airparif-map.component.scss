@@ -30,22 +30,27 @@ $indice-dot-size: 10px;
   overflow: hidden;
   z-index: 1000;
   border-radius: $border-radius-lg;
-  transition:
-    width 300ms ease,
-    bottom 300ms ease,
-    transform 150ms ease;
+
+  @include motion-safe {
+    transition:
+      width 300ms ease,
+      bottom 300ms ease,
+      transform 150ms ease;
+  }
 
   // Collapsed, the sidebar is a single button floating on the map
   &.collapsed {
     width: $sidebar-tab-size;
     bottom: calc(100% - #{$sidebar-tab-size} - #{$sidebar-margin});
 
-    &:hover {
-      transform: translateY(-2px);
-    }
+    @include motion-safe {
+      &:hover {
+        transform: translateY(-2px);
+      }
 
-    &:active {
-      transform: scale(0.95);
+      &:active {
+        transform: scale(0.95);
+      }
     }
   }
 }
@@ -82,11 +87,17 @@ $indice-dot-size: 10px;
   height: $sidebar-tab-icon-size;
   border-radius: $border-radius-lg;
   transition:
-    width 300ms ease,
-    height 300ms ease,
     background-color 150ms,
-    color 150ms,
-    transform 150ms ease;
+    color 150ms;
+
+  @include motion-safe {
+    transition:
+      width 300ms ease,
+      height 300ms ease,
+      background-color 150ms,
+      color 150ms,
+      transform 150ms ease;
+  }
 
   mat-icon {
     @include icon-size(20px);
@@ -102,12 +113,14 @@ $indice-dot-size: 10px;
     }
   }
 
-  .sidebar:not(.collapsed) a:hover > & {
-    transform: scale(1.08);
-  }
+  @include motion-safe {
+    .sidebar:not(.collapsed) a:hover > & {
+      transform: scale(1.08);
+    }
 
-  .sidebar:not(.collapsed) a:active > & {
-    transform: scale(0.95);
+    .sidebar:not(.collapsed) a:active > & {
+      transform: scale(0.95);
+    }
   }
 }
 
@@ -118,9 +131,12 @@ $indice-dot-size: 10px;
   width: $indice-dot-size;
   height: $indice-dot-size;
   border-radius: $border-radius-pill;
-  transition:
-    top 300ms ease,
-    right 300ms ease;
+
+  @include motion-safe {
+    transition:
+      top 300ms ease,
+      right 300ms ease;
+  }
 
   .collapsed & {
     top: 5px;

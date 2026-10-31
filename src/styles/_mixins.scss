@@ -1,4 +1,5 @@
 @use "sass:map";
+@use "sass:selector";
 
 // Shared design tokens and layout helpers, available in every stylesheet with `@use "mixins" as *;`
 
@@ -93,12 +94,20 @@ $shadow-hover: map.get($light-theme-colors, shadow-hover);
   @include -use-theme-colors($light-theme-colors);
   @content;
 
-  .dark-mode & {
+  // Same as `.dark-mode &`, with the current selector as an explicit scoping root
+  @at-root #{selector.nest(".dark-mode", &)} {
     @include -use-theme-colors($dark-theme-colors);
     @content;
   }
 
   @include -use-theme-colors($light-theme-colors);
+}
+
+// Spatial motion (moves, resizes, scales), only when the user has not asked to reduce motion
+@mixin motion-safe {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
 }
 
 @mixin centered {
