@@ -1,8 +1,22 @@
 @use "sass:color";
 @use "mixins" as *;
 
-// Theme colors of the AirParif map sidebar
+// Theme colors of the AirParif map sidebar, and position of the OpenLayers controls
 dash-airparif-map {
+  // The sidebar button takes the top left corner of the map, where OpenLayers puts its zoom
+  // buttons: they are moved to the top right corner, above the rotate button (spaced like
+  // OpenLayers' own zoom-extent button below the zoom buttons)
+  .ol-zoom {
+    top: $space-sm;
+    right: $space-sm;
+    left: auto;
+  }
+
+  .ol-rotate {
+    top: 4.643em;
+    right: $space-sm;
+  }
+
   .sidebar {
     @include themed {
       border: 1px solid $color-border;
