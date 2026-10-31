@@ -30,17 +30,15 @@ Cypress.Commands.add("shouldDisplayErrorMessage", (errorMessage: string): Cypres
 });
 
 function loginAs(username: string, password: string): Chainable<Cypress.Response<unknown>> {
-  return cy.env(["BACKEND_URL"]).then(({ BACKEND_URL }) => {
-    return cy
-      .request<unknown>({
-        method: "POST",
-        url: `${BACKEND_URL}/auth/login`,
-        body: { username, password }
-      })
-      .then(({ body }) => {
-        window.localStorage.setItem("user", JSON.stringify(body));
-      });
-  });
+  return cy
+    .request<unknown>({
+      method: "POST",
+      url: `${Cypress.expose("BACKEND_URL")}/auth/login`,
+      body: { username, password }
+    })
+    .then(({ body }) => {
+      window.localStorage.setItem("user", JSON.stringify(body));
+    });
 }
 
 function navigateToTab(tabName: string): Cypress.Chainable {

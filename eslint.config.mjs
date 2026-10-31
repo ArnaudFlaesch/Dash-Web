@@ -13,7 +13,6 @@ export default defineConfig([
     "cypress.config.ts",
     "cypress-test.config.ts",
     "node_modules",
-    "public",
     "build",
     "package-lock.json"
   ]),

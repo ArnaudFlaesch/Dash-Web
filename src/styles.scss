@@ -27,7 +27,6 @@
 @use "app/widgets/workout-widget/workout-widget.theme";
 @use "app/widgets/workout-widget/workout-session-edit/workout-session-edit.theme";
 @use "app/widgets/widget/widget.theme" as widget-theme;
-@include mat.core;
 
 $light-theme: mat.define-theme(
   (

@@ -19,7 +19,11 @@ dash-airparif-map {
       border: none;
       background-color: $color-accent;
       background-image:
-        radial-gradient(circle at 30% 20%, rgb(255 255 255 / 30%), transparent 60%),
+        radial-gradient(
+          circle at 30% 20%,
+          rgb(255 255 255 / 30%),
+          transparent 60%
+        ),
         linear-gradient(
           135deg,
           color.adjust($color-accent, $lightness: 8%),
