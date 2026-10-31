@@ -5,9 +5,9 @@
   border-radius: $border-radius-lg;
 }
 
+// Not a scroll container, so that swiping on a mini widget scrolls the list of mini widgets
 .read-mini-widget-body-container {
   padding: $space-xs;
-  overflow-y: auto;
   cursor: default;
 }
 
