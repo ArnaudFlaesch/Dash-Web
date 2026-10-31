@@ -1,0 +1,15 @@
+@use "mixins" as *;
+
+// Global styles of the Strava activities: the body of their expansion panel (rendered by the
+// panel itself) and their theme colors
+dash-strava-activities {
+  .strava-activity .mat-expansion-panel-body {
+    padding: 0 $space-sm $space-sm;
+  }
+
+  .activity-stat {
+    @include themed {
+      background-color: $color-surface;
+    }
+  }
+}

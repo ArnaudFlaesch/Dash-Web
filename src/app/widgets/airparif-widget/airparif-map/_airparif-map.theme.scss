@@ -1,0 +1,117 @@
+@use "sass:color";
+@use "mixins" as *;
+
+// Theme colors of the AirParif map sidebar, and position of the OpenLayers controls
+dash-airparif-map {
+  // The sidebar button takes the top left corner of the map, where OpenLayers puts its zoom
+  // buttons: they are moved to the top right corner, above the rotate button (spaced like
+  // OpenLayers' own zoom-extent button below the zoom buttons)
+  .ol-zoom {
+    top: $space-sm;
+    right: $space-sm;
+    left: auto;
+  }
+
+  .ol-rotate {
+    top: 4.643em;
+    right: $space-sm;
+  }
+
+  @include themed {
+    .sidebar {
+      border: 1px solid $color-border;
+      background-color: $color-surface;
+      box-shadow: $shadow-hover;
+      color: $color-text;
+    }
+
+    .sidebar-tabs {
+      border-right: 1px solid $color-border;
+    }
+
+    #sidebar-tab-icon {
+      background-color: $color-accent-soft;
+      color: $color-accent;
+    }
+
+    // Borderless button floating on the map, with a gradient of the accent color, a soft
+    // highlight on its top left corner and a glow of the accent color instead of a gray shadow
+    .sidebar.collapsed {
+      border: none;
+      background-color: $color-accent;
+      background-image:
+        radial-gradient(
+          circle at 30% 20%,
+          rgb(255 255 255 / 30%),
+          transparent 60%
+        ),
+        linear-gradient(
+          135deg,
+          color.adjust($color-accent, $lightness: 8%),
+          color.adjust($color-accent, $lightness: -10%)
+        );
+      box-shadow: 0 4px 14px color.change($color-accent, $alpha: 0.4);
+
+      &:hover {
+        box-shadow: 0 8px 22px color.change($color-accent, $alpha: 0.5);
+      }
+
+      .sidebar-tabs {
+        border-right: none;
+      }
+
+      #sidebar-tab-icon {
+        background-color: transparent;
+        color: $color-surface;
+      }
+    }
+
+    .sidebar-tabs .active #sidebar-tab-icon {
+      background-color: $color-accent;
+      color: $color-surface;
+    }
+
+    .sidebar-header {
+      border-bottom: 1px solid $color-border;
+      background-color: $color-widget-header;
+    }
+
+    .sidebar-close:hover {
+      background-color: $color-border;
+    }
+
+    #forecast-select-buttons {
+      background-color: $color-background;
+    }
+
+    .forecast-select-button {
+      color: $color-muted-text;
+
+      &.active {
+        background-color: $color-surface;
+        box-shadow: $shadow;
+        color: $color-accent;
+      }
+    }
+
+    #global-indice-color {
+      box-shadow: $shadow;
+    }
+
+    .airparif-indice {
+      border-bottom: 1px solid $color-border;
+    }
+
+    .indice-dot {
+      box-shadow: 0 0 0 1px $color-border;
+    }
+
+    .indice-label.active {
+      background-color: $color-background;
+    }
+
+    #airparif-source:hover {
+      color: $color-accent;
+    }
+  }
+}

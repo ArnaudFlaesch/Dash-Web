@@ -1,6 +1,11 @@
 <mat-accordion>
   @for (article of feed(); track article.link) {
-    <mat-expansion-panel hideToggle class="rss-article" (opened)="onOpenDetail(article.guid)" (closed)="onClosePanel()">
+    <mat-expansion-panel
+      hideToggle
+      class="rss-article flat-panel"
+      (opened)="onOpenDetail(article.guid)"
+      (closed)="onClosePanel()"
+    >
       <mat-expansion-panel-header>
         <mat-panel-title
           [class.article-opened]="isArticleOpened(article.guid)"
@@ -16,7 +21,7 @@
             <div class="article-content">
               {{ stripHtmlFromContent(article.description) }}
             </div>
-            <div class="article-pubdate">
+            <div class="article-pubdate muted-text">
               Publié le
               {{ (article.pubDate ? article.pubDate : article.updated) || "" | dateFormat }}
               {{ article.author && "par " + article.author }}

@@ -6,7 +6,7 @@
 >
   <ng-template #headerIcon>
     @if (athlete(); as athlete) {
-      <a [href]="getAthleteProfileUrl(athlete.id)" id="stravaWidgetHeader">
+      <a [href]="getAthleteProfileUrl(athlete.id)" id="strava-widget-header">
         <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="Athlete profile" />
       </a>
     } @else {
@@ -25,31 +25,70 @@
   <ng-template #body>
     @if (isUserLoggedIn()) {
       @if (activities().length) {
-        <div>
-          <div id="strava-activities-container" class="row">
-            <div id="activities-pagination-container" class="column">
-              @if (pageNumber() > 1) {
-                <button (click)="getNextActivitiesPage()" matTooltip="Page suivante" mat-icon-button>
-                  <mat-icon>arrow_forward</mat-icon>
-                </button>
-              }
-              @if (activities().length === paginationActivities) {
-                <button (click)="getPreviousActivitiesPage()" matTooltip="Page précédente" mat-icon-button>
-                  <mat-icon>arrow_back</mat-icon>
-                </button>
-              }
+        <div class="strava-content column gap-sm">
+          <div class="strava-summary">
+            <div class="strava-summary-item inset">
+              <span class="strava-summary-value">{{ activitiesSummary().count }}</span>
+              <span class="strava-summary-label overline muted-text">Activités</span>
             </div>
+            <div class="strava-summary-item inset">
+              <span class="strava-summary-value">{{ activitiesSummary().distance | number: "1.0-0" }} km</span>
+              <span class="strava-summary-label overline muted-text">Distance</span>
+            </div>
+            <div class="strava-summary-item inset">
+              <span class="strava-summary-value">{{ activitiesSummary().elevation | number: "1.0-0" }} m</span>
+              <span class="strava-summary-label overline muted-text">Dénivelé</span>
+            </div>
+          </div>
+
+          <div id="strava-statistics" class="strava-chart chart-container">
+            <canvas baseChart [data]="activitiesChartData()" [options]="chartOptions" [type]="'bar'"></canvas>
+          </div>
+
+          <div id="strava-activities-container">
             <dash-strava-activities [activities]="activities()" />
           </div>
-          <div id="strava-statistics">
-            <canvas baseChart [data]="activitiesChartData()" [type]="'bar'"></canvas>
+
+          <div id="activities-pagination-container" class="row items-center justify-between">
+            <button
+              mat-button
+              [disabled]="pageNumber() <= 1"
+              matTooltip="Activités plus récentes"
+              (click)="getNextActivitiesPage()"
+            >
+              <mat-icon>chevron_left</mat-icon>
+              Plus récentes
+            </button>
+            <span class="strava-page-number muted-text">Page {{ pageNumber() }}</span>
+            <button
+              mat-button
+              class="older-activities-button"
+              [disabled]="activities().length < paginationActivities"
+              matTooltip="Activités plus anciennes"
+              (click)="getPreviousActivitiesPage()"
+            >
+              Plus anciennes
+              <mat-icon>chevron_right</mat-icon>
+            </button>
           </div>
+        </div>
+      } @else {
+        <div class="strava-empty muted-text column items-center gap-sm">
+          <mat-icon>directions_run</mat-icon>
+          <span>Aucune activité pour le moment.</span>
         </div>
       }
     } @else {
-      <button (click)="loginToStrava()" id="login-to-strava-button" mat-raised-button color="primary">
-        Se connecter
-      </button>
+      <div class="strava-login column items-center gap-md">
+        <span class="strava-login-icon centered">
+          <mat-icon>directions_run</mat-icon>
+        </span>
+        <p class="muted-text">Connectez votre compte Strava pour suivre vos activités.</p>
+        <button (click)="loginToStrava()" id="login-to-strava-button" mat-flat-button>
+          <mat-icon>link</mat-icon>
+          Se connecter à Strava
+        </button>
+      </div>
     }
   </ng-template>
 </dash-widget>

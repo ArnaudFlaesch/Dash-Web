@@ -1,9 +1,10 @@
 @use "mixins" as *;
 
-#widget-list {
-  @include grid-columns(3, 0.7em);
+// The theme colors are set in _widget-list.theme.scss
 
-  padding: 0.5em;
+// Three widgets per row on desktop, two on tablets and one on phones
+#widget-list {
+  @include grid-columns(3, $space-md);
 
   @media (width < $breakpoint-lg) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -11,5 +12,31 @@
 
   @media (width < $breakpoint-md) {
     grid-template-columns: minmax(0, 1fr);
+    gap: $space-sm;
+  }
+
+  &.edit-mode .widget-container {
+    cursor: grab;
+    border-radius: $border-radius-lg;
+    outline-offset: 3px;
+  }
+
+  &.cdk-drop-list-dragging .widget-container:not(.cdk-drag-placeholder) {
+    @include motion-safe {
+      transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+}
+
+// The dragged widget is a copy of this component's element, so it keeps these styles
+.widget-container {
+  &.cdk-drag-placeholder {
+    opacity: 0.3;
+  }
+
+  &.cdk-drag-animating {
+    @include motion-safe {
+      transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    }
   }
 }

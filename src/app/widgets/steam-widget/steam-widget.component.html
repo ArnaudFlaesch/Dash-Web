@@ -19,11 +19,11 @@
   </ng-template>
 
   <ng-template #editComponent>
-    <mat-form-field appearance="fill">
-      <mat-label id="steamUserIdLabel">Utilisateur Steam</mat-label>
+    <mat-form-field appearance="outline">
+      <mat-label id="steam-user-id-label">Utilisateur Steam</mat-label>
       <input
         matInput
-        id="steamUserIdInput"
+        id="steam-user-id-input"
         [formField]="configForm.steamUserId"
         placeholder="Saisissez l'user ID du joueur Steam'"
       />
@@ -31,28 +31,49 @@
   </ng-template>
 
   <ng-template #body>
-    <form id="search-game-form" class="row">
-      <mat-form-field appearance="fill">
+    <form id="search-game-form">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
         <mat-label>Recherchez un jeu</mat-label>
         <input matInput [formField]="searchForm" />
+        @if (searchQuery()) {
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            matTooltip="Annuler la recherche"
+            id="reset-form-button"
+            (click)="resetForm()"
+          >
+            <mat-icon aria-hidden="false">close</mat-icon>
+          </button>
+        }
       </mat-form-field>
-
-      @if (searchQuery()) {
-        <button mat-icon-button matTooltip="Annuler la recherche" id="reset-form-button" (click)="resetForm()">
-          <mat-icon aria-hidden="false">close</mat-icon>
-        </button>
-      }
     </form>
 
     @if (config().steamUserId; as steamUserId) {
       @if (playerData(); as playerData) {
-        @for (game of ownedGamesDisplay(); track game.appid) {
-          <dash-game-details [steamUserId]="steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
+        @if (isOwnedGamesLoading()) {
+          <div class="loading-spinner games-loading">
+            <mat-spinner diameter="32" />
+          </div>
+        } @else {
+          <mat-accordion class="games-list">
+            @for (game of ownedGamesDisplay(); track game.appid) {
+              <dash-game-details [steamUserId]="steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
+            } @empty {
+              <div class="no-game-found muted-text column items-center gap-xs">
+                <mat-icon>sports_esports</mat-icon>
+                <span>Aucun jeu trouvé</span>
+              </div>
+            }
+          </mat-accordion>
         }
       }
     }
 
     <mat-paginator
+      class="games-paginator"
       (page)="onPageChanged($event)"
       [length]="gameCount()"
       [pageSize]="pageSize"

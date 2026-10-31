@@ -1,13 +1,35 @@
 @if (editMode()) {
-  <div class="tab-input row">
+  <div class="tab-input row items-center gap-xs">
     <input
-      id="tabNameInput"
+      id="tab-name-input"
+      class="tab-name-input"
       aria-label="Tab name"
       (keydown)="enterSaveTabName($event)"
       (dblclick)="saveTabName()"
       [formField]="tabLabelForm"
     />
-    <mat-icon class="deleteTabButton" (keydown)="deleteTabFromDash()" (click)="deleteTabFromDash()"> delete </mat-icon>
+    <mat-icon
+      class="save-tab-button accent-text"
+      role="button"
+      aria-label="Enregistrer le nom"
+      title="Enregistrer"
+      (keydown.enter)="saveTabName()"
+      (click)="saveTabName()"
+      tabindex="0"
+    >
+      check
+    </mat-icon>
+    <mat-icon
+      class="delete-tab-button"
+      role="button"
+      aria-label="Supprimer l'onglet"
+      title="Supprimer l'onglet"
+      (keydown.enter)="deleteTabFromDash()"
+      (click)="deleteTabFromDash()"
+      tabindex="0"
+    >
+      delete
+    </mat-icon>
   </div>
 } @else {
   <div class="tab-label" (dblclick)="toggleEditMode()">

@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { MatButton } from "@angular/material/button";
-import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
 import {
   MatDialogActions,
   MatDialogClose,
@@ -10,37 +9,30 @@ import {
 import { MatIcon } from "@angular/material/icon";
 import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 
-const WIDGET_TYPE_ICONS: Record<keyof typeof WidgetTypeEnum, string> = {
-  WEATHER: "sunny",
-  RSS: "feed",
-  CALENDAR: "calendar_month",
-  STRAVA: "directions_run",
-  STEAM: "sports_esports",
-  WORKOUT: "fitness_center",
-  AIRPARIF: "air",
-  ECOWATT: "electric_bolt",
-  INCIDENT: "priority_high"
+const WIDGET_TYPE_ICONS: Record<keyof typeof WidgetTypeEnum, { icon: string; label: string }> = {
+  WEATHER: { icon: "sunny", label: "Météo" },
+  RSS: { icon: "feed", label: "Flux RSS" },
+  CALENDAR: { icon: "calendar_month", label: "Agenda" },
+  STRAVA: { icon: "directions_run", label: "Strava" },
+  STEAM: { icon: "sports_esports", label: "Steam" },
+  WORKOUT: { icon: "fitness_center", label: "Sport" },
+  AIRPARIF: { icon: "air", label: "AirParif" },
+  ECOWATT: { icon: "electric_bolt", label: "Ecowatt" },
+  INCIDENT: { icon: "priority_high", label: "Incidents" }
 };
 
 @Component({
   selector: "dash-create-widget-modal",
   templateUrl: "./create-widget-modal.component.html",
   styleUrl: "../create-widget-modal.scss",
-  imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatCard,
-    MatCardContent,
-    MatIcon,
-    MatCardActions,
-    MatButton,
-    MatDialogClose,
-    MatDialogActions
-  ]
+  imports: [MatDialogTitle, MatDialogContent, MatIcon, MatButton, MatDialogClose, MatDialogActions]
 })
 export class CreateWidgetModalComponent {
-  public readonly widgetTypes = Object.entries(WIDGET_TYPE_ICONS).map(([type, icon]) => ({
-    type,
-    icon
-  }));
+  public readonly widgetTypes = Object.entries(WIDGET_TYPE_ICONS).map(
+    ([type, { icon, label }]) => ({
+      type,
+      icon,
+      label
+    })
+  );
 }

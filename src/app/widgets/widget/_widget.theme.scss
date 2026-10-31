@@ -1,0 +1,50 @@
+@use "mixins" as *;
+
+// Global styles of the widgets: their theme colors and the edit form projected by each widget
+dash-widget {
+  // Configuration form of the widget, its fields take the whole width
+  .widget-edit-component-container {
+    mat-form-field {
+      width: 100%;
+    }
+
+    // Plain inputs (e.g. the calendar URLs) look like the form fields
+    input:not(.mat-mdc-input-element) {
+      flex: 1;
+      min-width: 0;
+      padding: 0.6rem 0.75rem;
+      border-radius: $border-radius;
+      font: inherit;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  @include themed {
+    .widget:hover {
+      box-shadow: $shadow-hover;
+    }
+
+    .header-container {
+      border-bottom: 1px solid $color-border;
+      background-color: $color-widget-header;
+      color: $color-text;
+    }
+
+    .widget-edit-component-container input:not(.mat-mdc-input-element) {
+      border: 1px solid $color-border;
+      background-color: $color-surface;
+      color: $color-text;
+
+      &:focus {
+        border-color: $color-accent;
+      }
+    }
+
+    .edit-component-actions {
+      border-top: 1px solid $color-border;
+    }
+  }
+}

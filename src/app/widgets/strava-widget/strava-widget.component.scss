@@ -1,17 +1,78 @@
+@use "sass:color";
+@use "mixins" as *;
+
+// The theme colors come from the `inset` and `muted-text` classes
 #strava-profile-picture {
-  max-height: 2.3rem;
+  max-height: 1.75rem;
+  border-radius: 50%;
 }
 
-#strava-activities-container {
-  max-height: 12rem;
-  overflow-y: scroll;
+// Totals of the displayed activities
+.strava-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $space-xs;
+
+  .strava-summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: $space-sm $space-xs;
+  }
+
+  .strava-summary-value {
+    color: $color-strava;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 #strava-statistics {
-  min-height: 6rem;
-  max-height: 24rem;
+  height: 10rem;
 }
 
-#login-to-strava-button {
-  margin: auto;
+#activities-pagination-container {
+  .strava-page-number {
+    font-size: 0.8rem;
+  }
+
+  .older-activities-button mat-icon {
+    margin: 0 0 0 $space-xs;
+  }
+}
+
+.strava-empty,
+.strava-login {
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
+.strava-empty mat-icon {
+  @include icon-size(2.5rem);
+}
+
+.strava-login {
+  p {
+    max-width: 16rem;
+    margin: 0;
+  }
+
+  .strava-login-icon {
+    height: 4rem;
+    width: 4rem;
+    border-radius: 50%;
+    background-color: color.change($color-strava, $alpha: 0.12);
+    color: $color-strava;
+
+    mat-icon {
+      @include icon-size(2rem);
+    }
+  }
+
+  #login-to-strava-button {
+    background-color: $color-strava;
+    color: #fff;
+  }
 }

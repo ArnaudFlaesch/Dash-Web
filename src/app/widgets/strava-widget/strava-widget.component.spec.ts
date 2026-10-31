@@ -170,6 +170,12 @@ describe("StravaWidgetComponent", () => {
     });
     const statsFromActivities = component.getStatsFromActivities();
     expect(statsFromActivities[0].y).toEqual(268);
+    const [distanceDataset, activitiesDataset] = component.activitiesChartData().datasets;
+    expect(distanceDataset.data).toEqual([268]);
+    expect(activitiesDataset.data).toEqual([25]);
+    expect(component.activitiesSummary().count).toEqual(25);
+    expect(component.activitiesSummary().distance).toBeCloseTo(267.6175);
+    expect(component.activitiesSummary().elevation).toBeCloseTo(1230);
 
     component.getPreviousActivitiesPage();
     TestBed.tick();

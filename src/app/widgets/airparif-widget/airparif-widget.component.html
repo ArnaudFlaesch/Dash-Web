@@ -9,29 +9,44 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <a [href]="[airParifWidgetService.getAirParifWebsiteUrl() | safe: 'url']">
+    <a [href]="airParifWidgetService.getAirParifWebsiteUrl() | safe: 'url'" target="_blank" rel="noopener noreferrer">
       <div>AirParif</div>
     </a>
   </ng-template>
 
+  <ng-template #additionalActions>
+    @if (airParifForecast()[0]; as todayForecast) {
+      <button
+        id="airparif-today-chip"
+        class="tile row items-center gap-xs"
+        matTooltip="Voir le détail de la qualité de l'air"
+        (click)="openSidebar()"
+      >
+        <span id="airparif-today-dot" [class]="getIndiceClass(todayForecast.indice)"></span>
+        {{ getIndiceLabel(todayForecast.indice) }}
+      </button>
+    }
+  </ng-template>
+
   <ng-template #editComponent>
-    <mat-form-field appearance="fill">
-      <mat-label id="airParifApiKeyLabel">Clé d'API</mat-label>
+    <mat-form-field appearance="outline">
+      <mat-label id="airparif-api-key-label">Clé d'API</mat-label>
       <input
         matInput
-        id="airParifApiKey"
+        id="airparif-api-key"
         [formField]="configForm.airParifApiKey"
         placeholder="Saisissez la clé d'API AirParif"
       />
     </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label id="communeInseeCodeLabel">Code commune</mat-label>
+    <mat-form-field appearance="outline">
+      <mat-label id="commune-insee-code-label">Code commune</mat-label>
       <input
         matInput
-        id="communeInseeCode"
+        id="commune-insee-code"
         [formField]="configForm.communeInseeCode"
         placeholder="Saisissez le code commune"
       />
+      <mat-hint>Code INSEE à 5 chiffres, par exemple 75112 pour Paris 12e</mat-hint>
     </mat-form-field>
   </ng-template>
 
@@ -41,6 +56,7 @@
       [airParifApiKey]="config().airParifApiKey"
       [airParifForecast]="airParifForecast()"
       [airParifCouleursIndices]="airParifCouleursIndices()"
+      [isLoading]="airParifResource.isLoading()"
     />
   </ng-template>
 </dash-widget>

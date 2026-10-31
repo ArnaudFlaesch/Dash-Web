@@ -1,0 +1,9 @@
+@use "mixins" as *;
+
+// Description of the feed, limited to two lines
+.rss-widget-description {
+  @include line-clamp(2);
+
+  font-size: 0.9em;
+  line-height: 1.4;
+}

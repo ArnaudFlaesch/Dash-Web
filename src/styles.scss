@@ -1,7 +1,25 @@
+@use "sass:map";
 @use "@angular/material" as mat;
+@use "mixins" as *;
 @use "layout";
+@use "components";
 @use "widget";
-@include mat.core;
+
+// Global styles of the components: their element and their theme colors
+@use "app/home/home.theme";
+@use "app/login/login.theme";
+@use "app/notifications/notifications-list/notifications-list.theme";
+@use "app/tab/tab.theme";
+@use "app/widgets/airparif-widget/airparif-map/airparif-map.theme";
+@use "app/widgets/airparif-widget/airparif-widget.theme";
+@use "app/widgets/miniwidget-list/miniwidget-list.theme";
+@use "app/widgets/rss-widget/rss-feed/rss-feed.theme";
+@use "app/widgets/steam-widget/game-details/game-details.theme";
+@use "app/widgets/steam-widget/steam-widget.theme";
+@use "app/widgets/strava-widget/strava-activities/strava-activities.theme";
+@use "app/widgets/widget-list/widget-list.theme";
+@use "app/widgets/workout-widget/workout-session-edit/workout-session-edit.theme";
+@use "app/widgets/widget/widget.theme" as widget-theme;
 
 $light-theme: mat.define-theme(
   (
@@ -15,7 +33,7 @@ $dark-theme: mat.define-theme(
   (
     color: (
       theme-type: dark,
-      primary: mat.$red-palette
+      primary: mat.$azure-palette
     )
   )
 );
@@ -25,40 +43,63 @@ body {
   height: 100%;
 }
 
-// Colors used by the dashboard and the widgets, overridden in dark mode
+// The dark-mode class is on the body itself, so its colors are not set with the `themed` mixin
 body {
-  --dash-background-color: #4e4945;
-  --widget-header-color: #000;
-  --widget-header-text-color: #fff;
-  --widget-background-color: #fff;
-
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: var(--dash-background-color);
+  color: map.get($light-theme-colors, text);
+  background-color: map.get($light-theme-colors, background);
+  transition: background-color 0.2s ease;
 
-  @include mat.core-theme($light-theme);
-  @include mat.button-color($light-theme);
+  // All the components use the Material 3 theme (overriding the prebuilt one),
+  // and keep supporting the color="primary|accent|warn" inputs
+  @include mat.all-component-themes($light-theme);
+  @include mat.color-variants-backwards-compatibility($light-theme);
 
   &.dark-mode {
-    --dash-background-color: #282a33;
-    --widget-header-color: #2b5182;
-    --widget-header-text-color: #000;
-    --widget-background-color: hsl(208.4deg 17.6% 42.4%);
+    color: map.get($dark-theme-colors, text);
+    background-color: map.get($dark-theme-colors, background);
 
-    @include mat.all-component-themes($dark-theme);
+    @include mat.all-component-colors($dark-theme);
+    @include mat.color-variants-backwards-compatibility($dark-theme);
 
-    .widget :is(mat-expansion-panel, .cal-cell-row) {
-      background-color: var(--widget-background-color) !important;
+    // More specific than the hovered rows of angular-calendar
+    .widget .cal-cell-row {
+      background-color: map.get($dark-theme-colors, surface);
+    }
+
+    // The logo is dark, so it is lightened to stay visible
+    .app-logo {
+      filter: invert(1) brightness(1.4);
     }
   }
 }
 
 mat-expansion-panel-header:hover,
 a.hoverable-link:hover {
-  font-weight: bold;
+  @include themed {
+    color: $color-accent;
+  }
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+// Thin, discreet scrollbars for the scrollable areas of the dashboard
+* {
+  scrollbar-width: thin;
+
+  @include themed {
+    scrollbar-color: $color-border transparent;
+  }
+}
+
+:focus-visible {
+  outline-offset: 2px;
+
+  @include themed {
+    outline: 2px solid $color-accent;
+  }
 }

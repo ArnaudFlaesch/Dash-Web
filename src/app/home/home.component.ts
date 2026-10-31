@@ -4,7 +4,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, DestroyRef, inject, linkedSignal, signal } from "@angular/core";
 import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { form, FormField } from "@angular/forms/signals";
-import { MatMiniFabButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
@@ -38,7 +38,8 @@ import { WidgetListComponent } from "../widgets/widget-list/widget-list.componen
     CdkDropList,
     TabComponent,
     CdkDrag,
-    MatMiniFabButton,
+    MatButton,
+    MatIconButton,
     MatTooltip,
     MatIcon,
     MatMenuTrigger,
@@ -174,7 +175,7 @@ export class HomeComponent {
 
   public openCreateWidgetModal(): void {
     this.dialog
-      .open(CreateWidgetModalComponent, { height: "400px", width: "600px" })
+      .open(CreateWidgetModalComponent, { width: "640px" })
       .afterClosed()
       .pipe(
         filter(Boolean),
@@ -194,7 +195,7 @@ export class HomeComponent {
   }
 
   public openImportConfigModal(): void {
-    this.dialog.open(ImportConfigModalComponent, { height: "400px", width: "600px" });
+    this.dialog.open(ImportConfigModalComponent, { width: "640px" });
   }
 
   public downloadConfig(): void {

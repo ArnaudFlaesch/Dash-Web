@@ -67,3 +67,37 @@
   height: 100%;
   margin: auto;
 }
+
+// Text cut with an ellipsis on a single line
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Small uppercase label above or below a value
+.overline {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.muted-text {
+  @include themed {
+    color: $color-muted-text;
+  }
+}
+
+.accent-text {
+  @include themed {
+    color: $color-accent;
+  }
+}
+
+// Text and background of the accent color, for badges and highlighted elements
+.accent-soft {
+  @include themed {
+    background-color: $color-accent-soft;
+    color: $color-accent;
+  }
+}

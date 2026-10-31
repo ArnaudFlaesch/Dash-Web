@@ -135,6 +135,33 @@ describe("RssWidgetComponent", () => {
     expect(component.readArticles().length).toEqual(feedLength);
   });
 
+  it("Should mark an article with an object guid as read", async () => {
+    const articleUrl = "https://www.lemonde.fr/article.html";
+    component.config.update((config) => ({ ...config, url: urlFeed }));
+    component.refreshWidget();
+    TestBed.tick();
+    httpTestingController.expectOne(environment.backend_url + "/rssWidget/?url=" + urlFeed).flush({
+      channel: {
+        ...rssFeedData.channel,
+        item: [{ ...rssFeedData.channel.item[0], guid: { isPermaLink: "true", "": articleUrl } }]
+      }
+    });
+    await flushResources();
+    expect(component.rssFeedResult()?.item[0].guid).toEqual(articleUrl);
+
+    component.markArticleAsRead(articleUrl);
+    // Displayed as read before the answer of the backend
+    expect(component.readArticles()).toEqual([articleUrl]);
+    const request = httpTestingController.expectOne(
+      environment.backend_url + `/widget/updateWidgetData/${widgetId}`
+    );
+    expect(request.request.body.data.readArticlesGuids).toEqual([articleUrl]);
+    request.flush({
+      data: { readArticlesGuids: [{ isPermaLink: "true", "": articleUrl }, articleUrl] }
+    });
+    expect(component.readArticles()).toEqual([articleUrl]);
+  });
+
   it("Should get widget data and check form", () => {
     expect(component.getWidgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);

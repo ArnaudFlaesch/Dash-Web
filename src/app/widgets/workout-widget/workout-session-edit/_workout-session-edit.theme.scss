@@ -1,0 +1,15 @@
+@use "mixins" as *;
+
+// Theme colors of the edition of a workout session
+dash-workout-session-edit {
+  @include themed {
+    .workout-exercise-container.edit-mode {
+      border-color: $color-accent;
+    }
+
+    .session-mode-button {
+      background-color: $color-accent-soft;
+      color: $color-accent;
+    }
+  }
+}

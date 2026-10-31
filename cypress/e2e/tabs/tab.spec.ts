@@ -9,7 +9,7 @@ describe("Tab tests", () => {
   });
 
   it("Should create a new tab", () => {
-    cy.get("#addNewTabButton").click();
+    cy.get("#add-new-tab-button").click();
     cy.get(".tab").should("have.length", 2);
   });
 
@@ -46,7 +46,7 @@ describe("Tab tests", () => {
       .get(".tab")
       .contains("News feed Updated")
       .dblclick();
-    cy.get(".deleteTabButton").click();
+    cy.get(".delete-tab-button").click();
     cy.wait("@deleteTab").then((response: Interception) => {
       expect(response.response?.statusCode).to.equal(200);
       cy.get(".tab").should("have.length", 1);

@@ -1,4 +1,23 @@
+@use "mixins" as *;
+
+.mini-widget-weather-container {
+  align-items: center;
+  padding-right: $space-sm;
+}
+
 .current-weather-icon {
   height: 3.5rem;
   width: 3.5rem;
+}
+
+.city-name {
+  font-weight: 500;
+}
+
+.temperature-container {
+  align-items: center;
+
+  mat-icon {
+    @include icon-size(1.25rem);
+  }
 }

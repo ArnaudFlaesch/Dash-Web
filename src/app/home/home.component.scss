@@ -1,40 +1,141 @@
 @use "mixins" as *;
 
+// The element of the component and the theme colors are styled in _home.theme.scss
+
+// The spinners of the widgets keep their own size
+#dashboard-loading-spinner,
+#widgets-loading-spinner {
+  min-height: 50vh;
+}
+
+#home-header-container {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: $space-sm;
+  padding: $space-sm $space-md;
+  backdrop-filter: blur(12px);
+
+  @media (width <= $breakpoint-sm) {
+    padding: $space-xs $space-sm $space-sm;
+  }
+}
+
+// On small screens, the tabs go on their own line below the logo and the actions
 #home-header-top-bar {
-  margin: $space-xs $space-sm 0;
+  flex-wrap: wrap;
+
+  @media (width <= $breakpoint-md) {
+    #tab-list-container {
+      flex-basis: 100%;
+      order: 3;
+    }
+  }
+}
+
+#brand {
+  flex: 0 0 auto;
+  margin-right: $space-sm;
+
+  &-logo {
+    height: 2rem;
+    width: 2rem;
+    object-fit: contain;
+  }
+
+  &-name {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
 }
 
 #tab-list-container {
-  flex: 1 1 70%;
-  overflow: hidden;
-}
+  flex: 1 1 0;
+  min-width: 0;
 
-#tab-list {
-  overflow-x: auto;
+  #tab-list {
+    min-width: 0;
+    padding: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
 
-  .tab {
-    cursor: pointer;
-    padding: $space-sm;
-    border: 2px solid #1f2937;
-    border-radius: $border-radius;
-    background-color: #9ca3af;
+    .tab {
+      flex: 0 0 auto;
+      cursor: pointer;
+      padding: 0.4rem 0.9rem;
+      border-width: 1px;
+      border-style: solid;
+      border-radius: $border-radius-pill;
+      font-weight: 500;
+      white-space: nowrap;
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
 
-    &:hover {
-      background-color: #bfdbfe;
-    }
-
-    &.selected-item {
-      background-color: blue;
+      &.draggable {
+        cursor: grab;
+        border-style: dashed;
+      }
     }
   }
 }
 
 #action-bar-buttons {
+  flex: 0 0 auto;
+  margin-left: auto;
+
+  #open-add-widget-modal {
+    margin-right: $space-xs;
+  }
+
+  // Only the icon of the "add widget" button is kept on phones
   @media (width <= $breakpoint-sm) {
-    @include grid-columns(3);
+    gap: 0;
+
+    #open-add-widget-modal {
+      min-width: 0;
+      padding: 0 $space-sm;
+
+      #add-widget-button-label {
+        display: none;
+      }
+
+      mat-icon {
+        margin: 0;
+      }
+    }
   }
 }
 
-#mini-widgets-container {
-  margin: $space-xs;
+#dashboard-content {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: $space-md;
+
+  @media (width <= $breakpoint-sm) {
+    padding: $space-sm;
+  }
+
+  #edit-mode-banner {
+    margin-bottom: $space-md;
+    padding: $space-xs $space-xs $space-xs $space-md;
+    border-radius: $border-radius-lg;
+  }
+
+  .dashboard-message {
+    max-width: 28rem;
+    margin: 3rem auto;
+    padding: $space-lg;
+    text-align: center;
+
+    h2,
+    p {
+      margin: 0;
+    }
+
+    .dashboard-message-icon {
+      @include icon-size(3rem);
+    }
+  }
 }

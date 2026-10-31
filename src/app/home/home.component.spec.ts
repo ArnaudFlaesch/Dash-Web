@@ -19,6 +19,7 @@ import { Router } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { vi } from "vitest";
 import { ITab } from "../model/Tab";
+import { ImportConfigModalComponent } from "../modals/import-config-modal/import-config-modal.component";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -235,6 +236,13 @@ describe("HomeComponent", () => {
     component.openCreateWidgetModal();
     httpTestingController.expectNone(`${environment.backend_url}/widget/addWidget`);
     expect(component.activeWidgets()).toHaveLength(2);
+  });
+
+  it("Should open the configuration import modal", async () => {
+    await loadDashboard();
+    const openSpy = vi.spyOn(TestBed.inject(MatDialog), "open");
+    component.openImportConfigModal();
+    expect(openSpy).toHaveBeenCalledWith(ImportConfigModalComponent, { width: "640px" });
   });
 
   it("Should reorder the tabs", async () => {

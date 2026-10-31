@@ -1,30 +1,55 @@
 @use "mixins" as *;
 
-#workout-sessions-grid {
-  @include grid-columns(1);
+// The theme colors are set in _workout-session-edit.theme.scss
+#workout-widget-header {
+  margin-bottom: $space-sm;
 
-  @media (width >= 300px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  #workout-session-date {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
   }
+}
+
+// One exercise per line in narrow widgets, two otherwise
+#workout-sessions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: $space-sm;
 }
 
 .workout-exercise-container {
-  @include grid-columns(2);
+  min-height: 3rem;
+  padding: $space-xs $space-xs $space-xs 0.75rem;
 
+  // The name goes above the counter, so that it is not cut by the buttons
   &.edit-mode {
-    display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
+    padding: $space-sm $space-xs 0 0.75rem;
+
+    .edit-reps-container {
+      justify-content: space-between;
+    }
   }
-}
 
-.workout-type-name {
-  margin: auto 0;
-}
+  .workout-type-name {
+    min-width: 0;
+    font-weight: 500;
+  }
 
-.edit-reps-container {
-  white-space: nowrap;
-}
+  .edit-reps-container {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
 
-.workout-number-of-reps.edit-mode {
-  vertical-align: super;
+  .workout-number-of-reps,
+  .workout-no-reps {
+    min-width: 2rem;
+    padding: 0.1rem $space-sm;
+    border-radius: $border-radius-pill;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
 }

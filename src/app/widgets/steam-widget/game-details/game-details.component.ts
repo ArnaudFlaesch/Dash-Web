@@ -7,6 +7,9 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from "@angular/material/expansion";
+import { MatButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatProgressBar } from "@angular/material/progress-bar";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { catchError, map, of } from "rxjs";
 import { IAchievement, IGameInfoDisplay } from "../ISteam";
@@ -22,6 +25,9 @@ import { SteamWidgetService } from "../steam.widget.service";
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
     MatExpansionPanelContent,
+    MatButton,
+    MatIcon,
+    MatProgressBar,
     MatProgressSpinner
   ]
 })

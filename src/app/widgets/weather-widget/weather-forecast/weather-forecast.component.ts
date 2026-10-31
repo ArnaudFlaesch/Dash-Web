@@ -1,4 +1,5 @@
 import { Component, inject, input } from "@angular/core";
+import { DecimalPipe } from "@angular/common";
 import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
 import { ForecastMode, IForecast } from "../IWeather";
 import { WeatherWidgetService } from "../weather.widget.service";
@@ -10,7 +11,7 @@ import { MatTooltip } from "@angular/material/tooltip";
   selector: "dash-weather-forecast",
   templateUrl: "./weather-forecast.component.html",
   styleUrl: "./weather-forecast.component.scss",
-  imports: [MatTooltip, MatIcon, InitialUppercasePipe]
+  imports: [MatTooltip, MatIcon, InitialUppercasePipe, DecimalPipe]
 })
 export class WeatherForecastComponent {
   public readonly forecast = input.required<IForecast[]>();

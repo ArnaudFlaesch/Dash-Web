@@ -1,38 +1,69 @@
-<div id="login-page" class="row full-height">
-  <div id="login-container" class="column items-center">
+<div id="login-page" class="centered full-height">
+  <div id="login-container" class="surface column items-center">
     <a routerLink href="/home" id="logo-container">
-      <img src="assets/logo.png" id="dash-logo" alt="dash logo" />
+      <img src="logo.png" id="dash-logo" class="app-logo" alt="dash logo" />
     </a>
-    <div>
-      <h1 id="login-page-title">Dash</h1>
-    </div>
-    <div id="login-form" class="column gap-md">
-      <input id="inputUsername" placeholder="Username" [formField]="loginForm.username" aria-label="Username" />
+    <h1 id="login-page-title">Dash</h1>
+    <p id="login-page-subtitle" class="muted-text">Votre tableau de bord personnel</p>
 
-      <input
-        id="inputPassword"
-        placeholder="Password"
-        type="password"
-        [formField]="loginForm.password"
-        aria-label="Password"
-      />
+    <form id="login-form" class="column" (submit)="$event.preventDefault(); handleLogin()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom d'utilisateur</mat-label>
+        <mat-icon matPrefix>person</mat-icon>
+        <input
+          matInput
+          id="input-username"
+          placeholder="Username"
+          autocomplete="username"
+          [formField]="loginForm.username"
+          aria-label="Username"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input
+          matInput
+          id="input-password"
+          placeholder="Password"
+          [type]="isPasswordVisible() ? 'text' : 'password'"
+          autocomplete="current-password"
+          [formField]="loginForm.password"
+          aria-label="Password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="isPasswordVisible.set(!isPasswordVisible())"
+          [attr.aria-label]="isPasswordVisible() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+        >
+          <mat-icon>{{ isPasswordVisible() ? "visibility_off" : "visibility" }}</mat-icon>
+        </button>
+      </mat-form-field>
 
       <button
-        mat-raised-button
-        id="loginButton"
+        mat-flat-button
+        id="login-button"
+        type="submit"
         [disabled]="loginForm().invalid() || isLoading()"
-        (click)="handleLogin()"
         color="primary"
       >
         <span id="login-button-label" class="row items-center">
           @if (isLoading()) {
-            <mat-spinner diameter="30" />
+            <mat-spinner diameter="20" />
           }
           <span>Se connecter</span>
         </span>
       </button>
 
-      <button mat-raised-button color="accent" (click)="loginAsDemoAccount()">Démo</button>
-    </div>
+      <div id="login-separator" class="muted-text row items-center gap-sm">ou</div>
+
+      <button mat-stroked-button type="button" (click)="loginAsDemoAccount()">
+        <mat-icon>visibility</mat-icon>
+        Essayer la démo
+      </button>
+    </form>
   </div>
 </div>

@@ -31,7 +31,7 @@ describe("Tab error tests", () => {
   it("Should fail to add a tab", () => {
     cy.intercept("POST", "/tab/addTab", { statusCode: 500 }).as("addTabError");
     cy.get(".tab").should("have.length", 1);
-    cy.get("#addNewTabButton").click();
+    cy.get("#add-new-tab-button").click();
     cy.wait("@addTabError").then((request: Interception) => {
       expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de l'ajout d'un onglet.")
@@ -71,7 +71,7 @@ describe("Tab error tests", () => {
   it("Should fail to delete the tab", () => {
     cy.intercept("DELETE", "/tab/deleteTab*", { statusCode: 500 }).as("deleteTabError");
     cy.get(".tab").should("have.length", 1).eq(0).dblclick();
-    cy.get(".deleteTabButton").click();
+    cy.get(".delete-tab-button").click();
     cy.wait("@deleteTabError").then((request: Interception) => {
       expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de la suppression d'un onglet.")

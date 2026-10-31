@@ -12,12 +12,12 @@
         <div>{{ currentWeather[0].description | initialUppercase }}</div>
         <div matTooltip="Température actuelle" class="current-temperature row items-center">
           <mat-icon>device_thermostat</mat-icon>
-          <div class="temperature">{{ weather().main.temp }}°</div>
+          <div class="temperature">{{ weather().main.temp | number: "1.0-1" }} °C</div>
         </div>
       </div>
     </div>
 
-    <div class="time-data-container column">
+    <div class="time-data-container muted-text column">
       <div class="day-data-container row gap-md">
         <div class="time-container row items-center gap-sm">
           <mat-icon matTooltip="Lever du soleil" class="sunrise-time">wb_sunny</mat-icon>

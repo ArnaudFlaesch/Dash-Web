@@ -1,31 +1,69 @@
 @use "mixins" as *;
 
+// The theme colors are set in _login.theme.scss
+#login-page {
+  min-height: 100dvh;
+  padding: $space-md;
+  box-sizing: border-box;
+}
+
 #login-container {
-  margin: auto;
-  padding: 1.5rem 4rem;
-  border-radius: $border-radius;
-  background-color: #fff;
-}
+  width: 100%;
+  max-width: 24rem;
+  padding: $space-lg;
+  box-sizing: border-box;
 
-#logo-container {
-  display: inline-block;
-  margin: $space-md;
-}
+  @media (width <= $breakpoint-sm) {
+    padding: $space-lg $space-md;
+  }
 
-#dash-logo {
-  display: flex;
-  margin: 0 auto;
-}
+  #logo-container {
+    display: inline-block;
+  }
 
-#login-page-title {
-  font-size: 2rem;
-  line-height: 1;
+  #dash-logo {
+    display: flex;
+    height: 4rem;
+    margin: 0 auto;
+  }
+
+  #login-page-title {
+    margin: $space-sm 0 0;
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  #login-page-subtitle {
+    margin: $space-xs 0 0;
+  }
 }
 
 #login-form {
-  margin-top: 2.5rem;
-}
+  width: 100%;
+  margin-top: $space-lg;
 
-#login-button-label mat-spinner {
-  margin-right: 1.25rem;
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    height: 2.75rem;
+  }
+
+  #login-button-label mat-spinner {
+    margin-right: $space-sm;
+  }
+
+  // "ou" between two horizontal lines
+  #login-separator {
+    margin: $space-md 0;
+    font-size: 0.85rem;
+
+    &::before,
+    &::after {
+      flex: 1;
+      content: "";
+    }
+  }
 }

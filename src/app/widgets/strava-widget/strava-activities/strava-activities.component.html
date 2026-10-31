@@ -1,22 +1,68 @@
-@for (activity of activities(); track activity.id) {
-  <mat-expansion-panel class="stravaActivity" hideToggle>
-    <mat-expansion-panel-header>
-      <mat-panel-title> {{ getTitleToDisplay(activity) }} </mat-panel-title>
-    </mat-expansion-panel-header>
-    <ng-template matExpansionPanelContent>
-      <div>
-        <a class="hoverable-link" href="https://www.strava.com/activities/{{ activity.id }}">
-          {{ formatDate(activity.startDateLocal) }} {{ activity.name }}
+<mat-accordion class="strava-activities-list">
+  @for (activity of activities(); track activity.id) {
+    <mat-expansion-panel class="strava-activity flat-panel highlight-expanded">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <div class="activity-summary row items-center">
+            <span class="activity-type-icon centered">
+              <mat-icon>{{ getActivityIcon(activity.type) }}</mat-icon>
+            </span>
+            <div class="activity-title column">
+              <span class="activity-name ellipsis">{{ activity.name }}</span>
+              <span class="activity-meta muted-text">
+                {{ formatDate(activity.startDateLocal) }} · {{ roundDistance(activity.distance) | number: "1.0-1" }} km
+                ·
+                {{ formatDuration(activity.movingTime) }}
+              </span>
+            </div>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div class="activity-stats">
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">Distance</span>
+            <span class="activity-stat-value">{{ roundDistance(activity.distance) | number: "1.0-2" }} km</span>
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">Durée</span>
+            <span class="activity-stat-value">{{ formatDuration(activity.movingTime) }}</span>
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">Dénivelé</span>
+            <span class="activity-stat-value">{{ activity.totalElevationGain | number: "1.0-0" }} m</span>
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">Vitesse moy.</span>
+            <span class="activity-stat-value"
+              >{{ toKilometersPerHour(activity.averageSpeed) | number: "1.0-1" }} km/h</span
+            >
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">Vitesse max</span>
+            <span class="activity-stat-value">{{ toKilometersPerHour(activity.maxSpeed) | number: "1.0-1" }} km/h</span>
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">Trophées</span>
+            <span class="activity-stat-value">{{ activity.achievementCount }}</span>
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">Kudos</span>
+            <span class="activity-stat-value">{{ activity.kudosCount }}</span>
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">Commentaires</span>
+            <span class="activity-stat-value">{{ activity.commentCount }}</span>
+          </div>
+        </div>
+        <a
+          class="activity-link hoverable-link accent-text row items-center"
+          href="https://www.strava.com/activities/{{ activity.id }}"
+        >
+          Voir sur Strava
+          <mat-icon>open_in_new</mat-icon>
         </a>
-        <div>Distance : {{ roundDistance(activity.distance) }} kms</div>
-        <div>Durée : {{ convertDecimalTimeToTime(activity.movingTime) }} minutes</div>
-        <div>Denivelé : {{ activity.totalElevationGain }} mètres</div>
-        <div>Trophées : {{ activity.achievementCount }}</div>
-        <div>Vitesse moyenne : {{ activity.averageSpeed }}</div>
-        <div>Vitesse max : {{ activity.maxSpeed }}</div>
-        <div>Kudos : {{ activity.kudosCount }}</div>
-        <div>Commentaires : {{ activity.commentCount }}</div>
-      </div>
-    </ng-template>
-  </mat-expansion-panel>
-}
+      </ng-template>
+    </mat-expansion-panel>
+  }
+</mat-accordion>

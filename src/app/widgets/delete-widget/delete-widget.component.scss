@@ -1,11 +1,26 @@
 @use "mixins" as *;
 
 #delete-widget-container {
-  height: 24rem;
-  margin: 0 $space-sm;
-}
+  height: 26rem;
+  gap: $space-md;
+  margin: 0 $space-md;
+  text-align: center;
 
-#delete-widget-actions {
-  justify-content: space-around;
-  width: 100%;
+  h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .delete-widget-icon {
+    @include icon-size(3rem);
+
+    color: $color-danger;
+  }
+
+  #delete-widget-actions {
+    justify-content: center;
+    gap: $space-sm;
+    width: 100%;
+  }
 }

@@ -1,0 +1,42 @@
+@use "sass:color";
+@use "sass:list";
+@use "mixins" as *;
+
+// Colors of the AirParif indices, identical in both themes
+$indice-colors: (
+  bon: #50f0e6,
+  moyen: #50ccaa,
+  degrade: #f0e641,
+  mauvais: #ff5050,
+  tres-mauvais: #960032,
+  extremement-mauvais: #7d2181
+);
+
+// Indices dark enough to need a light text
+$indices-with-light-text: (tres-mauvais, extremement-mauvais);
+
+dash-airparif-widget {
+  @each $name, $color in $indice-colors {
+    .indice-#{$name} {
+      background-color: $color;
+
+      @if list.index($indices-with-light-text, $name) {
+        color: #fff;
+      } @else {
+        color: #1f2937;
+      }
+    }
+
+    // Light tint of the indice color, for the background of the cards
+    .indice-soft-#{$name} {
+      background-color: color.change($color, $alpha: 0.16);
+    }
+  }
+
+  // Today's indice in the header of the widget
+  #airparif-today-dot {
+    @include themed {
+      box-shadow: 0 0 0 1px $color-border;
+    }
+  }
+}

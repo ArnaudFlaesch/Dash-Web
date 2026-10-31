@@ -4,6 +4,7 @@ import localeFr from "@angular/common/locales/fr";
 import { inject, isDevMode, LOCALE_ID } from "@angular/core";
 import { provideDateFnsAdapter } from "@angular/material-date-fns-adapter";
 import { MAT_DATE_LOCALE } from "@angular/material/core";
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from "@angular/material/dialog";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { provideRouter, Routes } from "@angular/router";
 import { provideServiceWorker } from "@angular/service-worker";
@@ -49,6 +50,15 @@ bootstrapApplication(AppComponent, {
       enabled: !isDevMode(),
       registrationStrategy: "registerWhenStable:30000"
     }),
+    // Dialogs never overflow small screens (Material sets the max width as an inline style)
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        ...new MatDialogConfig(),
+        maxWidth: "calc(100vw - 2rem)",
+        maxHeight: "calc(100dvh - 2rem)"
+      }
+    },
     { provide: MAT_DATE_LOCALE, useValue: fr },
     { provide: LOCALE_ID, useValue: "fr-FR" },
     provideRouter(routes),

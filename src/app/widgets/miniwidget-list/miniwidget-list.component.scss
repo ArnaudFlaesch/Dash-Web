@@ -1,12 +1,22 @@
 @use "mixins" as *;
 
+// The theme colors are set in _miniwidget-list.theme.scss
 #miniwidget-list {
-  max-width: 95%;
-  overflow-x: auto;
+  min-width: 0;
+  padding: 2px;
+
+  // Only scrolls horizontally, so that the browser never hesitates on the direction of a swipe
+  overflow: auto hidden;
+  scroll-snap-type: x proximity;
 }
 
 .miniwidget-container {
-  border: 1px solid black;
-  border-radius: $border-radius;
-  background-color: white;
+  flex: 0 0 auto;
+  border-radius: $border-radius-lg;
+  scroll-snap-align: start;
+  transition: box-shadow 0.2s ease;
+}
+
+#add-mini-widget-button {
+  flex: 0 0 auto;
 }

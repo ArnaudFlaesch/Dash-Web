@@ -1,19 +1,59 @@
 @use "mixins" as *;
 
-.game-info {
-  height: 2.5rem;
+// The separators, the theme colors and the body of the expansion panel are styled in
+// _game-details.theme.scss
 
-  > * {
-    margin-left: $space-sm;
+// Games displayed as a flat list (`flat-panel` class)
+.game-panel {
+  // Written in the template of this component, so styled without ::ng-deep
+  .mat-expansion-panel-header {
+    height: 3.25rem;
+    padding: 0 $space-sm;
+    border-radius: $border-radius;
   }
 }
 
-.spinner-container {
-  position: relative;
+.game-info {
+  min-width: 0;
+
+  img {
+    flex: 0 0 auto;
+    height: 2rem;
+    width: 2rem;
+    border-radius: $border-radius;
+    object-fit: cover;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 500;
+  }
 }
 
-.progress-value {
-  position: absolute;
-  width: 100px;
-  height: 100px;
+.achievements-progress {
+  mat-progress-bar {
+    flex: 1;
+    height: 0.5rem;
+    border-radius: $border-radius-pill;
+    overflow: hidden;
+  }
+
+  .progress-value {
+    min-width: 2.75rem;
+    font-weight: 600;
+    text-align: right;
+  }
+}
+
+.game-achievements-data {
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.community-hub-link {
+  flex: 0 0 auto;
+}
+
+.no-achievements a {
+  margin-left: auto;
 }

@@ -1,0 +1,20 @@
+@use "mixins" as *;
+
+// The theme colors are set in _tab.theme.scss
+.tab-name-input {
+  width: 8rem;
+  padding: 0.1rem $space-sm;
+  border-radius: $border-radius-pill;
+  font: inherit;
+  outline: none;
+}
+
+mat-icon {
+  @include icon-size(1.25rem);
+
+  cursor: pointer;
+}
+
+.delete-tab-button {
+  color: $color-danger;
+}

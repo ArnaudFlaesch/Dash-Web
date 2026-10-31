@@ -1,0 +1,76 @@
+@use "sass:color";
+@use "mixins" as *;
+
+// The theme colors and the body of the expansion panels are styled in
+// _strava-activities.theme.scss
+
+// Activities displayed as a flat list (`flat-panel` class)
+.strava-activity {
+  // Written in the template of this component, so styled without ::ng-deep
+  .mat-expansion-panel-header {
+    height: auto;
+    padding: $space-sm $space-xs;
+  }
+}
+
+.activity-summary {
+  gap: 0.75rem;
+  min-width: 0;
+
+  .activity-type-icon {
+    flex: 0 0 auto;
+    height: 2.25rem;
+    width: 2.25rem;
+    border-radius: 50%;
+    background-color: color.change($color-strava, $alpha: 0.15);
+    color: $color-strava;
+
+    mat-icon {
+      @include icon-size(1.25rem);
+    }
+  }
+
+  .activity-title {
+    min-width: 0;
+
+    .activity-name {
+      font-weight: 500;
+    }
+
+    .activity-meta {
+      font-size: 0.8rem;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
+
+// Statistics of an activity, as small tiles
+.activity-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: $space-xs;
+
+  .activity-stat {
+    display: flex;
+    flex-direction: column;
+    padding: $space-xs $space-sm;
+    border-radius: $border-radius;
+
+    &-value {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
+
+.activity-link {
+  justify-content: flex-end;
+  gap: $space-xs;
+  margin-top: $space-sm;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  mat-icon {
+    @include icon-size(1rem);
+  }
+}

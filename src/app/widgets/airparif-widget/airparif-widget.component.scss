@@ -1,0 +1,24 @@
+@use "mixins" as *;
+
+// Same height as the header of the widget, to center the chip
+$widget-header-height: 3rem;
+$today-chip-height: 28px;
+
+// Theme colors come from the `tile` class
+#airparif-today-chip {
+  box-sizing: border-box;
+  height: $today-chip-height;
+  margin-top: calc((#{$widget-header-height} - #{$today-chip-height}) / 2);
+  margin-right: $space-xs;
+  padding: 0 10px;
+  border-radius: $border-radius-pill;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+#airparif-today-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: $border-radius-pill;
+}

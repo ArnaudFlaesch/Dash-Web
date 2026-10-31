@@ -1,11 +1,24 @@
 @use "mixins" as *;
 
-.mini-widget {
-  border-radius: $border-radius;
-  background-color: var(--widget-background-color);
+// The background and the border are set by the container in the list of mini widgets
+
+// Not a scroll container, so that swiping on a mini widget scrolls the list of mini widgets
+.read-mini-widget-body-container {
+  padding: $space-xs;
+  cursor: default;
 }
 
-.read-mini-widget-body-container {
-  padding: 0.15em;
-  overflow-y: auto;
+// Room is kept above the field for its floating label
+.edit-mini-widget {
+  align-items: center;
+  gap: $space-xs;
+  padding: $space-sm $space-xs $space-xs $space-sm;
+}
+
+.delete-mini-widget {
+  padding: $space-sm $space-md;
+
+  h4 {
+    margin: 0 0 $space-sm;
+  }
 }
