@@ -3,10 +3,6 @@
 // Theme colors of the articles of the RSS feeds
 dash-rss-feed {
   @include themed {
-    .rss-article {
-      border-bottom: 1px solid $color-border;
-    }
-
     .article-title {
       &::before {
         background-color: $color-accent;
@@ -20,14 +16,6 @@ dash-rss-feed {
     .rss-feed-content {
       border-left: 3px solid $color-accent;
       background-color: $color-background;
-
-      .article-pubdate {
-        color: $color-muted-text;
-      }
     }
-  }
-
-  .rss-article:last-child {
-    border-bottom: none;
   }
 }

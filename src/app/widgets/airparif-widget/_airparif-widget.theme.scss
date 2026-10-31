@@ -34,19 +34,6 @@ dash-airparif-widget {
   }
 
   // Today's indice in the header of the widget
-  #airparif-today-chip {
-    @include themed {
-      border: 1px solid $color-border;
-      background-color: $color-surface;
-      color: $color-text;
-
-      &:hover {
-        border-color: $color-accent;
-        background-color: $color-accent-soft;
-      }
-    }
-  }
-
   #airparif-today-dot {
     @include themed {
       box-shadow: 0 0 0 1px $color-border;

@@ -1,12 +1,12 @@
-<div class="widget">
+<div class="widget surface">
   @if (isModeEdit()) {
     <div class="widget-edit-mode column full-size">
       <div class="header-container row items-center">
         <div class="widget-header row items-center gap-xs">
-          <mat-icon class="edit-mode-icon">tune</mat-icon>
+          <mat-icon class="edit-mode-icon accent-text">tune</mat-icon>
           <span>Configuration du widget</span>
         </div>
-        <div class="header-actions row">
+        <div class="header-actions muted-text row">
           <button class="delete-button" mat-icon-button matTooltip="Supprimer le widget" (click)="toDeleteMode()">
             <mat-icon aria-hidden="false">delete_outline</mat-icon>
           </button>
@@ -41,7 +41,7 @@
           <div *ngTemplateOutlet="headerTitle()"></div>
         </div>
 
-        <div class="header-actions row">
+        <div class="header-actions muted-text row">
           @if (additionalActions()) {
             <span>
               <ng-container *ngTemplateOutlet="additionalActions() ?? null" />

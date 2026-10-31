@@ -4,7 +4,9 @@
 #miniwidget-list {
   min-width: 0;
   padding: 2px;
-  overflow-x: auto;
+
+  // Only scrolls horizontally, so that the browser never hesitates on the direction of a swipe
+  overflow: auto hidden;
   scroll-snap-type: x proximity;
 }
 

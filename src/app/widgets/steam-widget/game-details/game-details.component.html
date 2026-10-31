@@ -1,9 +1,13 @@
-<mat-expansion-panel class="game-panel" [title]="gameInfo().name" (opened)="loadAchievementsData()">
+<mat-expansion-panel
+  class="game-panel flat-panel highlight-expanded"
+  [title]="gameInfo().name"
+  (opened)="loadAchievementsData()"
+>
   <mat-expansion-panel-header>
     <mat-panel-title>
       <div class="game-info row items-center gap-sm">
         <img [src]="gameInfo().gameImgSrc" alt="game icon" />
-        <p>{{ gameInfo().name }}</p>
+        <p class="ellipsis">{{ gameInfo().name }}</p>
       </div>
     </mat-panel-title>
   </mat-expansion-panel-header>
@@ -12,11 +16,11 @@
       @if (achievements().length) {
         <a href="{{ gameInfo().playerAchievementUrl }}" class="achievements-progress row items-center gap-sm">
           <mat-progress-bar mode="determinate" [value]="completionStatus()" />
-          <span class="progress-value">{{ completionStatus() }}%</span>
+          <span class="progress-value accent-text">{{ completionStatus() }}%</span>
         </a>
 
         <div class="row items-center justify-between gap-sm">
-          <a href="{{ gameInfo().playerAchievementUrl }}" class="game-achievements-data column">
+          <a href="{{ gameInfo().playerAchievementUrl }}" class="game-achievements-data muted-text column">
             <div class="totalachievements">Succès : {{ achievements().length }}</div>
             <div class="completed-achievements">Succès complétés : {{ completedAchievements().length }}</div>
           </a>
@@ -30,10 +34,10 @@
           <mat-progress-spinner mode="indeterminate" diameter="28" />
         </div>
       } @else {
-        <div class="no-achievements row items-center gap-sm">
+        <div class="no-achievements muted-text row items-center gap-sm">
           <mat-icon>emoji_events</mat-icon>
           <span>Aucun succès pour ce jeu.</span>
-          <a href="{{ gameInfo().appIdLink }}" class="hoverable-link">Community hub</a>
+          <a href="{{ gameInfo().appIdLink }}" class="hoverable-link accent-text">Community hub</a>
         </div>
       }
     </div>

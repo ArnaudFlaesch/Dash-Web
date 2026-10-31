@@ -1,7 +1,5 @@
 @use "mixins" as *;
 
-// The theme colors are set in _weather-today.theme.scss
-
 // The sun times go below the current weather when the widget is narrow
 .weather-today-container {
   flex-wrap: wrap;

@@ -1,8 +1,0 @@
-@use "mixins" as *;
-
-// Theme colors of the mini widgets
-dash-mini-widget .mini-widget {
-  @include themed {
-    background-color: $color-widget-background;
-  }
-}

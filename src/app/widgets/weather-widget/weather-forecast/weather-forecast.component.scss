@@ -1,7 +1,5 @@
 @use "mixins" as *;
 
-// The theme colors are set in _weather-forecast.theme.scss
-
 // Horizontally scrollable list of forecast cards
 .forecast-row {
   gap: $space-sm;
@@ -16,8 +14,6 @@
   min-width: 5.5rem;
   align-items: center;
   padding: $space-sm;
-  border-radius: $border-radius-lg;
-  box-sizing: border-box;
   scroll-snap-align: start;
 
   .forecast {
@@ -44,9 +40,8 @@
 }
 
 .weather-widget-icon {
-  height: 1.1rem;
-  width: 1.1rem;
-  font-size: 1.1rem;
+  @include icon-size(1.1rem);
+
   vertical-align: middle;
 
   &.temp-min {

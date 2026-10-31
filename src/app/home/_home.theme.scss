@@ -6,11 +6,6 @@ dash-home {
   display: block;
   min-height: 100%;
 
-  #no-tab-message,
-  #empty-tab-message {
-    @include surface;
-  }
-
   #tab-list .tab {
     border-color: transparent;
   }
@@ -46,20 +41,6 @@ dash-home {
 
     #edit-mode-banner {
       border: 1px dashed $color-accent;
-      background-color: $color-accent-soft;
-      color: $color-accent;
-    }
-
-    #no-tab-message,
-    #empty-tab-message {
-      p {
-        color: $color-muted-text;
-      }
-    }
-
-    #no-tab-icon,
-    #empty-tab-icon {
-      color: $color-accent;
     }
   }
 }

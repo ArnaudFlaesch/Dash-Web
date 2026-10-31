@@ -2,7 +2,7 @@
   <header id="home-header-container" class="column">
     <div id="home-header-top-bar" class="row items-center gap-sm">
       <div id="brand" class="row items-center gap-sm">
-        <img src="logo.png" alt="" id="brand-logo" />
+        <img src="logo.png" alt="" id="brand-logo" class="app-logo" />
         <span id="brand-name">Dash</span>
       </div>
 
@@ -130,7 +130,7 @@
 
   <main id="dashboard-content">
     @if (editModeEnabled()) {
-      <div id="edit-mode-banner" class="row items-center justify-between gap-sm" role="status">
+      <div id="edit-mode-banner" class="accent-soft row items-center justify-between gap-sm" role="status">
         <div class="row items-center gap-sm">
           <mat-icon>open_with</mat-icon>
           <span>Glissez-déposez les widgets et les onglets pour les réorganiser.</span>
@@ -141,20 +141,20 @@
 
     @if (areWidgetsLoaded()) {
       @if (tabs().length < 1) {
-        <div id="no-tab-message" class="column items-center gap-md">
-          <mat-icon id="no-tab-icon">tab</mat-icon>
+        <div id="no-tab-message" class="dashboard-message surface column items-center gap-md">
+          <mat-icon id="no-tab-icon" class="dashboard-message-icon accent-text">tab</mat-icon>
           <h2>Aucun onglet</h2>
-          <p>Créez un onglet pour commencer à composer votre dashboard.</p>
+          <p class="muted-text">Créez un onglet pour commencer à composer votre dashboard.</p>
           <button mat-flat-button (click)="addNewTab()">
             <mat-icon>add</mat-icon>
             Créer un onglet
           </button>
         </div>
       } @else if (activeWidgets().length < 1) {
-        <div id="empty-tab-message" class="column items-center gap-md">
-          <mat-icon id="empty-tab-icon">dashboard_customize</mat-icon>
+        <div id="empty-tab-message" class="dashboard-message surface column items-center gap-md">
+          <mat-icon id="empty-tab-icon" class="dashboard-message-icon accent-text">dashboard_customize</mat-icon>
           <h2>Cet onglet est vide</h2>
-          <p>Ajoutez un widget : météo, flux RSS, agenda, Strava…</p>
+          <p class="muted-text">Ajoutez un widget : météo, flux RSS, agenda, Strava…</p>
           <button mat-flat-button (click)="openCreateWidgetModal()">
             <mat-icon>add</mat-icon>
             Ajouter un widget

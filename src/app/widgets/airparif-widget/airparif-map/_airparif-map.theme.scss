@@ -17,19 +17,26 @@ dash-airparif-map {
     right: $space-sm;
   }
 
-  .sidebar {
-    @include themed {
+  @include themed {
+    .sidebar {
       border: 1px solid $color-border;
       background-color: $color-surface;
       box-shadow: $shadow-hover;
       color: $color-text;
     }
-  }
 
-  // Borderless button floating on the map, with a gradient of the accent color, a soft highlight
-  // on its top left corner and a glow of the accent color instead of a gray shadow
-  .sidebar.collapsed {
-    @include themed {
+    .sidebar-tabs {
+      border-right: 1px solid $color-border;
+    }
+
+    #sidebar-tab-icon {
+      background-color: $color-accent-soft;
+      color: $color-accent;
+    }
+
+    // Borderless button floating on the map, with a gradient of the accent color, a soft
+    // highlight on its top left corner and a glow of the accent color instead of a gray shadow
+    .sidebar.collapsed {
       border: none;
       background-color: $color-accent;
       background-image:
@@ -48,75 +55,36 @@ dash-airparif-map {
       &:hover {
         box-shadow: 0 8px 22px color.change($color-accent, $alpha: 0.5);
       }
-    }
-  }
 
-  .sidebar.collapsed .sidebar-tabs {
-    @include themed {
-      border-right: none;
-    }
-  }
+      .sidebar-tabs {
+        border-right: none;
+      }
 
-  #sidebar-tab-icon {
-    @include themed {
-      background-color: $color-accent-soft;
-      color: $color-accent;
+      #sidebar-tab-icon {
+        background-color: transparent;
+        color: $color-surface;
+      }
     }
-  }
 
-  .sidebar.collapsed #sidebar-tab-icon {
-    @include themed {
-      background-color: transparent;
-      color: $color-surface;
-    }
-  }
-
-  .sidebar-tabs .active #sidebar-tab-icon {
-    @include themed {
+    .sidebar-tabs .active #sidebar-tab-icon {
       background-color: $color-accent;
       color: $color-surface;
     }
-  }
 
-  .sidebar-tabs {
-    @include themed {
-      border-right: 1px solid $color-border;
-    }
-  }
-
-  .sidebar-header {
-    @include themed {
+    .sidebar-header {
       border-bottom: 1px solid $color-border;
       background-color: $color-widget-header;
     }
-  }
 
-  .sidebar-close:hover {
-    @include themed {
+    .sidebar-close:hover {
       background-color: $color-border;
     }
-  }
 
-  #sidebar-date,
-  #global-indice-label,
-  .sidebar-section-title,
-  .pollutant-name,
-  #forecast-empty,
-  #forecast-empty-hint,
-  #airparif-source {
-    @include themed {
-      color: $color-muted-text;
-    }
-  }
-
-  #forecast-select-buttons {
-    @include themed {
+    #forecast-select-buttons {
       background-color: $color-background;
     }
-  }
 
-  .forecast-select-button {
-    @include themed {
+    .forecast-select-button {
       color: $color-muted-text;
 
       &.active {
@@ -125,47 +93,24 @@ dash-airparif-map {
         color: $color-accent;
       }
     }
-  }
 
-  .airparif-indice {
-    @include themed {
-      border-bottom: 1px solid $color-border;
-    }
-  }
-
-  .pollutant-formula {
-    @include themed {
-      background-color: $color-accent-soft;
-      color: $color-accent;
-    }
-  }
-
-  .indice-dot {
-    @include themed {
-      box-shadow: 0 0 0 1px $color-border;
-    }
-  }
-
-  #global-indice-color {
-    @include themed {
+    #global-indice-color {
       box-shadow: $shadow;
     }
-  }
 
-  #forecast-empty-title {
-    @include themed {
-      color: $color-text;
+    .airparif-indice {
+      border-bottom: 1px solid $color-border;
     }
-  }
 
-  .indice-label.active {
-    @include themed {
+    .indice-dot {
+      box-shadow: 0 0 0 1px $color-border;
+    }
+
+    .indice-label.active {
       background-color: $color-background;
     }
-  }
 
-  #airparif-source:hover {
-    @include themed {
+    #airparif-source:hover {
       color: $color-accent;
     }
   }

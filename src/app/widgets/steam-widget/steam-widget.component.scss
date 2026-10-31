@@ -1,6 +1,6 @@
 @use "mixins" as *;
 
-// The theme colors are set in _steam-widget.theme.scss
+// The color of the paginator is set in _steam-widget.theme.scss
 #search-game-form {
   margin-bottom: $space-sm;
 
@@ -13,9 +13,7 @@
   padding: $space-lg 0;
 
   mat-icon {
-    height: 2rem;
-    width: 2rem;
-    font-size: 2rem;
+    @include icon-size(2rem);
   }
 }
 

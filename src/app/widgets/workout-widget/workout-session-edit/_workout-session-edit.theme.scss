@@ -3,23 +3,8 @@
 // Theme colors of the edition of a workout session
 dash-workout-session-edit {
   @include themed {
-    .workout-exercise-container {
-      border: 1px solid $color-border;
-      background-color: $color-background;
-
-      &.edit-mode {
-        border-color: $color-accent;
-      }
-    }
-
-    .workout-number-of-reps {
-      background-color: $color-accent-soft;
-      color: $color-accent;
-    }
-
-    .workout-no-reps,
-    .workout-no-exercise {
-      color: $color-muted-text;
+    .workout-exercise-container.edit-mode {
+      border-color: $color-accent;
     }
 
     .session-mode-button {

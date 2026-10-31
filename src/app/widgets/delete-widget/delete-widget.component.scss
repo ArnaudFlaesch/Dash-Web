@@ -13,9 +13,8 @@
   }
 
   .delete-widget-icon {
-    height: 3rem;
-    width: 3rem;
-    font-size: 3rem;
+    @include icon-size(3rem);
+
     color: $color-danger;
   }
 

@@ -4,7 +4,7 @@
 $widget-header-height: 3rem;
 $today-chip-height: 28px;
 
-// Theme colors are in _airparif-widget.theme.scss
+// Theme colors come from the `tile` class
 #airparif-today-chip {
   box-sizing: border-box;
   height: $today-chip-height;
@@ -12,14 +12,9 @@ $today-chip-height: 28px;
   margin-right: $space-xs;
   padding: 0 10px;
   border-radius: $border-radius-pill;
-  font: inherit;
   font-size: 0.8rem;
   font-weight: 500;
   white-space: nowrap;
-  cursor: pointer;
-  transition:
-    background-color 150ms,
-    border-color 150ms;
 }
 
 #airparif-today-dot {

@@ -27,17 +27,17 @@
       @if (activities().length) {
         <div class="strava-content column gap-sm">
           <div class="strava-summary">
-            <div class="strava-summary-item">
+            <div class="strava-summary-item inset">
               <span class="strava-summary-value">{{ activitiesSummary().count }}</span>
-              <span class="strava-summary-label">Activités</span>
+              <span class="strava-summary-label overline muted-text">Activités</span>
             </div>
-            <div class="strava-summary-item">
+            <div class="strava-summary-item inset">
               <span class="strava-summary-value">{{ activitiesSummary().distance | number: "1.0-0" }} km</span>
-              <span class="strava-summary-label">Distance</span>
+              <span class="strava-summary-label overline muted-text">Distance</span>
             </div>
-            <div class="strava-summary-item">
+            <div class="strava-summary-item inset">
               <span class="strava-summary-value">{{ activitiesSummary().elevation | number: "1.0-0" }} m</span>
-              <span class="strava-summary-label">Dénivelé</span>
+              <span class="strava-summary-label overline muted-text">Dénivelé</span>
             </div>
           </div>
 
@@ -59,7 +59,7 @@
               <mat-icon>chevron_left</mat-icon>
               Plus récentes
             </button>
-            <span class="strava-page-number">Page {{ pageNumber() }}</span>
+            <span class="strava-page-number muted-text">Page {{ pageNumber() }}</span>
             <button
               mat-button
               class="older-activities-button"
@@ -73,7 +73,7 @@
           </div>
         </div>
       } @else {
-        <div class="strava-empty column items-center gap-sm">
+        <div class="strava-empty muted-text column items-center gap-sm">
           <mat-icon>directions_run</mat-icon>
           <span>Aucune activité pour le moment.</span>
         </div>
@@ -83,7 +83,7 @@
         <span class="strava-login-icon centered">
           <mat-icon>directions_run</mat-icon>
         </span>
-        <p>Connectez votre compte Strava pour suivre vos activités.</p>
+        <p class="muted-text">Connectez votre compte Strava pour suivre vos activités.</p>
         <button (click)="loginToStrava()" id="login-to-strava-button" mat-flat-button>
           <mat-icon>link</mat-icon>
           Se connecter à Strava

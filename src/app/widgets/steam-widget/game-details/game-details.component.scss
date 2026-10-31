@@ -1,22 +1,15 @@
 @use "mixins" as *;
 
-// The theme colors and the body of the expansion panel are styled in _game-details.theme.scss
+// The separators, the theme colors and the body of the expansion panel are styled in
+// _game-details.theme.scss
 
-// Games displayed as a flat list separated by thin lines
+// Games displayed as a flat list (`flat-panel` class)
 .game-panel {
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  background-color: transparent;
-
   // Written in the template of this component, so styled without ::ng-deep
   .mat-expansion-panel-header {
     height: 3.25rem;
     padding: 0 $space-sm;
     border-radius: $border-radius;
-  }
-
-  &.mat-expanded {
-    border-radius: $border-radius-lg !important;
   }
 }
 
@@ -33,10 +26,7 @@
 
   p {
     margin: 0;
-    overflow: hidden;
     font-weight: 500;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 

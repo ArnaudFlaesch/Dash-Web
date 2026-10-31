@@ -1,11 +1,8 @@
 @use "mixins" as *;
 
 // Theme colors of the Steam widget
-dash-steam-widget {
-  .no-game-found,
-  .games-paginator {
-    @include themed {
-      color: $color-muted-text;
-    }
+dash-steam-widget .games-paginator {
+  @include themed {
+    color: $color-muted-text;
   }
 }

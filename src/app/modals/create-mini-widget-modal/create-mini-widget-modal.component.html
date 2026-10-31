@@ -4,11 +4,11 @@
   <div id="widget-types-list">
     @for (miniWidgetType of miniWidgetTypes; track miniWidgetType.type) {
       <button
-        class="widget-type-tile column items-center gap-sm"
+        class="widget-type-tile tile column items-center gap-sm"
         [id]="miniWidgetType.type"
         [mat-dialog-close]="miniWidgetType.type"
       >
-        <mat-icon>{{ miniWidgetType.icon }}</mat-icon>
+        <mat-icon class="accent-text">{{ miniWidgetType.icon }}</mat-icon>
         <span>{{ miniWidgetType.label }}</span>
       </button>
     }

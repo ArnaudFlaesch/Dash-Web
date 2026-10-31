@@ -26,8 +26,11 @@
 
   <div id="workout-sessions-grid">
     @for (workoutType of workoutTypes(); track workoutType.id) {
-      <div class="workout-exercise-container row items-center justify-between" [class.edit-mode]="sessionEditMode()">
-        <span class="workout-type-name">{{ workoutType.name }}</span>
+      <div
+        class="workout-exercise-container inset row items-center justify-between"
+        [class.edit-mode]="sessionEditMode()"
+      >
+        <span class="workout-type-name ellipsis">{{ workoutType.name }}</span>
         <div class="edit-reps-container row items-center">
           @if (sessionEditMode()) {
             <button
@@ -41,9 +44,9 @@
           }
 
           @if (getExerciceNumberOfReps(workoutType.id) > 0) {
-            <span class="workout-number-of-reps">{{ getExerciceNumberOfReps(workoutType.id) }}</span>
+            <span class="workout-number-of-reps accent-soft">{{ getExerciceNumberOfReps(workoutType.id) }}</span>
           } @else {
-            <span class="workout-no-reps">0</span>
+            <span class="workout-no-reps muted-text">0</span>
           }
 
           @if (sessionEditMode()) {
@@ -59,7 +62,7 @@
         </div>
       </div>
     } @empty {
-      <span class="workout-no-exercise">Ajoutez des types d'exercices pour compter vos répétitions.</span>
+      <span class="workout-no-exercise muted-text">Ajoutez des types d'exercices pour compter vos répétitions.</span>
     }
   </div>
 } @else {

@@ -21,8 +21,6 @@
 .workout-exercise-container {
   min-height: 3rem;
   padding: $space-xs $space-xs $space-xs 0.75rem;
-  border-radius: $border-radius-lg;
-  box-sizing: border-box;
 
   // The name goes above the counter, so that it is not cut by the buttons
   &.edit-mode {
@@ -37,10 +35,7 @@
 
   .workout-type-name {
     min-width: 0;
-    overflow: hidden;
     font-weight: 500;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .edit-reps-container {

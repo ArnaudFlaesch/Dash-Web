@@ -1,8 +1,0 @@
-@use "mixins" as *;
-
-// Theme colors of today's weather
-dash-weather-today .time-data-container {
-  @include themed {
-    color: $color-muted-text;
-  }
-}

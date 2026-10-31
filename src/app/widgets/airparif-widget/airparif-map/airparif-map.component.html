@@ -20,7 +20,7 @@
         <div class="column">
           <span id="sidebar-title">Qualité de l'air</span>
           @if (forecastToDisplay(); as forecast) {
-            <span id="sidebar-date">{{ forecast.date | date: "EEEE d MMMM" }}</span>
+            <span id="sidebar-date" class="muted-text">{{ forecast.date | date: "EEEE d MMMM" }}</span>
           }
         </div>
         <button class="sidebar-close" aria-label="Fermer">
@@ -62,7 +62,7 @@
                   <mat-icon>{{ globalIndiceDetails()?.icon ?? "air" }}</mat-icon>
                 </span>
                 <div class="column">
-                  <span id="global-indice-label">Indice global</span>
+                  <span id="global-indice-label" class="overline muted-text">Indice global</span>
                   <span id="global-indice-value">{{ getIndiceLabel(forecastToDisplay.indice) }}</span>
                 </div>
               </div>
@@ -75,13 +75,13 @@
             </div>
 
             <div class="column gap-xs">
-              <span class="sidebar-section-title">Détail par polluant</span>
+              <span class="sidebar-section-title overline muted-text">Détail par polluant</span>
               <div id="sidepanel-indices" class="column">
                 @for (pollutant of pollutants(); track pollutant.formula) {
                   <div class="airparif-indice row items-center justify-between gap-sm">
                     <div class="row items-center gap-sm">
-                      <span class="pollutant-formula">{{ pollutant.formula }}</span>
-                      <span class="pollutant-name">{{ pollutant.name }}</span>
+                      <span class="pollutant-formula accent-soft">{{ pollutant.formula }}</span>
+                      <span class="pollutant-name muted-text">{{ pollutant.name }}</span>
                     </div>
                     <span class="indice-badge" [class]="getIndiceClass(pollutant.indice)">
                       {{ getIndiceLabel(pollutant.indice) }}
@@ -93,7 +93,7 @@
           }
 
           <div class="column gap-sm">
-            <span class="sidebar-section-title">Légende de la carte</span>
+            <span class="sidebar-section-title overline muted-text">Légende de la carte</span>
             <div id="indices-legend">
               @for (indice of airParifCouleursIndices(); track indice.name) {
                 <span
@@ -109,7 +109,7 @@
 
           <a
             id="airparif-source"
-            class="row items-center gap-xs"
+            class="muted-text row items-center gap-xs"
             [href]="airParifWebsiteUrl"
             target="_blank"
             rel="noopener noreferrer"
@@ -120,9 +120,9 @@
         </div>
       } @else if (!isLoading()) {
         <div id="forecast-empty" class="column items-center gap-sm">
-          <mat-icon>cloud_off</mat-icon>
+          <mat-icon class="muted-text">cloud_off</mat-icon>
           <span id="forecast-empty-title">Aucune prévision disponible</span>
-          <span id="forecast-empty-hint"
+          <span id="forecast-empty-hint" class="muted-text"
             >Vérifiez la clé d'API et le code commune dans la configuration du widget.</span
           >
         </div>

@@ -18,7 +18,7 @@
         <div class="workout-view column gap-md">
           <section class="workout-section column gap-sm">
             <div class="row items-center justify-between">
-              <h3 class="workout-section-title">Sessions</h3>
+              <h3 class="workout-section-title muted-text">Sessions</h3>
               <button mat-stroked-button (click)="goToStatisticsView()">
                 <mat-icon>insights</mat-icon>
                 Statistiques
@@ -39,12 +39,12 @@
 
             <div id="workout-sessions-grid">
               @for (workoutSession of workoutSessions(); track workoutSession.id) {
-                <button class="workout-session" (click)="editWorkoutSession(workoutSession)">
-                  <mat-icon>event</mat-icon>
+                <button class="workout-session tile" (click)="editWorkoutSession(workoutSession)">
+                  <mat-icon class="accent-text">event</mat-icon>
                   {{ workoutSession.workoutDate | dateFormat: "short" }}
                 </button>
               } @empty {
-                <span class="workout-empty-message">Aucune session ce mois-ci.</span>
+                <span class="workout-empty-message muted-text">Aucune session ce mois-ci.</span>
               }
             </div>
 
@@ -71,23 +71,23 @@
           @if (workoutStatsByWeek().length || workoutStatsByMonth().length) {
             <section class="workout-stats-cards">
               @if (workoutStatsByWeek().length) {
-                <div id="workout-stats-by-week-container" class="workout-stats-card">
-                  <div class="workout-stats-header">Cette semaine</div>
+                <div id="workout-stats-by-week-container" class="workout-stats-card inset">
+                  <div class="workout-stats-header muted-text">Cette semaine</div>
                   @for (workoutStat of workoutStatsByWeek(); track workoutStat.workoutTypeName) {
                     <div class="workout-stat row justify-between">
                       <span>{{ workoutStat.workoutTypeName }}</span>
-                      <span class="workout-stat-reps">{{ workoutStat.totalNumberOfReps }}</span>
+                      <span class="workout-stat-reps accent-text">{{ workoutStat.totalNumberOfReps }}</span>
                     </div>
                   }
                 </div>
               }
               @if (workoutStatsByMonth().length) {
-                <div id="workout-stats-by-month-container" class="workout-stats-card">
-                  <div class="workout-stats-header">Ce mois-ci</div>
+                <div id="workout-stats-by-month-container" class="workout-stats-card inset">
+                  <div class="workout-stats-header muted-text">Ce mois-ci</div>
                   @for (workoutStat of workoutStatsByMonth(); track workoutStat.workoutTypeName) {
                     <div class="workout-stat row justify-between">
                       <span>{{ workoutStat.workoutTypeName }}</span>
-                      <span class="workout-stat-reps">{{ workoutStat.totalNumberOfReps }}</span>
+                      <span class="workout-stat-reps accent-text">{{ workoutStat.totalNumberOfReps }}</span>
                     </div>
                   }
                 </div>
@@ -96,12 +96,12 @@
           }
 
           <section class="workout-section column gap-sm">
-            <h3 class="workout-section-title">Types d'exercices</h3>
+            <h3 class="workout-section-title muted-text">Types d'exercices</h3>
             <div id="workout-types-grid" class="row gap-xs">
               @for (workoutType of workoutTypes(); track workoutType.id) {
-                <span class="workout-type-name">{{ workoutType.name }}</span>
+                <span class="workout-type-name accent-soft">{{ workoutType.name }}</span>
               } @empty {
-                <span class="workout-empty-message">Aucun type d'exercice.</span>
+                <span class="workout-empty-message muted-text">Aucun type d'exercice.</span>
               }
             </div>
             <div class="workout-inline-form row items-center gap-sm">
@@ -128,33 +128,33 @@
             <button mat-icon-button matTooltip="Retour aux sessions" (click)="backToWorkoutSessionsList()">
               <mat-icon>arrow_back</mat-icon>
             </button>
-            <h3 class="workout-section-title">Statistiques</h3>
+            <h3 class="workout-section-title muted-text">Statistiques</h3>
           </div>
           <div class="workout-periods row gap-xs">
             <button
-              class="workout-period"
-              [class.selected-period]="isLastThreeMonthsWorkoutStatisticsSelected()"
+              class="workout-period tile"
+              [class.selected]="isLastThreeMonthsWorkoutStatisticsSelected()"
               (click)="getWorkoutsStatsOfLastThreeMonths()"
             >
               3 derniers mois
             </button>
             <button
-              class="workout-period"
-              [class.selected-period]="isLastSixMonthsWorkoutStatisticsSelected()"
+              class="workout-period tile"
+              [class.selected]="isLastSixMonthsWorkoutStatisticsSelected()"
               (click)="getWorkoutsStatsOfLastSixMonths()"
             >
               6 derniers mois
             </button>
             <button
-              class="workout-period"
-              [class.selected-period]="isCurrentYearWorkoutStatisticsSelected()"
+              class="workout-period tile"
+              [class.selected]="isCurrentYearWorkoutStatisticsSelected()"
               (click)="getWorkoutsStatsOfCurrentYear()"
             >
               Cette année
             </button>
             <button
-              class="workout-period"
-              [class.selected-period]="isLastYearWorkoutStatisticsSelected()"
+              class="workout-period tile"
+              [class.selected]="isLastYearWorkoutStatisticsSelected()"
               (click)="getWorkoutsStatsOfPastYear()"
             >
               Année dernière

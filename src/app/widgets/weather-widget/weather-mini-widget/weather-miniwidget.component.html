@@ -23,7 +23,7 @@
         />
         <div class="weather-data-container column justify-center">
           <div class="city-name">{{ config().city }}</div>
-          <div class="temperature-container row">
+          <div class="temperature-container muted-text row">
             <mat-icon matTooltip="Température actuelle" matTooltipTouchGestures="off">device_thermostat</mat-icon>
             <div>{{ weather.main.temp | number: "1.0-1" }} °C</div>
           </div>

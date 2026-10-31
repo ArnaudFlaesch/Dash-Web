@@ -1,9 +1,0 @@
-@use "mixins" as *;
-
-// Theme colors of the weather forecast
-dash-weather-forecast .forecast-container {
-  @include themed {
-    border: 1px solid $color-border;
-    background-color: $color-background;
-  }
-}

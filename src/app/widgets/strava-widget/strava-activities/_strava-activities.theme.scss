@@ -7,30 +7,9 @@ dash-strava-activities {
     padding: 0 $space-sm $space-sm;
   }
 
-  @include themed {
-    .strava-activity {
-      border-bottom: 1px solid $color-border;
-
-      &.mat-expanded {
-        background-color: $color-background;
-      }
-    }
-
-    .activity-meta,
-    .activity-stat-label {
-      color: $color-muted-text;
-    }
-
-    .activity-stat {
+  .activity-stat {
+    @include themed {
       background-color: $color-surface;
     }
-
-    .activity-link {
-      color: $color-accent;
-    }
-  }
-
-  .strava-activity:last-child {
-    border-bottom: none;
   }
 }

@@ -1,0 +1,77 @@
+@use "mixins" as *;
+
+// Building blocks shared by the components, combined with their own classes in the templates
+
+// Raised surface (card)
+.surface {
+  border-radius: $border-radius-lg;
+
+  @include themed {
+    border: 1px solid $color-border;
+    background-color: $color-surface;
+    box-shadow: $shadow;
+  }
+}
+
+// Bordered box, set back from the surface containing it
+.inset {
+  border-radius: $border-radius-lg;
+  box-sizing: border-box;
+
+  @include themed {
+    border: 1px solid $color-border;
+    background-color: $color-background;
+  }
+}
+
+// Clickable tile or chip, highlighted on hover and when selected
+.tile {
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+
+  @include themed {
+    border: 1px solid $color-border;
+    background-color: $color-surface;
+    color: $color-text;
+
+    &:hover,
+    &:focus-visible {
+      border-color: $color-accent;
+      background-color: $color-accent-soft;
+    }
+
+    &.selected {
+      border-color: $color-accent;
+      background-color: $color-accent;
+      color: $color-surface;
+    }
+  }
+}
+
+// Expansion panels displayed as a flat list separated by thin lines, the expanded one is
+// highlighted as an inset card. Material renders the body of the panel itself, so its padding is
+// set in the theme partial of each component.
+.mat-expansion-panel.flat-panel {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent;
+
+  @include themed {
+    border-bottom: 1px solid $color-border;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.highlight-expanded.mat-expanded {
+    border-radius: $border-radius-lg !important;
+
+    @include themed {
+      background-color: $color-background;
+    }
+  }
+}

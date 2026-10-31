@@ -4,20 +4,12 @@
 // The theme colors and the body of the expansion panels are styled in
 // _strava-activities.theme.scss
 
-// Activities displayed as a flat list separated by thin lines
+// Activities displayed as a flat list (`flat-panel` class)
 .strava-activity {
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  background-color: transparent;
-
   // Written in the template of this component, so styled without ::ng-deep
   .mat-expansion-panel-header {
     height: auto;
     padding: $space-sm $space-xs;
-  }
-
-  &.mat-expanded {
-    border-radius: $border-radius-lg !important;
   }
 }
 
@@ -34,9 +26,7 @@
     color: $color-strava;
 
     mat-icon {
-      height: 1.25rem;
-      width: 1.25rem;
-      font-size: 1.25rem;
+      @include icon-size(1.25rem);
     }
   }
 
@@ -44,10 +34,7 @@
     min-width: 0;
 
     .activity-name {
-      overflow: hidden;
       font-weight: 500;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
     .activity-meta {
@@ -69,12 +56,6 @@
     padding: $space-xs $space-sm;
     border-radius: $border-radius;
 
-    &-label {
-      font-size: 0.7rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
     &-value {
       font-weight: 600;
       font-variant-numeric: tabular-nums;
@@ -90,8 +71,6 @@
   font-weight: 500;
 
   mat-icon {
-    height: 1rem;
-    width: 1rem;
-    font-size: 1rem;
+    @include icon-size(1rem);
   }
 }

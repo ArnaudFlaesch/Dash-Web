@@ -123,8 +123,7 @@
     border-radius: $border-radius-lg;
   }
 
-  #no-tab-message,
-  #empty-tab-message {
+  .dashboard-message {
     max-width: 28rem;
     margin: 3rem auto;
     padding: $space-lg;
@@ -135,11 +134,8 @@
       margin: 0;
     }
 
-    #no-tab-icon,
-    #empty-tab-icon {
-      height: 3rem;
-      width: 3rem;
-      font-size: 3rem;
+    .dashboard-message-icon {
+      @include icon-size(3rem);
     }
   }
 }

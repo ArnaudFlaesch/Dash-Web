@@ -1,7 +1,7 @@
 @use "sass:color";
 @use "mixins" as *;
 
-// The theme colors are set in _strava-widget.theme.scss
+// The theme colors come from the `inset` and `muted-text` classes
 #strava-profile-picture {
   max-height: 1.75rem;
   border-radius: 50%;
@@ -18,7 +18,6 @@
     flex-direction: column;
     align-items: center;
     padding: $space-sm $space-xs;
-    border-radius: $border-radius-lg;
   }
 
   .strava-summary-value {
@@ -26,12 +25,6 @@
     font-size: 1.1rem;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
-  }
-
-  .strava-summary-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
   }
 }
 
@@ -57,9 +50,7 @@
 }
 
 .strava-empty mat-icon {
-  height: 2.5rem;
-  width: 2.5rem;
-  font-size: 2.5rem;
+  @include icon-size(2.5rem);
 }
 
 .strava-login {
@@ -76,9 +67,7 @@
     color: $color-strava;
 
     mat-icon {
-      height: 2rem;
-      width: 2rem;
-      font-size: 2rem;
+      @include icon-size(2rem);
     }
   }
 

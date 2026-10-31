@@ -2,10 +2,6 @@
 
 // Theme colors of the login page
 dash-login {
-  #login-container {
-    @include surface;
-  }
-
   @include themed {
     #login-page {
       background:
@@ -24,11 +20,6 @@ dash-login {
 
     #login-container {
       box-shadow: $shadow-hover;
-    }
-
-    #login-page-subtitle,
-    #login-separator {
-      color: $color-muted-text;
     }
 
     #login-separator::before,

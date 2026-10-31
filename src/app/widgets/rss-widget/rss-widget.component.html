@@ -45,7 +45,7 @@
   <ng-template #body>
     @if (config().url) {
       <div class="rss-widget-body column gap-md">
-        <div class="rss-widget-description">{{ rssFeedResult()?.description }}</div>
+        <div class="rss-widget-description muted-text">{{ rssFeedResult()?.description }}</div>
         <dash-rss-feed
           [feed]="rssFeedResult()?.item ?? []"
           [readArticles]="readArticles()"

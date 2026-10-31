@@ -1,10 +1,10 @@
 <div id="login-page" class="centered full-height">
-  <div id="login-container" class="column items-center">
+  <div id="login-container" class="surface column items-center">
     <a routerLink href="/home" id="logo-container">
-      <img src="logo.png" id="dash-logo" alt="dash logo" />
+      <img src="logo.png" id="dash-logo" class="app-logo" alt="dash logo" />
     </a>
     <h1 id="login-page-title">Dash</h1>
-    <p id="login-page-subtitle">Votre tableau de bord personnel</p>
+    <p id="login-page-subtitle" class="muted-text">Votre tableau de bord personnel</p>
 
     <form id="login-form" class="column" (submit)="$event.preventDefault(); handleLogin()">
       <mat-form-field appearance="outline">
@@ -58,7 +58,7 @@
         </span>
       </button>
 
-      <div id="login-separator" class="row items-center gap-sm">ou</div>
+      <div id="login-separator" class="muted-text row items-center gap-sm">ou</div>
 
       <button mat-stroked-button type="button" (click)="loginAsDemoAccount()">
         <mat-icon>visibility</mat-icon>

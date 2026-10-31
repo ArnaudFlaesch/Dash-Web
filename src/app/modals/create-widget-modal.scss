@@ -1,7 +1,7 @@
 @use "mixins" as *;
 
-// Shared by the "create widget" and "create mini widget" modals, the theme colors are set in
-// _create-widget-modal.theme.scss
+// Shared by the "create widget" and "create mini widget" modals, the colors come from the `tile`
+// class
 #widget-types-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
@@ -13,18 +13,14 @@
   justify-content: center;
   padding: $space-md $space-sm;
   border-radius: $border-radius-lg;
-  font: inherit;
   font-weight: 500;
-  cursor: pointer;
   transition:
     border-color 0.15s ease,
     background-color 0.15s ease,
     transform 0.15s ease;
 
   mat-icon {
-    height: 2rem;
-    width: 2rem;
-    font-size: 2rem;
+    @include icon-size(2rem);
   }
 
   &:hover,

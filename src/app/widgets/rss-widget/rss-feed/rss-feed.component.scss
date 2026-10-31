@@ -2,12 +2,8 @@
 
 // The theme colors are set in _rss-feed.theme.scss
 
-// Articles displayed as a flat list separated by thin lines
+// Articles displayed as a flat list (`flat-panel` class)
 .rss-article {
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  background-color: transparent;
-
   // Written in the template of this component, so styled without ::ng-deep
   .mat-expansion-panel-header {
     height: auto;
@@ -33,11 +29,9 @@
   }
 
   p {
-    display: -webkit-box;
+    @include line-clamp(2);
+
     margin: 0;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     line-height: 1.35;
   }
 

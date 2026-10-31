@@ -2,10 +2,6 @@
 
 // Global styles of the widgets: their theme colors and the edit form projected by each widget
 dash-widget {
-  .widget {
-    @include surface;
-  }
-
   // Configuration form of the widget, its fields take the whole width
   .widget-edit-component-container {
     mat-form-field {
@@ -27,26 +23,14 @@ dash-widget {
   }
 
   @include themed {
-    .widget {
-      background-color: $color-widget-background;
-
-      &:hover {
-        box-shadow: $shadow-hover;
-      }
+    .widget:hover {
+      box-shadow: $shadow-hover;
     }
 
     .header-container {
       border-bottom: 1px solid $color-border;
       background-color: $color-widget-header;
-      color: $color-widget-header-text;
-
-      .header-actions {
-        color: $color-muted-text;
-      }
-    }
-
-    .edit-mode-icon {
-      color: $color-accent;
+      color: $color-text;
     }
 
     .widget-edit-component-container input:not(.mat-mdc-input-element) {

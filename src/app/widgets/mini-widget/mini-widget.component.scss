@@ -1,13 +1,10 @@
 @use "mixins" as *;
 
-// The theme colors are set in _mini-widget.theme.scss
-.mini-widget {
-  border-radius: $border-radius-lg;
-}
+// The background and the border are set by the container in the list of mini widgets
 
+// Not a scroll container, so that swiping on a mini widget scrolls the list of mini widgets
 .read-mini-widget-body-container {
   padding: $space-xs;
-  overflow-y: auto;
   cursor: default;
 }
 

@@ -62,7 +62,7 @@
             @for (game of ownedGamesDisplay(); track game.appid) {
               <dash-game-details [steamUserId]="steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
             } @empty {
-              <div class="no-game-found column items-center gap-xs">
+              <div class="no-game-found muted-text column items-center gap-xs">
                 <mat-icon>sports_esports</mat-icon>
                 <span>Aucun jeu trouvé</span>
               </div>

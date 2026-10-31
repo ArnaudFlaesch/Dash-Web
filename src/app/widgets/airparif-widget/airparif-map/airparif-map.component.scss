@@ -14,6 +14,7 @@
 
 // Sidebar floating on the left of the map, adapted from sidebar-v2 (MIT License, Copyright (c) 2013 Tobias Bieniek)
 // Theme colors are in _airparif-map.theme.scss, colors of the indices in _airparif-widget.theme.scss
+// (the muted texts use the `muted-text` class)
 $sidebar-tab-size: 40px;
 $sidebar-tab-icon-size: 30px;
 $sidebar-width: 320px;
@@ -88,9 +89,7 @@ $indice-dot-size: 10px;
     transform 150ms ease;
 
   mat-icon {
-    width: 20px;
-    height: 20px;
-    font-size: 20px;
+    @include icon-size(20px);
   }
 
   // Fills the button of the collapsed sidebar
@@ -99,9 +98,7 @@ $indice-dot-size: 10px;
     height: $sidebar-tab-size;
 
     mat-icon {
-      width: 24px;
-      height: 24px;
-      font-size: 24px;
+      @include icon-size(24px);
     }
   }
 
@@ -223,17 +220,12 @@ $indice-dot-size: 10px;
   transition: background-color 300ms;
 
   mat-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 28px;
+    @include icon-size(28px);
   }
 }
 
 #global-indice-label {
   white-space: nowrap;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 #global-indice-value {
@@ -248,18 +240,14 @@ $indice-dot-size: 10px;
   line-height: 1.4;
 
   mat-icon {
+    @include icon-size(18px);
+
     flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    font-size: 18px;
   }
 }
 
 .sidebar-section-title {
-  font-size: 0.75rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .airparif-indice {
@@ -321,9 +309,7 @@ $indice-dot-size: 10px;
   text-decoration: none;
 
   mat-icon {
-    width: 14px;
-    height: 14px;
-    font-size: 14px;
+    @include icon-size(14px);
   }
 }
 
@@ -332,9 +318,7 @@ $indice-dot-size: 10px;
   text-align: center;
 
   mat-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 40px;
+    @include icon-size(40px);
   }
 }
 
