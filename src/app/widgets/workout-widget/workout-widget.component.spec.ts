@@ -22,6 +22,9 @@ import { WidgetService } from "../../services/widget.service/widget.service";
 import { WorkoutWidgetComponent } from "./workout-widget.component";
 import { WorkoutWidgetService } from "./workout.widget.service";
 import { provideHttpClient } from "@angular/common/http";
+import { MAT_DATE_LOCALE } from "@angular/material/core";
+import { provideDateFnsAdapter } from "@angular/material-date-fns-adapter";
+import { fr } from "date-fns/locale";
 
 describe("WorkoutWidgetComponent", () => {
   let component: WorkoutWidgetComponent;
@@ -311,5 +314,98 @@ describe("WorkoutWidgetComponent", () => {
     lastYearStatsRequest.flush([]);
     await flushResources();
     expect(component.isLastYearWorkoutStatisticsSelected()).toEqual(true);
+  });
+});
+
+describe("WorkoutWidgetComponent rendering", () => {
+  const dateFormat = "yyyy-MM-dd";
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideDateFnsAdapter(),
+        { provide: MAT_DATE_LOCALE, useValue: fr },
+        { provide: WIDGET_ID, useValue: 1 }
+      ]
+    }).compileComponents();
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
+  function expectStatsByPeriodRequest(
+    start: Date,
+    end: Date
+  ): ReturnType<HttpTestingController["expectOne"]> {
+    return httpTestingController.expectOne(
+      environment.backend_url +
+        `/workoutWidget/workoutStatsByPeriod?dateIntervalStart=${format(start, dateFormat)}&dateIntervalEnd=${format(end, dateFormat)}`
+    );
+  }
+
+  it("should display the sessions, the statistics and the workout types", async () => {
+    const fixture = TestBed.createComponent(WorkoutWidgetComponent);
+    const element: HTMLElement = fixture.nativeElement;
+    fixture.detectChanges();
+
+    httpTestingController
+      .expectOne(environment.backend_url + "/workoutWidget/workoutTypes")
+      .flush([{ id: 1, name: "Abdos", userId: 2 }]);
+    await flushResources();
+    httpTestingController
+      .expectOne(
+        environment.backend_url +
+          `/workoutWidget/workoutSessions?dateIntervalStart=${format(
+            startOfMonth(new Date()),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(new Date()), dateFormat)}`
+      )
+      .flush([{ id: 1, workoutDate: "2026-10-20", userId: 2 }]);
+    await flushResources();
+    const stats = [{ workoutTypeName: "Abdos", totalNumberOfReps: 50 }];
+    expectStatsByPeriodRequest(startOfISOWeek(new Date()), endOfWeek(new Date())).flush(stats);
+    await flushResources();
+    expectStatsByPeriodRequest(startOfMonth(new Date()), endOfMonth(new Date())).flush(stats);
+    await flushResources();
+    await fixture.whenStable();
+
+    expect(element.querySelectorAll(".workout-session").length).toEqual(1);
+    expect(
+      element.querySelector("#workout-stats-by-week-container .workout-stat-reps")?.textContent
+    ).toContain("50");
+    expect(element.querySelector("#workout-stats-by-month-container")).not.toBeNull();
+    expect(element.querySelector("#workout-types-grid .workout-type-name")?.textContent).toContain(
+      "Abdos"
+    );
+
+    fixture.componentInstance.goToStatisticsView();
+    TestBed.tick();
+    const today = startOfMonth(new Date());
+    httpTestingController
+      .expectOne(
+        environment.backend_url +
+          `/workoutWidget/workoutStatsByMonth?dateIntervalStart=${format(
+            subMonths(today, 2),
+            dateFormat
+          )}&dateIntervalEnd=${format(endOfMonth(today), dateFormat)}`
+      )
+      .flush([]);
+    await flushResources();
+    await fixture.whenStable();
+
+    const periods = element.querySelectorAll(".workout-period");
+    expect(periods.length).toEqual(4);
+    expect(periods[0].classList).toContain("selected");
   });
 });
