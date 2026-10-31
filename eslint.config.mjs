@@ -10,10 +10,7 @@ export default defineConfig([
     ".angular",
     "coverage",
     "dist",
-    "cypress.config.ts",
-    "cypress-test.config.ts",
     "node_modules",
-    "build",
     "package-lock.json"
   ]),
   {
@@ -27,16 +24,5 @@ export default defineConfig([
     extends: [pluginCypress.configs.recommended]
   },
   tseslint.configs.recommended,
-  eslintConfigPrettier,
-  {
-    rules: {
-      "no-unused-expressions": "off",
-      "@typescript-eslint/no-unused-expressions": "error",
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/member-ordering": "warn",
-      "@typescript-eslint/explicit-member-accessibility": "error",
-      "@typescript-eslint/explicit-function-return-type": "error"
-    }
-  }
+  eslintConfigPrettier
 ]);
