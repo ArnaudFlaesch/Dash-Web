@@ -1,10 +1,34 @@
 @use "mixins" as *;
 
-// Shared by the "create widget" and "create mini widget" modals
-.widget-types-list {
-  @include grid-columns(4, 0.75rem);
+// Shared by the "create widget" and "create mini widget" modals, the theme colors are set in
+// _create-widget-modal.theme.scss
+#widget-types-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: 0.75rem;
+  padding-top: $space-xs;
+}
 
-  @media (width <= $breakpoint-md) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+.widget-type-tile {
+  justify-content: center;
+  padding: $space-md $space-sm;
+  border-radius: $border-radius-lg;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease;
+
+  mat-icon {
+    height: 2rem;
+    width: 2rem;
+    font-size: 2rem;
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px);
   }
 }

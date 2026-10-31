@@ -1,15 +1,52 @@
 @use "mixins" as *;
 
+// The theme colors are set in _rss-feed.theme.scss
+
+// Articles displayed as a flat list separated by thin lines
+.rss-article {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent;
+
+  // Written in the template of this component, so styled without ::ng-deep
+  .mat-expansion-panel-header {
+    height: auto;
+    padding: $space-sm $space-xs;
+  }
+}
+
 .article-title {
+  position: relative;
+  padding-left: 0.9rem;
+  font-weight: 500;
+
+  // Unread articles are marked with a dot
+  &::before {
+    position: absolute;
+    top: 0.45em;
+    left: 0.15rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    content: "";
+    transition: opacity 0.2s ease;
+  }
+
   p {
     display: -webkit-box;
+    margin: 0;
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    line-height: 1.35;
   }
 
-  &.is-read:not(.article-opened, :hover) {
-    color: grey;
+  &.is-read {
+    font-weight: 400;
+
+    &::before {
+      opacity: 0;
+    }
   }
 
   &.article-opened p {
@@ -18,6 +55,15 @@
 }
 
 .rss-feed-content {
-  border: 2px solid #6b7280;
+  padding: $space-sm $space-md;
   border-radius: $border-radius;
+
+  .article-content {
+    line-height: 1.5;
+  }
+
+  .article-pubdate {
+    margin-top: $space-sm;
+    font-size: 0.85em;
+  }
 }

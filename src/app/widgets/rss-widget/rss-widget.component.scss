@@ -1,0 +1,9 @@
+// Description of the feed, limited to two lines (its color is set in _rss-widget.theme.scss)
+.rss-widget-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 0.9em;
+  line-height: 1.4;
+}

@@ -81,14 +81,37 @@ describe("AirParifMapComponent", () => {
     fixture.componentRef.setInput("airParifCouleursIndices", couleursIndicesData);
     component.ngAfterViewInit();
 
-    expect(component.getColorFromIndice("BON" as AirParifIndiceEnum)).toEqual("#50f0e6");
-    expect(component.getColorFromIndice("null" as AirParifIndiceEnum)).toEqual("");
+    expect(component.getIndiceClass("BON" as AirParifIndiceEnum)).toEqual("indice-bon");
+    expect(component.getIndiceClass("TRES_MAUVAIS" as AirParifIndiceEnum)).toEqual(
+      "indice-tres-mauvais"
+    );
+
+    expect(component.getIndiceSoftClass("DEGRADE" as AirParifIndiceEnum)).toEqual(
+      "indice-soft-degrade"
+    );
+    expect(component.getIndiceLabel("DEGRADE" as AirParifIndiceEnum)).toEqual("Dégradé");
+    expect(component.globalIndiceDetails()?.icon).toEqual("sentiment_satisfied");
 
     expect(component.isForecastModeToday()).toEqual(true);
     component.selectTomorrowForecast();
     expect(component.isForecastModeTomorrow()).toEqual(true);
     component.selectTodayForecast();
     expect(component.forecastToDisplay()?.no2).toEqual("MOYEN");
+  });
+
+  it("Should display an empty state without forecast", () => {
+    fixture.componentRef.setInput("airParifForecast", []);
+    fixture.componentRef.setInput("airParifCouleursIndices", []);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector("#forecast-empty")).toBeTruthy();
+    expect(component.globalIndiceDetails()).toBeUndefined();
+
+    fixture.componentRef.setInput("isLoading", true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector("#forecast-empty")).toBeNull();
+    expect(fixture.nativeElement.querySelector("#map-loading")).toBeTruthy();
   });
 
   it("Should interact with sidebar control and handle destroy", () => {
@@ -118,6 +141,9 @@ describe("AirParifMapComponent", () => {
 
     closeBtn?.dispatchEvent(new MouseEvent("click"));
     expect(sidebarNative?.classList.contains("collapsed")).toBe(true);
+
+    component.openSidebar();
+    expect(sidebarNative?.classList.contains("collapsed")).toBe(false);
 
     component.ngOnDestroy();
   });

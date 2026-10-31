@@ -6,6 +6,7 @@ import { ErrorHandlerService } from "../../services/error.handler.service";
 import { WidgetService } from "../../services/widget.service/widget.service";
 import { AirParifWidgetComponent } from "./airparif-widget.component";
 import { AirParifWidgetService } from "./airparif-widget.service";
+import { AirParifIndiceEnum } from "./model/IAirParif";
 
 describe("AirParifWidgetComponent", () => {
   let component: AirParifWidgetComponent;
@@ -119,6 +120,25 @@ describe("AirParifWidgetComponent", () => {
 
     expect(component.airParifForecast()).toEqual(forecastData);
     expect(component.airParifCouleursIndices()).toEqual(couleursIndicesData);
+  });
+
+  it("Should validate the commune INSEE code", () => {
+    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
+    component.config.update((config) => ({ ...config, communeInseeCode: "2A004" }));
+    expect(component.isFormValid()).toEqual(true);
+    component.config.update((config) => ({ ...config, communeInseeCode: "Paris" }));
+    expect(component.isFormValid()).toEqual(false);
+    component.config.update((config) => ({ ...config, communeInseeCode: "751120" }));
+    expect(component.isFormValid()).toEqual(false);
+  });
+
+  it("Should give the class and the label of an indice", () => {
+    expect(component.getIndiceClass("TRES_MAUVAIS" as AirParifIndiceEnum)).toEqual(
+      "indice-tres-mauvais"
+    );
+    expect(component.getIndiceLabel("TRES_MAUVAIS" as AirParifIndiceEnum)).toEqual("Très mauvais");
+    // Not rendered, so there is no map to open
+    expect(() => component.openSidebar()).not.toThrow();
   });
 
   it("Should get errors from API", async () => {

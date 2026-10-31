@@ -1,10 +1,11 @@
+import { DecimalPipe } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ChartData, ChartTypeRegistry } from "chart.js";
+import { ChartConfiguration, ChartData, ChartTypeRegistry } from "chart.js";
 import { format, isAfter } from "date-fns";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { fr } from "date-fns/locale";
@@ -24,10 +25,10 @@ import { WidgetComponent } from "../widget/widget.component";
     WidgetComponent,
     BaseChartDirective,
     MatIcon,
-    MatIconButton,
     MatTooltip,
     StravaActivitiesComponent,
-    MatButton
+    MatButton,
+    DecimalPipe
   ]
 })
 export class StravaWidgetComponent implements OnInit {
@@ -60,14 +61,48 @@ export class StravaWidgetComponent implements OnInit {
     return {
       labels: activitiesStats.map((stat) => format(stat.x, "MMM yyyy", { locale: fr })),
       datasets: [
-        { label: "Distance (kms)", data: activitiesStats.map((stat) => stat.y) },
+        {
+          label: "Distance (kms)",
+          data: activitiesStats.map((stat) => stat.y),
+          backgroundColor: "rgb(252 76 2 / 70%)"
+        },
+        // Displayed on its own axis, as there are far fewer activities than kilometers
         {
           label: "Activités",
-          data: Object.values(this.getActivitiesByMonth()).map((distances) => distances.length)
+          type: "line",
+          yAxisID: "activities",
+          data: Object.values(this.getActivitiesByMonth()).map((distances) => distances.length),
+          borderColor: "#2563eb",
+          backgroundColor: "#2563eb",
+          tension: 0.3
         }
       ]
     };
   });
+
+  /** Totals of the displayed activities, distance in kilometers and elevation in meters. */
+  public readonly activitiesSummary = computed(() =>
+    this.activities().reduce(
+      (summary, activity) => ({
+        count: summary.count + 1,
+        distance: summary.distance + activity.distance / 1000,
+        elevation: summary.elevation + activity.totalElevationGain
+      }),
+      { count: 0, distance: 0, elevation: 0 }
+    )
+  );
+
+  public readonly chartOptions: ChartConfiguration["options"] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } } },
+    elements: { bar: { borderRadius: 6 } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { beginAtZero: true },
+      activities: { position: "right", beginAtZero: true, grid: { display: false } }
+    }
+  };
 
   public readonly isWidgetLoaded = computed(
     () => this.isAthleteLoaded() && !this.activitiesResource.isLoading()

@@ -1,0 +1,38 @@
+@use "mixins" as *;
+
+// Global styles of the games of the Steam widget: the body of their expansion panel (rendered by
+// the panel itself) and their theme colors
+dash-game-details {
+  .game-panel .mat-expansion-panel-body {
+    padding: 0 $space-sm $space-md;
+  }
+
+  @include themed {
+    .game-panel {
+      border-bottom: 1px solid $color-border;
+
+      &.mat-expanded {
+        background-color: $color-background;
+      }
+    }
+
+    .progress-value {
+      color: $color-accent;
+    }
+
+    .game-achievements-data,
+    .no-achievements {
+      color: $color-muted-text;
+    }
+
+    .no-achievements {
+      mat-icon {
+        color: $color-border;
+      }
+
+      a {
+        color: $color-accent;
+      }
+    }
+  }
+}

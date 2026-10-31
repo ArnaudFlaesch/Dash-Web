@@ -1,0 +1,16 @@
+@use "mixins" as *;
+
+// Theme colors of the tabs
+dash-tab {
+  @include themed {
+    .tab-name-input {
+      border: 1px solid $color-accent;
+      background-color: $color-surface;
+      color: $color-text;
+    }
+
+    .save-tab-button {
+      color: $color-accent;
+    }
+  }
+}

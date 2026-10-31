@@ -1,0 +1,23 @@
+@use "mixins" as *;
+
+// Theme colors of the "create widget" and "create mini widget" modals
+dash-create-widget-modal,
+dash-create-mini-widget-modal {
+  .widget-type-tile {
+    @include themed {
+      border: 1px solid $color-border;
+      background-color: $color-surface;
+      color: $color-text;
+
+      mat-icon {
+        color: $color-accent;
+      }
+
+      &:hover,
+      &:focus-visible {
+        border-color: $color-accent;
+        background-color: $color-accent-soft;
+      }
+    }
+  }
+}

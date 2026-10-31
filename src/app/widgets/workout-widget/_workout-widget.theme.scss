@@ -1,0 +1,49 @@
+@use "mixins" as *;
+
+// Theme colors of the workout widget
+dash-workout-widget {
+  @include themed {
+    .workout-section-title,
+    .workout-stats-header,
+    .workout-empty-message {
+      color: $color-muted-text;
+    }
+
+    .workout-session,
+    .workout-period {
+      border: 1px solid $color-border;
+      background-color: $color-surface;
+      color: $color-text;
+
+      &:hover,
+      &:focus-visible {
+        border-color: $color-accent;
+        background-color: $color-accent-soft;
+      }
+    }
+
+    .workout-session mat-icon {
+      color: $color-accent;
+    }
+
+    .workout-period.selected-period {
+      border-color: $color-accent;
+      background-color: $color-accent;
+      color: $color-surface;
+    }
+
+    .workout-stats-card {
+      border: 1px solid $color-border;
+      background-color: $color-background;
+    }
+
+    .workout-stat-reps {
+      color: $color-accent;
+    }
+
+    #workout-types-grid .workout-type-name {
+      background-color: $color-accent-soft;
+      color: $color-accent;
+    }
+  }
+}

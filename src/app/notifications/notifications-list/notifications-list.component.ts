@@ -1,6 +1,6 @@
 import { Component, input, output } from "@angular/core";
 import { MatBadge } from "@angular/material/badge";
-import { MatIconButton, MatMiniFabButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -11,16 +11,7 @@ import { DateFormatPipe } from "../../pipes/date-format.pipe";
   selector: "dash-notifications-list",
   templateUrl: "./notifications-list.component.html",
   styleUrl: "./notifications-list.component.scss",
-  imports: [
-    MatTooltip,
-    MatIcon,
-    MatIconButton,
-    MatMiniFabButton,
-    MatMenuTrigger,
-    MatBadge,
-    MatMenu,
-    DateFormatPipe
-  ]
+  imports: [MatTooltip, MatIcon, MatIconButton, MatMenuTrigger, MatBadge, MatMenu, DateFormatPipe]
 })
 export class NotificationsListComponent {
   public readonly notificationsList = input.required<INotificationToDisplay[]>();

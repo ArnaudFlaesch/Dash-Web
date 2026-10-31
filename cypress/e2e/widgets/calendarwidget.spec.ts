@@ -26,29 +26,29 @@ xdescribe("Calendar Widget tests", () => {
   it("Should edit Calendar widget and add an Ical feed", () => {
     cy.intercept("POST", `/calendarWidget/`)
       .as("getCalendarDataRequest")
-      .get("#addCalendarUrl")
+      .get("#add-calendar-url")
       .click();
     cy.get("input").type(`${icalFrenchHolidays}`);
-    cy.get(".validateButton").click();
+    cy.get(".validate-button").click();
     cy.wait("@getCalendarDataRequest").then((request: Interception) => {
       expect(request.response?.statusCode).to.equal(200);
       cy.get("h3").should("have.text", `Juillet ${lastYearNumber}`);
-      cy.get(".refreshButton").click();
+      cy.get(".refresh-button").click();
       cy.wait("@getCalendarDataRequest").then(() => {
         cy.get(".cal-future:nth(13)").find(".cal-day-badge").should("have.text", 1);
-        cy.get(".editButton").click();
-        cy.get("#addCalendarUrl").click();
+        cy.get(".edit-button").click();
+        cy.get("#add-calendar-url").click();
         cy.get("input").eq(1).type(`${icalUsaHolidays}`);
-        cy.get(".validateButton").click();
+        cy.get(".validate-button").click();
         cy.wait(["@getCalendarDataRequest", "@getCalendarDataRequest"]).then(
           (request: Interception[]) => {
             expect(request[0]?.response?.statusCode).to.equal(200);
             expect(request[1]?.response?.statusCode).to.equal(200);
             cy.get(".cal-future:nth(4)").scrollIntoView();
             cy.get(".cal-events").should("have.length", 2);
-            cy.get(".editButton").click();
-            cy.get(".removeCalendarUrl").eq(1).click();
-            cy.get(".validateButton").click();
+            cy.get(".edit-button").click();
+            cy.get(".remove-calendar-url").eq(1).click();
+            cy.get(".validate-button").click();
             cy.wait("@getCalendarDataRequest").then(() =>
               cy
                 .get(".cal-events")

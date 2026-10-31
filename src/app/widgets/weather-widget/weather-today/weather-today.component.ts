@@ -1,4 +1,5 @@
 import { Component, computed, inject, input } from "@angular/core";
+import { DecimalPipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
@@ -10,7 +11,7 @@ import { WeatherWidgetService } from "../weather.widget.service";
   selector: "dash-weather-today",
   templateUrl: "./weather-today.component.html",
   styleUrl: "./weather-today.component.scss",
-  imports: [MatTooltip, MatIcon, InitialUppercasePipe]
+  imports: [MatTooltip, MatIcon, InitialUppercasePipe, DecimalPipe]
 })
 export class WeatherTodayComponent {
   public readonly weather = input.required<IWeatherAPIResponse>();

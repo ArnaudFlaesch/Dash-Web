@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
+import { DecimalPipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { catchError, of } from "rxjs";
@@ -27,7 +28,8 @@ import { injectWidgetData } from "../../widget.tokens";
     FormField,
     MatTooltip,
     MatIcon,
-    InitialUppercasePipe
+    InitialUppercasePipe,
+    DecimalPipe
   ]
 })
 export class WeatherMiniWidgetComponent {

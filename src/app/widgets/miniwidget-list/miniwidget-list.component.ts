@@ -2,7 +2,7 @@ import { NgComponentOutlet } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, Injector, Type } from "@angular/core";
 import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { MatMiniFabButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -23,7 +23,7 @@ const MINI_WIDGET_COMPONENTS: Record<MiniWidgetTypeEnum, Type<unknown>> = {
   selector: "dash-miniwidget-list",
   templateUrl: "./miniwidget-list.component.html",
   styleUrl: "./miniwidget-list.component.scss",
-  imports: [MatMiniFabButton, MatTooltip, MatIcon, NgComponentOutlet]
+  imports: [MatIconButton, MatTooltip, MatIcon, NgComponentOutlet]
 })
 export class MiniWidgetListComponent {
   public readonly miniWidgetsResource = rxResource({
@@ -60,7 +60,7 @@ export class MiniWidgetListComponent {
 
   public openCreateMiniWidgetModal(): void {
     this.dialog
-      .open(CreateMiniWidgetModalComponent, { height: "400px", width: "600px" })
+      .open(CreateMiniWidgetModalComponent, { width: "640px" })
       .afterClosed()
       .pipe(
         filter(Boolean),

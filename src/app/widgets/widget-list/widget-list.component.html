@@ -1,4 +1,4 @@
-<div id="widget-list" cdkDropList (cdkDropListDropped)="drop($event)">
+<div id="widget-list" cdkDropList (cdkDropListDropped)="drop($event)" [class.edit-mode]="toggleEditMode()">
   @for (widget of widgets(); track widget.id) {
     <div class="widget-container" cdkDrag cdkDragBoundary="#widget-list" [cdkDragDisabled]="!toggleEditMode()">
       <ng-container *ngComponentOutlet="widgetComponents[widget.type]; injector: getWidgetInjector(widget)" />

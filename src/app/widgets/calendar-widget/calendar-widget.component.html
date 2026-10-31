@@ -13,15 +13,25 @@
   </ng-template>
 
   <ng-template #editComponent>
-    <div id="calendar-urls-list-container" class="column items-center gap-sm">
+    <div id="calendar-urls-list-container" class="column gap-sm">
       @for (calendarUrlField of configForm.calendarUrls; track calendarUrlField; let index = $index) {
-        <div class="calendar-url-container row gap-md">
-          <input [id]="index" [formField]="calendarUrlField" placeholder="Saisissez une URL" />
-          <button mat-raised-button class="removeCalendarUrl" (click)="removeCalendarUrl(index)">Supprimer</button>
+        <div class="calendar-url-container row items-center gap-xs">
+          <input
+            [id]="index"
+            [formField]="calendarUrlField"
+            placeholder="Saisissez une URL iCal"
+            aria-label="URL du calendrier"
+          />
+          <button mat-icon-button class="remove-calendar-url" matTooltip="Supprimer" (click)="removeCalendarUrl(index)">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
         </div>
       }
     </div>
-    <button mat-raised-button id="addCalendarUrl" (click)="onCalendarUrlAdded()">Ajouter</button>
+    <button mat-stroked-button id="add-calendar-url" class="add-calendar-url-button" (click)="onCalendarUrlAdded()">
+      <mat-icon>add</mat-icon>
+      Ajouter un calendrier
+    </button>
   </ng-template>
 
   <ng-template #body>

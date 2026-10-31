@@ -1,6 +1,9 @@
 import { Component, inject, signal } from "@angular/core";
 import { form, FormField } from "@angular/forms/signals";
-import { MatButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatFormField, MatLabel, MatPrefix, MatSuffix } from "@angular/material/form-field";
+import { MatIcon } from "@angular/material/icon";
+import { MatInput } from "@angular/material/input";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
@@ -12,10 +15,23 @@ import { requiredText } from "../utils/form-validators";
   selector: "dash-login",
   templateUrl: "./login.component.html",
   styleUrl: "./login.component.scss",
-  imports: [RouterLink, MatButton, MatProgressSpinner, FormField]
+  imports: [
+    RouterLink,
+    MatButton,
+    MatIconButton,
+    MatFormField,
+    MatLabel,
+    MatPrefix,
+    MatSuffix,
+    MatIcon,
+    MatInput,
+    MatProgressSpinner,
+    FormField
+  ]
 })
 export class LoginComponent {
   public readonly isLoading = signal(false);
+  public readonly isPasswordVisible = signal(false);
 
   public readonly credentials = signal({ username: "", password: "" });
   public readonly loginForm = form(this.credentials, (path) => {

@@ -22,9 +22,9 @@ describe("RSS Widget tests", () => {
   });
 
   it("Should edit RSS widget and add a feed URL", () => {
-    cy.get(".validateButton").should("be.disabled");
+    cy.get(".validate-button").should("be.disabled");
     cy.get("input").type(rssFeedUrl);
-    cy.get(".validateButton").click();
+    cy.get(".validate-button").click();
     cy.wait("@refreshWidget").then((request: Interception) => {
       expect(request.response?.statusCode).to.equal(200);
       cy.get(".rss-title")
@@ -44,7 +44,7 @@ describe("RSS Widget tests", () => {
         fixture: "rss/figaro_rss.json"
       })
       .as("refreshWidget");
-    cy.get(".refreshButton").click();
+    cy.get(".refresh-button").click();
     cy.wait("@refreshWidget").then(() => {
       cy.get(".widget .rss-article").should("have.length", NUMBER_OF_ARTICLES);
       cy.get(".widget .rss-article:nth(0)  .article-title").should("be.visible");
@@ -60,7 +60,7 @@ describe("RSS Widget tests", () => {
         "EN DIRECT - Guerre en Ukraine : Poutine prévient qu'il atteindra ses objectifs «soit par la négociation, soit par la guerre»"
       );
       cy.get(".widget .mat-expansion-panel-header-title.is-read").should("have.length", 1);
-      cy.get(".widget .markAllArticlesAsReadButton").click();
+      cy.get(".widget .mark-all-articles-as-read-button").click();
       cy.wait("@markAllFeedAsRead").then((request: Interception) => {
         expect(request.response?.statusCode).to.equal(200);
         cy.get(".widget .mat-expansion-panel-header-title.is-read").should(
@@ -72,7 +72,7 @@ describe("RSS Widget tests", () => {
   });
 
   it("Should refresh all widgets", () => {
-    cy.get("#reloadAllWidgetsButton").click();
+    cy.get("#reload-all-widgets-button").click();
     cy.wait("@refreshWidget").then((request: Interception) => {
       expect(request.response?.statusCode).to.equal(200);
       cy.get(".widget .rss-article").should("have.length", NUMBER_OF_ARTICLES);
@@ -84,10 +84,10 @@ describe("RSS Widget tests", () => {
       .should("have.length", 1)
       .intercept("DELETE", "/widget/deleteWidget*", { statusCode: 500 })
       .as("deleteWidgetError");
-    cy.get(".editButton").click();
-    cy.get(".deleteButton").click();
+    cy.get(".edit-button").click();
+    cy.get(".delete-button").click();
     cy.get("h4").should("have.text", "Êtes-vous sûr de vouloir supprimer ce widget ?");
-    cy.get(".validateDeletionButton").click();
+    cy.get(".validate-deletion-button").click();
     cy.wait("@deleteWidgetError").then((request: Interception) => {
       expect(request.response?.statusCode).to.equal(500);
       cy.shouldDisplayErrorMessage("Erreur lors de la suppression d'un widget.")

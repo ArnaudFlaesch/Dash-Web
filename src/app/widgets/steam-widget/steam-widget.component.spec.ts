@@ -134,13 +134,17 @@ describe("SteamWidgetComponent", () => {
     httpTestingController.expectOne(ownedGamesUrl).flush(ownedGamesData);
     await flushResources();
 
+    expect(component.isOwnedGamesLoading()).toEqual(false);
     component.onPageChanged(pageEvent);
     TestBed.tick();
     expect(component.pageNumber()).toEqual(pageIndex);
+    // The spinner is displayed until the page is received
+    expect(component.isOwnedGamesLoading()).toEqual(true);
     httpTestingController
       .expectOne(`${ownedGamesUrl}&pageNumber=${pageIndex}`)
       .flush(ownedGamesData);
     await flushResources();
+    expect(component.isOwnedGamesLoading()).toEqual(false);
 
     // The search is debounced, then goes back to the first page
     const searchValue = "Mario";
@@ -156,6 +160,37 @@ describe("SteamWidgetComponent", () => {
     component.resetForm();
     expect(component.searchQuery()).toEqual("");
     vi.useRealTimers();
+  });
+
+  it("Should stop loading when the page navigation fails", async () => {
+    const errorHandlerService = TestBed.inject(ErrorHandlerService);
+    const handleErrorSpy = vi
+      .spyOn(errorHandlerService, "handleError")
+      .mockImplementation(() => {});
+    const steamUserId = "1337";
+    const ownedGamesUrl = `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`;
+    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
+    component.refreshWidget();
+    TestBed.tick();
+    httpTestingController
+      .expectOne(`${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`)
+      .flush(playerData);
+    await flushResources();
+    httpTestingController.expectOne(ownedGamesUrl).flush(ownedGamesData);
+    await flushResources();
+
+    const pageIndex = 1;
+    component.onPageChanged({ pageIndex: pageIndex, pageSize: 25, length: 150 } as PageEvent);
+    TestBed.tick();
+    expect(component.isOwnedGamesLoading()).toEqual(true);
+    httpTestingController
+      .expectOne(`${ownedGamesUrl}&pageNumber=${pageIndex}`)
+      .flush(null, { status: 500, statusText: "Internal Server Error" });
+    await flushResources();
+
+    expect(component.isOwnedGamesLoading()).toEqual(false);
+    expect(handleErrorSpy).toHaveBeenCalled();
+    expect(component.ownedGamesDisplay()).toEqual([]);
   });
 
   it("Should get widget data and check form", () => {

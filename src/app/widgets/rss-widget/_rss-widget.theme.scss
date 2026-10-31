@@ -1,0 +1,8 @@
+@use "mixins" as *;
+
+// Theme colors of the RSS widget
+dash-rss-widget .rss-widget-description {
+  @include themed {
+    color: $color-muted-text;
+  }
+}

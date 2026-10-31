@@ -4,13 +4,13 @@
       <ng-container *ngTemplateOutlet="editComponent() ?? null" />
 
       @if (isWidgetLoaded() && widgetData()) {
-        <button class="cancelButton" matTooltip="Annuler" mat-icon-button (click)="cancelEdition()">
+        <button class="cancel-button" matTooltip="Annuler" mat-icon-button (click)="cancelEdition()">
           <mat-icon>undo</mat-icon>
         </button>
       }
 
       <button
-        class="validateButton"
+        class="validate-button"
         matTooltip="Valider"
         mat-icon-button
         (click)="onValidation()"
@@ -26,10 +26,11 @@
   }
 
   @if (isModeDelete()) {
-    <div>
+    <div class="delete-mini-widget">
       <h4>Êtes-vous sûr de vouloir supprimer ce widget ?</h4>
-      <div id="delete-mini-widget-actions">
-        <button (click)="deleteMiniWidget()" mat-raised-button color="warn" class="validateDeletionButton">
+      <div id="delete-mini-widget-actions" class="row gap-sm">
+        <button (click)="toReadMode()" mat-button class="cancel-button">Annuler</button>
+        <button (click)="deleteMiniWidget()" mat-raised-button color="warn" class="validate-deletion-button">
           Supprimer
         </button>
       </div>
@@ -37,13 +38,19 @@
   }
 
   @if (isModeRead()) {
-    <div (dblclick)="toEditMode()">
+    <!-- Touch gestures are kept, so that the list of mini widgets can be scrolled on phones -->
+    <div
+      (dblclick)="toEditMode()"
+      matTooltip="Double-cliquez pour modifier"
+      [matTooltipShowDelay]="800"
+      matTooltipTouchGestures="off"
+    >
       <div class="read-mini-widget-body-container">
         @if (isWidgetLoaded()) {
           <ng-container *ngTemplateOutlet="body()" />
         } @else {
           <div class="loading-spinner">
-            <mat-spinner />
+            <mat-spinner diameter="32" />
           </div>
         }
       </div>

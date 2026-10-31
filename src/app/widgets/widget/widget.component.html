@@ -1,28 +1,27 @@
 <div class="widget">
   @if (isModeEdit()) {
-    <div class="widget-edit-mode column items-center full-size">
+    <div class="widget-edit-mode column full-size">
       <div class="header-container row items-center">
+        <div class="widget-header row items-center gap-xs">
+          <mat-icon class="edit-mode-icon">tune</mat-icon>
+          <span>Configuration du widget</span>
+        </div>
         <div class="header-actions row">
-          <button class="deleteButton" mat-icon-button matTooltip="Supprimer le widget" (click)="toDeleteMode()">
-            <mat-icon aria-hidden="false">delete</mat-icon>
+          <button class="delete-button" mat-icon-button matTooltip="Supprimer le widget" (click)="toDeleteMode()">
+            <mat-icon aria-hidden="false">delete_outline</mat-icon>
           </button>
         </div>
       </div>
       <div class="widget-body column">
-        <div class="widget-edit-component-container">
+        <div class="widget-edit-component-container column">
           <ng-container *ngTemplateOutlet="editComponent() ?? null" />
         </div>
         <div class="edit-component-actions row">
           @if (isWidgetLoaded() && widgetData()) {
-            <button class="cancelButton" mat-raised-button (click)="cancelEdition()">Annuler</button>
+            <button class="cancel-button" mat-button (click)="cancelEdition()">Annuler</button>
           }
-          <button
-            class="validateButton"
-            mat-raised-button
-            (click)="onValidation()"
-            color="primary"
-            [disabled]="!isFormValid()"
-          >
+          <button class="validate-button" mat-flat-button (click)="onValidation()" [disabled]="!isFormValid()">
+            <mat-icon>check</mat-icon>
             Valider
           </button>
         </div>
@@ -49,11 +48,11 @@
             </span>
           }
 
-          <button mat-icon-button matTooltip="Actualiser le widget" (click)="refreshWidget()" class="refreshButton">
+          <button mat-icon-button matTooltip="Actualiser le widget" (click)="refreshWidget()" class="refresh-button">
             <mat-icon aria-hidden="false">refresh</mat-icon>
           </button>
           @if (editComponent()) {
-            <button mat-icon-button matTooltip="Modifier le widget" (click)="toEditMode()" class="editButton">
+            <button mat-icon-button matTooltip="Modifier le widget" (click)="toEditMode()" class="edit-button">
               <mat-icon>settings</mat-icon>
             </button>
           }
