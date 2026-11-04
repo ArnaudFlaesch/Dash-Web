@@ -41,7 +41,7 @@ describe("WorkoutSessionEditComponent", () => {
 
   it("should add a rep to an exercise", () => {
     fixture.componentRef.setInput("currentWorkoutSessionToEdit", currentWorkoutSessionToEdit);
-    fixture.detectChanges();
+    TestBed.tick();
     const getWorkoutExercisesRequest = httpTestingController.expectOne(
       environment.backend_url +
         `/workoutWidget/workoutExercises?workoutSessionId=${currentWorkoutSessionToEdit.id}`

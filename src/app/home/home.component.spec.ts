@@ -293,7 +293,9 @@ describe("HomeComponent", () => {
     const createObjectURL = vi.fn(() => "blob:config");
     const revokeObjectURL = vi.fn();
     vi.stubGlobal("URL", Object.assign(URL, { createObjectURL, revokeObjectURL }));
-    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const clickSpy = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => undefined);
 
     component.downloadConfig();
     httpTestingController

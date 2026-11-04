@@ -1,5 +1,5 @@
-export type ITab = {
+export interface ITab {
   id: number;
   label: string;
   tabOrder: number;
-};
+}

@@ -357,7 +357,7 @@ describe("WorkoutWidgetComponent rendering", () => {
   it("should display the sessions, the statistics and the workout types", async () => {
     const fixture = TestBed.createComponent(WorkoutWidgetComponent);
     const element: HTMLElement = fixture.nativeElement;
-    fixture.detectChanges();
+    TestBed.tick();
 
     httpTestingController
       .expectOne(environment.backend_url + "/workoutWidget/workoutTypes")

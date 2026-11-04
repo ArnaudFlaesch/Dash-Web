@@ -166,7 +166,7 @@ describe("SteamWidgetComponent", () => {
     const errorHandlerService = TestBed.inject(ErrorHandlerService);
     const handleErrorSpy = vi
       .spyOn(errorHandlerService, "handleError")
-      .mockImplementation(() => {});
+      .mockImplementation(() => undefined);
     const steamUserId = "1337";
     const ownedGamesUrl = `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`;
     component.config.update((config) => ({ ...config, steamUserId: steamUserId }));

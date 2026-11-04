@@ -12,9 +12,9 @@ describe("AirParifMapComponent", () => {
   beforeAll(() => {
     if (typeof window !== "undefined" && !window.ResizeObserver) {
       window.ResizeObserver = class ResizeObserver {
-        public observe(): void {}
-        public unobserve(): void {}
-        public disconnect(): void {}
+        public observe = vi.fn();
+        public unobserve = vi.fn();
+        public disconnect = vi.fn();
       };
     }
   });
@@ -99,22 +99,22 @@ describe("AirParifMapComponent", () => {
     expect(component.forecastToDisplay()?.no2).toEqual("MOYEN");
   });
 
-  it("Should display an empty state without forecast", () => {
+  it("Should display an empty state without forecast", async () => {
     fixture.componentRef.setInput("airParifForecast", []);
     fixture.componentRef.setInput("airParifCouleursIndices", []);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector("#forecast-empty")).toBeTruthy();
     expect(component.globalIndiceDetails()).toBeUndefined();
 
     fixture.componentRef.setInput("isLoading", true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector("#forecast-empty")).toBeNull();
     expect(fixture.nativeElement.querySelector("#map-loading")).toBeTruthy();
   });
 
-  it("Should interact with sidebar control and handle destroy", () => {
+  it("Should interact with sidebar control and handle destroy", async () => {
     fixture.componentRef.setInput("airParifForecast", [
       {
         date: "2022-10-08",
@@ -128,7 +128,7 @@ describe("AirParifMapComponent", () => {
     ] as unknown as IForecast[]);
     fixture.componentRef.setInput("airParifCouleursIndices", []);
     fixture.componentRef.setInput("airParifApiKey", "test-key");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const sidebarNative = fixture.nativeElement.querySelector("#sidebar");
     const tabLink = sidebarNative?.querySelector("a[href='#home']");

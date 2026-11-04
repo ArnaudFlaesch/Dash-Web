@@ -23,11 +23,11 @@ import { AirParifWidgetService } from "../airparif-widget.service";
 import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from "../model/IAirParif";
 import { SidebarControl } from "../SidebarControl";
 
-type IPollutant = {
+interface IPollutant {
   key: Exclude<keyof IForecast, "date" | "indice">;
   formula: string;
   name: string;
-};
+}
 
 const POLLUTANTS: IPollutant[] = [
   { key: "no2", formula: "NO₂", name: "Dioxyde d'azote" },
@@ -37,10 +37,10 @@ const POLLUTANTS: IPollutant[] = [
   { key: "so2", formula: "SO₂", name: "Dioxyde de soufre" }
 ];
 
-type IIndiceDetails = {
+interface IIndiceDetails {
   icon: string;
   advice: string;
-};
+}
 
 // Keyed by the keys of the enum, sent by the API
 const INDICE_DETAILS: Record<keyof typeof AirParifIndiceEnum, IIndiceDetails> = {

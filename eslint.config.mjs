@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 import tseslint from "typescript-eslint";
+import angular from "angular-eslint";
 import pluginCypress from "eslint-plugin-cypress";
 import { defineConfig, globalIgnores } from "eslint/config";
 
@@ -24,5 +25,27 @@ export default defineConfig([
     extends: [pluginCypress.configs.recommended]
   },
   tseslint.configs.recommended,
+  {
+    files: ["**/*.ts"],
+    extends: [tseslint.configs.stylistic, angular.configs.tsRecommended],
+    processor: angular.processInlineTemplates,
+    rules: {
+      "@angular-eslint/directive-selector": [
+        "error",
+        { type: "attribute", prefix: "dash", style: "camelCase" }
+      ],
+      "@angular-eslint/component-selector": [
+        "error",
+        { type: "element", prefix: "dash", style: "kebab-case" }
+      ]
+    }
+  },
+  {
+    files: ["**/*.html"],
+    extends: [
+      angular.configs.templateRecommended,
+      angular.configs.templateAccessibility
+    ]
+  },
   eslintConfigPrettier
 ]);

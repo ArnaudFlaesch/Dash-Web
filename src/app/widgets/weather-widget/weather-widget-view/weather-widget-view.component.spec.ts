@@ -31,7 +31,6 @@ describe("WeatherWidgetViewComponent", () => {
     fixture.componentRef.setInput("weather", weatherData);
     fixture.componentRef.setInput("cityData", forecastData.city);
     fixture.componentRef.setInput("forecastResponse", forecastData.list);
-    fixture.detectChanges();
   });
 
   it("should create", () => {
