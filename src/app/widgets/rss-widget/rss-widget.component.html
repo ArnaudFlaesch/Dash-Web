@@ -5,13 +5,10 @@
   (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
-    @if (rssFeedResult()?.image?.url && !isLogoBroken()) {
-      <img
-        class="rss-widget-header"
-        [src]="rssFeedResult()?.image?.url"
-        [alt]="labels.logo"
-        (error)="isLogoBroken.set(true)"
-      />
+    @if (!isLogoBroken() && rssFeedResult()?.image?.url; as logoUrl) {
+      <span class="rss-widget-logo">
+        <img class="rss-widget-header" [ngSrc]="logoUrl" fill [alt]="labels.logo" (error)="isLogoBroken.set(true)" />
+      </span>
     } @else {
       <mat-icon>rss_feed</mat-icon>
     }

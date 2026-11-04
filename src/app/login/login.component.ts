@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from "@angular/common";
 import { Component, inject, signal } from "@angular/core";
 import { form, FormField } from "@angular/forms/signals";
 import { MatButton, MatIconButton } from "@angular/material/button";
@@ -16,6 +17,7 @@ import { requiredText } from "../utils/form-validators";
   templateUrl: "./login.component.html",
   styleUrl: "./login.component.scss",
   imports: [
+    NgOptimizedImage,
     RouterLink,
     MatButton,
     MatIconButton,

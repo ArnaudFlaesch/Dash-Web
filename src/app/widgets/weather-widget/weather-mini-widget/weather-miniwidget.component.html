@@ -16,7 +16,9 @@
       <div class="mini-widget-weather-container row">
         <img
           class="current-weather-icon"
-          [src]="getIconFromWeatherApi(weather.weather[0].icon)"
+          [ngSrc]="getIconFromWeatherApi(weather.weather[0].icon)"
+          width="100"
+          height="100"
           [matTooltip]="weather.weather[0].description | initialUppercase"
           matTooltipTouchGestures="off"
           [alt]="weather.weather[0].description"

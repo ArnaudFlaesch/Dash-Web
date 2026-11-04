@@ -7,7 +7,13 @@
   <ng-template #headerIcon>
     @if (athlete(); as athlete) {
       <a [href]="getAthleteProfileUrl(athlete.id)" id="strava-widget-header">
-        <img [src]="athlete.profileMedium" id="strava-profile-picture" [alt]="labels.athleteProfile" />
+        <img
+          [ngSrc]="athlete.profileMedium"
+          width="62"
+          height="62"
+          id="strava-profile-picture"
+          [alt]="labels.athleteProfile"
+        />
       </a>
     } @else {
       <mat-icon>directions_run</mat-icon>

@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
@@ -25,6 +26,7 @@ import { WidgetComponent } from "../widget/widget.component";
   templateUrl: "./rss-widget.component.html",
   styleUrl: "./rss-widget.component.scss",
   imports: [
+    NgOptimizedImage,
     WidgetComponent,
     MatFormField,
     MatLabel,

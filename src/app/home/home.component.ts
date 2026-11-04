@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
-import { Location } from "@angular/common";
+import { Location, NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import {
   Component,
@@ -45,6 +45,7 @@ import { WIDGET_TYPE_OPTIONS } from "../model/WidgetTypeOptions";
   templateUrl: "./home.component.html",
   styleUrl: "./home.component.scss",
   imports: [
+    NgOptimizedImage,
     CdkDropList,
     TabComponent,
     CdkDrag,

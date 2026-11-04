@@ -556,6 +556,52 @@ describe("StravaWidgetComponent rendering", () => {
     ) as HTMLButtonElement;
   }
 
+  /** Requests for the athlete, whatever the token. */
+  function athleteRequests(): ReturnType<HttpTestingController["match"]> {
+    return httpTestingController.match((request) =>
+      request.url.startsWith(`${environment.backend_url}/stravaWidget/getAthleteData`)
+    );
+  }
+
+  it("should request the athlete only once when the user is logged in", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    await createLoggedInWidget([]);
+
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(athleteRequests()).toHaveLength(0);
+    vi.useRealTimers();
+  });
+
+  it("should not request the athlete with an expired token, only refresh the token", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    window.localStorage.setItem("strava_token", token);
+    window.localStorage.setItem("strava_refresh_token", "FAKE_REFRESH_TOKEN");
+    window.localStorage.setItem("strava_token_expires_at", "1");
+    createWidget();
+
+    const newToken = "NEW_TOKEN";
+    httpTestingController
+      .expectOne(`${environment.backend_url}/stravaWidget/getRefreshToken`)
+      .flush({
+        accessToken: newToken,
+        refreshToken: "NEW_REFRESH_TOKEN",
+        expiresAt: Math.floor(addDays(new Date(), 4).getTime() / 1000).toString(),
+        athlete
+      });
+    await flushResources();
+    httpTestingController
+      .expectOne(
+        `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${newToken}&pageNumber=1&numberOfActivities=25`
+      )
+      .flush([]);
+    await flushResources();
+
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(athleteRequests()).toHaveLength(0);
+    expect(component.athlete()).toEqual(athlete);
+    vi.useRealTimers();
+  });
+
   it("should display the login to Strava when the user is not logged in", async () => {
     createWidget();
     await fixture.whenStable();

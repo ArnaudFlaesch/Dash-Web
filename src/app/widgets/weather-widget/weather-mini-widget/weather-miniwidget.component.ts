@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
-import { DecimalPipe } from "@angular/common";
+import { DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { ErrorHandlerService } from "../../../services/error-handler.service";
@@ -21,6 +21,7 @@ import { catchError, of } from "rxjs";
   templateUrl: "./weather-miniwidget.component.html",
   styleUrl: "./weather-miniwidget.component.scss",
   imports: [
+    NgOptimizedImage,
     MiniWidgetComponent,
     MatFormField,
     MatLabel,

@@ -1,4 +1,4 @@
-import { DecimalPipe } from "@angular/common";
+import { DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
@@ -22,6 +22,7 @@ import { WidgetComponent } from "../widget/widget.component";
   templateUrl: "./strava-widget.component.html",
   styleUrl: "./strava-widget.component.scss",
   imports: [
+    NgOptimizedImage,
     WidgetComponent,
     BaseChartDirective,
     MatIcon,
@@ -165,8 +166,9 @@ export class StravaWidgetComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   public ngOnInit(): void {
+    // The athlete is loaded by the first refresh of the widget, only the code sent back by
+    // Strava after the login is handled here
     const initTimeout = setTimeout(async () => {
-      this.getAthleteData();
       const apiCode = this.route.snapshot.queryParamMap.get("code");
       if (apiCode) {
         await this.getToken(apiCode);

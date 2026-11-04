@@ -3,7 +3,9 @@
     <div class="weather-container row items-center">
       <img
         class="current-weather-icon"
-        [src]="getIconFromWeatherApi(currentWeather[0].icon)"
+        [ngSrc]="getIconFromWeatherApi(currentWeather[0].icon)"
+        width="100"
+        height="100"
         [matTooltip]="currentWeather[0].description | initialUppercase"
         [alt]="currentWeather[0].description"
       />

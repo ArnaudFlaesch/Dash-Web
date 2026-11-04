@@ -1,4 +1,4 @@
-import { DecimalPipe } from "@angular/common";
+import { DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { Component, inject, computed, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -11,7 +11,7 @@ import { WeatherWidgetService } from "../weather-widget.service";
   selector: "dash-weather-today",
   templateUrl: "./weather-today.component.html",
   styleUrl: "./weather-today.component.scss",
-  imports: [MatTooltip, MatIcon, InitialUppercasePipe, DecimalPipe]
+  imports: [NgOptimizedImage, MatTooltip, MatIcon, InitialUppercasePipe, DecimalPipe]
 })
 export class WeatherTodayComponent {
   public readonly labels = {

@@ -64,7 +64,7 @@
         </div>
         <a
           class="activity-link hoverable-link accent-text row items-center"
-          href="https://www.strava.com/activities/{{ activity.id }}"
+          [href]="'https://www.strava.com/activities/' + activity.id"
         >
           {{ labels.viewOnStrava }}
           <mat-icon>open_in_new</mat-icon>

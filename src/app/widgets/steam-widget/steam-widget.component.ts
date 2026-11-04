@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
 import { rxResource, toObservable, toSignal } from "@angular/core/rxjs-interop";
@@ -25,6 +26,7 @@ import { injectWidgetData } from "../widget.tokens";
   templateUrl: "./steam-widget.component.html",
   styleUrl: "./steam-widget.component.scss",
   imports: [
+    NgOptimizedImage,
     WidgetComponent,
     MatFormField,
     MatLabel,

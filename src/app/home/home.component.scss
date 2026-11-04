@@ -37,10 +37,10 @@
   flex: 0 0 auto;
   margin-right: $space-sm;
 
+  // The width follows the aspect ratio of the logo
   &-logo {
     height: 2rem;
-    width: 2rem;
-    object-fit: contain;
+    width: auto;
   }
 
   &-name {

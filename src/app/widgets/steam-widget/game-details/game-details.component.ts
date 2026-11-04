@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, input, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
@@ -21,6 +22,7 @@ import { SteamWidgetService } from "../steam-widget.service";
   templateUrl: "./game-details.component.html",
   styleUrl: "./game-details.component.scss",
   imports: [
+    NgOptimizedImage,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,

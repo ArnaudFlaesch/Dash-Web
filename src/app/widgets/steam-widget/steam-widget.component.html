@@ -5,14 +5,16 @@
   [isWidgetLoaded]="true"
 >
   <ng-template #headerIcon>
-    <a href="{{ playerData()?.profileurl }}" class="steam-header">
-      <img src="{{ playerData()?.avatar }}" alt="{{ playerData()?.personaname }}" />
-    </a>
+    @if (playerData(); as playerData) {
+      <a [href]="playerData.profileurl" class="steam-header">
+        <img [ngSrc]="playerData.avatar" width="32" height="32" [alt]="playerData.personaname" />
+      </a>
+    }
   </ng-template>
 
   <ng-template #headerTitle>
     <div>
-      <a href="{{ playerData()?.profileurl }}" class="steam-header">
+      <a [href]="playerData()?.profileurl ?? ''" class="steam-header">
         {{ playerData()?.personaname }}
       </a>
     </div>
