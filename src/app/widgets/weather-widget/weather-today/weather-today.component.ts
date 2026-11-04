@@ -1,11 +1,11 @@
-import { Component, computed, inject, input } from "@angular/core";
 import { DecimalPipe } from "@angular/common";
+import { Component, computed, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
-import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
+import { dateInTimezone } from "../../../utils/date.utils";
 import { IWeatherAPIResponse } from "../IWeather";
-import { WeatherWidgetService } from "../weather.widget.service";
+import { WeatherWidgetService } from "../weather-widget.service";
 
 @Component({
   selector: "dash-weather-today",
@@ -20,19 +20,9 @@ export class WeatherTodayComponent {
   public readonly sunsetTime = computed(() => this.formatTime(this.weather().sys.sunset));
   public readonly lastUpdateTime = computed(() => this.formatTime(this.weather().dt));
 
-  private readonly dateUtils = inject(DateUtilsService);
-  private readonly weatherWidgetService = inject(WeatherWidgetService);
-
-  public getIconFromWeatherApi(icon: string): string {
-    return this.weatherWidgetService.getIconFromWeatherApi(icon);
-  }
+  public readonly getIconFromWeatherApi = WeatherWidgetService.getWeatherIconUrl;
 
   private formatTime(timestamp: number): string {
-    return this.dateUtils
-      .formatDateFromTimestamp(
-        timestamp,
-        this.dateUtils.adjustTimeWithOffset(this.weather().timezone)
-      )
-      .toLocaleTimeString("fr");
+    return dateInTimezone(timestamp, this.weather().timezone).toLocaleTimeString("fr");
   }
 }

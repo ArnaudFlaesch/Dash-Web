@@ -1,8 +1,8 @@
 import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
+import { WidgetService } from "../../services/widget.service";
 import { EcowattWidgetComponent } from "./ecowatt-widget.component";
 import { provideHttpClient } from "@angular/common/http";
 
@@ -26,6 +26,6 @@ describe("EcowattWidgetComponent", () => {
 
   it("should create", () => {
     component.refreshWidget();
-    expect(component.getWidgetData()).toEqual({});
+    expect(component.iframeContainerHeight()).toBeGreaterThanOrEqual(0);
   });
 });

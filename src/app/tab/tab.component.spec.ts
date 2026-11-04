@@ -1,9 +1,9 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { environment } from "../../environments/environment";
-import { TabService } from "../services/tab.service/tab.service";
-import { ITab } from "../model/Tab";
-import { ErrorHandlerService } from "../services/error.handler.service";
+import { TabService } from "../services/tab.service";
+import { ITab } from "../model/ITab";
+import { ErrorHandlerService } from "../services/error-handler.service";
 import { TabComponent } from "./tab.component";
 import { provideHttpClient } from "@angular/common/http";
 import { vi } from "vitest";
@@ -42,7 +42,7 @@ describe("TabComponent", () => {
       const updatedTabLabel = "Journaux";
       fixture.componentRef.setInput("tab", { ...component.tab(), label: updatedTabLabel });
 
-      component.enterSaveTabName(new KeyboardEvent("keydown", { key: "Enter" }));
+      component.saveTabName();
       const updatedTabData = {
         id: 1,
         label: updatedTabLabel,
@@ -58,7 +58,7 @@ describe("TabComponent", () => {
       expect(component.editMode()).toEqual(false);
       component.toggleEditMode();
       expect(component.editMode()).toEqual(true);
-      component.enterSaveTabName(new KeyboardEvent("keydown", { key: "Enter" }));
+      component.saveTabName();
 
       httpTestingController
         .expectOne(environment.backend_url + "/tab/updateTab")

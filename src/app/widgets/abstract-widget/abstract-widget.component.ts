@@ -10,7 +10,7 @@ import {
   TemplateRef
 } from "@angular/core";
 import { ModeEnum } from "../../enums/ModeEnum";
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
 import { WIDGET_ID } from "../widget.tokens";
 
 /** Common behaviour (read / edit / delete modes) shared by widgets and mini widgets. */

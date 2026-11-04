@@ -4,17 +4,17 @@ import { rxResource } from "@angular/core/rxjs-interop";
 import { DecimalPipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { catchError, of } from "rxjs";
-import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { ErrorHandlerService } from "../../../services/error-handler.service";
 import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
 import { IWeatherAPIResponse } from "../IWeather";
-import { WeatherWidgetService } from "../weather.widget.service";
+import { WeatherWidgetService } from "../weather-widget.service";
 import { form, FormField } from "@angular/forms/signals";
 import { requiredText } from "../../../utils/form-validators";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
 import { injectWidgetData } from "../../widget.tokens";
+import { catchError, of } from "rxjs";
 
 @Component({
   selector: "dash-weather-miniwidget",
@@ -50,8 +50,10 @@ export class WeatherMiniWidgetComponent {
   });
 
   public readonly weather = this.weatherResource.value;
+  public readonly getIconFromWeatherApi = WeatherWidgetService.getWeatherIconUrl;
 
   public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
   public readonly isWidgetLoaded = computed(() => this.isFormValid() && this.weather() != null);
 
   // A new object on each refresh, so that the resource reloads even if the city is unchanged
@@ -66,13 +68,5 @@ export class WeatherMiniWidgetComponent {
     if (this.isFormValid()) {
       this.refreshedCity.set({ city: this.config().city });
     }
-  }
-
-  public getIconFromWeatherApi(icon: string): string {
-    return this.weatherWidgetService.getIconFromWeatherApi(icon);
-  }
-
-  public getWidgetData(): { city: string } | undefined {
-    return this.isFormValid() ? this.config() : undefined;
   }
 }

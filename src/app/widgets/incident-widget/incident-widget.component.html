@@ -1,5 +1,5 @@
 <dash-widget
-  [widgetData]="getWidgetConfig()"
+  [widgetData]="widgetData()"
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
@@ -35,7 +35,7 @@
         </div>
 
         <div id="incident-widget-body">
-          <div id="number-of-days-since-last-incident">{{ getDaysSinceLastIncident() }} jours</div>
+          <div id="number-of-days-since-last-incident">{{ daysSinceLastIncident() }} jours</div>
           <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">Terminer</button>
         </div>
       } @else {

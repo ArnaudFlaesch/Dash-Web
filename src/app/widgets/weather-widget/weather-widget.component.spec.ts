@@ -2,12 +2,11 @@ import { WIDGET_ID } from "../widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { WidgetService } from "../../services/widget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
 import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
 import { WeatherWidgetComponent } from "./weather-widget.component";
-import { WeatherWidgetService } from "./weather.widget.service";
+import { WeatherWidgetService } from "./weather-widget.service";
 
 export const weatherData: IWeatherAPIResponse = {
   coord: { lon: 2.3488, lat: 48.8534 },
@@ -146,7 +145,6 @@ describe("WeatherWidgetComponent", () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         WeatherWidgetService,
-        DateUtilsService,
         ErrorHandlerService,
         WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
@@ -173,7 +171,7 @@ describe("WeatherWidgetComponent", () => {
 
   describe("Normal cases", () => {
     it("should create", async () => {
-      expect(component.getWidgetData()).toEqual(undefined);
+      expect(component.widgetData()).toEqual(undefined);
       expect(component.isFormValid()).toEqual(false);
       const cityName = "Paris";
       expect(component.cityData()).toEqual(undefined);
@@ -181,7 +179,7 @@ describe("WeatherWidgetComponent", () => {
       expect(component.isWidgetLoaded()).toEqual(false);
       component.config.update((config) => ({ ...config, city: cityName }));
       expect(component.isFormValid()).toEqual(true);
-      expect(component.getWidgetData()).toEqual({ city: cityName });
+      expect(component.widgetData()).toEqual({ city: cityName });
       component.refreshWidget();
       TestBed.tick();
 

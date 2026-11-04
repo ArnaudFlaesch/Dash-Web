@@ -7,16 +7,11 @@ import {
   INotificationToDisplay,
   NotificationTypeEnum
 } from "../model/INotification";
-import { ErrorHandlerService } from "../services/error.handler.service";
-import { NotificationService } from "../services/notification.service/NotificationService";
-import { WidgetService } from "../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../services/error-handler.service";
+import { NotificationService } from "../services/notification.service";
+import { WidgetService } from "../services/widget.service";
 import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
 import { catchError, map, of } from "rxjs";
-
-const NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
-  [NotificationTypeEnum.INFO]: "info",
-  [NotificationTypeEnum.WARN]: "warning"
-};
 
 @Component({
   selector: "dash-notifications",
@@ -24,6 +19,11 @@ const NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
   imports: [NotificationsListComponent]
 })
 export class NotificationsComponent {
+  private static readonly NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
+    [NotificationTypeEnum.INFO]: "info",
+    [NotificationTypeEnum.WARN]: "warning"
+  };
+
   /** Notifications, reloaded each time the widgets are refreshed. */
   public readonly notificationsResource = rxResource({
     stream: () =>
@@ -42,7 +42,8 @@ export class NotificationsComponent {
     this.notificationsFromDatabase().map((notification) => ({
       ...notification,
       notificationDateToDisplay: this.computeDateToDisplay(notification.notificationDate),
-      notificationTypeToDisplay: NOTIFICATION_TYPE_ICONS[notification.notificationType]
+      notificationTypeToDisplay:
+        NotificationsComponent.NOTIFICATION_TYPE_ICONS[notification.notificationType]
     }))
   );
   public readonly unreadNotificationsForBadge = computed(

@@ -8,7 +8,7 @@ export interface IIncidentStreak {
   streakEndDate: string;
 }
 
-export enum IIncidentViewEnum {
+export enum IncidentViewEnum {
   CURRENT_STREAK,
   PAST_STREAKS
 }

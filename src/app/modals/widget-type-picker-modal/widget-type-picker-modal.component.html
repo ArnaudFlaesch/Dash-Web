@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+
+<mat-dialog-content>
+  <div id="widget-types-list">
+    @for (widgetType of data.widgetTypes; track widgetType.type) {
+      <button
+        class="widget-type-tile tile column items-center gap-sm"
+        [id]="widgetType.type"
+        [mat-dialog-close]="widgetType.type"
+      >
+        <mat-icon class="accent-text">{{ widgetType.icon }}</mat-icon>
+        <span>{{ widgetType.label }}</span>
+      </button>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions><button mat-button mat-dialog-close>Fermer</button></mat-dialog-actions>

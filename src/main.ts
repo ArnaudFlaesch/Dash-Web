@@ -25,8 +25,8 @@ import {
 } from "chart.js";
 import { provideCharts } from "ng2-charts";
 import { AppComponent } from "./app/app.component";
-import { AuthService } from "./app/services/auth.service/auth.service";
-import { authInterceptor } from "./app/services/auth.interceptor/auth.interceptor";
+import { AuthService } from "./app/services/auth.service";
+import { authInterceptor } from "./app/services/auth.interceptor";
 
 registerLocaleData(localeFr);
 

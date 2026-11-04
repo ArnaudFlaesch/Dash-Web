@@ -1,5 +1,5 @@
 <dash-widget
-  [widgetData]="getWidgetConfig()"
+  [widgetData]="widgetData()"
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
@@ -93,9 +93,8 @@
             [viewDate]="viewDate()"
             [events]="events()"
             [weekStartsOn]="weekStartsOn"
-            [refresh]="refresh"
             [activeDayIsOpen]="activeDayIsOpen()"
-            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventClicked)="openEventDetail($event.event)"
           >
           </mwl-calendar-month-view>
         }
@@ -105,18 +104,12 @@
             [weekStartsOn]="weekStartsOn"
             [locale]="locale"
             [events]="events()"
-            [refresh]="refresh"
-            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventClicked)="openEventDetail($event.event)"
           >
           </mwl-calendar-week-view>
         }
         @case (calendarView.Day) {
-          <mwl-calendar-day-view
-            [viewDate]="viewDate()"
-            [locale]="locale"
-            [events]="events()"
-            [refresh]="refresh"
-          ></mwl-calendar-day-view>
+          <mwl-calendar-day-view [viewDate]="viewDate()" [locale]="locale" [events]="events()"></mwl-calendar-day-view>
         }
       }
     </div>

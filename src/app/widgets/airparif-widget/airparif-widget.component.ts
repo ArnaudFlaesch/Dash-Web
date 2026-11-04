@@ -6,13 +6,12 @@ import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
 import { catchError, forkJoin, of } from "rxjs";
-import { SafePipe } from "../../pipes/safe.pipe";
 import { WidgetComponent } from "../widget/widget.component";
 import { injectWidgetData } from "../widget.tokens";
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
 import { AirParifMapComponent } from "./airparif-map/airparif-map.component";
 import { AirParifWidgetService } from "./airparif-widget.service";
-import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from "./model/IAirParif";
+import { IAirParifCouleur, IForecast } from "./model/IAirParif";
 import { form, FormField, pattern } from "@angular/forms/signals";
 import { requiredText } from "../../utils/form-validators";
 
@@ -29,7 +28,6 @@ import { requiredText } from "../../utils/form-validators";
     MatInput,
     MatTooltip,
     AirParifMapComponent,
-    SafePipe,
     FormField
   ]
 })
@@ -66,8 +64,11 @@ export class AirParifWidgetComponent {
   public readonly isWidgetLoaded = signal(true);
 
   public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
-  public readonly airParifWidgetService = inject(AirParifWidgetService);
+  public readonly airParifWebsiteUrl = AirParifWidgetService.AIRPARIF_WEBSITE_URL;
+  public readonly getIndiceClass = AirParifWidgetService.getIndiceClass;
+  public readonly getIndiceLabel = AirParifWidgetService.getIndiceLabel;
   public readonly airParifMap = viewChild(AirParifMapComponent);
 
   // A new object on each refresh, so that the resource reloads even if the commune is unchanged
@@ -76,6 +77,7 @@ export class AirParifWidgetComponent {
   private readonly ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
   private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly airParifWidgetService = inject(AirParifWidgetService);
 
   public refreshWidget(): void {
     if (this.isFormValid()) {
@@ -85,17 +87,5 @@ export class AirParifWidgetComponent {
 
   public openSidebar(): void {
     this.airParifMap()?.openSidebar();
-  }
-
-  public getIndiceClass(indice: AirParifIndiceEnum): string {
-    return this.airParifWidgetService.getIndiceClass(indice);
-  }
-
-  public getIndiceLabel(indice: AirParifIndiceEnum): string {
-    return this.airParifWidgetService.getIndiceLabel(indice);
-  }
-
-  public getWidgetData(): { airParifApiKey: string; communeInseeCode: string } | undefined {
-    return this.isFormValid() ? this.config() : undefined;
   }
 }

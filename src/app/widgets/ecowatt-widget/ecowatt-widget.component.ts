@@ -40,8 +40,4 @@ export class EcowattWidgetComponent {
       iframe.src = src;
     }
   }
-
-  public getWidgetData(): Record<string, never> {
-    return {};
-  }
 }

@@ -6,11 +6,11 @@ import { TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { IPage } from "../../model/IPage";
 import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
+import { WidgetService } from "../../services/widget.service";
 import { IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
 import { SteamWidgetComponent } from "./steam-widget.component";
-import { SteamWidgetService } from "./steam.widget.service";
+import { SteamWidgetService } from "./steam-widget.service";
 import { provideHttpClient } from "@angular/common/http";
 
 describe("SteamWidgetComponent", () => {
@@ -194,11 +194,11 @@ describe("SteamWidgetComponent", () => {
   });
 
   it("Should get widget data and check form", () => {
-    expect(component.getWidgetData()).toBeUndefined();
+    expect(component.widgetData()).toBeUndefined();
     expect(component.isFormValid()).toEqual(false);
     const steamUserId = "1337";
     component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
-    expect(component.getWidgetData()).toEqual({
+    expect(component.widgetData()).toEqual({
       steamUserId: steamUserId
     });
     expect(component.isFormValid()).toEqual(true);

@@ -7,8 +7,8 @@ import { MatInput } from "@angular/material/input";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
-import { AuthService } from "../services/auth.service/auth.service";
-import { ErrorHandlerService } from "../services/error.handler.service";
+import { AuthService } from "../services/auth.service";
+import { ErrorHandlerService } from "../services/error-handler.service";
 import { requiredText } from "../utils/form-validators";
 
 @Component({
@@ -39,7 +39,7 @@ export class LoginComponent {
     requiredText(path.password);
   });
 
-  public readonly authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly router = inject(Router);
 

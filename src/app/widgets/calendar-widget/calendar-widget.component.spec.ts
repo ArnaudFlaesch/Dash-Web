@@ -4,9 +4,8 @@ import { CalendarView, DateAdapter } from "angular-calendar";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../environments/environment";
-import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
-import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { WidgetService } from "../../services/widget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
 import { CalendarWidgetComponent } from "./calendar-widget.component";
 import { CalendarWidgetService } from "./calendar-widget.service";
 import { provideHttpClient } from "@angular/common/http";
@@ -22,7 +21,6 @@ describe("CalendarWidgetComponent", () => {
         provideHttpClientTesting(),
         CalendarWidgetService,
         DateAdapter,
-        DateUtilsService,
         ErrorHandlerService,
         WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
@@ -107,11 +105,11 @@ describe("CalendarWidgetComponent", () => {
 
   it("Should update the calendar urls", () => {
     expect(component.config().calendarUrls).toEqual([]);
-    expect(component.getWidgetConfig()).toEqual(undefined);
+    expect(component.widgetData()).toEqual(undefined);
     component.onCalendarUrlAdded();
     expect(component.config().calendarUrls).toEqual([""]);
-    expect(component.getWidgetConfig()).toEqual({ calendarUrls: [""] });
+    expect(component.widgetData()).toEqual({ calendarUrls: [""] });
     component.removeCalendarUrl(0);
-    expect(component.getWidgetConfig()).toEqual(undefined);
+    expect(component.widgetData()).toEqual(undefined);
   });
 });

@@ -1,9 +1,9 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
-import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { ErrorHandlerService } from "../../../services/error-handler.service";
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
-import { WorkoutWidgetService } from "../workout.widget.service";
+import { WorkoutWidgetService } from "../workout-widget.service";
 import { WorkoutSessionEditComponent } from "./workout-session-edit.component";
 import { provideHttpClient } from "@angular/common/http";
 

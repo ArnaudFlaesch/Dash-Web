@@ -2,10 +2,10 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, linkedSignal, output, signal } from "@angular/core";
 import { form, FormField } from "@angular/forms/signals";
 import { MatIcon } from "@angular/material/icon";
-import { ITab } from "../model/Tab";
+import { ITab } from "../model/ITab";
 import { requiredText } from "../utils/form-validators";
-import { ErrorHandlerService } from "../services/error.handler.service";
-import { TabService } from "../services/tab.service/tab.service";
+import { ErrorHandlerService } from "../services/error-handler.service";
+import { TabService } from "../services/tab.service";
 
 @Component({
   selector: "dash-tab",
@@ -42,11 +42,5 @@ export class TabComponent {
 
   public toggleEditMode(): void {
     this.editMode.update((editMode) => !editMode);
-  }
-
-  public enterSaveTabName(event: KeyboardEvent): void {
-    if (event.key === "Enter") {
-      this.saveTabName();
-    }
   }
 }

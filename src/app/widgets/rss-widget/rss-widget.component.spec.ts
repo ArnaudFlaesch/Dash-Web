@@ -3,11 +3,10 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../environments/environment";
-import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
+import { WidgetService } from "../../services/widget.service";
 import { RssWidgetComponent } from "./rss-widget.component";
-import { RssWidgetService } from "./rss.widget.service";
+import { RssWidgetService } from "./rss-widget.service";
 
 describe("RssWidgetComponent", () => {
   let component: RssWidgetComponent;
@@ -19,7 +18,6 @@ describe("RssWidgetComponent", () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         RssWidgetService,
-        DateUtilsService,
         WidgetService,
         ErrorHandlerService,
         { provide: WIDGET_ID, useValue: widgetId }
@@ -163,11 +161,11 @@ describe("RssWidgetComponent", () => {
   });
 
   it("Should get widget data and check form", () => {
-    expect(component.getWidgetData()).toEqual(undefined);
+    expect(component.widgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);
     const url = "localhost";
     component.config.update((config) => ({ ...config, url: url }));
-    expect(component.getWidgetData()).toEqual({ url: url });
+    expect(component.widgetData()).toEqual({ url: url });
     expect(component.isFormValid()).toEqual(true);
   });
 

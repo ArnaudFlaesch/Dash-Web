@@ -14,9 +14,9 @@ import {
   CalendarWeekViewComponent
 } from "angular-calendar";
 import { endOfDay, format, startOfDay } from "date-fns";
-import { catchError, defaultIfEmpty, forkJoin, map, of, Subject } from "rxjs";
+import { catchError, defaultIfEmpty, forkJoin, map, of } from "rxjs";
 
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
 import { CalendarWidgetService } from "./calendar-widget.service";
 import { EventDetailModalComponent } from "./event-detail-modal/event-detail-modal.component";
 import { ICalendarData } from "./ICalendarData";
@@ -51,8 +51,9 @@ import { injectWidgetData } from "../widget.tokens";
   ]
 })
 export class CalendarWidgetComponent {
+  private static readonly MILLISECONDS_IN_A_DAY = 86400000;
+
   public readonly viewDate = signal(new Date());
-  public readonly refresh = new Subject<void>();
   public readonly config = signal({ calendarUrls: injectWidgetData<string[]>("calendarUrls", []) });
   public readonly configForm = form(this.config, (path) => minLength(path.calendarUrls, 1));
   public readonly isWidgetLoaded = signal(true);
@@ -87,6 +88,7 @@ export class CalendarWidgetComponent {
   public readonly isCalendarViewWeek = computed(() => this.view() === CalendarView.Week);
   public readonly isCalendarViewDay = computed(() => this.view() === CalendarView.Day);
   public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   public readonly calendarView = CalendarView;
   public readonly weekStartsOn = 1;
@@ -99,15 +101,10 @@ export class CalendarWidgetComponent {
   private readonly dialog = inject(MatDialog);
   private readonly calendarWidgetService = inject(CalendarWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly MILLISECONDS_IN_A_DAY = 86400000;
   private readonly ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
   public refreshWidget(): void {
     this.refreshedCalendarUrls.set({ calendarUrls: this.config().calendarUrls });
-  }
-
-  public getWidgetConfig(): { calendarUrls: string[] } | undefined {
-    return this.isFormValid() ? this.config() : undefined;
   }
 
   public onCalendarUrlAdded(): void {
@@ -132,12 +129,8 @@ export class CalendarWidgetComponent {
     this.view.set(view);
   }
 
-  public handleEvent(action: string, event: CalendarEvent): void {
-    this.dialog.open(EventDetailModalComponent, {
-      height: "300px",
-      width: "500px",
-      data: event
-    });
+  public openEventDetail(event: CalendarEvent): void {
+    this.dialog.open(EventDetailModalComponent, { width: "500px", data: event });
   }
 
   private parseEvents(calendarData: ICalendarData[]): CalendarEvent[] {
@@ -146,12 +139,15 @@ export class CalendarWidgetComponent {
       .map((event) => {
         let startDate = new Date(event.startDate);
         let endDate = new Date(event.endDate);
-        const isAllDay = endDate.getTime() - startDate.getTime() === this.MILLISECONDS_IN_A_DAY;
+        const isAllDay =
+          endDate.getTime() - startDate.getTime() === CalendarWidgetComponent.MILLISECONDS_IN_A_DAY;
         if (
           endDate.getHours() + endDate.getTimezoneOffset() / 60 === 0 &&
           endDate.getMinutes() === 0
         ) {
-          endDate = endOfDay(new Date(endDate.getTime() - this.MILLISECONDS_IN_A_DAY));
+          endDate = endOfDay(
+            new Date(endDate.getTime() - CalendarWidgetComponent.MILLISECONDS_IN_A_DAY)
+          );
         }
         if (
           startDate.getHours() + startDate.getTimezoneOffset() / 60 === 0 &&

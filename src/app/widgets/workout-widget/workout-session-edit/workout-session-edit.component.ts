@@ -5,11 +5,12 @@ import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatTooltip } from "@angular/material/tooltip";
-import { catchError, of } from "rxjs";
 import { DateFormatPipe } from "../../../pipes/date-format.pipe";
-import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { isResourceLoaded } from "../../../utils/resource.utils";
+import { ErrorHandlerService } from "../../../services/error-handler.service";
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
-import { WorkoutWidgetService } from "../workout.widget.service";
+import { WorkoutWidgetService } from "../workout-widget.service";
+import { catchError, of } from "rxjs";
 
 @Component({
   selector: "dash-workout-session-edit",
@@ -40,7 +41,7 @@ export class WorkoutSessionEditComponent {
   public readonly workoutExercises = this.workoutExercisesResource.value;
   // "local" once the exercises have been updated in place after a rep change
   public readonly workoutExercisesLoaded = computed(() =>
-    ["resolved", "local"].includes(this.workoutExercisesResource.status())
+    isResourceLoaded(this.workoutExercisesResource.status())
   );
 
   private readonly ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";

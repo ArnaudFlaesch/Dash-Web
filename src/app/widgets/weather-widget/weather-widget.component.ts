@@ -1,9 +1,9 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
 import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
-import { WeatherWidgetService } from "./weather.widget.service";
+import { WeatherWidgetService } from "./weather-widget.service";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
@@ -55,6 +55,7 @@ export class WeatherWidgetComponent {
     () => !this.weatherResource.isLoading() && this.weatherResource.value() !== undefined
   );
   public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   // A new object on each refresh, so that the resource reloads even if the city is unchanged
   private readonly refreshedCity = signal<{ city: string } | undefined>(undefined);
@@ -68,9 +69,5 @@ export class WeatherWidgetComponent {
     if (this.isFormValid()) {
       this.refreshedCity.set({ city: this.config().city });
     }
-  }
-
-  public getWidgetData(): { city: string } | undefined {
-    return this.isFormValid() ? this.config() : undefined;
   }
 }

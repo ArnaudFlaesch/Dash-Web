@@ -4,8 +4,8 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { environment } from "../../environments/environment";
 import { HomeComponent } from "../home/home.component";
-import { AuthService } from "../services/auth.service/auth.service";
-import { ErrorHandlerService } from "../services/error.handler.service";
+import { AuthService } from "../services/auth.service";
+import { ErrorHandlerService } from "../services/error-handler.service";
 import { LoginComponent } from "./login.component";
 import { vi } from "vitest";
 
@@ -43,7 +43,7 @@ describe("LoginComponent", () => {
   });
 
   it("Should prevent login", () => {
-    const loginSpy = vi.spyOn(component.authService, "login");
+    const loginSpy = vi.spyOn(TestBed.inject(AuthService), "login");
     expect(component.credentials()).toEqual({ username: "", password: "" });
     expect(component.loginForm().invalid()).toBe(true);
     component.handleLogin();
@@ -59,7 +59,7 @@ describe("LoginComponent", () => {
       roles: ["ROLE_ADMIN"],
       tokenType: "Bearer"
     };
-    const loginSpy = vi.spyOn(component.authService, "login");
+    const loginSpy = vi.spyOn(TestBed.inject(AuthService), "login");
     component.loginAsDemoAccount();
     const request = httpTestingController.expectOne(environment.backend_url + "/auth/login");
     request.flush(userData);

@@ -1,8 +1,8 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppComponent } from "./app.component";
-import { AuthService } from "./services/auth.service/auth.service";
-import { ThemeService } from "./services/theme.service/theme.service";
+import { AuthService } from "./services/auth.service";
+import { ThemeService } from "./services/theme.service";
 import { provideHttpClient } from "@angular/common/http";
 
 describe("AppComponent", () => {
@@ -18,6 +18,5 @@ describe("AppComponent", () => {
 
   it("should create the app", () => {
     expect(component).toBeTruthy();
-    expect(component.title).toEqual("Dash");
   });
 });

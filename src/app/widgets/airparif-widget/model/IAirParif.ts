@@ -26,3 +26,14 @@ export interface IAirParifCouleur {
   name: AirParifIndiceEnum;
   color: string;
 }
+
+export interface IPollutant {
+  key: Exclude<keyof IForecast, "date" | "indice">;
+  formula: string;
+  name: string;
+}
+
+export interface IIndiceDetails {
+  icon: string;
+  advice: string;
+}

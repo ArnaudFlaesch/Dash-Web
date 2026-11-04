@@ -23,7 +23,7 @@
             </div>
             <div class="article-pubdate muted-text">
               Publié le
-              {{ (article.pubDate ? article.pubDate : article.updated) || "" | dateFormat }}
+              {{ article.pubDate || article.updated || "" | dateFormat }}
               {{ article.author && "par " + article.author }}
             </div>
           </a>

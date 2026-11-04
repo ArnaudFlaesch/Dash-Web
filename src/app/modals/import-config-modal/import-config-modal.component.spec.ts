@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { MatDialogRef } from "@angular/material/dialog";
-import { ConfigService } from "./../../services/config.service/config.service";
-import { ErrorHandlerService } from "./../../services/error.handler.service";
+import { ConfigService } from "../../services/config.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
 import { ImportConfigModalComponent } from "./import-config-modal.component";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideHttpClient } from "@angular/common/http";

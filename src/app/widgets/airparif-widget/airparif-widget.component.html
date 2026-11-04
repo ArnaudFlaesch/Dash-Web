@@ -1,5 +1,5 @@
 <dash-widget
-  [widgetData]="getWidgetData()"
+  [widgetData]="widgetData()"
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
@@ -9,7 +9,7 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <a [href]="airParifWidgetService.getAirParifWebsiteUrl() | safe: 'url'" target="_blank" rel="noopener noreferrer">
+    <a [href]="airParifWebsiteUrl" target="_blank" rel="noopener noreferrer">
       <div>AirParif</div>
     </a>
   </ng-template>

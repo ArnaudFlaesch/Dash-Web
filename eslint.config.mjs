@@ -9,10 +9,12 @@ import { defineConfig, globalIgnores } from "eslint/config";
 export default defineConfig([
   globalIgnores([
     ".angular",
+    "bundle-stats",
     "coverage",
+    "cypress/reports",
+    "cypress/results",
     "dist",
-    "node_modules",
-    "package-lock.json"
+    "documentation"
   ]),
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],

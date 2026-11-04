@@ -1,11 +1,11 @@
-import { Component, inject, input } from "@angular/core";
 import { DecimalPipe } from "@angular/common";
-import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
-import { ForecastMode, IForecast } from "../IWeather";
-import { WeatherWidgetService } from "../weather.widget.service";
-import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
+import { Component, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
+import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
+import { dateInTimezone } from "../../../utils/date.utils";
+import { ForecastMode, IForecast } from "../IWeather";
+import { WeatherWidgetService } from "../weather-widget.service";
 
 @Component({
   selector: "dash-weather-forecast",
@@ -18,22 +18,13 @@ export class WeatherForecastComponent {
   public readonly timezone = input(0);
   public readonly forecastMode = input<ForecastMode>(ForecastMode.DAY);
 
-  private readonly weatherWidgetService = inject(WeatherWidgetService);
-  private readonly dateUtils = inject(DateUtilsService);
+  public readonly getIconFromWeatherApi = WeatherWidgetService.getWeatherIconUrl;
 
   public getDateToDisplay(dateTime: number, timezone: number): string {
     const options: Intl.DateTimeFormatOptions =
       this.forecastMode() === ForecastMode.DAY
-        ? {
-            hour: "2-digit"
-          }
+        ? { hour: "2-digit" }
         : { weekday: "short", day: "numeric" };
-    return this.dateUtils
-      .formatDateFromTimestamp(dateTime, this.dateUtils.adjustTimeWithOffset(timezone))
-      .toLocaleString("fr", options);
-  }
-
-  public getIconFromWeatherApi(icon: string): string {
-    return this.weatherWidgetService.getIconFromWeatherApi(icon);
+    return dateInTimezone(dateTime, timezone).toLocaleString("fr", options);
   }
 }

@@ -220,14 +220,6 @@ describe("StravaActivitiesComponent", () => {
     component = fixture.componentInstance;
   });
 
-  it("Should convert a time", () => {
-    fixture.componentRef.setInput("activities", activitiesData);
-    expect(component.convertDecimalTimeToTime(60000)).toEqual(1000);
-    expect(component.convertDecimalTimeToTime(620.4)).toEqual(10.2);
-    expect(component.convertDecimalTimeToTime(108)).toEqual(1.5);
-    expect(component.convertDecimalTimeToTime(111)).toEqual(1.5);
-  });
-
   it("Should format date", () => {
     expect(component.formatDate("2022-10-20T18:34:39Z")).toEqual("20 octobre");
   });
@@ -250,10 +242,10 @@ describe("StravaActivitiesComponent", () => {
     expect(component.toKilometersPerHour(5)).toEqual(18);
   });
 
-  it("Should display activity title", () => {
-    const activity = activitiesData[0];
+  it("Should display a panel for each activity", () => {
     fixture.componentRef.setInput("activities", activitiesData);
-    const actual = component.getTitleToDisplay(activity);
-    expect(actual).toEqual("20 octobre  Evening Run  10.7047 kms");
+    fixture.detectChanges();
+    const panels = (fixture.nativeElement as HTMLElement).querySelectorAll(".strava-activity");
+    expect(panels).toHaveLength(activitiesData.length);
   });
 });

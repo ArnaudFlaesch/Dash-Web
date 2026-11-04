@@ -11,20 +11,8 @@ import { RssWidgetComponent } from "../rss-widget/rss-widget.component";
 import { SteamWidgetComponent } from "../steam-widget/steam-widget.component";
 import { StravaWidgetComponent } from "../strava-widget/strava-widget.component";
 import { WeatherWidgetComponent } from "../weather-widget/weather-widget.component";
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
+import { createWidgetInjector } from "../widget.tokens";
 import { WorkoutWidgetComponent } from "../workout-widget/workout-widget.component";
-
-const WIDGET_COMPONENTS: Record<WidgetTypeEnum, Type<unknown>> = {
-  [WidgetTypeEnum.WEATHER]: WeatherWidgetComponent,
-  [WidgetTypeEnum.RSS]: RssWidgetComponent,
-  [WidgetTypeEnum.CALENDAR]: CalendarWidgetComponent,
-  [WidgetTypeEnum.STRAVA]: StravaWidgetComponent,
-  [WidgetTypeEnum.STEAM]: SteamWidgetComponent,
-  [WidgetTypeEnum.WORKOUT]: WorkoutWidgetComponent,
-  [WidgetTypeEnum.AIRPARIF]: AirParifWidgetComponent,
-  [WidgetTypeEnum.ECOWATT]: EcowattWidgetComponent,
-  [WidgetTypeEnum.INCIDENT]: IncidentWidgetComponent
-};
 
 @Component({
   selector: "dash-widget-list",
@@ -33,12 +21,24 @@ const WIDGET_COMPONENTS: Record<WidgetTypeEnum, Type<unknown>> = {
   imports: [CdkDropList, CdkDrag, NgComponentOutlet]
 })
 export class WidgetListComponent {
+  private static readonly WIDGET_COMPONENTS: Record<WidgetTypeEnum, Type<unknown>> = {
+    [WidgetTypeEnum.WEATHER]: WeatherWidgetComponent,
+    [WidgetTypeEnum.RSS]: RssWidgetComponent,
+    [WidgetTypeEnum.CALENDAR]: CalendarWidgetComponent,
+    [WidgetTypeEnum.STRAVA]: StravaWidgetComponent,
+    [WidgetTypeEnum.STEAM]: SteamWidgetComponent,
+    [WidgetTypeEnum.WORKOUT]: WorkoutWidgetComponent,
+    [WidgetTypeEnum.AIRPARIF]: AirParifWidgetComponent,
+    [WidgetTypeEnum.ECOWATT]: EcowattWidgetComponent,
+    [WidgetTypeEnum.INCIDENT]: IncidentWidgetComponent
+  };
+
   public readonly widgetList = input.required<IWidgetConfig[]>();
   public readonly toggleEditMode = input(false);
   public readonly updateWidgetsOrderEvent = output<IWidgetConfig[]>();
 
   public readonly widgets = linkedSignal(() => this.widgetList());
-  public readonly widgetComponents = WIDGET_COMPONENTS;
+  public readonly widgetComponents = WidgetListComponent.WIDGET_COMPONENTS;
 
   private readonly injector = inject(Injector);
   private readonly widgetInjectors = new WeakMap<IWidgetConfig, Injector>();
@@ -56,13 +56,7 @@ export class WidgetListComponent {
   public getWidgetInjector(widget: IWidgetConfig): Injector {
     let widgetInjector = this.widgetInjectors.get(widget);
     if (!widgetInjector) {
-      widgetInjector = Injector.create({
-        providers: [
-          { provide: WIDGET_ID, useValue: widget.id },
-          { provide: WIDGET_DATA, useValue: widget.data ?? {} }
-        ],
-        parent: this.injector
-      });
+      widgetInjector = createWidgetInjector(this.injector, widget);
       this.widgetInjectors.set(widget, widgetInjector);
     }
     return widgetInjector;

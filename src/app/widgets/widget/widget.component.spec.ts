@@ -3,8 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
+import { WidgetService } from "../../services/widget.service";
 import { WIDGET_ID } from "../widget.tokens";
 import { WidgetComponent } from "./widget.component";
 

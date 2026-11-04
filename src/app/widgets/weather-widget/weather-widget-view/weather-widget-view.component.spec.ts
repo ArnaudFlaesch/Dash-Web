@@ -3,9 +3,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { format } from "date-fns";
-import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
 import { forecastData, weatherData } from "../weather-widget.component.spec";
-import { WeatherWidgetService } from "../weather.widget.service";
+import { WeatherWidgetService } from "../weather-widget.service";
 import { WeatherWidgetViewComponent } from "./weather-widget-view.component";
 import { vi } from "vitest";
 
@@ -18,12 +17,7 @@ describe("WeatherWidgetViewComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [WeatherWidgetViewComponent],
-      providers: [
-        DateUtilsService,
-        WeatherWidgetService,
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+      providers: [WeatherWidgetService, provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WeatherWidgetViewComponent);

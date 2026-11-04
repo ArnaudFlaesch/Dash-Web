@@ -5,12 +5,12 @@ import { Observable, of } from "rxjs";
 import { vi } from "vitest";
 import { environment } from "../../../environments/environment";
 import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { MiniWidgetService } from "../../services/widget.service/miniwidget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
+import { MiniWidgetService } from "../../services/mini-widget.service";
 import { MiniWidgetListComponent } from "./miniwidget-list.component";
 import { provideHttpClient } from "@angular/common/http";
-import { WeatherWidgetService } from "../weather-widget/weather.widget.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { WeatherWidgetService } from "../weather-widget/weather-widget.service";
+import { WidgetService } from "../../services/widget.service";
 import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
 
 describe("MiniWidgetListComponent", () => {

@@ -3,11 +3,11 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { TestBed } from "@angular/core/testing";
 import { startOfYesterday } from "date-fns";
 import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
+import { WidgetService } from "../../services/widget.service";
 import { IIncident, IIncidentStreak } from "./IIncident";
 import { IncidentWidgetComponent } from "./incident-widget.component";
-import { IncidentWidgetService } from "./incident.widget.service";
+import { IncidentWidgetService } from "./incident-widget.service";
 import { provideHttpClient } from "@angular/common/http";
 
 describe("IncidentWidgetComponent", () => {
@@ -47,14 +47,14 @@ describe("IncidentWidgetComponent", () => {
   const widgetId = "37";
 
   it("should create", async () => {
-    expect(component.getDaysSinceLastIncident()).toEqual(0);
+    expect(component.daysSinceLastIncident()).toEqual(0);
 
     const incidentWidgetConfig = {
       id: 1,
       lastIncidentDate: startOfYesterday().toString()
     } as IIncident;
 
-    expect(component.getWidgetConfig()).toEqual(undefined);
+    expect(component.widgetData()).toEqual(undefined);
     component.refreshWidget();
     TestBed.tick();
 
@@ -89,7 +89,7 @@ describe("IncidentWidgetComponent", () => {
     expect(component.isWidgetViewPastStreaks()).toEqual(false);
     expect(component.isWidgetViewCurrentStreak()).toEqual(true);
 
-    expect(component.getDaysSinceLastIncident()).toEqual(1);
+    expect(component.daysSinceLastIncident()).toEqual(1);
   });
 
   it("Should calculate number of days of streak", () => {

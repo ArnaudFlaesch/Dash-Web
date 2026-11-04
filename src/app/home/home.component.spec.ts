@@ -6,19 +6,19 @@ import { provideRouter } from "@angular/router";
 import { environment } from "../../environments/environment";
 import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
 import { IWidgetConfig } from "../model/IWidgetConfig";
-import { AuthService } from "../services/auth.service/auth.service";
-import { ConfigService } from "../services/config.service/config.service";
-import { ErrorHandlerService } from "../services/error.handler.service";
-import { TabService } from "../services/tab.service/tab.service";
-import { ThemeService } from "../services/theme.service/theme.service";
-import { WidgetService } from "../services/widget.service/widget.service";
+import { AuthService } from "../services/auth.service";
+import { ConfigService } from "../services/config.service";
+import { ErrorHandlerService } from "../services/error-handler.service";
+import { TabService } from "../services/tab.service";
+import { ThemeService } from "../services/theme.service";
+import { WidgetService } from "../services/widget.service";
 import { HomeComponent } from "./home.component";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { vi } from "vitest";
-import { ITab } from "../model/Tab";
+import { ITab } from "../model/ITab";
 import { ImportConfigModalComponent } from "../modals/import-config-modal/import-config-modal.component";
 
 describe("HomeComponent", () => {

@@ -4,7 +4,7 @@ import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatTooltip } from "@angular/material/tooltip";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { WidgetService } from "../../services/widget.service";
 import { AbstractWidgetComponent } from "../abstract-widget/abstract-widget.component";
 import { DeleteWidgetComponent } from "../delete-widget/delete-widget.component";
 

@@ -1,17 +1,16 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { ThemeService } from "../../services/theme.service/theme.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
+import { ThemeService } from "../../services/theme.service";
+import { WidgetService } from "../../services/widget.service";
 import { AirParifWidgetService } from "../airparif-widget/airparif-widget.service";
 import { CalendarWidgetService } from "../calendar-widget/calendar-widget.service";
-import { IncidentWidgetService } from "../incident-widget/incident.widget.service";
-import { RssWidgetService } from "../rss-widget/rss.widget.service";
-import { SteamWidgetService } from "../steam-widget/steam.widget.service";
-import { StravaWidgetService } from "../strava-widget/strava.widget.service";
-import { WeatherWidgetService } from "../weather-widget/weather.widget.service";
-import { WorkoutWidgetService } from "../workout-widget/workout.widget.service";
+import { IncidentWidgetService } from "../incident-widget/incident-widget.service";
+import { RssWidgetService } from "../rss-widget/rss-widget.service";
+import { SteamWidgetService } from "../steam-widget/steam-widget.service";
+import { StravaWidgetService } from "../strava-widget/strava-widget.service";
+import { WeatherWidgetService } from "../weather-widget/weather-widget.service";
+import { WorkoutWidgetService } from "../workout-widget/workout-widget.service";
 import { WidgetListComponent } from "./widget-list.component";
 import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 import { provideHttpClient } from "@angular/common/http";
@@ -46,8 +45,7 @@ describe("WidgetListComponent", () => {
         IncidentWidgetService,
         ErrorHandlerService,
         WidgetService,
-        ThemeService,
-        DateUtilsService
+        ThemeService
       ]
     }).compileComponents();
 

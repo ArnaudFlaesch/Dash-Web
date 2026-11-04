@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { DateFormatPipe } from "../../../pipes/date-format.pipe";
-import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { ErrorHandlerService } from "../../../services/error-handler.service";
 import { IWorkoutType } from "../model/Workout";
-import { WorkoutWidgetService } from "../workout.widget.service";
+import { WorkoutWidgetService } from "../workout-widget.service";
 import { WorkoutStatisticsComponent } from "./workout-statistics.component";
 
 describe("WorkoutStatisticsComponent", () => {

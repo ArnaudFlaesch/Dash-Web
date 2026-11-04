@@ -10,17 +10,16 @@ import {
   subMonths,
   subYears
 } from "date-fns";
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { ErrorHandlerService } from "../../services/error-handler.service";
 import { IWorkoutSession, IWorkoutType } from "./model/Workout";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../environments/environment";
-import { AuthService } from "../../services/auth.service/auth.service";
-import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
+import { AuthService } from "../../services/auth.service";
+import { WidgetService } from "../../services/widget.service";
 import { WorkoutWidgetComponent } from "./workout-widget.component";
-import { WorkoutWidgetService } from "./workout.widget.service";
+import { WorkoutWidgetService } from "./workout-widget.service";
 import { provideHttpClient } from "@angular/common/http";
 import { MAT_DATE_LOCALE } from "@angular/material/core";
 import { provideDateFnsAdapter } from "@angular/material-date-fns-adapter";
@@ -37,7 +36,6 @@ describe("WorkoutWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        DateUtilsService,
         WorkoutWidgetService,
         AuthService,
         ErrorHandlerService,
