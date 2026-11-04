@@ -1,10 +1,10 @@
-<h1 mat-dialog-title>Confirmation</h1>
+<h1 mat-dialog-title>{{ labels.confirmation }}</h1>
 
 <mat-dialog-content>
   {{ data.confirmMessage }}
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button mat-dialog-close color="warn">Fermer</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="true">Confirmer</button>
+  <button mat-raised-button mat-dialog-close color="warn">{{ labels.close }}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true">{{ labels.confirm }}</button>
 </mat-dialog-actions>

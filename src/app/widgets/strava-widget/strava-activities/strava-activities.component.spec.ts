@@ -242,9 +242,9 @@ describe("StravaActivitiesComponent", () => {
     expect(component.toKilometersPerHour(5)).toEqual(18);
   });
 
-  it("Should display a panel for each activity", () => {
+  it("Should display a panel for each activity", async () => {
     fixture.componentRef.setInput("activities", activitiesData);
-    fixture.detectChanges();
+    await fixture.whenStable();
     const panels = (fixture.nativeElement as HTMLElement).querySelectorAll(".strava-activity");
     expect(panels).toHaveLength(activitiesData.length);
   });

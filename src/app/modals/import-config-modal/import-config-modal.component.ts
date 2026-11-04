@@ -17,6 +17,13 @@ import { ErrorHandlerService } from "../../services/error-handler.service";
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ImportConfigModalComponent {
+  public readonly labels = {
+    importConfig: "Importer la configuration",
+    selectConfigFile: "Sélectionner un fichier de configuration",
+    cancel: "Annuler",
+    upload: "Upload"
+  };
+
   public readonly fileToUpload = signal<File | null>(null);
 
   private readonly configService = inject(ConfigService);

@@ -1,6 +1,6 @@
 <button
   id="display-notifications-button"
-  matTooltip="Notifications"
+  [matTooltip]="labels.notifications"
   mat-icon-button
   [matMenuTriggerFor]="notificationsMenu"
 >
@@ -9,7 +9,7 @@
     [matBadgeHidden]="!unreadNotificationsForBadge()"
     matBadgeSize="small"
     matBadgeColor="warn"
-    title="Notifications"
+    [title]="labels.notifications"
     aria-hidden="false"
   >
     notifications
@@ -20,7 +20,7 @@
   @if (unreadNotificationsForBadge()) {
     <button
       id="mark-all-notifications-as-read-button"
-      matTooltip="Marquer tout comme lu"
+      [matTooltip]="labels.markAllAsRead"
       (click)="markAllNotificationsAsReadEvent.emit()"
       mat-icon-button
     >

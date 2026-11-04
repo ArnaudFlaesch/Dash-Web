@@ -9,17 +9,17 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <div>Incident {{ config().incidentName }}</div>
+    <div>{{ labels.incident }} {{ config().incidentName }}</div>
   </ng-template>
 
   <ng-template #editComponent>
     <mat-form-field appearance="outline">
-      <mat-label>Type d'incident</mat-label>
+      <mat-label>{{ labels.incidentType }}</mat-label>
       <input
         id="incident-name"
         matInput
         [formField]="configForm.incidentName"
-        placeholder="Saisissez le type d'incident"
+        [placeholder]="labels.incidentTypePlaceholder"
       />
     </mat-form-field>
   </ng-template>
@@ -28,29 +28,31 @@
     @if (lastIncidentDate(); as lastIncidentDate) {
       @if (isWidgetViewCurrentStreak()) {
         <div id="incident-widget-body-header" class="row justify-between">
-          <div>Dernier incident le {{ lastIncidentDate | dateFormat: "short" }}</div>
+          <div>{{ labels.lastIncidentOn }} {{ lastIncidentDate | dateFormat: "short" }}</div>
           @if (streaks().length > 0) {
-            <button (click)="goToPastStreaksView()" mat-raised-button>Séries précédentes</button>
+            <button (click)="goToPastStreaksView()" mat-raised-button>{{ labels.pastStreaks }}</button>
           }
         </div>
 
         <div id="incident-widget-body">
-          <div id="number-of-days-since-last-incident">{{ daysSinceLastIncident() }} jours</div>
-          <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">Terminer</button>
+          <div id="number-of-days-since-last-incident">{{ daysSinceLastIncident() }} {{ labels.days }}</div>
+          <button mat-raised-button id="end-current-streak-button" (click)="openEndStreakModal()">
+            {{ labels.end }}
+          </button>
         </div>
       } @else {
         <button id="go-to-current-streak-button" (click)="goToCurrentStreakView()" mat-raised-button>
-          Série actuelle
+          {{ labels.currentStreak }}
         </button>
 
         <div id="past-streaks-list">
           @for (streak of streaks(); track streak.streakStartDate) {
-            <div>{{ getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate) }} jours</div>
+            <div>{{ getNumberOfDaysFromStreak(streak.streakStartDate, streak.streakEndDate) }} {{ labels.days }}</div>
           }
         </div>
       }
     } @else {
-      <button mat-raised-button (click)="startNewStreak()">Départ</button>
+      <button mat-raised-button (click)="startNewStreak()">{{ labels.start }}</button>
     }
   </ng-template>
 </dash-widget>

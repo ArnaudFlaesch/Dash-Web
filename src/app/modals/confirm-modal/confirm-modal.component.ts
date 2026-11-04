@@ -16,5 +16,11 @@ import { IConfirmModalData } from "../../model/IConfirmModalData";
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ConfirmModalComponent {
+  public readonly labels = {
+    confirmation: "Confirmation",
+    close: "Fermer",
+    confirm: "Confirmer"
+  };
+
   public readonly data = inject<IConfirmModalData>(MAT_DIALOG_DATA);
 }

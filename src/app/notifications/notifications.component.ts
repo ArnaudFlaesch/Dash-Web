@@ -19,7 +19,7 @@ import { catchError, map, of } from "rxjs";
   imports: [NotificationsListComponent]
 })
 export class NotificationsComponent {
-  private static readonly NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
+  private readonly NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
     [NotificationTypeEnum.INFO]: "info",
     [NotificationTypeEnum.WARN]: "warning"
   };
@@ -42,8 +42,7 @@ export class NotificationsComponent {
     this.notificationsFromDatabase().map((notification) => ({
       ...notification,
       notificationDateToDisplay: this.computeDateToDisplay(notification.notificationDate),
-      notificationTypeToDisplay:
-        NotificationsComponent.NOTIFICATION_TYPE_ICONS[notification.notificationType]
+      notificationTypeToDisplay: this.NOTIFICATION_TYPE_ICONS[notification.notificationType]
     }))
   );
   public readonly unreadNotificationsForBadge = computed(

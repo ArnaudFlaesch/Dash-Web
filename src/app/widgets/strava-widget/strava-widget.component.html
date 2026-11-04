@@ -7,7 +7,7 @@
   <ng-template #headerIcon>
     @if (athlete(); as athlete) {
       <a [href]="getAthleteProfileUrl(athlete.id)" id="strava-widget-header">
-        <img [src]="athlete.profileMedium" id="strava-profile-picture" alt="Athlete profile" />
+        <img [src]="athlete.profileMedium" id="strava-profile-picture" [alt]="labels.athleteProfile" />
       </a>
     } @else {
       <mat-icon>directions_run</mat-icon>
@@ -18,7 +18,7 @@
     @if (athlete(); as athlete) {
       <div class="strava-header">{{ athlete.firstname }} {{ athlete.lastname }}</div>
     } @else {
-      <div>Strava</div>
+      <div>{{ labels.strava }}</div>
     }
   </ng-template>
 
@@ -29,15 +29,19 @@
           <div class="strava-summary">
             <div class="strava-summary-item inset">
               <span class="strava-summary-value">{{ activitiesSummary().count }}</span>
-              <span class="strava-summary-label overline muted-text">Activités</span>
+              <span class="strava-summary-label overline muted-text">{{ labels.activities }}</span>
             </div>
             <div class="strava-summary-item inset">
-              <span class="strava-summary-value">{{ activitiesSummary().distance | number: "1.0-0" }} km</span>
-              <span class="strava-summary-label overline muted-text">Distance</span>
+              <span class="strava-summary-value"
+                >{{ activitiesSummary().distance | number: "1.0-0" }} {{ labels.kilometers }}</span
+              >
+              <span class="strava-summary-label overline muted-text">{{ labels.distance }}</span>
             </div>
             <div class="strava-summary-item inset">
-              <span class="strava-summary-value">{{ activitiesSummary().elevation | number: "1.0-0" }} m</span>
-              <span class="strava-summary-label overline muted-text">Dénivelé</span>
+              <span class="strava-summary-value"
+                >{{ activitiesSummary().elevation | number: "1.0-0" }} {{ labels.meters }}</span
+              >
+              <span class="strava-summary-label overline muted-text">{{ labels.elevation }}</span>
             </div>
           </div>
 
@@ -53,21 +57,21 @@
             <button
               mat-button
               [disabled]="pageNumber() <= 1"
-              matTooltip="Activités plus récentes"
+              [matTooltip]="labels.moreRecentActivities"
               (click)="getNextActivitiesPage()"
             >
               <mat-icon>chevron_left</mat-icon>
-              Plus récentes
+              {{ labels.moreRecent }}
             </button>
-            <span class="strava-page-number muted-text">Page {{ pageNumber() }}</span>
+            <span class="strava-page-number muted-text">{{ labels.page }} {{ pageNumber() }}</span>
             <button
               mat-button
               class="older-activities-button"
               [disabled]="activities().length < paginationActivities"
-              matTooltip="Activités plus anciennes"
+              [matTooltip]="labels.olderActivities"
               (click)="getPreviousActivitiesPage()"
             >
-              Plus anciennes
+              {{ labels.older }}
               <mat-icon>chevron_right</mat-icon>
             </button>
           </div>
@@ -75,7 +79,7 @@
       } @else {
         <div class="strava-empty muted-text column items-center gap-sm">
           <mat-icon>directions_run</mat-icon>
-          <span>Aucune activité pour le moment.</span>
+          <span>{{ labels.noActivity }}</span>
         </div>
       }
     } @else {
@@ -83,10 +87,10 @@
         <span class="strava-login-icon centered">
           <mat-icon>directions_run</mat-icon>
         </span>
-        <p class="muted-text">Connectez votre compte Strava pour suivre vos activités.</p>
+        <p class="muted-text">{{ labels.connectStravaAccount }}</p>
         <button (click)="loginToStrava()" id="login-to-strava-button" mat-flat-button>
           <mat-icon>link</mat-icon>
-          Se connecter à Strava
+          {{ labels.loginToStrava }}
         </button>
       </div>
     }

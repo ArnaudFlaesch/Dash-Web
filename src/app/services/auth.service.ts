@@ -8,10 +8,10 @@ import { IJwt } from "../model/IJwt";
 
 @Service()
 export class AuthService {
-  private static readonly USER_STORAGE_KEY = "user";
+  private readonly USER_STORAGE_KEY = "user";
 
   /** Reads the payload of a JWT, without verifying it. Throws if the token is malformed. */
-  private static decodeJwtPayload(token: string): IJwt {
+  private decodeJwtPayload(token: string): IJwt {
     const payload = token.split(".")[1];
     if (!payload) {
       throw new Error("Invalid token");
@@ -33,7 +33,7 @@ export class AuthService {
       .pipe(
         tap((user) => {
           if (user.accessToken) {
-            localStorage.setItem(AuthService.USER_STORAGE_KEY, JSON.stringify(user));
+            localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
             this.currentUser.set(user);
           }
         })
@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   public logout(): void {
-    localStorage.removeItem(AuthService.USER_STORAGE_KEY);
+    localStorage.removeItem(this.USER_STORAGE_KEY);
     this.currentUser.set(null);
   }
 
@@ -56,14 +56,14 @@ export class AuthService {
       return false;
     }
     try {
-      return Date.now() < AuthService.decodeJwtPayload(accessToken).exp * 1000;
+      return Date.now() < this.decodeJwtPayload(accessToken).exp * 1000;
     } catch {
       return false;
     }
   }
 
   private readStoredUser(): IUser | null {
-    const userData = localStorage.getItem(AuthService.USER_STORAGE_KEY);
+    const userData = localStorage.getItem(this.USER_STORAGE_KEY);
     return userData ? JSON.parse(userData) : null;
   }
 }

@@ -9,6 +9,12 @@ import { MatIcon } from "@angular/material/icon";
   imports: [MatButton, MatIcon]
 })
 export class DeleteWidgetComponent {
+  public readonly labels = {
+    confirmDeletion: "Êtes-vous sûr de vouloir supprimer ce widget ?",
+    cancel: "Annuler",
+    delete: "Supprimer"
+  };
+
   public readonly validateWidgetDeletion = output();
   public readonly cancelWidgetDeletion = output();
 }

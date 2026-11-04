@@ -4,10 +4,10 @@
       <div class="header-container row items-center">
         <div class="widget-header row items-center gap-xs">
           <mat-icon class="edit-mode-icon accent-text">tune</mat-icon>
-          <span>Configuration du widget</span>
+          <span>{{ labels.widgetConfiguration }}</span>
         </div>
         <div class="header-actions muted-text row">
-          <button class="delete-button" mat-icon-button matTooltip="Supprimer le widget" (click)="toDeleteMode()">
+          <button class="delete-button" mat-icon-button [matTooltip]="labels.deleteWidget" (click)="toDeleteMode()">
             <mat-icon aria-hidden="false">delete_outline</mat-icon>
           </button>
         </div>
@@ -18,11 +18,11 @@
         </div>
         <div class="edit-component-actions row">
           @if (isWidgetLoaded() && widgetData()) {
-            <button class="cancel-button" mat-button (click)="cancelEdition()">Annuler</button>
+            <button class="cancel-button" mat-button (click)="cancelEdition()">{{ labels.cancel }}</button>
           }
           <button class="validate-button" mat-flat-button (click)="onValidation()" [disabled]="!isFormValid()">
             <mat-icon>check</mat-icon>
-            Valider
+            {{ labels.validate }}
           </button>
         </div>
       </div>
@@ -48,11 +48,11 @@
             </span>
           }
 
-          <button mat-icon-button matTooltip="Actualiser le widget" (click)="refreshWidget()" class="refresh-button">
+          <button mat-icon-button [matTooltip]="labels.refreshWidget" (click)="refreshWidget()" class="refresh-button">
             <mat-icon aria-hidden="false">refresh</mat-icon>
           </button>
           @if (editComponent()) {
-            <button mat-icon-button matTooltip="Modifier le widget" (click)="toEditMode()" class="edit-button">
+            <button mat-icon-button [matTooltip]="labels.editWidget" (click)="toEditMode()" class="edit-button">
               <mat-icon>settings</mat-icon>
             </button>
           }

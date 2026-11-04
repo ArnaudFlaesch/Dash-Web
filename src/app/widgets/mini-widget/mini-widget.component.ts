@@ -14,6 +14,15 @@ import { AbstractWidgetComponent } from "../abstract-widget/abstract-widget.comp
   imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })
 export class MiniWidgetComponent extends AbstractWidgetComponent {
+  public readonly labels = {
+    cancel: "Annuler",
+    validate: "Valider",
+    deleteWidget: "Supprimer le widget",
+    confirmDeletion: "Êtes-vous sûr de vouloir supprimer ce widget ?",
+    delete: "Supprimer",
+    doubleClickToEdit: "Double-cliquez pour modifier"
+  };
+
   private readonly miniWidgetService = inject(MiniWidgetService);
 
   public onValidation(): void {

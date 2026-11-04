@@ -30,6 +30,21 @@ import { requiredText } from "../utils/form-validators";
   ]
 })
 export class LoginComponent {
+  public readonly labels = {
+    logoAlt: "dash logo",
+    title: "Dash",
+    subtitle: "Votre tableau de bord personnel",
+    usernameLabel: "Nom d'utilisateur",
+    username: "Username",
+    passwordLabel: "Mot de passe",
+    password: "Password",
+    hidePassword: "Masquer le mot de passe",
+    showPassword: "Afficher le mot de passe",
+    login: "Se connecter",
+    or: "ou",
+    tryDemo: "Essayer la démo"
+  };
+
   public readonly isLoading = signal(false);
   public readonly isPasswordVisible = signal(false);
 

@@ -6,15 +6,15 @@ import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from "./model/IAirPar
 
 @Service()
 export class AirParifWidgetService {
-  public static readonly AIRPARIF_WEBSITE_URL = "https://www.airparif.asso.fr";
+  public readonly AIRPARIF_WEBSITE_URL = "https://www.airparif.asso.fr";
 
   /** Class giving the color of the indice, defined in _airparif-widget.theme.scss. */
-  public static getIndiceClass(indice: AirParifIndiceEnum, prefix = "indice"): string {
+  public getIndiceClass(indice: AirParifIndiceEnum, prefix = "indice"): string {
     return `${prefix}-${indice.toLowerCase().replaceAll("_", "-")}`;
   }
 
   /** The API sends the keys of the enum (e.g. TRES_MAUVAIS) instead of its labels. */
-  public static getIndiceLabel(indice: AirParifIndiceEnum): string {
+  public getIndiceLabel(indice: AirParifIndiceEnum): string {
     return AirParifIndiceEnum[indice as unknown as keyof typeof AirParifIndiceEnum] ?? indice;
   }
 

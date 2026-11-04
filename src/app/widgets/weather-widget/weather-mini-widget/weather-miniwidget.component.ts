@@ -33,6 +33,13 @@ import { catchError, of } from "rxjs";
   ]
 })
 export class WeatherMiniWidgetComponent {
+  public readonly labels = {
+    city: "Ville",
+    enterCityName: "Saisissez de nom de la ville",
+    currentTemperature: "Température actuelle",
+    celsius: "°C"
+  };
+
   public readonly config = signal({ city: injectWidgetData("city", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.city));
 
@@ -50,7 +57,6 @@ export class WeatherMiniWidgetComponent {
   });
 
   public readonly weather = this.weatherResource.value;
-  public readonly getIconFromWeatherApi = WeatherWidgetService.getWeatherIconUrl;
 
   public readonly isFormValid = computed(() => this.configForm().valid());
   public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
@@ -63,6 +69,10 @@ export class WeatherMiniWidgetComponent {
     "Erreur lors de la récupération des données météorologiques.";
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
+
+  public getIconFromWeatherApi(icon: string): string {
+    return this.weatherWidgetService.getWeatherIconUrl(icon);
+  }
 
   public refreshWidget(): void {
     if (this.isFormValid()) {

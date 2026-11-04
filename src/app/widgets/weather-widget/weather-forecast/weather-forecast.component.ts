@@ -1,5 +1,5 @@
 import { DecimalPipe } from "@angular/common";
-import { Component, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
@@ -14,11 +14,23 @@ import { WeatherWidgetService } from "../weather-widget.service";
   imports: [MatTooltip, MatIcon, InitialUppercasePipe, DecimalPipe]
 })
 export class WeatherForecastComponent {
+  public readonly labels = {
+    maxTemperature: "Température maximum",
+    celsius: "°C",
+    minTemperature: "Température minimum",
+    humidity: "Humidité",
+    percent: "%"
+  };
+
   public readonly forecast = input.required<IForecast[]>();
   public readonly timezone = input(0);
   public readonly forecastMode = input<ForecastMode>(ForecastMode.DAY);
 
-  public readonly getIconFromWeatherApi = WeatherWidgetService.getWeatherIconUrl;
+  private readonly weatherWidgetService = inject(WeatherWidgetService);
+
+  public getIconFromWeatherApi(icon: string): string {
+    return this.weatherWidgetService.getWeatherIconUrl(icon);
+  }
 
   public getDateToDisplay(dateTime: number, timezone: number): string {
     const options: Intl.DateTimeFormatOptions =

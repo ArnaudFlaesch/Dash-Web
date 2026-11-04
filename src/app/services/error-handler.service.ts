@@ -5,16 +5,15 @@ import { Router } from "@angular/router";
 
 @Service()
 export class ErrorHandlerService {
-  private static readonly ERROR_AUTHENTICATING_USER =
-    "Erreur lors de la connexion de l'utilisateur.";
+  private readonly ERROR_AUTHENTICATING_USER = "Erreur lors de la connexion de l'utilisateur.";
 
-  private static readonly ERROR_UNAUTHORIZED =
+  private readonly ERROR_UNAUTHORIZED =
     "Votre jeton d'authentification n'est plus valide, veuillez vous reconnecter.";
 
-  private static readonly ERROR_FORBIDDEN =
+  private readonly ERROR_FORBIDDEN =
     "Vous n'avez pas les droits nécessaires pour effectuer cette opération.";
 
-  private static readonly SNACKBAR_DURATION = 3000;
+  private readonly SNACKBAR_DURATION = 3000;
 
   private readonly router = inject(Router);
   private readonly snackbar = inject(MatSnackBar);
@@ -24,14 +23,12 @@ export class ErrorHandlerService {
       case 401: {
         this.router
           .navigate(["login"])
-          .then(() =>
-            this.displayErrorMessage(error.message, ErrorHandlerService.ERROR_UNAUTHORIZED)
-          )
+          .then(() => this.displayErrorMessage(error.message, this.ERROR_UNAUTHORIZED))
           .catch((navigationError) => console.error(navigationError));
         break;
       }
       case 403: {
-        this.displayErrorMessage(error.message, ErrorHandlerService.ERROR_FORBIDDEN);
+        this.displayErrorMessage(error.message, this.ERROR_FORBIDDEN);
         break;
       }
       default: {
@@ -41,13 +38,13 @@ export class ErrorHandlerService {
   }
 
   public handleLoginError(error: Error): void {
-    this.displayErrorMessage(error.message, ErrorHandlerService.ERROR_AUTHENTICATING_USER);
+    this.displayErrorMessage(error.message, this.ERROR_AUTHENTICATING_USER);
   }
 
   private displayErrorMessage(errorMessage: string, messageToDisplay: string): void {
     console.error(errorMessage);
     this.snackbar.open(messageToDisplay, undefined, {
-      duration: ErrorHandlerService.SNACKBAR_DURATION
+      duration: this.SNACKBAR_DURATION
     });
   }
 }

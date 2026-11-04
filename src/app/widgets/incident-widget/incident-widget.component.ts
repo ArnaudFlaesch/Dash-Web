@@ -38,6 +38,18 @@ import { IConfirmModalData } from "../../model/IConfirmModalData";
   ]
 })
 export class IncidentWidgetComponent {
+  public readonly labels = {
+    incident: "Incident",
+    incidentType: "Type d'incident",
+    incidentTypePlaceholder: "Saisissez le type d'incident",
+    lastIncidentOn: "Dernier incident le",
+    pastStreaks: "Séries précédentes",
+    days: "jours",
+    end: "Terminer",
+    currentStreak: "Série actuelle",
+    start: "Départ"
+  };
+
   public readonly config = signal({ incidentName: injectWidgetData("incidentName", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.incidentName));
 

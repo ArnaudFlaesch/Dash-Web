@@ -6,8 +6,8 @@
 >
   <ng-template #editComponent>
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Ville</mat-label>
-      <input id="city-name-input" matInput [formField]="configForm.city" placeholder="Saisissez de nom de la ville" />
+      <mat-label>{{ labels.city }}</mat-label>
+      <input id="city-name-input" matInput [formField]="configForm.city" [placeholder]="labels.enterCityName" />
     </mat-form-field>
   </ng-template>
 
@@ -24,8 +24,10 @@
         <div class="weather-data-container column justify-center">
           <div class="city-name">{{ config().city }}</div>
           <div class="temperature-container muted-text row">
-            <mat-icon matTooltip="Température actuelle" matTooltipTouchGestures="off">device_thermostat</mat-icon>
-            <div>{{ weather.main.temp | number: "1.0-1" }} °C</div>
+            <mat-icon [matTooltip]="labels.currentTemperature" matTooltipTouchGestures="off"
+              >device_thermostat</mat-icon
+            >
+            <div>{{ weather.main.temp | number: "1.0-1" }} {{ labels.celsius }}</div>
           </div>
         </div>
       </div>

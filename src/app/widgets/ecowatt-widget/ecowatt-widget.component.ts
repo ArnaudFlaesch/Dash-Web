@@ -10,6 +10,11 @@ import { WidgetComponent } from "../widget/widget.component";
   host: { "(window:resize)": "resizeWidget()" }
 })
 export class EcowattWidgetComponent {
+  public readonly labels = {
+    title: "Ecowatt",
+    iframeTitle: "ecowatt"
+  };
+
   public readonly iframeContainer = viewChild<ElementRef<HTMLElement>>("iframeContainer");
 
   public readonly ecowattIframeUrl =

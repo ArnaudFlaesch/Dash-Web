@@ -3,11 +3,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 import { IWidgetTypePickerData } from "../../model/IWidgetTypePicker";
 import { WidgetTypePickerModalComponent } from "./widget-type-picker-modal.component";
+import { WIDGET_TYPE_OPTIONS } from "../../model/WidgetTypeOptions";
 
 describe("WidgetTypePickerModalComponent", () => {
   const data: IWidgetTypePickerData = {
     title: "Ajouter un widget",
-    widgetTypes: WidgetTypePickerModalComponent.WIDGET_TYPE_OPTIONS
+    widgetTypes: WIDGET_TYPE_OPTIONS
   };
 
   beforeEach(async () => {
@@ -19,20 +20,16 @@ describe("WidgetTypePickerModalComponent", () => {
     }).compileComponents();
   });
 
-  it("Should display a tile for each widget type", () => {
+  it("Should display a tile for each widget type", async () => {
     const fixture = TestBed.createComponent(WidgetTypePickerModalComponent);
-    fixture.detectChanges();
+    await fixture.whenStable();
     const element: HTMLElement = fixture.nativeElement;
     expect(element.querySelector("h1")?.textContent).toEqual("Ajouter un widget");
-    expect(element.querySelectorAll(".widget-type-tile")).toHaveLength(
-      WidgetTypePickerModalComponent.WIDGET_TYPE_OPTIONS.length
-    );
+    expect(element.querySelectorAll(".widget-type-tile")).toHaveLength(WIDGET_TYPE_OPTIONS.length);
   });
 
   it("Should offer every type of widget", () => {
     const widgetTypeKeys = Object.keys(WidgetTypeEnum).filter((key) => Number.isNaN(Number(key)));
-    expect(
-      WidgetTypePickerModalComponent.WIDGET_TYPE_OPTIONS.map((option) => option.type).sort()
-    ).toEqual(widgetTypeKeys.sort());
+    expect(WIDGET_TYPE_OPTIONS.map((option) => option.type).sort()).toEqual(widgetTypeKeys.sort());
   });
 });

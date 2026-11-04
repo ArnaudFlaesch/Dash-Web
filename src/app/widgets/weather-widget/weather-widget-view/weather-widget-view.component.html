@@ -19,12 +19,12 @@
         id="toggle-week-forecast"
         (click)="selectWeekForecast()"
       >
-        Semaine
+        {{ labels.week }}
       </button>
     </div>
     <div class="toggle-forecast">
       <mat-slide-toggle color="primary" [formField]="displayAllForecastForm">
-        Afficher les prévisions complètes
+        {{ labels.displayFullForecast }}
       </mat-slide-toggle>
     </div>
     <dash-weather-forecast

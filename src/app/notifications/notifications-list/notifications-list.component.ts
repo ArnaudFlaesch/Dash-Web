@@ -14,6 +14,11 @@ import { DateFormatPipe } from "../../pipes/date-format.pipe";
   imports: [MatTooltip, MatIcon, MatIconButton, MatMenuTrigger, MatBadge, MatMenu, DateFormatPipe]
 })
 export class NotificationsListComponent {
+  public readonly labels = {
+    notifications: "Notifications",
+    markAllAsRead: "Marquer tout comme lu"
+  };
+
   public readonly notificationsList = input.required<INotificationToDisplay[]>();
   public readonly unreadNotificationsForBadge = input<number>(0);
 

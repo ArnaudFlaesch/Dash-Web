@@ -23,6 +23,15 @@ import { DeleteWidgetComponent } from "../delete-widget/delete-widget.component"
   ]
 })
 export class WidgetComponent extends AbstractWidgetComponent {
+  public readonly labels = {
+    widgetConfiguration: "Configuration du widget",
+    deleteWidget: "Supprimer le widget",
+    cancel: "Annuler",
+    validate: "Valider",
+    refreshWidget: "Actualiser le widget",
+    editWidget: "Modifier le widget"
+  };
+
   public readonly headerIcon = contentChild.required<TemplateRef<unknown>>("headerIcon");
   public readonly headerTitle = contentChild.required<TemplateRef<unknown>>("headerTitle");
   public readonly additionalActions = contentChild<TemplateRef<unknown>>("additionalActions");

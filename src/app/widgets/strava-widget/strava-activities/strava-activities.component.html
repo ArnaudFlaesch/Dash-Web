@@ -10,7 +10,8 @@
             <div class="activity-title column">
               <span class="activity-name ellipsis">{{ activity.name }}</span>
               <span class="activity-meta muted-text">
-                {{ formatDate(activity.startDateLocal) }} · {{ roundDistance(activity.distance) | number: "1.0-1" }} km
+                {{ formatDate(activity.startDateLocal) }} · {{ roundDistance(activity.distance) | number: "1.0-1" }}
+                {{ labels.kilometers }}
                 ·
                 {{ formatDuration(activity.movingTime) }}
               </span>
@@ -21,37 +22,43 @@
       <ng-template matExpansionPanelContent>
         <div class="activity-stats">
           <div class="activity-stat">
-            <span class="activity-stat-label overline muted-text">Distance</span>
-            <span class="activity-stat-value">{{ roundDistance(activity.distance) | number: "1.0-2" }} km</span>
-          </div>
-          <div class="activity-stat">
-            <span class="activity-stat-label overline muted-text">Durée</span>
-            <span class="activity-stat-value">{{ formatDuration(activity.movingTime) }}</span>
-          </div>
-          <div class="activity-stat">
-            <span class="activity-stat-label overline muted-text">Dénivelé</span>
-            <span class="activity-stat-value">{{ activity.totalElevationGain | number: "1.0-0" }} m</span>
-          </div>
-          <div class="activity-stat">
-            <span class="activity-stat-label overline muted-text">Vitesse moy.</span>
+            <span class="activity-stat-label overline muted-text">{{ labels.distance }}</span>
             <span class="activity-stat-value"
-              >{{ toKilometersPerHour(activity.averageSpeed) | number: "1.0-1" }} km/h</span
+              >{{ roundDistance(activity.distance) | number: "1.0-2" }} {{ labels.kilometers }}</span
             >
           </div>
           <div class="activity-stat">
-            <span class="activity-stat-label overline muted-text">Vitesse max</span>
-            <span class="activity-stat-value">{{ toKilometersPerHour(activity.maxSpeed) | number: "1.0-1" }} km/h</span>
+            <span class="activity-stat-label overline muted-text">{{ labels.duration }}</span>
+            <span class="activity-stat-value">{{ formatDuration(activity.movingTime) }}</span>
           </div>
           <div class="activity-stat">
-            <span class="activity-stat-label overline muted-text">Trophées</span>
+            <span class="activity-stat-label overline muted-text">{{ labels.elevation }}</span>
+            <span class="activity-stat-value"
+              >{{ activity.totalElevationGain | number: "1.0-0" }} {{ labels.meters }}</span
+            >
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">{{ labels.averageSpeed }}</span>
+            <span class="activity-stat-value"
+              >{{ toKilometersPerHour(activity.averageSpeed) | number: "1.0-1" }} {{ labels.kilometersPerHour }}</span
+            >
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">{{ labels.maxSpeed }}</span>
+            <span class="activity-stat-value"
+              >{{ toKilometersPerHour(activity.maxSpeed) | number: "1.0-1" }} {{ labels.kilometersPerHour }}</span
+            >
+          </div>
+          <div class="activity-stat">
+            <span class="activity-stat-label overline muted-text">{{ labels.achievements }}</span>
             <span class="activity-stat-value">{{ activity.achievementCount }}</span>
           </div>
           <div class="activity-stat">
-            <span class="activity-stat-label overline muted-text">Kudos</span>
+            <span class="activity-stat-label overline muted-text">{{ labels.kudos }}</span>
             <span class="activity-stat-value">{{ activity.kudosCount }}</span>
           </div>
           <div class="activity-stat">
-            <span class="activity-stat-label overline muted-text">Commentaires</span>
+            <span class="activity-stat-label overline muted-text">{{ labels.comments }}</span>
             <span class="activity-stat-value">{{ activity.commentCount }}</span>
           </div>
         </div>
@@ -59,7 +66,7 @@
           class="activity-link hoverable-link accent-text row items-center"
           href="https://www.strava.com/activities/{{ activity.id }}"
         >
-          Voir sur Strava
+          {{ labels.viewOnStrava }}
           <mat-icon>open_in_new</mat-icon>
         </a>
       </ng-template>

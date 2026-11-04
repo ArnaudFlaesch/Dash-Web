@@ -3,7 +3,7 @@
     <input
       id="tab-name-input"
       class="tab-name-input"
-      aria-label="Tab name"
+      [attr.aria-label]="labels.tabName"
       (keydown.enter)="saveTabName()"
       (dblclick)="saveTabName()"
       [formField]="tabLabelForm"
@@ -11,8 +11,8 @@
     <mat-icon
       class="save-tab-button accent-text"
       role="button"
-      aria-label="Enregistrer le nom"
-      title="Enregistrer"
+      [attr.aria-label]="labels.saveName"
+      [title]="labels.save"
       (keydown.enter)="saveTabName()"
       (click)="saveTabName()"
       tabindex="0"
@@ -22,8 +22,8 @@
     <mat-icon
       class="delete-tab-button"
       role="button"
-      aria-label="Supprimer l'onglet"
-      title="Supprimer l'onglet"
+      [attr.aria-label]="labels.deleteTab"
+      [title]="labels.deleteTab"
       (keydown.enter)="deleteTabFromDash()"
       (click)="deleteTabFromDash()"
       tabindex="0"

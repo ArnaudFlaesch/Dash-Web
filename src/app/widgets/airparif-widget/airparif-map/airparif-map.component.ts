@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   ElementRef,
+  inject,
   input,
   linkedSignal,
   OnDestroy,
@@ -36,7 +37,7 @@ import { SidebarControl } from "../SidebarControl";
   imports: [MatIcon, MatProgressBar, DatePipe]
 })
 export class AirParifMapComponent implements AfterViewInit, OnDestroy {
-  private static readonly POLLUTANTS: IPollutant[] = [
+  private readonly POLLUTANTS: IPollutant[] = [
     { key: "no2", formula: "NO₂", name: "Dioxyde d'azote" },
     { key: "o3", formula: "O₃", name: "Ozone" },
     { key: "pm10", formula: "PM₁₀", name: "Particules < 10 µm" },
@@ -45,38 +46,49 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   ];
 
   // Keyed by the keys of the enum, sent by the API
-  private static readonly INDICE_DETAILS: Record<keyof typeof AirParifIndiceEnum, IIndiceDetails> =
-    {
-      BON: {
-        icon: "sentiment_very_satisfied",
-        advice: "Qualité de l'air idéale pour vos activités en extérieur."
-      },
-      MOYEN: {
-        icon: "sentiment_satisfied",
-        advice: "Profitez normalement de vos activités en extérieur."
-      },
-      DEGRADE: {
-        icon: "sentiment_neutral",
-        advice: "Les personnes sensibles devraient limiter les efforts intenses en extérieur."
-      },
-      MAUVAIS: {
-        icon: "sentiment_dissatisfied",
-        advice: "Réduisez les activités physiques intenses en extérieur."
-      },
-      TRES_MAUVAIS: {
-        icon: "sentiment_very_dissatisfied",
-        advice: "Évitez les activités physiques intenses en extérieur."
-      },
-      EXTREMEMENT_MAUVAIS: {
-        icon: "masks",
-        advice: "Évitez toute activité physique en extérieur."
-      }
-    };
+  private readonly INDICE_DETAILS: Record<keyof typeof AirParifIndiceEnum, IIndiceDetails> = {
+    BON: {
+      icon: "sentiment_very_satisfied",
+      advice: "Qualité de l'air idéale pour vos activités en extérieur."
+    },
+    MOYEN: {
+      icon: "sentiment_satisfied",
+      advice: "Profitez normalement de vos activités en extérieur."
+    },
+    DEGRADE: {
+      icon: "sentiment_neutral",
+      advice: "Les personnes sensibles devraient limiter les efforts intenses en extérieur."
+    },
+    MAUVAIS: {
+      icon: "sentiment_dissatisfied",
+      advice: "Réduisez les activités physiques intenses en extérieur."
+    },
+    TRES_MAUVAIS: {
+      icon: "sentiment_very_dissatisfied",
+      advice: "Évitez les activités physiques intenses en extérieur."
+    },
+    EXTREMEMENT_MAUVAIS: {
+      icon: "masks",
+      advice: "Évitez toute activité physique en extérieur."
+    }
+  };
 
-  private static readonly SIDEBAR_PANE_ID = "home";
+  private readonly SIDEBAR_PANE_ID = "home";
 
-  private static readonly AIRPARIF_WMS_URL =
-    "https://magellan.airparif.asso.fr/geoserver/siteweb/wms";
+  private readonly AIRPARIF_WMS_URL = "https://magellan.airparif.asso.fr/geoserver/siteweb/wms";
+
+  public readonly labels = {
+    airQuality: "Qualité de l'air",
+    close: "Fermer",
+    today: "Aujourd'hui",
+    tomorrow: "Demain",
+    globalIndice: "Indice global",
+    pollutantDetails: "Détail par polluant",
+    mapLegend: "Légende de la carte",
+    source: "Source : AirParif",
+    noForecast: "Aucune prévision disponible",
+    noForecastHint: "Vérifiez la clé d'API et le code commune dans la configuration du widget."
+  };
 
   public readonly mapContainer = viewChild<ElementRef<HTMLElement>>("map");
   public readonly sidebarContainer = viewChild<ElementRef<HTMLElement>>("sidebar");
@@ -84,9 +96,7 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   public readonly airParifForecast = input.required<IForecast[]>();
   public readonly airParifApiKey = input<string>();
   public readonly isLoading = input(false);
-  public readonly airParifWebsiteUrl = AirParifWidgetService.AIRPARIF_WEBSITE_URL;
-  public readonly getIndiceClass = AirParifWidgetService.getIndiceClass;
-  public readonly getIndiceLabel = AirParifWidgetService.getIndiceLabel;
+  public readonly airParifWebsiteUrl = inject(AirParifWidgetService).AIRPARIF_WEBSITE_URL;
 
   public readonly forecastMode = signal(ForecastMode.TODAY);
   public readonly forecastToDisplay = linkedSignal<IForecast | undefined>(
@@ -96,7 +106,7 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   public readonly pollutants = computed(() => {
     const forecast = this.forecastToDisplay();
     return forecast
-      ? AirParifMapComponent.POLLUTANTS.map((pollutant) => ({
+      ? this.POLLUTANTS.map((pollutant) => ({
           ...pollutant,
           indice: forecast[pollutant.key]
         }))
@@ -112,6 +122,8 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   public readonly isForecastModeTomorrow = computed(
     () => this.forecastMode() === ForecastMode.TOMORROW
   );
+
+  private readonly airParifWidgetService = inject(AirParifWidgetService);
 
   private map: Map | undefined;
   private sidebarControl: SidebarControl | undefined;
@@ -130,7 +142,7 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   }
 
   public openSidebar(): void {
-    this.sidebarControl?.open(AirParifMapComponent.SIDEBAR_PANE_ID);
+    this.sidebarControl?.open(this.SIDEBAR_PANE_ID);
   }
 
   public selectTodayForecast(): void {
@@ -141,15 +153,21 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
     this.selectForecast(ForecastMode.TOMORROW);
   }
 
+  public getIndiceClass(indice: AirParifIndiceEnum): string {
+    return this.airParifWidgetService.getIndiceClass(indice);
+  }
+
+  public getIndiceLabel(indice: AirParifIndiceEnum): string {
+    return this.airParifWidgetService.getIndiceLabel(indice);
+  }
+
   // Class giving a light tint of the color of the indice
   public getIndiceSoftClass(indice: AirParifIndiceEnum): string {
-    return AirParifWidgetService.getIndiceClass(indice, "indice-soft");
+    return this.airParifWidgetService.getIndiceClass(indice, "indice-soft");
   }
 
   public getIndiceDetails(indice: AirParifIndiceEnum): IIndiceDetails | undefined {
-    return AirParifMapComponent.INDICE_DETAILS[
-      indice as unknown as keyof typeof AirParifIndiceEnum
-    ];
+    return this.INDICE_DETAILS[indice as unknown as keyof typeof AirParifIndiceEnum];
   }
 
   private selectForecast(forecastMode: ForecastMode): void {
@@ -201,7 +219,7 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
     return new TileLayer({
       opacity: 0.5,
       source: new TileWMS({
-        url: AirParifMapComponent.AIRPARIF_WMS_URL,
+        url: this.AIRPARIF_WMS_URL,
         params: {
           SERVICE: "WMS",
           VERSION: "1.3.0",
@@ -212,7 +230,7 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
           STYLES: "nouvel_indice_polygones",
           ...(apiKey ? { authkey: apiKey } : {})
         },
-        attributions: `<a href="${AirParifWidgetService.AIRPARIF_WEBSITE_URL}">AirParif</a>`
+        attributions: `<a href="${this.airParifWebsiteUrl}">AirParif</a>`
       })
     });
   }

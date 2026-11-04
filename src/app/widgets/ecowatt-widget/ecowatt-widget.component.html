@@ -4,14 +4,14 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <div class="ecowatt-widget-header">Ecowatt</div>
+    <div class="ecowatt-widget-header">{{ labels.title }}</div>
   </ng-template>
 
   <ng-template #body>
     <div id="ecowatt-info-container" #iframeContainer class="full-size">
       <iframe
         [src]="ecowattIframeUrl | safe: 'resource_url'"
-        title="ecowatt"
+        [title]="labels.iframeTitle"
         [width]="iframeContainerWidth()"
         [height]="iframeContainerHeight()"
       ></iframe>

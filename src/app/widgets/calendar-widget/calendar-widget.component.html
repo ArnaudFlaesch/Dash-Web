@@ -9,7 +9,7 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <div>Agenda</div>
+    <div>{{ labels.calendar }}</div>
   </ng-template>
 
   <ng-template #editComponent>
@@ -19,10 +19,15 @@
           <input
             [id]="index"
             [formField]="calendarUrlField"
-            placeholder="Saisissez une URL iCal"
-            aria-label="URL du calendrier"
+            [placeholder]="labels.enterIcalUrl"
+            [attr.aria-label]="labels.calendarUrl"
           />
-          <button mat-icon-button class="remove-calendar-url" matTooltip="Supprimer" (click)="removeCalendarUrl(index)">
+          <button
+            mat-icon-button
+            class="remove-calendar-url"
+            [matTooltip]="labels.delete"
+            (click)="removeCalendarUrl(index)"
+          >
             <mat-icon>delete_outline</mat-icon>
           </button>
         </div>
@@ -30,7 +35,7 @@
     </div>
     <button mat-stroked-button id="add-calendar-url" class="add-calendar-url-button" (click)="onCalendarUrlAdded()">
       <mat-icon>add</mat-icon>
-      Ajouter un calendrier
+      {{ labels.addCalendar }}
     </button>
   </ng-template>
 
@@ -39,7 +44,7 @@
       <div id="date-navigation-container" class="row gap-xs">
         <button
           mat-raised-button
-          matTooltip="Précédent"
+          [matTooltip]="labels.previous"
           mwlCalendarPreviousView
           [view]="view()"
           [(viewDate)]="viewDate"
@@ -48,12 +53,12 @@
         >
           <mat-icon aria-hidden="false">arrow_back</mat-icon>
         </button>
-        <button mat-raised-button matTooltip="Aujourd'hui" mwlCalendarToday [(viewDate)]="viewDate">
+        <button mat-raised-button [matTooltip]="labels.today" mwlCalendarToday [(viewDate)]="viewDate">
           {{ displayTodaysDate() | initialUppercase }}
         </button>
         <button
           mat-raised-button
-          matTooltip="Suivant"
+          [matTooltip]="labels.next"
           mwlCalendarNextView
           [view]="view()"
           [(viewDate)]="viewDate"
@@ -66,17 +71,17 @@
 
       <div id="calendar-view-switch-container" class="row wrap gap-xs">
         <button mat-raised-button (click)="setView(calendarView.Day)" [color]="isCalendarViewDay() ? 'primary' : ''">
-          Jour
+          {{ labels.day }}
         </button>
         <button
           mat-raised-button
           (click)="setView(calendarView.Month)"
           [color]="isCalendarViewMonth() ? 'primary' : ''"
         >
-          Mois
+          {{ labels.month }}
         </button>
         <button mat-raised-button (click)="setView(calendarView.Week)" [color]="isCalendarViewWeek() ? 'primary' : ''">
-          Semaine
+          {{ labels.week }}
         </button>
       </div>
     </div>

@@ -22,9 +22,9 @@
               {{ stripHtmlFromContent(article.description) }}
             </div>
             <div class="article-pubdate muted-text">
-              Publié le
+              {{ labels.publishedOn }}
               {{ article.pubDate || article.updated || "" | dateFormat }}
-              {{ article.author && "par " + article.author }}
+              {{ article.author && labels.by + " " + article.author }}
             </div>
           </a>
         </div>

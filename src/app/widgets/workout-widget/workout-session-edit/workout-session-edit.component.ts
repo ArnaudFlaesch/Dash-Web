@@ -19,6 +19,13 @@ import { catchError, of } from "rxjs";
   imports: [MatIconButton, MatIcon, MatProgressSpinner, MatTooltip, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
+  public readonly labels = {
+    sessionOf: "Session du",
+    finish: "Terminer",
+    editReps: "Modifier les répétitions",
+    noWorkoutType: "Ajoutez des types d'exercices pour compter vos répétitions."
+  };
+
   public readonly workoutTypes = input.required<IWorkoutType[]>();
   public readonly currentWorkoutSessionToEdit = input.required<IWorkoutSession>();
 

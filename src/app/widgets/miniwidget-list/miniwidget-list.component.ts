@@ -15,6 +15,7 @@ import { MiniWidgetService } from "../../services/mini-widget.service";
 import { WeatherMiniWidgetComponent } from "../weather-widget/weather-mini-widget/weather-miniwidget.component";
 import { createWidgetInjector } from "../widget.tokens";
 import { IWidgetTypePickerData } from "../../model/IWidgetTypePicker";
+import { MINI_WIDGET_TYPE_OPTIONS } from "../../model/WidgetTypeOptions";
 
 @Component({
   selector: "dash-miniwidget-list",
@@ -23,8 +24,12 @@ import { IWidgetTypePickerData } from "../../model/IWidgetTypePicker";
   imports: [MatIconButton, MatTooltip, MatIcon, NgComponentOutlet]
 })
 export class MiniWidgetListComponent {
-  private static readonly MINI_WIDGET_COMPONENTS: Record<MiniWidgetTypeEnum, Type<unknown>> = {
+  private readonly MINI_WIDGET_COMPONENTS: Record<MiniWidgetTypeEnum, Type<unknown>> = {
     [MiniWidgetTypeEnum.WEATHER]: WeatherMiniWidgetComponent
+  };
+
+  public readonly labels = {
+    addNewMiniWidget: "Ajouter un nouveau mini widget"
   };
 
   public readonly miniWidgetsResource = rxResource({
@@ -39,7 +44,7 @@ export class MiniWidgetListComponent {
   });
 
   public readonly miniWidgetList = this.miniWidgetsResource.value;
-  public readonly miniWidgetComponents = MiniWidgetListComponent.MINI_WIDGET_COMPONENTS;
+  public readonly miniWidgetComponents = this.MINI_WIDGET_COMPONENTS;
 
   private readonly injector = inject(Injector);
   private readonly miniWidgetInjectors = new WeakMap<IMiniWidgetConfig, Injector>();
@@ -67,7 +72,7 @@ export class MiniWidgetListComponent {
           width: "640px",
           data: {
             title: "Ajouter un mini widget",
-            widgetTypes: WidgetTypePickerModalComponent.MINI_WIDGET_TYPE_OPTIONS
+            widgetTypes: MINI_WIDGET_TYPE_OPTIONS
           }
         }
       )

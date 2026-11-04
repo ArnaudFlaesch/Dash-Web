@@ -42,6 +42,15 @@ import { injectWidgetData } from "../widget.tokens";
   ]
 })
 export class SteamWidgetComponent {
+  public readonly labels = {
+    steamUser: "Utilisateur Steam",
+    enterSteamUserId: "Saisissez l'user ID du joueur Steam'",
+    searchGame: "Recherchez un jeu",
+    cancelSearch: "Annuler la recherche",
+    noGameFound: "Aucun jeu trouvé",
+    selectPage: "Sélectionnez une page"
+  };
+
   public readonly config = signal({ steamUserId: injectWidgetData("steamUserId", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.steamUserId));
   public readonly searchQuery = signal("");
@@ -135,9 +144,9 @@ export class SteamWidgetComponent {
   }
 
   private gameInfoResponseToGameInfoDisplay(gameInfoResponse: IGameInfoResponse): IGameInfoDisplay {
-    const appIdLink = SteamWidgetService.STEAM_COMMUNITY_URL + gameInfoResponse.appid;
+    const appIdLink = this.steamWidgetService.STEAM_COMMUNITY_URL + gameInfoResponse.appid;
     const playerAchievementUrl = `${this.playerData()?.profileurl}stats/${gameInfoResponse.appid}/achievements/`;
-    const gameImgSrc = `${SteamWidgetService.STEAM_IMAGE_URL}${gameInfoResponse.appid}/${gameInfoResponse.imgIconUrl}.jpg`;
+    const gameImgSrc = `${this.steamWidgetService.STEAM_IMAGE_URL}${gameInfoResponse.appid}/${gameInfoResponse.imgIconUrl}.jpg`;
     return { ...gameInfoResponse, appIdLink, playerAchievementUrl, gameImgSrc };
   }
 }

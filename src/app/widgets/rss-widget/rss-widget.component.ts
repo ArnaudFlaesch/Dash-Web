@@ -42,7 +42,7 @@ export class RssWidgetComponent {
    * Some feeds give the guid as an object (e.g. { isPermaLink: "true", "": "https://..." }),
    * so it is converted to a string to be compared with the read articles.
    */
-  private static guidToString(guid: unknown): string {
+  private guidToString(guid: unknown): string {
     if (typeof guid === "string") {
       return guid;
     }
@@ -57,9 +57,16 @@ export class RssWidgetComponent {
   }
 
   /** Read articles guids as strings, without duplicates. */
-  private static toReadArticlesGuids(guids: unknown[]): string[] {
-    return [...new Set(guids.map(RssWidgetComponent.guidToString))];
+  private toReadArticlesGuids(guids: unknown[]): string[] {
+    return [...new Set(guids.map((guid) => this.guidToString(guid)))];
   }
+
+  public readonly labels = {
+    logo: "logo",
+    url: "URL",
+    enterRssFeedUrl: "Saisissez l'URL du flux RSS",
+    markAllFeedAsRead: "Marquer tout le flux comme lu"
+  };
 
   public readonly config = signal({ url: injectWidgetData("url", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.url));
@@ -76,7 +83,7 @@ export class RssWidgetComponent {
                 ...channel,
                 item: (channel.item ?? []).map((article): IArticle => ({
                   ...article,
-                  guid: RssWidgetComponent.guidToString(article.guid)
+                  guid: this.guidToString(article.guid)
                 }))
               }
             : undefined
@@ -93,7 +100,7 @@ export class RssWidgetComponent {
   public readonly isWidgetLoaded = computed(() => isResourceLoaded(this.rssFeedResource.status()));
   public readonly isLogoBroken = signal(false);
   public readonly readArticles = signal(
-    RssWidgetComponent.toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
+    this.toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
   );
 
   public readonly isFormValid = computed(() => this.configForm().valid());
@@ -117,7 +124,7 @@ export class RssWidgetComponent {
   }
 
   public markArticleAsRead(guid: string): void {
-    this.updateRssFeed(RssWidgetComponent.toReadArticlesGuids([guid, ...this.readArticles()]));
+    this.updateRssFeed(this.toReadArticlesGuids([guid, ...this.readArticles()]));
   }
 
   public markAllFeedAsRead(): void {
@@ -136,9 +143,7 @@ export class RssWidgetComponent {
       .subscribe({
         next: (response: IWidgetConfig) =>
           this.readArticles.set(
-            RssWidgetComponent.toReadArticlesGuids(
-              (response.data?.["readArticlesGuids"] as unknown[]) ?? []
-            )
+            this.toReadArticlesGuids((response.data?.["readArticlesGuids"] as unknown[]) ?? [])
           ),
         error: (error: HttpErrorResponse) => {
           this.readArticles.set(previousReadArticles);

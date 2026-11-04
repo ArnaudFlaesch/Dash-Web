@@ -51,7 +51,21 @@ import { injectWidgetData } from "../widget.tokens";
   ]
 })
 export class CalendarWidgetComponent {
-  private static readonly MILLISECONDS_IN_A_DAY = 86400000;
+  private readonly MILLISECONDS_IN_A_DAY = 86400000;
+
+  public readonly labels = {
+    calendar: "Agenda",
+    enterIcalUrl: "Saisissez une URL iCal",
+    calendarUrl: "URL du calendrier",
+    delete: "Supprimer",
+    addCalendar: "Ajouter un calendrier",
+    previous: "Précédent",
+    today: "Aujourd'hui",
+    next: "Suivant",
+    day: "Jour",
+    month: "Mois",
+    week: "Semaine"
+  };
 
   public readonly viewDate = signal(new Date());
   public readonly config = signal({ calendarUrls: injectWidgetData<string[]>("calendarUrls", []) });
@@ -139,15 +153,12 @@ export class CalendarWidgetComponent {
       .map((event) => {
         let startDate = new Date(event.startDate);
         let endDate = new Date(event.endDate);
-        const isAllDay =
-          endDate.getTime() - startDate.getTime() === CalendarWidgetComponent.MILLISECONDS_IN_A_DAY;
+        const isAllDay = endDate.getTime() - startDate.getTime() === this.MILLISECONDS_IN_A_DAY;
         if (
           endDate.getHours() + endDate.getTimezoneOffset() / 60 === 0 &&
           endDate.getMinutes() === 0
         ) {
-          endDate = endOfDay(
-            new Date(endDate.getTime() - CalendarWidgetComponent.MILLISECONDS_IN_A_DAY)
-          );
+          endDate = endOfDay(new Date(endDate.getTime() - this.MILLISECONDS_IN_A_DAY));
         }
         if (
           startDate.getHours() + startDate.getTimezoneOffset() / 60 === 0 &&

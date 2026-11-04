@@ -21,7 +21,7 @@ import { WorkoutWidgetComponent } from "../workout-widget/workout-widget.compone
   imports: [CdkDropList, CdkDrag, NgComponentOutlet]
 })
 export class WidgetListComponent {
-  private static readonly WIDGET_COMPONENTS: Record<WidgetTypeEnum, Type<unknown>> = {
+  private readonly WIDGET_COMPONENTS: Record<WidgetTypeEnum, Type<unknown>> = {
     [WidgetTypeEnum.WEATHER]: WeatherWidgetComponent,
     [WidgetTypeEnum.RSS]: RssWidgetComponent,
     [WidgetTypeEnum.CALENDAR]: CalendarWidgetComponent,
@@ -38,7 +38,7 @@ export class WidgetListComponent {
   public readonly updateWidgetsOrderEvent = output<IWidgetConfig[]>();
 
   public readonly widgets = linkedSignal(() => this.widgetList());
-  public readonly widgetComponents = WidgetListComponent.WIDGET_COMPONENTS;
+  public readonly widgetComponents = this.WIDGET_COMPONENTS;
 
   private readonly injector = inject(Injector);
   private readonly widgetInjectors = new WeakMap<IWidgetConfig, Injector>();

@@ -32,6 +32,15 @@ import { SteamWidgetService } from "../steam-widget.service";
   ]
 })
 export class GameDetailsComponent {
+  public readonly labels = {
+    gameIcon: "game icon",
+    percent: "%",
+    achievements: "Succès :",
+    completedAchievements: "Succès complétés :",
+    communityHub: "Community hub",
+    noAchievements: "Aucun succès pour ce jeu."
+  };
+
   public readonly gameInfo = input.required<IGameInfoDisplay>();
   public readonly steamUserId = input.required<string>();
   public readonly profileUrl = input.required<string>();

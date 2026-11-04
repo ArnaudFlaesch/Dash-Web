@@ -1,24 +1,21 @@
 @if (currentWorkoutSessionToEdit() && workoutExercisesLoaded()) {
   <div id="workout-widget-header" class="row items-center justify-between">
-    <h3 id="workout-session-date">Session du {{ currentWorkoutSessionToEdit().workoutDate | dateFormat: "short" }}</h3>
+    <h3 id="workout-session-date">
+      {{ labels.sessionOf }} {{ currentWorkoutSessionToEdit().workoutDate | dateFormat: "short" }}
+    </h3>
 
     @if (sessionEditMode()) {
       <button
         id="validate-session-button"
         class="session-mode-button"
         mat-icon-button
-        matTooltip="Terminer"
+        [matTooltip]="labels.finish"
         (click)="toggleSessionEditMode()"
       >
         <mat-icon>check</mat-icon>
       </button>
     } @else {
-      <button
-        id="edit-session-button"
-        mat-icon-button
-        matTooltip="Modifier les répétitions"
-        (click)="toggleSessionEditMode()"
-      >
+      <button id="edit-session-button" mat-icon-button [matTooltip]="labels.editReps" (click)="toggleSessionEditMode()">
         <mat-icon>edit</mat-icon>
       </button>
     }
@@ -62,7 +59,7 @@
         </div>
       </div>
     } @empty {
-      <span class="workout-no-exercise muted-text">Ajoutez des types d'exercices pour compter vos répétitions.</span>
+      <span class="workout-no-exercise muted-text">{{ labels.noWorkoutType }}</span>
     }
   </div>
 } @else {

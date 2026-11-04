@@ -18,16 +18,20 @@
       </div>
       <div class="forecast-icons column">
         <div>
-          <mat-icon matTooltip="Température maximum" class="weather-widget-icon temp-max">device_thermostat</mat-icon>
-          {{ forecastDay.main.tempMax | number: "1.0-0" }} °C
+          <mat-icon [matTooltip]="labels.maxTemperature" class="weather-widget-icon temp-max"
+            >device_thermostat</mat-icon
+          >
+          {{ forecastDay.main.tempMax | number: "1.0-0" }} {{ labels.celsius }}
         </div>
         <div>
-          <mat-icon matTooltip="Température minimum" class="weather-widget-icon temp-min">device_thermostat</mat-icon>
-          {{ forecastDay.main.tempMin | number: "1.0-0" }} °C
+          <mat-icon [matTooltip]="labels.minTemperature" class="weather-widget-icon temp-min"
+            >device_thermostat</mat-icon
+          >
+          {{ forecastDay.main.tempMin | number: "1.0-0" }} {{ labels.celsius }}
         </div>
         <div>
-          <mat-icon matTooltip="Humidité" class="weather-widget-icon humidity">opacity</mat-icon>
-          {{ forecastDay.main.humidity }}%
+          <mat-icon [matTooltip]="labels.humidity" class="weather-widget-icon humidity">opacity</mat-icon>
+          {{ forecastDay.main.humidity }}{{ labels.percent }}
         </div>
       </div>
     </div>

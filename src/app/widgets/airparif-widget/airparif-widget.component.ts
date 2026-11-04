@@ -11,7 +11,7 @@ import { injectWidgetData } from "../widget.tokens";
 import { ErrorHandlerService } from "../../services/error-handler.service";
 import { AirParifMapComponent } from "./airparif-map/airparif-map.component";
 import { AirParifWidgetService } from "./airparif-widget.service";
-import { IAirParifCouleur, IForecast } from "./model/IAirParif";
+import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from "./model/IAirParif";
 import { form, FormField, pattern } from "@angular/forms/signals";
 import { requiredText } from "../../utils/form-validators";
 
@@ -32,6 +32,16 @@ import { requiredText } from "../../utils/form-validators";
   ]
 })
 export class AirParifWidgetComponent {
+  public readonly labels = {
+    title: "AirParif",
+    seeAirQualityDetails: "Voir le détail de la qualité de l'air",
+    apiKey: "Clé d'API",
+    apiKeyPlaceholder: "Saisissez la clé d'API AirParif",
+    communeCode: "Code commune",
+    communeCodePlaceholder: "Saisissez le code commune",
+    communeCodeHint: "Code INSEE à 5 chiffres, par exemple 75112 pour Paris 12e"
+  };
+
   public readonly config = signal({
     airParifApiKey: injectWidgetData("airParifApiKey", ""),
     communeInseeCode: injectWidgetData("communeInseeCode", "")
@@ -66,9 +76,7 @@ export class AirParifWidgetComponent {
   public readonly isFormValid = computed(() => this.configForm().valid());
   public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
-  public readonly airParifWebsiteUrl = AirParifWidgetService.AIRPARIF_WEBSITE_URL;
-  public readonly getIndiceClass = AirParifWidgetService.getIndiceClass;
-  public readonly getIndiceLabel = AirParifWidgetService.getIndiceLabel;
+  public readonly airParifWebsiteUrl = inject(AirParifWidgetService).AIRPARIF_WEBSITE_URL;
   public readonly airParifMap = viewChild(AirParifMapComponent);
 
   // A new object on each refresh, so that the resource reloads even if the commune is unchanged
@@ -83,6 +91,14 @@ export class AirParifWidgetComponent {
     if (this.isFormValid()) {
       this.refreshedCommune.set({ communeInseeCode: this.config().communeInseeCode });
     }
+  }
+
+  public getIndiceClass(indice: AirParifIndiceEnum): string {
+    return this.airParifWidgetService.getIndiceClass(indice);
+  }
+
+  public getIndiceLabel(indice: AirParifIndiceEnum): string {
+    return this.airParifWidgetService.getIndiceLabel(indice);
   }
 
   public openSidebar(): void {

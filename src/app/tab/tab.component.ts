@@ -14,6 +14,13 @@ import { TabService } from "../services/tab.service";
   imports: [MatIcon, FormField]
 })
 export class TabComponent {
+  public readonly labels = {
+    tabName: "Tab name",
+    saveName: "Enregistrer le nom",
+    save: "Enregistrer",
+    deleteTab: "Supprimer l'onglet"
+  };
+
   public readonly tab = input.required<ITab>();
   public readonly tabDeletedEvent = output<number>();
   public readonly editMode = signal(false);

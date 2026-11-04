@@ -66,6 +66,28 @@ import { catchError, Observable, of } from "rxjs";
   ]
 })
 export class WorkoutWidgetComponent {
+  public readonly labels = {
+    title: "Workout",
+    sessions: "Sessions",
+    statistics: "Statistiques",
+    month: "Mois",
+    noSessionThisMonth: "Aucune session ce mois-ci.",
+    newSession: "Nouvelle session",
+    create: "Créer",
+    thisWeek: "Cette semaine",
+    thisMonth: "Ce mois-ci",
+    workoutTypes: "Types d'exercices",
+    noWorkoutType: "Aucun type d'exercice.",
+    addWorkoutType: "Ajouter un type d'exercice",
+    workoutTypePlaceholder: "Pompes, tractions…",
+    add: "Ajouter",
+    backToSessions: "Retour aux sessions",
+    lastThreeMonths: "3 derniers mois",
+    lastSixMonths: "6 derniers mois",
+    currentYear: "Cette année",
+    lastYear: "Année dernière"
+  };
+
   public readonly currentWorkoutSessionToEdit = signal<IWorkoutSession | undefined>(undefined);
   public readonly selectedWorkoutStatistics = signal<WORKOUT_STATISTICS | undefined>(undefined);
   public readonly widgetView = signal(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);

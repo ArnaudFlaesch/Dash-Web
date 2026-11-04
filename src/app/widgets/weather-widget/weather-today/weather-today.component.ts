@@ -1,5 +1,5 @@
 import { DecimalPipe } from "@angular/common";
-import { Component, computed, input } from "@angular/core";
+import { Component, inject, computed, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
@@ -14,13 +14,25 @@ import { WeatherWidgetService } from "../weather-widget.service";
   imports: [MatTooltip, MatIcon, InitialUppercasePipe, DecimalPipe]
 })
 export class WeatherTodayComponent {
+  public readonly labels = {
+    currentTemperature: "Température actuelle",
+    celsius: "°C",
+    sunrise: "Lever du soleil",
+    sunset: "Coucher du soleil",
+    lastUpdate: "Dernière mise à jour à"
+  };
+
   public readonly weather = input.required<IWeatherAPIResponse>();
 
   public readonly sunriseTime = computed(() => this.formatTime(this.weather().sys.sunrise));
   public readonly sunsetTime = computed(() => this.formatTime(this.weather().sys.sunset));
   public readonly lastUpdateTime = computed(() => this.formatTime(this.weather().dt));
 
-  public readonly getIconFromWeatherApi = WeatherWidgetService.getWeatherIconUrl;
+  private readonly weatherWidgetService = inject(WeatherWidgetService);
+
+  public getIconFromWeatherApi(icon: string): string {
+    return this.weatherWidgetService.getWeatherIconUrl(icon);
+  }
 
   private formatTime(timestamp: number): string {
     return dateInTimezone(timestamp, this.weather().timezone).toLocaleTimeString("fr");

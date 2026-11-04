@@ -28,7 +28,7 @@ import { MatIcon } from "@angular/material/icon";
 })
 export class StravaActivitiesComponent {
   /** Icons of the most common types of Strava activities. */
-  private static readonly ACTIVITY_TYPE_ICONS: Record<string, string> = {
+  private readonly ACTIVITY_TYPE_ICONS: Record<string, string> = {
     Run: "directions_run",
     TrailRun: "directions_run",
     Ride: "directions_bike",
@@ -37,6 +37,21 @@ export class StravaActivitiesComponent {
     Swim: "pool",
     Walk: "directions_walk",
     Hike: "hiking"
+  };
+
+  public readonly labels = {
+    kilometers: "km",
+    distance: "Distance",
+    duration: "Durée",
+    elevation: "Dénivelé",
+    meters: "m",
+    averageSpeed: "Vitesse moy.",
+    kilometersPerHour: "km/h",
+    maxSpeed: "Vitesse max",
+    achievements: "Trophées",
+    kudos: "Kudos",
+    comments: "Commentaires",
+    viewOnStrava: "Voir sur Strava"
   };
 
   public readonly activities = input.required<IActivity[]>();
@@ -51,7 +66,7 @@ export class StravaActivitiesComponent {
   }
 
   public getActivityIcon(activityType: string): string {
-    return StravaActivitiesComponent.ACTIVITY_TYPE_ICONS[activityType] ?? "fitness_center";
+    return this.ACTIVITY_TYPE_ICONS[activityType] ?? "fitness_center";
   }
 
   /** Duration in seconds displayed as "1 h 05" or "42 min". */

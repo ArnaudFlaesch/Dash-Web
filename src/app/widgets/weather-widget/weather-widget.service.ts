@@ -7,7 +7,7 @@ import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
 @Service()
 export class WeatherWidgetService {
   /** Url of the image of an OpenWeatherMap icon code. */
-  public static getWeatherIconUrl(icon: string): string {
+  public getWeatherIconUrl(icon: string): string {
     return `https://openweathermap.org/img/wn/${icon}@2x.png`;
   }
 

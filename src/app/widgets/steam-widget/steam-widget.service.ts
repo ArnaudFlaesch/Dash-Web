@@ -7,10 +7,10 @@ import { IAchievementResponse, IGameInfoResponse, IPlayerDataResponse } from "./
 
 @Service()
 export class SteamWidgetService {
-  public static readonly STEAM_IMAGE_URL =
+  public readonly STEAM_IMAGE_URL =
     "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/";
 
-  public static readonly STEAM_COMMUNITY_URL = "https://steamcommunity.com/app/";
+  public readonly STEAM_COMMUNITY_URL = "https://steamcommunity.com/app/";
 
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.backend_url}/steamWidget`;

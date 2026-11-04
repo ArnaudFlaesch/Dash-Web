@@ -24,6 +24,11 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   styleUrl: "./weather-widget-view.component.scss"
 })
 export class WeatherWidgetViewComponent {
+  public readonly labels = {
+    week: "Semaine",
+    displayFullForecast: "Afficher les prévisions complètes"
+  };
+
   public readonly weather = input.required<IWeatherAPIResponse>();
   public readonly forecastResponse = input.required<IForecast[]>();
   public readonly cityData = input.required<ICity>();

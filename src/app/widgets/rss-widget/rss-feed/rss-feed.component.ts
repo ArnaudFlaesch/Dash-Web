@@ -26,6 +26,11 @@ import { IArticle } from "../IArticle";
   ]
 })
 export class RssFeedComponent {
+  public readonly labels = {
+    publishedOn: "Publié le",
+    by: "par"
+  };
+
   public readonly feed = input.required<IArticle[]>();
   public readonly readArticles = input.required<string[]>();
   public readonly markArticleAsReadEvent = output<string>();

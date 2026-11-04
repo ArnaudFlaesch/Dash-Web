@@ -28,6 +28,12 @@ import { requiredText } from "../../utils/form-validators";
   ]
 })
 export class WeatherWidgetComponent {
+  public readonly labels = {
+    weatherTodayIn: "La météo aujourd'hui à",
+    city: "Ville",
+    enterCityName: "Saisissez de nom de la ville"
+  };
+
   public readonly config = signal({ city: injectWidgetData("city", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.city));
 
