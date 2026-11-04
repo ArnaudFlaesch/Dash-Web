@@ -13,7 +13,7 @@ import {
   CalendarView,
   CalendarWeekViewComponent
 } from "angular-calendar";
-import { endOfDay, format, startOfDay } from "date-fns";
+import { endOfDay, format } from "date-fns";
 import { catchError, defaultIfEmpty, forkJoin, map, of } from "rxjs";
 
 import { ErrorHandlerService } from "../../services/error-handler.service";
@@ -154,17 +154,14 @@ export class CalendarWidgetComponent {
         let startDate = new Date(event.startDate);
         let endDate = new Date(event.endDate);
         const isAllDay = endDate.getTime() - startDate.getTime() === this.MILLISECONDS_IN_A_DAY;
-        if (
-          endDate.getHours() + endDate.getTimezoneOffset() / 60 === 0 &&
-          endDate.getMinutes() === 0
-        ) {
-          endDate = endOfDay(new Date(endDate.getTime() - this.MILLISECONDS_IN_A_DAY));
+        // Dates at midnight UTC are days: they are displayed on the same day in the local timezone
+        if (this.isMidnightUtc(endDate)) {
+          endDate = endOfDay(
+            this.toLocalDay(new Date(endDate.getTime() - this.MILLISECONDS_IN_A_DAY))
+          );
         }
-        if (
-          startDate.getHours() + startDate.getTimezoneOffset() / 60 === 0 &&
-          startDate.getMinutes() === 0
-        ) {
-          startDate = startOfDay(startDate);
+        if (this.isMidnightUtc(startDate)) {
+          startDate = this.toLocalDay(startDate);
         }
 
         return {
@@ -174,5 +171,14 @@ export class CalendarWidgetComponent {
           allDay: isAllDay
         };
       });
+  }
+
+  private isMidnightUtc(date: Date): boolean {
+    return date.getUTCHours() === 0 && date.getUTCMinutes() === 0;
+  }
+
+  /** Local midnight of the UTC day of the date. */
+  private toLocalDay(date: Date): Date {
+    return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
   }
 }

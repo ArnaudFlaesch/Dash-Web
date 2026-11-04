@@ -3,7 +3,7 @@ import { provideHttpClient } from "@angular/common/http";
 import { addDays, getTime } from "date-fns";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { environment } from "../../../environments/environment";
 import { ErrorHandlerService } from "../../services/error-handler.service";
 import { IActivity, IAthlete, ITokenData } from "./IStrava";
@@ -11,7 +11,7 @@ import { StravaWidgetComponent } from "./strava-widget.component";
 import { StravaWidgetService } from "./strava-widget.service";
 import { WidgetService } from "../../services/widget.service";
 import { HomeComponent } from "../../home/home.component";
-import { provideRouter } from "@angular/router";
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from "@angular/router";
 import { vi } from "vitest";
 
 describe("StravaWidgetComponent", () => {
@@ -236,5 +236,435 @@ describe("StravaWidgetComponent", () => {
       )
       .flush([]);
     await flushResources();
+  });
+
+  const tokenResponse = {
+    expiresAt: "1644882561",
+    refreshToken: "NEW_REFRESH_TOKEN",
+    accessToken: "NEW_TOKEN",
+    athlete: athleteData
+  } as ITokenData;
+
+  function storeValidToken(): void {
+    window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
+    window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
+    window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, TOKEN_EXPIRATION_DATE);
+  }
+
+  function spyOnHandleError(): ReturnType<typeof vi.spyOn> {
+    return vi
+      .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
+      .mockImplementation(() => undefined);
+  }
+
+  it("Should not be logged in with an expired token", () => {
+    window.localStorage.setItem(STRAVA_TOKEN_KEY, STRAVA_TOKEN);
+    window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
+    window.localStorage.setItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY, "1");
+    expect(component.isUserLoggedIn()).toBe(false);
+  });
+
+  it("Should not send any request without token", () => {
+    component.refreshWidget();
+    TestBed.tick();
+    httpTestingController.expectNone(() => true);
+    expect(component.athlete()).toBeUndefined();
+  });
+
+  it("Should open the Strava login page, redirecting to the current page", () => {
+    const initialUrl = location.href;
+    // Query parameters of the current page, which must not be mixed with the ones of Strava
+    history.replaceState(null, "", "/home?tabId=3&view=list");
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+    try {
+      const pageUrl = location.href;
+      TestBed.createComponent(StravaWidgetComponent).componentInstance.loginToStrava();
+
+      expect(openSpy).toHaveBeenCalledWith(expect.any(String), "_self");
+      const loginUrl = new URL(openSpy.mock.calls[0][0] as string);
+      expect(loginUrl.origin + loginUrl.pathname).toEqual("https://www.strava.com/oauth/authorize");
+      expect(loginUrl.searchParams.get("client_id")).toEqual("30391");
+      expect(loginUrl.searchParams.get("redirect_uri")).toEqual(pageUrl);
+      expect(loginUrl.searchParams.get("response_type")).toEqual("code");
+      expect(loginUrl.searchParams.get("scope")).toEqual("read,activity:read");
+      expect(loginUrl.searchParams.has("view")).toBe(false);
+    } finally {
+      history.replaceState(null, "", initialUrl);
+    }
+  });
+
+  it("Should store the token received with the code, then load the athlete", async () => {
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), "navigate").mockResolvedValue(true);
+
+    const tokenPromise = component.getToken("API_CODE");
+    expect(component.isWidgetLoaded()).toBe(false);
+    const getTokenRequest = httpTestingController.expectOne(
+      `${environment.backend_url}/stravaWidget/getToken`
+    );
+    expect(getTokenRequest.request.body).toEqual({ apiCode: "API_CODE" });
+    getTokenRequest.flush(tokenResponse);
+    await tokenPromise;
+
+    expect(window.localStorage.getItem(STRAVA_TOKEN_KEY)).toEqual(tokenResponse.accessToken);
+    expect(window.localStorage.getItem(STRAVA_REFRESH_TOKEN_KEY)).toEqual(
+      tokenResponse.refreshToken
+    );
+    expect(window.localStorage.getItem(STRAVA_TOKEN_EXPIRATION_DATE_KEY)).toEqual(
+      tokenResponse.expiresAt
+    );
+    // The code is removed from the URL
+    expect(navigateSpy).toHaveBeenCalledWith(["/"]);
+
+    httpTestingController
+      .expectOne(
+        `${environment.backend_url}/stravaWidget/getAthleteData?token=${tokenResponse.accessToken}`
+      )
+      .flush(athleteData);
+    await flushResources();
+    expect(component.athlete()).toEqual(athleteData);
+    httpTestingController
+      .expectOne(
+        `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${tokenResponse.accessToken}&pageNumber=1&numberOfActivities=25`
+      )
+      .flush([]);
+    await flushResources();
+    expect(component.isWidgetLoaded()).toBe(true);
+  });
+
+  it("Should stop loading when getting the token fails", async () => {
+    const handleErrorSpy = spyOnHandleError();
+
+    const tokenPromise = component.getToken("API_CODE");
+    httpTestingController
+      .expectOne(`${environment.backend_url}/stravaWidget/getToken`)
+      .flush(null, { status: 500, statusText: "Internal Server Error" });
+    await tokenPromise;
+
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      "Erreur lors de la connexion à Strava."
+    );
+    expect(window.localStorage.getItem(STRAVA_TOKEN_KEY)).toBeNull();
+    expect(component.isWidgetLoaded()).toBe(true);
+  });
+
+  it("Should stop loading when getting the athlete fails", () => {
+    const handleErrorSpy = spyOnHandleError();
+    storeValidToken();
+
+    component.refreshWidget();
+    expect(component.isWidgetLoaded()).toBe(false);
+    httpTestingController
+      .expectOne(`${environment.backend_url}/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`)
+      .flush(null, { status: 500, statusText: "Internal Server Error" });
+
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      "Erreur lors de la récupération de vos informations Strava."
+    );
+    expect(component.athlete()).toBeUndefined();
+    expect(component.isWidgetLoaded()).toBe(true);
+  });
+
+  it("Should stop loading when refreshing the token fails", () => {
+    const handleErrorSpy = spyOnHandleError();
+    window.localStorage.setItem(STRAVA_REFRESH_TOKEN_KEY, STRAVA_REFRESH_TOKEN);
+
+    component.refreshWidget();
+    expect(component.isWidgetLoaded()).toBe(false);
+    const refreshTokenRequest = httpTestingController.expectOne(
+      `${environment.backend_url}/stravaWidget/getRefreshToken`
+    );
+    expect(refreshTokenRequest.request.body).toEqual({ refreshToken: STRAVA_REFRESH_TOKEN });
+    refreshTokenRequest.flush(null, { status: 401, statusText: "Unauthorized" });
+
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 401 }),
+      "Vous n'êtes pas connecté à Strava."
+    );
+    expect(component.isUserLoggedIn()).toBe(false);
+    expect(component.isWidgetLoaded()).toBe(true);
+  });
+
+  it("Should handle the error when getting the activities, and not change page", async () => {
+    const handleErrorSpy = spyOnHandleError();
+    storeValidToken();
+    component.refreshWidget();
+    httpTestingController
+      .expectOne(`${environment.backend_url}/stravaWidget/getAthleteData?token=${STRAVA_TOKEN}`)
+      .flush(athleteData);
+    await flushResources();
+
+    httpTestingController
+      .expectOne(
+        `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${STRAVA_TOKEN}&pageNumber=1&numberOfActivities=25`
+      )
+      .flush(null, { status: 500, statusText: "Internal Server Error" });
+    await flushResources();
+
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      "Erreur lors de la récupération des activités Strava."
+    );
+    expect(component.activities()).toEqual([]);
+    expect(component.isWidgetLoaded()).toBe(true);
+
+    // No more recent page than the first one, and no older page without a full page
+    component.getNextActivitiesPage();
+    component.getPreviousActivitiesPage();
+    TestBed.tick();
+    expect(component.pageNumber()).toEqual(1);
+  });
+});
+
+describe("StravaWidgetComponent initialization", () => {
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: WIDGET_ID, useValue: 1 },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: convertToParamMap({ code: "API_CODE" }) } }
+        }
+      ]
+    })
+      .overrideTemplate(StravaWidgetComponent, "")
+      .compileComponents();
+    httpTestingController = TestBed.inject(HttpTestingController);
+    window.localStorage.removeItem("strava_token");
+    window.localStorage.removeItem("strava_refresh_token");
+    window.localStorage.removeItem("strava_token_expires_at");
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+    vi.useRealTimers();
+  });
+
+  it("Should get the token with the code received after the login to Strava", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const fixture = TestBed.createComponent(StravaWidgetComponent);
+    const getTokenSpy = vi.spyOn(fixture.componentInstance, "getToken").mockResolvedValue();
+    TestBed.tick();
+    expect(getTokenSpy).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(getTokenSpy).toHaveBeenCalledWith("API_CODE");
+  });
+
+  it("Should not get the token once the widget is destroyed", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const fixture = TestBed.createComponent(StravaWidgetComponent);
+    const getTokenSpy = vi.spyOn(fixture.componentInstance, "getToken").mockResolvedValue();
+    TestBed.tick();
+    fixture.destroy();
+
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(getTokenSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe("StravaWidgetComponent rendering", () => {
+  const token = "FAKE_TOKEN";
+  const athleteUrl = `${environment.backend_url}/stravaWidget/getAthleteData?token=${token}`;
+  const activitiesUrl = (pageNumber: number): string =>
+    `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${token}&pageNumber=${pageNumber}&numberOfActivities=25`;
+  const athlete = {
+    id: 25345795,
+    firstname: "Arnaud",
+    lastname: "Flaesch",
+    profileMedium: "https://strava.example/medium.jpg"
+  } as IAthlete;
+  const activities = Array.from(
+    { length: 25 },
+    (_, index) =>
+      ({
+        id: index + 1,
+        name: `Run ${index + 1}`,
+        type: "Run",
+        distance: 10000,
+        movingTime: 3000,
+        totalElevationGain: 20,
+        averageSpeed: 3,
+        maxSpeed: 5,
+        startDate: "2022-10-20T16:34:39Z",
+        startDateLocal: "2022-10-20T18:34:39Z"
+      }) as IActivity
+  );
+
+  let fixture: ComponentFixture<StravaWidgetComponent>;
+  let component: StravaWidgetComponent;
+  let element: HTMLElement;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: WIDGET_ID, useValue: 1 }
+      ]
+    }).compileComponents();
+    httpTestingController = TestBed.inject(HttpTestingController);
+    window.localStorage.removeItem("strava_token");
+    window.localStorage.removeItem("strava_refresh_token");
+    window.localStorage.removeItem("strava_token_expires_at");
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  async function flushResources(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve));
+    TestBed.tick();
+  }
+
+  function createWidget(): void {
+    fixture = TestBed.createComponent(StravaWidgetComponent);
+    component = fixture.componentInstance;
+    element = fixture.nativeElement as HTMLElement;
+    TestBed.tick();
+  }
+
+  /** Displays the widget of a logged in athlete, with the given activities. */
+  async function createLoggedInWidget(athleteActivities: IActivity[]): Promise<void> {
+    window.localStorage.setItem("strava_token", token);
+    window.localStorage.setItem("strava_refresh_token", "FAKE_REFRESH_TOKEN");
+    window.localStorage.setItem(
+      "strava_token_expires_at",
+      Math.floor(addDays(new Date(), 4).getTime() / 1000).toString()
+    );
+    createWidget();
+    httpTestingController.expectOne(athleteUrl).flush(athlete);
+    await flushResources();
+    httpTestingController.expectOne(activitiesUrl(1)).flush(athleteActivities);
+    await flushResources();
+    await fixture.whenStable();
+  }
+
+  function findButton(text: string): HTMLButtonElement {
+    return Array.from(element.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes(text)
+    ) as HTMLButtonElement;
+  }
+
+  it("should display the login to Strava when the user is not logged in", async () => {
+    createWidget();
+    await fixture.whenStable();
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+
+    expect(element.querySelector(".widget-header")?.textContent).toContain(component.labels.strava);
+    expect(element.querySelector("#strava-profile-picture")).toBeNull();
+    expect(element.querySelector(".strava-login")?.textContent).toContain(
+      component.labels.connectStravaAccount
+    );
+    const loginButton = element.querySelector("#login-to-strava-button") as HTMLButtonElement;
+    expect(loginButton.textContent).toContain(component.labels.loginToStrava);
+
+    loginButton.click();
+    expect(openSpy).toHaveBeenCalledWith(
+      expect.stringContaining("https://www.strava.com/oauth/authorize"),
+      "_self"
+    );
+  });
+
+  it("should display a spinner until the athlete is loaded", async () => {
+    window.localStorage.setItem("strava_token", token);
+    window.localStorage.setItem("strava_refresh_token", "FAKE_REFRESH_TOKEN");
+    window.localStorage.setItem(
+      "strava_token_expires_at",
+      Math.floor(addDays(new Date(), 4).getTime() / 1000).toString()
+    );
+    createWidget();
+    expect(element.querySelector("mat-spinner")).not.toBeNull();
+
+    httpTestingController.expectOne(athleteUrl).flush(athlete);
+    await flushResources();
+    // Still loading the activities
+    expect(element.querySelector("mat-spinner")).not.toBeNull();
+    httpTestingController.expectOne(activitiesUrl(1)).flush([]);
+    await flushResources();
+    await fixture.whenStable();
+    expect(element.querySelector("mat-spinner")).toBeNull();
+  });
+
+  it("should display the athlete and the summary of the activities", async () => {
+    await createLoggedInWidget(activities);
+
+    expect(element.querySelector("#strava-widget-header")?.getAttribute("href")).toEqual(
+      `https://www.strava.com/athletes/${athlete.id}`
+    );
+    const profilePicture = element.querySelector("#strava-profile-picture") as HTMLImageElement;
+    expect(profilePicture.src).toEqual(athlete.profileMedium);
+    expect(profilePicture.alt).toEqual(component.labels.athleteProfile);
+    expect(element.querySelector(".strava-header")?.textContent).toContain("Arnaud Flaesch");
+
+    const summaryItems = element.querySelectorAll(".strava-summary-item");
+    expect(summaryItems).toHaveLength(3);
+    expect(summaryItems[0].textContent).toContain("25");
+    expect(summaryItems[0].textContent).toContain(component.labels.activities);
+    expect(summaryItems[1].textContent).toContain(`250 ${component.labels.kilometers}`);
+    expect(summaryItems[1].textContent).toContain(component.labels.distance);
+    expect(summaryItems[2].textContent).toContain(`500 ${component.labels.meters}`);
+    expect(summaryItems[2].textContent).toContain(component.labels.elevation);
+    expect(element.querySelector("#strava-statistics canvas")).not.toBeNull();
+    expect(element.querySelectorAll("#strava-activities-container .strava-activity")).toHaveLength(
+      25
+    );
+  });
+
+  it("should navigate between the pages of activities", async () => {
+    await createLoggedInWidget(activities);
+    const moreRecentButton = findButton(component.labels.moreRecent);
+    const olderButton = element.querySelector(".older-activities-button") as HTMLButtonElement;
+    expect(element.querySelector(".strava-page-number")?.textContent).toContain(
+      `${component.labels.page} 1`
+    );
+    expect(moreRecentButton.disabled).toBe(true);
+    expect(olderButton.disabled).toBe(false);
+    expect(olderButton.textContent).toContain(component.labels.older);
+
+    olderButton.click();
+    TestBed.tick();
+    httpTestingController.expectOne(activitiesUrl(2)).flush(activities.slice(0, 3));
+    await flushResources();
+    await fixture.whenStable();
+
+    expect(element.querySelector(".strava-page-number")?.textContent).toContain(
+      `${component.labels.page} 2`
+    );
+    const pageTwoMoreRecentButton = findButton(component.labels.moreRecent);
+    expect(pageTwoMoreRecentButton.disabled).toBe(false);
+    // Last page, as it is not full
+    expect((element.querySelector(".older-activities-button") as HTMLButtonElement).disabled).toBe(
+      true
+    );
+    expect(element.querySelectorAll(".strava-activity")).toHaveLength(3);
+
+    pageTwoMoreRecentButton.click();
+    TestBed.tick();
+    httpTestingController.expectOne(activitiesUrl(1)).flush(activities);
+    await flushResources();
+    await fixture.whenStable();
+    expect(component.pageNumber()).toEqual(1);
+    expect(element.querySelectorAll(".strava-activity")).toHaveLength(25);
+  });
+
+  it("should display a message without activities", async () => {
+    await createLoggedInWidget([]);
+
+    expect(element.querySelector(".strava-empty")?.textContent).toContain(
+      component.labels.noActivity
+    );
+    expect(element.querySelector("#activities-pagination-container")).toBeNull();
+    expect(element.querySelector(".strava-login")).toBeNull();
   });
 });

@@ -6,7 +6,6 @@ import {
   ElementRef,
   inject,
   input,
-  linkedSignal,
   OnDestroy,
   signal,
   viewChild
@@ -99,8 +98,9 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   public readonly airParifWebsiteUrl = inject(AirParifWidgetService).AIRPARIF_WEBSITE_URL;
 
   public readonly forecastMode = signal(ForecastMode.TODAY);
-  public readonly forecastToDisplay = linkedSignal<IForecast | undefined>(
-    () => this.airParifForecast()[0]
+  // Forecast of the selected day, also when the forecasts are refreshed
+  public readonly forecastToDisplay = computed<IForecast | undefined>(
+    () => this.airParifForecast()[this.forecastMode() === ForecastMode.TODAY ? 0 : 1]
   );
 
   public readonly pollutants = computed(() => {
@@ -176,9 +176,6 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
       this.map?.addLayer(this.forecastLayers[forecastMode]);
     }
     this.forecastMode.set(forecastMode);
-    this.forecastToDisplay.set(
-      this.airParifForecast()[forecastMode === ForecastMode.TODAY ? 0 : 1]
-    );
   }
 
   private initMap(): void {

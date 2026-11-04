@@ -15,6 +15,7 @@
               (keydown.enter)="selectTab(tab.id)"
               (click)="selectTab(tab.id)"
               (tabDeletedEvent)="deleteTabFromDash($event)"
+              (tabUpdatedEvent)="updateTab($event)"
               [cdkDragDisabled]="!editModeEnabled()"
               [class.selected-item]="activeTab() === tab.id"
               [class.draggable]="editModeEnabled()"

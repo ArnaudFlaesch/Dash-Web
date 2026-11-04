@@ -49,4 +49,9 @@ describe("authInterceptor", () => {
   it("Should not add a header when the user is not logged in", () => {
     expect(sendRequest(`${environment.backend_url}/tab/`)).toBeNull();
   });
+
+  it("Should send the request without a header when the stored user is corrupted", () => {
+    localStorage.setItem("user", "{not json");
+    expect(sendRequest(`${environment.backend_url}/tab/`)).toBeNull();
+  });
 });

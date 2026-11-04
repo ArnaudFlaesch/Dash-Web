@@ -33,10 +33,8 @@ export class ImportConfigModalComponent {
   private readonly ERROR_IMPORT_CONFIGURATION = "Erreur lors de l'import de la configuration.";
 
   public selectFile(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    if (target.files?.[0]) {
-      this.fileToUpload.set(target.files[0]);
-    }
+    // No file when the selection is cleared
+    this.fileToUpload.set((event.target as HTMLInputElement).files?.[0] ?? null);
   }
 
   public upload(): void {

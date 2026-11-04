@@ -23,6 +23,7 @@ export class TabComponent {
 
   public readonly tab = input.required<ITab>();
   public readonly tabDeletedEvent = output<number>();
+  public readonly tabUpdatedEvent = output<ITab>();
   public readonly editMode = signal(false);
   public readonly tabLabel = linkedSignal(() => this.tab().label);
   public readonly tabLabelForm = form(this.tabLabel, (path) => requiredText(path));
@@ -41,6 +42,7 @@ export class TabComponent {
     }
     const { id, tabOrder } = this.tab();
     this.tabService.updateTab(id, this.tabLabel(), tabOrder).subscribe({
+      next: (updatedTab) => this.tabUpdatedEvent.emit(updatedTab),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_UPDATE_TAB),
       complete: () => this.toggleEditMode()

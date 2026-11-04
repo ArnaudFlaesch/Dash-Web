@@ -77,4 +77,30 @@ describe("AuthService", () => {
     localStorage.setItem("user", JSON.stringify({ accessToken: "accessToken" }));
     expect(authService.getAccessToken()).toEqual("accessToken");
   });
+  it("Should treat a corrupted stored user as logged out", () => {
+    localStorage.setItem("user", "{not json");
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    });
+    const service = TestBed.inject(AuthService);
+    httpTestingController = TestBed.inject(HttpTestingController);
+
+    expect(service.isUserAdmin()).toBe(false);
+    expect(service.getAccessToken()).toBeUndefined();
+    expect(service.userHasValidToken()).toBe(false);
+  });
+
+  it("Should not consider a stored user without roles as admin", () => {
+    localStorage.setItem("user", JSON.stringify({ accessToken: "token" }));
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    });
+    const service = TestBed.inject(AuthService);
+    httpTestingController = TestBed.inject(HttpTestingController);
+
+    expect(service.isUserAdmin()).toBe(false);
+    expect(service.getAccessToken()).toEqual("token");
+  });
 });

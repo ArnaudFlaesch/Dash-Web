@@ -147,4 +147,142 @@ describe("AirParifMapComponent", () => {
 
     component.ngOnDestroy();
   });
+
+  describe("Forecast display", () => {
+    const forecasts = [
+      {
+        date: "2022-10-08",
+        no2: "MOYEN",
+        o3: "BON",
+        pm10: "DEGRADE",
+        pm25: "BON",
+        so2: "BON",
+        indice: "DEGRADE"
+      },
+      {
+        date: "2022-10-09",
+        no2: "BON",
+        o3: "BON",
+        pm10: "BON",
+        pm25: "BON",
+        so2: "BON",
+        indice: "BON"
+      }
+    ] as unknown as IForecast[];
+    const couleurs = [
+      { name: "BON", color: "#50f0e6" },
+      { name: "DEGRADE", color: "#f0e641" }
+    ] as unknown as IAirParifCouleur[];
+
+    let element: HTMLElement;
+
+    beforeEach(async () => {
+      element = fixture.nativeElement as HTMLElement;
+      fixture.componentRef.setInput("airParifForecast", forecasts);
+      fixture.componentRef.setInput("airParifCouleursIndices", couleurs);
+      await fixture.whenStable();
+    });
+
+    function getForecastButtons(): HTMLButtonElement[] {
+      return Array.from(element.querySelectorAll<HTMLButtonElement>(".forecast-select-button"));
+    }
+
+    it("Should display the forecast of today", () => {
+      expect(element.querySelector("#sidebar-title")?.textContent).toContain(
+        component.labels.airQuality
+      );
+      expect(element.querySelector("#sidebar-date")?.textContent).toContain("Saturday 8 October");
+      expect(element.querySelector("#sidebar-tab-indice")?.className).toEqual("indice-degrade");
+
+      const [todayButton, tomorrowButton] = getForecastButtons();
+      expect(todayButton.textContent).toContain(component.labels.today);
+      expect(todayButton.classList).toContain("active");
+      expect(todayButton.getAttribute("aria-selected")).toEqual("true");
+      expect(tomorrowButton.textContent).toContain(component.labels.tomorrow);
+      expect(tomorrowButton.classList).not.toContain("active");
+
+      expect(element.querySelector("#global-indice")?.className).toContain("indice-soft-degrade");
+      expect(element.querySelector("#global-indice-label")?.textContent).toContain(
+        component.labels.globalIndice
+      );
+      expect(element.querySelector("#global-indice-value")?.textContent).toContain("Dégradé");
+      expect(element.querySelector("#global-indice-color mat-icon")?.textContent).toContain(
+        "sentiment_neutral"
+      );
+      expect(element.querySelector("#global-indice-advice")?.textContent).toContain(
+        "Les personnes sensibles devraient limiter les efforts intenses en extérieur."
+      );
+
+      const pollutants = element.querySelectorAll(".airparif-indice");
+      expect(pollutants).toHaveLength(5);
+      expect(pollutants[0].querySelector(".pollutant-formula")?.textContent).toContain("NO₂");
+      expect(pollutants[0].querySelector(".indice-badge")?.textContent).toContain("Moyen");
+      expect(pollutants[2].querySelector(".indice-badge")?.className).toContain("indice-degrade");
+
+      const legend = element.querySelectorAll("#indices-legend .indice-label");
+      expect(legend).toHaveLength(2);
+      expect(legend[0].classList).not.toContain("active");
+      expect(legend[1].classList).toContain("active");
+      expect(element.querySelector("#airparif-source")?.getAttribute("href")).toEqual(
+        component.airParifWebsiteUrl
+      );
+      expect(element.querySelector("#forecast-empty")).toBeNull();
+      expect(element.querySelector("#map-loading")).toBeNull();
+    });
+
+    it("Should display the forecast of tomorrow, then of today", async () => {
+      getForecastButtons()[1].click();
+      await fixture.whenStable();
+
+      expect(getForecastButtons()[1].classList).toContain("active");
+      expect(getForecastButtons()[0].classList).not.toContain("active");
+      expect(element.querySelector("#sidebar-date")?.textContent).toContain("Sunday 9 October");
+      expect(element.querySelector("#global-indice-value")?.textContent).toContain("Bon");
+      expect(element.querySelector("#indices-legend .indice-label.active")?.textContent).toContain(
+        "Bon"
+      );
+
+      getForecastButtons()[0].click();
+      await fixture.whenStable();
+      expect(getForecastButtons()[0].classList).toContain("active");
+      expect(element.querySelector("#global-indice-value")?.textContent).toContain("Dégradé");
+    });
+
+    it("Should keep displaying the selected day when the forecast is refreshed", async () => {
+      getForecastButtons()[1].click();
+      await fixture.whenStable();
+
+      fixture.componentRef.setInput("airParifForecast", [
+        { ...forecasts[0], date: "2022-10-09" },
+        { ...forecasts[1], date: "2022-10-10", indice: "MAUVAIS" }
+      ] as unknown as IForecast[]);
+      await fixture.whenStable();
+
+      // The tomorrow tab is still selected, so its forecast is displayed
+      expect(component.isForecastModeTomorrow()).toBe(true);
+      expect(getForecastButtons()[1].classList).toContain("active");
+      expect(element.querySelector("#sidebar-date")?.textContent).toContain("Monday 10 October");
+      expect(element.querySelector("#global-indice-value")?.textContent).toContain("Mauvais");
+    });
+
+    it("Should only display the forecast of today when there is no forecast for tomorrow", async () => {
+      fixture.componentRef.setInput("airParifForecast", [forecasts[0]]);
+      await fixture.whenStable();
+
+      expect(getForecastButtons()).toHaveLength(1);
+      expect(element.querySelector("#global-indice-value")?.textContent).toContain("Dégradé");
+    });
+
+    it("Should display a default icon for an unknown indice", async () => {
+      fixture.componentRef.setInput("airParifForecast", [
+        { ...forecasts[0], indice: "INCONNU" }
+      ] as unknown as IForecast[]);
+      await fixture.whenStable();
+
+      expect(component.globalIndiceDetails()).toBeUndefined();
+      expect(element.querySelector("#global-indice-color mat-icon")?.textContent).toContain("air");
+      expect(element.querySelector("#global-indice-value")?.textContent).toContain("INCONNU");
+      expect(element.querySelector("#global-indice-advice")).toBeNull();
+    });
+  });
 });

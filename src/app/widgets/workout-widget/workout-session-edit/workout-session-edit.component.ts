@@ -59,7 +59,10 @@ export class WorkoutSessionEditComponent {
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
 
   public decrementExerciceNumberOfReps(workoutTypeId: number): void {
-    this.updateNumberOfReps(workoutTypeId, -1);
+    // The number of reps cannot be negative
+    if (this.getExerciceNumberOfReps(workoutTypeId) > 0) {
+      this.updateNumberOfReps(workoutTypeId, -1);
+    }
   }
 
   public incrementExerciceNumberOfReps(workoutTypeId: number): void {
@@ -93,8 +96,10 @@ export class WorkoutSessionEditComponent {
           ]);
           this.isWidgetUpdating.set(false);
         },
-        error: (error) =>
-          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_EXERCISE)
+        error: (error) => {
+          this.isWidgetUpdating.set(false);
+          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_EXERCISE);
+        }
       });
   }
 }

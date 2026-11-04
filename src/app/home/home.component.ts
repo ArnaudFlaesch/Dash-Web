@@ -196,6 +196,11 @@ export class HomeComponent {
     }
   }
 
+  /** Keeps the renamed tab, else its previous name would be sent back when the tabs are reordered. */
+  public updateTab(updatedTab: ITab): void {
+    this.tabs.update((tabs) => tabs.map((tab) => (tab.id === updatedTab.id ? updatedTab : tab)));
+  }
+
   public deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
       error: (error: HttpErrorResponse) =>

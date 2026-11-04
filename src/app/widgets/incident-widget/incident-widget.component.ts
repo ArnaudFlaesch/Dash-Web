@@ -157,8 +157,11 @@ export class IncidentWidgetComponent {
 
   private endCurrentStreak(): void {
     this.incidentWidgetService.endStreak(this.widgetId).subscribe({
-      next: (updatedIncidentConfig) =>
-        this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate),
+      next: (updatedIncidentConfig) => {
+        this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate);
+        // The ended streak is saved as a past streak
+        this.streaksResource.reload();
+      },
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_ENDING_NEW_STREAK)
     });
   }

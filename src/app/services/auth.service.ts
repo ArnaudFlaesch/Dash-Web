@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   public readonly isUserAdmin = computed(
-    () => this.currentUser()?.roles.includes(RoleEnum.ROLE_ADMIN) ?? false
+    () => this.currentUser()?.roles?.includes(RoleEnum.ROLE_ADMIN) ?? false
   );
 
   private readonly http = inject(HttpClient);
@@ -62,8 +62,13 @@ export class AuthService {
     }
   }
 
+  /** User saved in the storage, null when there is none or when the entry is corrupted. */
   private readStoredUser(): IUser | null {
     const userData = localStorage.getItem(this.USER_STORAGE_KEY);
-    return userData ? JSON.parse(userData) : null;
+    try {
+      return userData ? JSON.parse(userData) : null;
+    } catch {
+      return null;
+    }
   }
 }

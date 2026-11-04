@@ -1,4 +1,4 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ErrorHandlerService } from "../../services/error-handler.service";
 import { ThemeService } from "../../services/theme.service";
@@ -146,5 +146,95 @@ describe("WidgetListComponent", () => {
     expect(injector.get(WIDGET_DATA)).toEqual({ city: "Paris" });
     expect(component.getWidgetInjector(widgets[0])).toBe(injector);
     expect(component.getWidgetInjector(widgets[1]).get(WIDGET_DATA)).toEqual({});
+  });
+});
+
+describe("WidgetListComponent template", () => {
+  let fixture: ComponentFixture<WidgetListComponent>;
+  let component: WidgetListComponent;
+  let element: HTMLElement;
+  let httpTestingController: HttpTestingController;
+
+  const renderedWidgets: IWidgetConfig[] = [
+    { id: 1, type: WidgetTypeEnum.ECOWATT, widgetOrder: 0, tabId: 1 },
+    { id: 2, type: WidgetTypeEnum.RSS, widgetOrder: 1, tabId: 1 },
+    { id: 3, type: WidgetTypeEnum.WEATHER, widgetOrder: 2, tabId: 1, data: { city: "Paris" } }
+  ];
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    });
+    fixture = TestBed.createComponent(WidgetListComponent);
+    component = fixture.componentInstance;
+    element = fixture.nativeElement;
+    httpTestingController = TestBed.inject(HttpTestingController);
+    fixture.componentRef.setInput(
+      "widgetList",
+      renderedWidgets.map((widget) => ({ ...widget }))
+    );
+    // Not whenStable: the pending requests of the weather widget would keep the fixture unstable
+    TestBed.tick();
+    // The weather widget is created with its saved city
+    const weatherRequests = httpTestingController.match((request) =>
+      request.url.includes("/weatherWidget/")
+    );
+    expect(weatherRequests.length).toEqual(2);
+    weatherRequests.forEach((request) => {
+      expect(request.request.params.get("city")).toEqual("Paris");
+      request.flush({});
+    });
+    await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  function getWidgetTags(): string[] {
+    return [...element.querySelectorAll(".widget-container")].map(
+      (container) => container.firstElementChild?.tagName.toLowerCase() ?? ""
+    );
+  }
+
+  it("Should display each widget with the component of its type", () => {
+    expect(getWidgetTags()).toEqual([
+      "dash-ecowatt-widget",
+      "dash-rss-widget",
+      "dash-weather-widget"
+    ]);
+    // Without saved data, the RSS widget is displayed in edit mode
+    expect(element.querySelector("dash-rss-widget .widget-edit-mode")).toBeTruthy();
+    expect(element.querySelector("dash-ecowatt-widget .widget-read-mode")).toBeTruthy();
+  });
+
+  it("Should only allow dragging the widgets in edit mode", async () => {
+    const list = element.querySelector("#widget-list");
+    expect(list?.classList).not.toContain("edit-mode");
+    expect(element.querySelectorAll(".widget-container.cdk-drag-disabled").length).toEqual(3);
+
+    fixture.componentRef.setInput("toggleEditMode", true);
+    await fixture.whenStable();
+    expect(list?.classList).toContain("edit-mode");
+    expect(element.querySelectorAll(".widget-container.cdk-drag-disabled").length).toEqual(0);
+  });
+
+  it("Should keep the widget components when the widgets are reordered", async () => {
+    const ecowattWidget = element.querySelector("dash-ecowatt-widget");
+    component.drop({ previousIndex: 0, currentIndex: 2 } as CdkDragDrop<IWidgetConfig[]>);
+    await fixture.whenStable();
+
+    expect(getWidgetTags()).toEqual([
+      "dash-rss-widget",
+      "dash-weather-widget",
+      "dash-ecowatt-widget"
+    ]);
+    expect(element.querySelector("dash-ecowatt-widget")).toBe(ecowattWidget);
+  });
+
+  it("Should display the new list of widgets", async () => {
+    fixture.componentRef.setInput("widgetList", [renderedWidgets[0]]);
+    await fixture.whenStable();
+    expect(getWidgetTags()).toEqual(["dash-ecowatt-widget"]);
   });
 });

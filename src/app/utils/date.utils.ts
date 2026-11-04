@@ -17,17 +17,17 @@ export function toUtcWallClock(date: Date): Date {
 /**
  * Offset, in seconds, to add to a timestamp of a place whose UTC offset is `utcOffsetInSeconds`
  * so that it is displayed in the local time of that place.
+ * The local offset is the one of the browser at `date` (it changes with daylight saving time).
  */
-export function getOffsetFromLocalTimezone(utcOffsetInSeconds: number): number {
-  const localOffset = -(new Date().getTimezoneOffset() * 60);
-  if (Math.abs(utcOffsetInSeconds) === Math.abs(localOffset)) {
-    return 0;
-  }
-  const offset = Math.abs(utcOffsetInSeconds) + Math.abs(localOffset);
-  return utcOffsetInSeconds < localOffset ? -offset : offset;
+export function getOffsetFromLocalTimezone(utcOffsetInSeconds: number, date = new Date()): number {
+  const localOffset = -(date.getTimezoneOffset() * 60);
+  return utcOffsetInSeconds - localOffset;
 }
 
 /** Date of a timestamp in seconds, displayed in the local time of a place with this UTC offset. */
 export function dateInTimezone(timestamp: number, utcOffsetInSeconds: number): Date {
-  return dateFromTimestamp(timestamp, getOffsetFromLocalTimezone(utcOffsetInSeconds));
+  return dateFromTimestamp(
+    timestamp,
+    getOffsetFromLocalTimezone(utcOffsetInSeconds, dateFromTimestamp(timestamp))
+  );
 }
