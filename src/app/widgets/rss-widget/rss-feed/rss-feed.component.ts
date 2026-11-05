@@ -74,7 +74,8 @@ export class RssFeedComponent {
     return articleDate.toLocaleTimeString("fr", {
       day: "2-digit",
       month: "2-digit",
-      ...(isThisYear(articleDate) ? {} : { year: "numeric" as const })
+      // An undefined option is ignored
+      year: isThisYear(articleDate) ? undefined : "numeric"
     });
   }
 }

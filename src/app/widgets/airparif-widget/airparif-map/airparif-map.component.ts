@@ -225,7 +225,8 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
           TRANSPARENT: true,
           FORMAT: "image/png8",
           STYLES: "nouvel_indice_polygones",
-          ...(apiKey ? { authkey: apiKey } : {})
+          // OpenLayers leaves the undefined parameters out of the url
+          authkey: apiKey || undefined
         },
         attributions: `<a href="${this.airParifWebsiteUrl}">AirParif</a>`
       })

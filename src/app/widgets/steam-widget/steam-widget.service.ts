@@ -27,6 +27,7 @@ export class SteamWidgetService {
     pageNumber?: number
   ): Observable<IPage<IGameInfoResponse>> {
     return this.http.get<IPage<IGameInfoResponse>>(`${this.baseUrl}/ownedGames`, {
+      // Angular would send undefined values as "undefined": the optional parameters are left out
       params: {
         steamUserId,
         ...(search ? { search } : {}),

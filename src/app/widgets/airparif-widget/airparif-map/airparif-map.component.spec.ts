@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { get as getProjection } from "ol/proj";
 import { AirParifWidgetService } from "../airparif-widget.service";
 import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from "../model/IAirParif";
 import { AirParifMapComponent } from "./airparif-map.component";
@@ -147,6 +148,29 @@ describe("AirParifMapComponent", () => {
 
     component.ngOnDestroy();
   });
+
+  /** Url of a tile of the forecast layer, as requested by OpenLayers. */
+  async function getForecastTileUrl(apiKey: string | undefined): Promise<string | undefined> {
+    fixture.componentRef.setInput("airParifForecast", []);
+    fixture.componentRef.setInput("airParifCouleursIndices", []);
+    fixture.componentRef.setInput("airParifApiKey", apiKey);
+    await fixture.whenStable();
+    const source = component["forecastLayers"]?.[component.forecastMode()].getSource();
+    return source?.getTileUrlFunction()([11, 1037, 704], 1, getProjection("EPSG:3857")!);
+  }
+
+  it("Should send the API key with the requests of the forecast tiles", async () => {
+    expect(await getForecastTileUrl("test-key")).toContain("authkey=test-key");
+  });
+
+  it.each([undefined, ""])(
+    "Should not send an empty API key (%j) with the requests of the forecast tiles",
+    async (apiKey) => {
+      const url = await getForecastTileUrl(apiKey);
+      expect(url).toContain("LAYERS=");
+      expect(url).not.toContain("authkey");
+    }
+  );
 
   describe("Forecast display", () => {
     const forecasts = [

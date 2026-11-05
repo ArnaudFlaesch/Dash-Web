@@ -212,10 +212,7 @@ export class StravaWidgetComponent implements OnInit {
       .toSorted((activityA, activityB) => this.byOldestActivity(activityA, activityB))
       .reduce((activitiesByMonth: Record<string, number[]>, activity) => {
         const month = format(new Date(activity.startDateLocal), "yyyy-MM");
-        activitiesByMonth[month] = [
-          ...(activitiesByMonth[month] ?? []),
-          this.toKilometers(activity.distance)
-        ];
+        (activitiesByMonth[month] ??= []).push(this.toKilometers(activity.distance));
         return activitiesByMonth;
       }, {});
   }
