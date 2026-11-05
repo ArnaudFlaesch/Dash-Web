@@ -14,7 +14,7 @@ import { MatProgressBar } from "@angular/material/progress-bar";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { catchError, map, of } from "rxjs";
 import { IAchievement, IGameInfoDisplay } from "../ISteam";
-import { ErrorHandlerService } from "../../../services/error-handler.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { SteamWidgetService } from "../steam-widget.service";
 
 @Component({

@@ -6,14 +6,14 @@ import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
 import { catchError, forkJoin, of } from "rxjs";
-import { WidgetComponent } from "../widget/widget.component";
-import { injectWidgetData } from "../widget.tokens";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { WidgetComponent } from "@widgets/widget/widget.component";
+import { injectWidgetData } from "@widgets/widget.tokens";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { AirParifMapComponent } from "./airparif-map/airparif-map.component";
 import { AirParifWidgetService } from "./airparif-widget.service";
 import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from "./model/IAirParif";
 import { form, FormField, pattern } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 
 @Component({
   selector: "dash-airparif-widget",

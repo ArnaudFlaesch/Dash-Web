@@ -1,11 +1,11 @@
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Mock, vi } from "vitest";
-import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { WidgetService } from "../../services/widget.service";
+import { environment } from "@environments/environment";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { WidgetService } from "@services/widget.service";
 import { RssWidgetComponent } from "./rss-widget.component";
 import { RssWidgetService } from "./rss-widget.service";
 
@@ -105,7 +105,7 @@ describe("RssWidgetComponent", () => {
   };
 
   it("Should read all articles", async () => {
-    expect(component.rssFeedResult()?.item).toEqual(undefined);
+    expect(component.rssFeedResult()?.item).toBeUndefined();
     component.config.update((config) => ({ ...config, url: urlFeed }));
     component.refreshWidget();
     TestBed.tick();
@@ -117,7 +117,7 @@ describe("RssWidgetComponent", () => {
     request.flush(rssFeedData);
     await flushResources();
     const feedLength = rssFeedData.channel.item.length;
-    expect(component.rssFeedResult()?.item.length).toEqual(feedLength);
+    expect(component.rssFeedResult()?.item).toHaveLength(feedLength);
     const allArticlesGuids = rssFeedData.channel.item.map((item) => item.guid);
 
     component.markAllFeedAsRead();
@@ -131,7 +131,7 @@ describe("RssWidgetComponent", () => {
     markAllFeedAsReadRequest.flush(updatedWidgetData);
 
     expect(component.isWidgetLoaded()).toEqual(true);
-    expect(component.readArticles().length).toEqual(feedLength);
+    expect(component.readArticles()).toHaveLength(feedLength);
   });
 
   it("Should convert the guids of any type to strings", async () => {
@@ -231,7 +231,7 @@ describe("RssWidgetComponent", () => {
   });
 
   it("Should get widget data and check form", () => {
-    expect(component.widgetData()).toEqual(undefined);
+    expect(component.widgetData()).toBeUndefined();
     expect(component.isFormValid()).toEqual(false);
     const url = "localhost";
     component.config.update((config) => ({ ...config, url: url }));
@@ -256,7 +256,7 @@ describe("RssWidgetComponent", () => {
       .error(new ProgressEvent("Server error"));
 
     expect(component.isWidgetLoaded()).toEqual(true);
-    expect(component.readArticles().length).toEqual(0);
+    expect(component.readArticles()).toHaveLength(0);
   });
 });
 
@@ -378,7 +378,7 @@ describe("RssWidgetComponent template", () => {
       expect(query(".widget-header a")?.getAttribute("href")).toEqual(channel.image.link);
       expect(query(".widget-header .rss-title")?.textContent).toEqual(channel.title);
       expect(query(".rss-widget-description")?.textContent).toEqual(channel.description);
-      expect(getArticleTitles().length).toEqual(2);
+      expect(getArticleTitles()).toHaveLength(2);
       expect(getArticleTitles().map((title) => title.classList.contains("is-read"))).toEqual([
         true,
         false
@@ -407,7 +407,7 @@ describe("RssWidgetComponent template", () => {
       expect(component.rssFeedResult()).toBeUndefined();
       expect(query("mat-spinner")).toBeNull();
       expect(query(".rss-title")).toBeNull();
-      expect(getArticleTitles().length).toEqual(0);
+      expect(getArticleTitles()).toHaveLength(0);
     });
 
     it("Should mark an opened article as read", async () => {
@@ -462,7 +462,7 @@ describe("RssWidgetComponent template", () => {
       query(".refresh-button")?.click();
       TestBed.tick();
       await loadFeed({ channel: { ...channel, item: [channel.item[0]] } });
-      expect(getArticleTitles().length).toEqual(1);
+      expect(getArticleTitles()).toHaveLength(1);
     });
 
     it("Should display an error when the feed can't be loaded", async () => {
@@ -474,7 +474,7 @@ describe("RssWidgetComponent template", () => {
 
       expect(handleErrorSpy).toHaveBeenCalledWith(expect.anything(), ERROR_GETTING_RSS_FEED);
       expect(component.rssFeedResult()).toBeUndefined();
-      expect(getArticleTitles().length).toEqual(0);
+      expect(getArticleTitles()).toHaveLength(0);
     });
   });
 });

@@ -1,16 +1,16 @@
-import { WIDGET_ID } from "../widget.tokens";
+import { WIDGET_ID } from "@widgets/widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { addDays, getTime } from "date-fns";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { environment } from "@environments/environment";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IActivity, IAthlete, ITokenData } from "./IStrava";
 import { StravaWidgetComponent } from "./strava-widget.component";
 import { StravaWidgetService } from "./strava-widget.service";
-import { WidgetService } from "../../services/widget.service";
-import { HomeComponent } from "../../home/home.component";
+import { WidgetService } from "@services/widget.service";
+import { HomeComponent } from "@app/home/home.component";
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from "@angular/router";
 import { vi } from "vitest";
 

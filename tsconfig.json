@@ -11,7 +11,18 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2024",
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@app/*": ["./src/app/*"],
+      "@enums/*": ["./src/app/enums/*"],
+      "@environments/*": ["./src/environments/*"],
+      "@modals/*": ["./src/app/modals/*"],
+      "@model/*": ["./src/app/model/*"],
+      "@pipes/*": ["./src/app/pipes/*"],
+      "@services/*": ["./src/app/services/*"],
+      "@utils/*": ["./src/app/utils/*"],
+      "@widgets/*": ["./src/app/widgets/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

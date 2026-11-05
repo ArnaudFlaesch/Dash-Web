@@ -3,10 +3,10 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { Component, signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { WidgetService } from "../../services/widget.service";
-import { WIDGET_ID } from "../widget.tokens";
+import { environment } from "@environments/environment";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { WidgetService } from "@services/widget.service";
+import { WIDGET_ID } from "@widgets/widget.tokens";
 import { WidgetComponent } from "./widget.component";
 
 describe("WidgetComponent", () => {
@@ -320,7 +320,7 @@ describe("WidgetComponent template", () => {
     expect(readOnlyElement.querySelector(".test-body")).toBeTruthy();
     expect(readOnlyElement.querySelector(".refresh-button")).toBeTruthy();
     expect(readOnlyElement.querySelector(".edit-button")).toBeNull();
-    expect(readOnlyElement.querySelectorAll(".header-actions > span").length).toEqual(0);
+    expect(readOnlyElement.querySelectorAll(".header-actions > span")).toHaveLength(0);
 
     // Without edit component, the widget stays in read mode
     readOnlyWidget.toEditMode();

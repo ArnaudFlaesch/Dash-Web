@@ -4,8 +4,8 @@ import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatTooltip } from "@angular/material/tooltip";
-import { MiniWidgetService } from "../../services/mini-widget.service";
-import { AbstractWidgetComponent } from "../abstract-widget/abstract-widget.component";
+import { MiniWidgetService } from "@services/mini-widget.service";
+import { AbstractWidgetComponent } from "@widgets/abstract-widget/abstract-widget.component";
 
 @Component({
   selector: "dash-mini-widget",

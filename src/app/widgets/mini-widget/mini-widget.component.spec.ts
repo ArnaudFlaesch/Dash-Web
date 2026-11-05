@@ -3,10 +3,10 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { Component, signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { MiniWidgetService } from "../../services/mini-widget.service";
-import { WIDGET_ID } from "../widget.tokens";
+import { environment } from "@environments/environment";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { MiniWidgetService } from "@services/mini-widget.service";
+import { WIDGET_ID } from "@widgets/widget.tokens";
 import { MiniWidgetComponent } from "./mini-widget.component";
 
 describe("MiniWidgetComponent", () => {

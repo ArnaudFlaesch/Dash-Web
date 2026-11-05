@@ -7,15 +7,15 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { catchError, filter, of, switchMap } from "rxjs";
-import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
-import { WidgetTypePickerModalComponent } from "../../modals/widget-type-picker-modal/widget-type-picker-modal.component";
-import { IMiniWidgetConfig } from "../../model/IMiniWidgetConfig";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { MiniWidgetService } from "../../services/mini-widget.service";
-import { WeatherMiniWidgetComponent } from "../weather-widget/weather-mini-widget/weather-miniwidget.component";
-import { createWidgetInjector } from "../widget.tokens";
-import { IWidgetTypePickerData } from "../../model/IWidgetTypePicker";
-import { MINI_WIDGET_TYPE_OPTIONS } from "../../model/WidgetTypeOptions";
+import { MiniWidgetTypeEnum } from "@enums/MiniWidgetTypeEnum";
+import { WidgetTypePickerModalComponent } from "@modals/widget-type-picker-modal/widget-type-picker-modal.component";
+import { IMiniWidgetConfig } from "@model/IMiniWidgetConfig";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { MiniWidgetService } from "@services/mini-widget.service";
+import { WeatherMiniWidgetComponent } from "@widgets/weather-widget/weather-mini-widget/weather-miniwidget.component";
+import { createWidgetInjector } from "@widgets/widget.tokens";
+import { IWidgetTypePickerData } from "@model/IWidgetTypePicker";
+import { MINI_WIDGET_TYPE_OPTIONS } from "@model/WidgetTypeOptions";
 
 @Component({
   selector: "dash-miniwidget-list",

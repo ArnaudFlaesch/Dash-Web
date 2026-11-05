@@ -2,25 +2,25 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 
-import { isResourceLoaded } from "../../utils/resource.utils";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { isResourceLoaded } from "@utils/resource.utils";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IIncident, IIncidentStreak, IncidentViewEnum } from "./IIncident";
 import { IncidentWidgetService } from "./incident-widget.service";
 import { differenceInDays } from "date-fns";
 import { MatDialog } from "@angular/material/dialog";
-import { ConfirmModalComponent } from "../../modals/confirm-modal/confirm-modal.component";
-import { DateFormatPipe } from "../../pipes/date-format.pipe";
+import { ConfirmModalComponent } from "@modals/confirm-modal/confirm-modal.component";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
 import { MatButton } from "@angular/material/button";
 
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 import { MatInput } from "@angular/material/input";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
-import { WidgetComponent } from "../widget/widget.component";
-import { injectWidgetData, WIDGET_ID } from "../widget.tokens";
+import { WidgetComponent } from "@widgets/widget/widget.component";
+import { injectWidgetData, WIDGET_ID } from "@widgets/widget.tokens";
 import { catchError, filter, map, of } from "rxjs";
-import { IConfirmModalData } from "../../model/IConfirmModalData";
+import { IConfirmModalData } from "@model/IConfirmModalData";
 
 @Component({
   selector: "dash-incident-widget",

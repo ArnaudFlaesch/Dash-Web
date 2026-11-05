@@ -1,13 +1,13 @@
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
 import { PageEvent } from "@angular/material/paginator";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { IPage } from "../../model/IPage";
-import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { WidgetService } from "../../services/widget.service";
+import { IPage } from "@model/IPage";
+import { environment } from "@environments/environment";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { WidgetService } from "@services/widget.service";
 import { IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
 import { SteamWidgetComponent } from "./steam-widget.component";
 import { SteamWidgetService } from "./steam-widget.service";

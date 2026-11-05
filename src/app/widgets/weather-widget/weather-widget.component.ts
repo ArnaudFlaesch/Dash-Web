@@ -1,18 +1,18 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
 import { WeatherWidgetService } from "./weather-widget.service";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { catchError, forkJoin, of } from "rxjs";
-import { WidgetComponent } from "../widget/widget.component";
-import { injectWidgetData } from "../widget.tokens";
+import { WidgetComponent } from "@widgets/widget/widget.component";
+import { injectWidgetData } from "@widgets/widget.tokens";
 import { WeatherWidgetViewComponent } from "./weather-widget-view/weather-widget-view.component";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 
 @Component({
   selector: "dash-weather-widget",

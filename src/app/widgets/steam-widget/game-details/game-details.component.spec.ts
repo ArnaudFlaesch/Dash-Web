@@ -1,9 +1,9 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ErrorHandlerService } from "../../../services/error-handler.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IGameInfoDisplay } from "../ISteam";
 import { SteamWidgetService } from "../steam-widget.service";
-import { environment } from "../../../../environments/environment";
+import { environment } from "@environments/environment";
 import { GameDetailsComponent } from "./game-details.component";
 import { provideHttpClient } from "@angular/common/http";
 import { vi } from "vitest";
@@ -102,8 +102,8 @@ describe("GameDetailsComponent", () => {
       );
       getAchievementsRequest.flush(achievementsData);
       await flushResources();
-      expect(component.achievements().length).toEqual(5);
-      expect(component.completedAchievements().length).toEqual(4);
+      expect(component.achievements()).toHaveLength(5);
+      expect(component.completedAchievements()).toHaveLength(4);
       expect(component.completionStatus()).toEqual(80);
     });
   });

@@ -2,9 +2,9 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { environment } from "../../environments/environment";
-import { MiniWidgetTypeEnum } from "../enums/MiniWidgetTypeEnum";
-import { IMiniWidgetConfig } from "../model/IMiniWidgetConfig";
+import { environment } from "@environments/environment";
+import { MiniWidgetTypeEnum } from "@enums/MiniWidgetTypeEnum";
+import { IMiniWidgetConfig } from "@model/IMiniWidgetConfig";
 import { MiniWidgetService } from "./mini-widget.service";
 
 describe("MiniWidgetService", () => {

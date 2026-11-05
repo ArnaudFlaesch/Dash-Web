@@ -1,6 +1,6 @@
 import { afterNextRender, Component, ElementRef, signal, viewChild } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
-import { WidgetComponent } from "../widget/widget.component";
+import { WidgetComponent } from "@widgets/widget/widget.component";
 
 @Component({
   selector: "dash-ecowatt-widget",

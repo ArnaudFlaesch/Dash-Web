@@ -1,25 +1,25 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { ThemeService } from "../../services/theme.service";
-import { WidgetService } from "../../services/widget.service";
-import { AirParifWidgetService } from "../airparif-widget/airparif-widget.service";
-import { CalendarWidgetService } from "../calendar-widget/calendar-widget.service";
-import { IncidentWidgetService } from "../incident-widget/incident-widget.service";
-import { RssWidgetService } from "../rss-widget/rss-widget.service";
-import { SteamWidgetService } from "../steam-widget/steam-widget.service";
-import { StravaWidgetService } from "../strava-widget/strava-widget.service";
-import { WeatherWidgetService } from "../weather-widget/weather-widget.service";
-import { WorkoutWidgetService } from "../workout-widget/workout-widget.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { ThemeService } from "@services/theme.service";
+import { WidgetService } from "@services/widget.service";
+import { AirParifWidgetService } from "@widgets/airparif-widget/airparif-widget.service";
+import { CalendarWidgetService } from "@widgets/calendar-widget/calendar-widget.service";
+import { IncidentWidgetService } from "@widgets/incident-widget/incident-widget.service";
+import { RssWidgetService } from "@widgets/rss-widget/rss-widget.service";
+import { SteamWidgetService } from "@widgets/steam-widget/steam-widget.service";
+import { StravaWidgetService } from "@widgets/strava-widget/strava-widget.service";
+import { WeatherWidgetService } from "@widgets/weather-widget/weather-widget.service";
+import { WorkoutWidgetService } from "@widgets/workout-widget/workout-widget.service";
 import { WidgetListComponent } from "./widget-list.component";
-import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
+import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
-import { HomeComponent } from "../../home/home.component";
+import { HomeComponent } from "@app/home/home.component";
 import { CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
 import { By } from "@angular/platform-browser";
-import { IWidgetConfig } from "../../model/IWidgetConfig";
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
+import { IWidgetConfig } from "@model/IWidgetConfig";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
 
 describe("WidgetListComponent", () => {
   let component: WidgetListComponent;
@@ -180,7 +180,7 @@ describe("WidgetListComponent template", () => {
     const weatherRequests = httpTestingController.match((request) =>
       request.url.includes("/weatherWidget/")
     );
-    expect(weatherRequests.length).toEqual(2);
+    expect(weatherRequests).toHaveLength(2);
     weatherRequests.forEach((request) => {
       expect(request.request.params.get("city")).toEqual("Paris");
       request.flush({});
@@ -212,12 +212,12 @@ describe("WidgetListComponent template", () => {
   it("Should only allow dragging the widgets in edit mode", async () => {
     const list = element.querySelector("#widget-list");
     expect(list?.classList).not.toContain("edit-mode");
-    expect(element.querySelectorAll(".widget-container.cdk-drag-disabled").length).toEqual(3);
+    expect(element.querySelectorAll(".widget-container.cdk-drag-disabled")).toHaveLength(3);
 
     fixture.componentRef.setInput("toggleEditMode", true);
     await fixture.whenStable();
     expect(list?.classList).toContain("edit-mode");
-    expect(element.querySelectorAll(".widget-container.cdk-drag-disabled").length).toEqual(0);
+    expect(element.querySelectorAll(".widget-container.cdk-drag-disabled")).toHaveLength(0);
   });
 
   it("Should sort the widgets of the grid both horizontally and vertically", () => {

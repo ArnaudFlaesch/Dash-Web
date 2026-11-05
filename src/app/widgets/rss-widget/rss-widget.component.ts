@@ -3,22 +3,22 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 import { MatIconButton } from "@angular/material/button";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
-import { IWidgetConfig } from "../../model/IWidgetConfig";
-import { isResourceLoaded } from "../../utils/resource.utils";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { WidgetService } from "../../services/widget.service";
-import { injectWidgetData, WIDGET_ID } from "../widget.tokens";
+import { IWidgetConfig } from "@model/IWidgetConfig";
+import { isResourceLoaded } from "@utils/resource.utils";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { WidgetService } from "@services/widget.service";
+import { injectWidgetData, WIDGET_ID } from "@widgets/widget.tokens";
 import { IArticle, IRSSHeader } from "./IArticle";
 import { RssFeedComponent } from "./rss-feed/rss-feed.component";
 import { RssWidgetService } from "./rss-widget.service";
 import { catchError, map, of } from "rxjs";
-import { WidgetComponent } from "../widget/widget.component";
+import { WidgetComponent } from "@widgets/widget/widget.component";
 
 @Component({
   selector: "dash-rss-widget",

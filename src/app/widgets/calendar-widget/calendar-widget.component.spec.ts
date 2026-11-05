@@ -1,4 +1,4 @@
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
 import { CalendarView, DateAdapter, provideCalendar } from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
 
@@ -9,9 +9,9 @@ import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
 import { addMonths, endOfDay, subMonths } from "date-fns";
 import { vi } from "vitest";
-import { environment } from "../../../environments/environment";
-import { WidgetService } from "../../services/widget.service";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { environment } from "@environments/environment";
+import { WidgetService } from "@services/widget.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { CalendarWidgetComponent } from "./calendar-widget.component";
 import { CalendarWidgetService } from "./calendar-widget.service";
 import { EventDetailModalComponent } from "./event-detail-modal/event-detail-modal.component";
@@ -111,7 +111,7 @@ describe("CalendarWidgetComponent", () => {
     ];
     getCalendarDataRequest.flush(getCalendarData);
     await flushResources();
-    expect(component.events().length).toEqual(6);
+    expect(component.events()).toHaveLength(6);
     const calendarEvent = component.events()[0];
     expect(calendarEvent.title).toEqual("La Toussaint");
   });
@@ -125,12 +125,12 @@ describe("CalendarWidgetComponent", () => {
 
   it("Should update the calendar urls", () => {
     expect(component.config().calendarUrls).toEqual([]);
-    expect(component.widgetData()).toEqual(undefined);
+    expect(component.widgetData()).toBeUndefined();
     component.onCalendarUrlAdded();
     expect(component.config().calendarUrls).toEqual([""]);
     expect(component.widgetData()).toEqual({ calendarUrls: [""] });
     component.removeCalendarUrl(0);
-    expect(component.widgetData()).toEqual(undefined);
+    expect(component.widgetData()).toBeUndefined();
   });
 
   it("Should send one request per calendar url", async () => {
@@ -316,7 +316,7 @@ describe("CalendarWidgetComponent template", () => {
     it("Should add and remove calendar urls", async () => {
       expect(query(".widget-edit-mode")).toBeTruthy();
       expect(query("#add-calendar-url")?.textContent).toContain(component.labels.addCalendar);
-      expect(element.querySelectorAll(".calendar-url-container").length).toEqual(0);
+      expect(element.querySelectorAll(".calendar-url-container")).toHaveLength(0);
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
 
       query("#add-calendar-url")?.click();
@@ -324,7 +324,7 @@ describe("CalendarWidgetComponent template", () => {
       query("#add-calendar-url")?.click();
       await fixture.whenStable();
       const inputs = element.querySelectorAll<HTMLInputElement>(".calendar-url-container input");
-      expect(inputs.length).toEqual(2);
+      expect(inputs).toHaveLength(2);
       expect(inputs[0].placeholder).toEqual(component.labels.enterIcalUrl);
       expect(inputs[0].getAttribute("aria-label")).toEqual(component.labels.calendarUrl);
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(false);
@@ -337,7 +337,7 @@ describe("CalendarWidgetComponent template", () => {
       element.querySelectorAll<HTMLButtonElement>(".remove-calendar-url")[1].click();
       await fixture.whenStable();
       expect(component.config().calendarUrls).toEqual([calendarUrl]);
-      expect(element.querySelectorAll(".calendar-url-container").length).toEqual(1);
+      expect(element.querySelectorAll(".calendar-url-container")).toHaveLength(1);
     });
 
     it("Should save the calendar urls and load the events", async () => {

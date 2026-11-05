@@ -4,16 +4,16 @@ import { rxResource } from "@angular/core/rxjs-interop";
 import { DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { ErrorHandlerService } from "../../../services/error-handler.service";
-import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { InitialUppercasePipe } from "@pipes/initial.uppercase.pipe";
 import { IWeatherAPIResponse } from "../IWeather";
 import { WeatherWidgetService } from "../weather-widget.service";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "../../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { MiniWidgetComponent } from "../../mini-widget/mini-widget.component";
-import { injectWidgetData } from "../../widget.tokens";
+import { MiniWidgetComponent } from "@widgets/mini-widget/mini-widget.component";
+import { injectWidgetData } from "@widgets/widget.tokens";
 import { catchError, of } from "rxjs";
 
 @Component({

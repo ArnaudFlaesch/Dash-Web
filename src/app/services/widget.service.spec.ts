@@ -2,9 +2,9 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { environment } from "../../environments/environment";
-import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
-import { IWidgetConfig } from "../model/IWidgetConfig";
+import { environment } from "@environments/environment";
+import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
+import { IWidgetConfig } from "@model/IWidgetConfig";
 import { WidgetService } from "./widget.service";
 
 describe("WidgetService", () => {

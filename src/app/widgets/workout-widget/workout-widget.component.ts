@@ -23,11 +23,11 @@ import { MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/fo
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { requiredText } from "../../utils/form-validators";
-import { DateFormatPipe } from "../../pipes/date-format.pipe";
-import { toUtcWallClock } from "../../utils/date.utils";
-import { WidgetComponent } from "../widget/widget.component";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { requiredText } from "@utils/form-validators";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
+import { toUtcWallClock } from "@utils/date.utils";
+import { WidgetComponent } from "@widgets/widget/widget.component";
 import {
   IWorkoutSession,
   IWorkoutStatByMonth,

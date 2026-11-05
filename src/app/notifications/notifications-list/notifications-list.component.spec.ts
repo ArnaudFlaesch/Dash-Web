@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { INotificationToDisplay, NotificationTypeEnum } from "../../model/INotification";
+import { INotificationToDisplay, NotificationTypeEnum } from "@model/INotification";
 import { NotificationsListComponent } from "./notifications-list.component";
 
 describe("NotificationsListComponent", () => {

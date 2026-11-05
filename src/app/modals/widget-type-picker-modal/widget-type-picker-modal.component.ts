@@ -8,7 +8,7 @@ import {
   MatDialogTitle
 } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
-import { IWidgetTypePickerData } from "../../model/IWidgetTypePicker";
+import { IWidgetTypePickerData } from "@model/IWidgetTypePicker";
 
 /** Lists the types of (mini) widgets, the dialog is closed with the key of the selected type. */
 @Component({

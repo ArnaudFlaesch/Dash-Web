@@ -4,12 +4,12 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
-import { IPage } from "../model/IPage";
-import { environment } from "../../environments/environment";
-import { INotification, NotificationTypeEnum } from "../model/INotification";
-import { ErrorHandlerService } from "../services/error-handler.service";
-import { NotificationService } from "../services/notification.service";
-import { WidgetService } from "../services/widget.service";
+import { IPage } from "@model/IPage";
+import { environment } from "@environments/environment";
+import { INotification, NotificationTypeEnum } from "@model/INotification";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { NotificationService } from "@services/notification.service";
+import { WidgetService } from "@services/widget.service";
 import { NotificationsComponent } from "./notifications.component";
 import { provideHttpClient } from "@angular/common/http";
 

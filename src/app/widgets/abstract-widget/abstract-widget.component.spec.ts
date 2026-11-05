@@ -1,7 +1,7 @@
 import { Component, signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ModeEnum } from "../../enums/ModeEnum";
-import { WIDGET_ID } from "../widget.tokens";
+import { ModeEnum } from "@enums/ModeEnum";
+import { WIDGET_ID } from "@widgets/widget.tokens";
 import { AbstractWidgetComponent } from "./abstract-widget.component";
 
 @Component({

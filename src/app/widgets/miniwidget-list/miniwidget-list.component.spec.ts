@@ -3,17 +3,17 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { Observable, of } from "rxjs";
 import { Mock, vi } from "vitest";
-import { environment } from "../../../environments/environment";
-import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { MiniWidgetService } from "../../services/mini-widget.service";
+import { environment } from "@environments/environment";
+import { MiniWidgetTypeEnum } from "@enums/MiniWidgetTypeEnum";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { MiniWidgetService } from "@services/mini-widget.service";
 import { MiniWidgetListComponent } from "./miniwidget-list.component";
 import { provideHttpClient } from "@angular/common/http";
-import { WeatherWidgetService } from "../weather-widget/weather-widget.service";
-import { WidgetService } from "../../services/widget.service";
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
-import { WidgetTypePickerModalComponent } from "../../modals/widget-type-picker-modal/widget-type-picker-modal.component";
-import { MINI_WIDGET_TYPE_OPTIONS } from "../../model/WidgetTypeOptions";
+import { WeatherWidgetService } from "@widgets/weather-widget/weather-widget.service";
+import { WidgetService } from "@services/widget.service";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
+import { WidgetTypePickerModalComponent } from "@modals/widget-type-picker-modal/widget-type-picker-modal.component";
+import { MINI_WIDGET_TYPE_OPTIONS } from "@model/WidgetTypeOptions";
 
 // Not imported from the weather widget spec, so that its tests are not run a second time
 const weatherData = {
@@ -231,7 +231,7 @@ describe("MiniWidgetListComponent template", () => {
   }
 
   it("Should display each mini widget with its saved configuration", () => {
-    expect(getMiniWidgets().length).toEqual(1);
+    expect(getMiniWidgets()).toHaveLength(1);
     expect(
       getMiniWidgets()[0].querySelector("dash-weather-miniwidget .city-name")?.textContent
     ).toEqual("Paris");
@@ -250,7 +250,7 @@ describe("MiniWidgetListComponent template", () => {
     request.flush({ id: 71, type: MiniWidgetTypeEnum.WEATHER });
     await fixture.whenStable();
 
-    expect(getMiniWidgets().length).toEqual(2);
+    expect(getMiniWidgets()).toHaveLength(2);
     // Created without configuration, the new mini widget is displayed in edit mode
     expect(getMiniWidgets()[1].querySelector(".edit-mini-widget")).toBeTruthy();
   });
@@ -267,6 +267,6 @@ describe("MiniWidgetListComponent template", () => {
     httpTestingController.expectOne(miniWidgetPath + "deleteMiniWidget?widgetId=70").flush(null);
     await fixture.whenStable();
     expect(component.miniWidgetList()).toEqual([]);
-    expect(getMiniWidgets().length).toEqual(0);
+    expect(getMiniWidgets()).toHaveLength(0);
   });
 });

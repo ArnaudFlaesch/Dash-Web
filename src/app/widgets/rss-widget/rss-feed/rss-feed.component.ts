@@ -7,7 +7,7 @@ import {
   MatExpansionPanelTitle
 } from "@angular/material/expansion";
 import { isThisYear, isToday, isValid } from "date-fns";
-import { DateFormatPipe } from "../../../pipes/date-format.pipe";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
 import { IArticle } from "../IArticle";
 
 @Component({

@@ -2,14 +2,10 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject } from "@angular/core";
 import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { isToday } from "date-fns";
-import {
-  INotification,
-  INotificationToDisplay,
-  NotificationTypeEnum
-} from "../model/INotification";
-import { ErrorHandlerService } from "../services/error-handler.service";
-import { NotificationService } from "../services/notification.service";
-import { WidgetService } from "../services/widget.service";
+import { INotification, INotificationToDisplay, NotificationTypeEnum } from "@model/INotification";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { NotificationService } from "@services/notification.service";
+import { WidgetService } from "@services/widget.service";
 import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
 import { catchError, map, of } from "rxjs";
 

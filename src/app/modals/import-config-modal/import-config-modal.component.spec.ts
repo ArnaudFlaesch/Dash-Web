@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialogRef } from "@angular/material/dialog";
-import { ConfigService } from "../../services/config.service";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { ConfigService } from "@services/config.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { ImportConfigModalComponent } from "./import-config-modal.component";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideHttpClient } from "@angular/common/http";
 import { vi } from "vitest";
-import { environment } from "../../../environments/environment";
+import { environment } from "@environments/environment";
 
 describe("ImportConfigModalComponent", () => {
   let component: ImportConfigModalComponent;
@@ -90,7 +90,7 @@ describe("ImportConfigModalComponent", () => {
 
   it("Should not send a request when no file is selected", () => {
     component.upload();
-    httpTestingController.expectNone(importUrl);
+    expect(httpTestingController.match(importUrl)).toHaveLength(0);
   });
 
   it("Should display an error and keep the modal open when the import fails", async () => {

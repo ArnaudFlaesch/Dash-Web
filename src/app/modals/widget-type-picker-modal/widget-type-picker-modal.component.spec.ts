@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { vi } from "vitest";
-import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
-import { IWidgetTypePickerData } from "../../model/IWidgetTypePicker";
+import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
+import { IWidgetTypePickerData } from "@model/IWidgetTypePicker";
 import { WidgetTypePickerModalComponent } from "./widget-type-picker-modal.component";
-import { WIDGET_TYPE_OPTIONS } from "../../model/WidgetTypeOptions";
+import { WIDGET_TYPE_OPTIONS } from "@model/WidgetTypeOptions";
 
 describe("WidgetTypePickerModalComponent", () => {
   let closeSpy: ReturnType<typeof vi.fn>;

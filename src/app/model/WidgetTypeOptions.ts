@@ -1,5 +1,5 @@
-import { MiniWidgetTypeEnum } from "../enums/MiniWidgetTypeEnum";
-import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
+import { MiniWidgetTypeEnum } from "@enums/MiniWidgetTypeEnum";
+import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
 import { IWidgetTypeOption } from "./IWidgetTypePicker";
 
 /** Types of widgets offered when adding a widget to a tab. */

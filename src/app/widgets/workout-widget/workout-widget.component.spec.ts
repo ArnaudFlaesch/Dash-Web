@@ -1,4 +1,4 @@
-import { WIDGET_ID } from "../widget.tokens";
+import { WIDGET_ID } from "@widgets/widget.tokens";
 import {
   endOfMonth,
   endOfWeek,
@@ -10,15 +10,15 @@ import {
   subMonths,
   subYears
 } from "date-fns";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IWorkoutSession, IWorkoutType, WORKOUT_WIDGET_VIEW } from "./model/Workout";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { environment } from "../../../environments/environment";
-import { AuthService } from "../../services/auth.service";
-import { WidgetService } from "../../services/widget.service";
+import { environment } from "@environments/environment";
+import { AuthService } from "@services/auth.service";
+import { WidgetService } from "@services/widget.service";
 import { WorkoutWidgetComponent } from "./workout-widget.component";
 import { WorkoutWidgetService } from "./workout-widget.service";
 import { provideHttpClient } from "@angular/common/http";
@@ -122,7 +122,7 @@ describe("WorkoutWidgetComponent", () => {
 
     expect(component.isWidgetLoaded()).toEqual(true);
     expect(component.workoutTypes()).toEqual(workoutTypesFromDB);
-    expect(component.workoutSessions().length).toEqual(0);
+    expect(component.workoutSessions()).toHaveLength(0);
   });
 
   it("should add a new workout type", () => {
@@ -210,7 +210,7 @@ describe("WorkoutWidgetComponent", () => {
     component.editWorkoutSession(mockedAddNewWorkoutSessionResponse);
     expect(component.currentWorkoutSessionToEdit()).toEqual(mockedAddNewWorkoutSessionResponse);
     component.backToWorkoutSessionsList();
-    expect(component.currentWorkoutSessionToEdit()).toEqual(undefined);
+    expect(component.currentWorkoutSessionToEdit()).toBeUndefined();
   });
 
   it("Should handle the errors when adding a workout type or creating a session", () => {
@@ -251,10 +251,12 @@ describe("WorkoutWidgetComponent", () => {
     component.workoutDateInput.set("");
     component.createWorkoutSession();
 
-    httpTestingController.expectNone(environment.backend_url + "/workoutWidget/addWorkoutType");
-    httpTestingController.expectNone(
-      environment.backend_url + "/workoutWidget/createWorkoutSession"
-    );
+    expect(
+      httpTestingController.match(environment.backend_url + "/workoutWidget/addWorkoutType")
+    ).toHaveLength(0);
+    expect(
+      httpTestingController.match(environment.backend_url + "/workoutWidget/createWorkoutSession")
+    ).toHaveLength(0);
   });
 
   it("Should select the month picked in the datepicker, then close it", () => {
@@ -432,7 +434,7 @@ describe("WorkoutWidgetComponent rendering", () => {
     await flushResources();
     await fixture.whenStable();
 
-    expect(element.querySelectorAll(".workout-session").length).toEqual(1);
+    expect(element.querySelectorAll(".workout-session")).toHaveLength(1);
     expect(
       element.querySelector("#workout-stats-by-week-container .workout-stat-reps")?.textContent
     ).toContain("50");
@@ -457,7 +459,7 @@ describe("WorkoutWidgetComponent rendering", () => {
     await fixture.whenStable();
 
     const periods = element.querySelectorAll(".workout-period");
-    expect(periods.length).toEqual(4);
+    expect(periods).toHaveLength(4);
     expect(periods[0].classList).toContain("selected");
   });
 

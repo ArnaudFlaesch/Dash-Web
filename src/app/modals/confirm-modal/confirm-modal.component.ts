@@ -7,7 +7,7 @@ import {
   MatDialogContent,
   MatDialogTitle
 } from "@angular/material/dialog";
-import { IConfirmModalData } from "../../model/IConfirmModalData";
+import { IConfirmModalData } from "@model/IConfirmModalData";
 
 /** Asks the user to confirm an action, the dialog is closed with true once confirmed. */
 @Component({

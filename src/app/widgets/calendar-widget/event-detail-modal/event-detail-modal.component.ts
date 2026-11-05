@@ -7,7 +7,7 @@ import {
   MatDialogTitle
 } from "@angular/material/dialog";
 import { CalendarEvent } from "angular-calendar";
-import { DateFormatPipe } from "../../../pipes/date-format.pipe";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
 import { MatButton } from "@angular/material/button";
 
 @Component({

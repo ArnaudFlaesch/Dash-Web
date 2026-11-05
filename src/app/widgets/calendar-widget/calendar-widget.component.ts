@@ -16,18 +16,18 @@ import {
 import { endOfDay, format } from "date-fns";
 import { catchError, defaultIfEmpty, forkJoin, map, of } from "rxjs";
 
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { CalendarWidgetService } from "./calendar-widget.service";
 import { EventDetailModalComponent } from "./event-detail-modal/event-detail-modal.component";
 import { ICalendarData } from "./ICalendarData";
 import { fr } from "date-fns/locale";
-import { InitialUppercasePipe } from "../../pipes/initial.uppercase.pipe";
+import { InitialUppercasePipe } from "@pipes/initial.uppercase.pipe";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { form, FormField, minLength } from "@angular/forms/signals";
-import { WidgetComponent } from "../widget/widget.component";
-import { injectWidgetData } from "../widget.tokens";
+import { WidgetComponent } from "@widgets/widget/widget.component";
+import { injectWidgetData } from "@widgets/widget.tokens";
 
 @Component({
   selector: "dash-calendar-widget",

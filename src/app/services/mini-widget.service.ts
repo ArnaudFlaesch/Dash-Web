@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Service } from "@angular/core";
 import { Observable, Subject } from "rxjs";
-import { environment } from "../../environments/environment";
-import { MiniWidgetTypeEnum } from "../enums/MiniWidgetTypeEnum";
-import { IMiniWidgetConfig } from "../model/IMiniWidgetConfig";
+import { environment } from "@environments/environment";
+import { MiniWidgetTypeEnum } from "@enums/MiniWidgetTypeEnum";
+import { IMiniWidgetConfig } from "@model/IMiniWidgetConfig";
 
 @Service()
 export class MiniWidgetService {

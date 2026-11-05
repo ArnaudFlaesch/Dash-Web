@@ -1,8 +1,8 @@
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { environment } from "../../environments/environment";
-import { RoleEnum } from "../model/RoleEnum";
+import { environment } from "@environments/environment";
+import { RoleEnum } from "@model/RoleEnum";
 import { AuthService } from "./auth.service";
 
 /** Builds an unsigned JWT whose payload only contains the expiration date (in seconds). */

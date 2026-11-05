@@ -2,8 +2,8 @@ import { DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { Component, inject, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
-import { dateInTimezone } from "../../../utils/date.utils";
+import { InitialUppercasePipe } from "@pipes/initial.uppercase.pipe";
+import { dateInTimezone } from "@utils/date.utils";
 import { ForecastMode, IForecast } from "../IWeather";
 import { WeatherWidgetService } from "../weather-widget.service";
 

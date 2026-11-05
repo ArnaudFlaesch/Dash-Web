@@ -1,13 +1,13 @@
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { of } from "rxjs";
 import { vi } from "vitest";
 import { startOfYesterday } from "date-fns";
-import { environment } from "../../../environments/environment";
-import { ErrorHandlerService } from "../../services/error-handler.service";
-import { WidgetService } from "../../services/widget.service";
+import { environment } from "@environments/environment";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { WidgetService } from "@services/widget.service";
 import { IIncident, IIncidentStreak } from "./IIncident";
 import { IncidentWidgetComponent } from "./incident-widget.component";
 import { IncidentWidgetService } from "./incident-widget.service";
@@ -57,7 +57,7 @@ describe("IncidentWidgetComponent", () => {
       lastIncidentDate: startOfYesterday().toString()
     } as IIncident;
 
-    expect(component.widgetData()).toEqual(undefined);
+    expect(component.widgetData()).toBeUndefined();
     component.refreshWidget();
     TestBed.tick();
 

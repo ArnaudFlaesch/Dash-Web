@@ -3,11 +3,11 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
 import { rxResource, toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { catchError, debounceTime, distinctUntilChanged, map, of } from "rxjs";
 
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
 import { SteamWidgetService } from "./steam-widget.service";
 import { GameDetailsComponent } from "./game-details/game-details.component";
@@ -18,8 +18,8 @@ import { MatInput } from "@angular/material/input";
 import { MatAccordion } from "@angular/material/expansion";
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from "@angular/material/form-field";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { WidgetComponent } from "../widget/widget.component";
-import { injectWidgetData } from "../widget.tokens";
+import { WidgetComponent } from "@widgets/widget/widget.component";
+import { injectWidgetData } from "@widgets/widget.tokens";
 
 @Component({
   selector: "dash-steam-widget",

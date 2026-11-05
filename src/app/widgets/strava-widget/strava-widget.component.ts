@@ -10,12 +10,12 @@ import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { fr } from "date-fns/locale";
 import { catchError, finalize, firstValueFrom, map, of } from "rxjs";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from "./IStrava";
 import { StravaActivitiesComponent } from "./strava-activities/strava-activities.component";
 import { StravaWidgetService } from "./strava-widget.service";
 import { BaseChartDirective } from "ng2-charts";
-import { WidgetComponent } from "../widget/widget.component";
+import { WidgetComponent } from "@widgets/widget/widget.component";
 
 @Component({
   selector: "dash-strava-widget",
@@ -42,6 +42,11 @@ export class StravaWidgetComponent implements OnInit {
   /** Most recent activities first. */
   private byMostRecentActivity(activityA: IActivity, activityB: IActivity): number {
     return Date.parse(activityB.startDate) - Date.parse(activityA.startDate);
+  }
+
+  /** Oldest activities first. */
+  private byOldestActivity(activityA: IActivity, activityB: IActivity): number {
+    return Date.parse(activityA.startDate) - Date.parse(activityB.startDate);
   }
 
   /** Distance of an activity in kilometers, rounded to the millimeter. */
@@ -204,7 +209,7 @@ export class StravaWidgetComponent implements OnInit {
 
   public getActivitiesByMonth(): Record<string, number[]> {
     return this.activities()
-      .toSorted((activityA, activityB) => this.byMostRecentActivity(activityB, activityA))
+      .toSorted((activityA, activityB) => this.byOldestActivity(activityA, activityB))
       .reduce((activitiesByMonth: Record<string, number[]>, activity) => {
         const month = format(new Date(activity.startDateLocal), "yyyy-MM");
         activitiesByMonth[month] = [

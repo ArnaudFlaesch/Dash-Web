@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Service } from "@angular/core";
 import { Observable } from "rxjs";
-import { environment } from "../../environments/environment";
-import { ITab } from "../model/ITab";
+import { environment } from "@environments/environment";
+import { ITab } from "@model/ITab";
 
 @Service()
 export class TabService {

@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Service } from "@angular/core";
 import { Observable, Subject } from "rxjs";
-import { environment } from "../../environments/environment";
-import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
-import { IWidgetConfig } from "../model/IWidgetConfig";
+import { environment } from "@environments/environment";
+import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
+import { IWidgetConfig } from "@model/IWidgetConfig";
 
 @Service()
 export class WidgetService {

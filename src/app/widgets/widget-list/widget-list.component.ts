@@ -1,18 +1,18 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
 import { NgComponentOutlet } from "@angular/common";
 import { Component, inject, Injector, input, linkedSignal, output, Type } from "@angular/core";
-import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
-import { IWidgetConfig } from "../../model/IWidgetConfig";
-import { AirParifWidgetComponent } from "../airparif-widget/airparif-widget.component";
-import { CalendarWidgetComponent } from "../calendar-widget/calendar-widget.component";
-import { EcowattWidgetComponent } from "../ecowatt-widget/ecowatt-widget.component";
-import { IncidentWidgetComponent } from "../incident-widget/incident-widget.component";
-import { RssWidgetComponent } from "../rss-widget/rss-widget.component";
-import { SteamWidgetComponent } from "../steam-widget/steam-widget.component";
-import { StravaWidgetComponent } from "../strava-widget/strava-widget.component";
-import { WeatherWidgetComponent } from "../weather-widget/weather-widget.component";
-import { createWidgetInjector } from "../widget.tokens";
-import { WorkoutWidgetComponent } from "../workout-widget/workout-widget.component";
+import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
+import { IWidgetConfig } from "@model/IWidgetConfig";
+import { AirParifWidgetComponent } from "@widgets/airparif-widget/airparif-widget.component";
+import { CalendarWidgetComponent } from "@widgets/calendar-widget/calendar-widget.component";
+import { EcowattWidgetComponent } from "@widgets/ecowatt-widget/ecowatt-widget.component";
+import { IncidentWidgetComponent } from "@widgets/incident-widget/incident-widget.component";
+import { RssWidgetComponent } from "@widgets/rss-widget/rss-widget.component";
+import { SteamWidgetComponent } from "@widgets/steam-widget/steam-widget.component";
+import { StravaWidgetComponent } from "@widgets/strava-widget/strava-widget.component";
+import { WeatherWidgetComponent } from "@widgets/weather-widget/weather-widget.component";
+import { createWidgetInjector } from "@widgets/widget.tokens";
+import { WorkoutWidgetComponent } from "@widgets/workout-widget/workout-widget.component";
 
 @Component({
   selector: "dash-widget-list",

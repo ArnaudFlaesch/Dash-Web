@@ -1,5 +1,5 @@
-import { WIDGET_DATA, WIDGET_ID } from "../../widget.tokens";
-import { environment } from "../../../../environments/environment";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
+import { environment } from "@environments/environment";
 
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
@@ -7,9 +7,9 @@ import { DecimalPipe } from "@angular/common";
 import { LOCALE_ID } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { ErrorHandlerService } from "../../../services/error-handler.service";
-import { MiniWidgetService } from "../../../services/mini-widget.service";
-import { WidgetService } from "../../../services/widget.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { MiniWidgetService } from "@services/mini-widget.service";
+import { WidgetService } from "@services/widget.service";
 import { WeatherWidgetService } from "../weather-widget.service";
 import { WeatherMiniWidgetComponent } from "./weather-miniwidget.component";
 

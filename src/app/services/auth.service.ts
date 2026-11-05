@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { computed, inject, Service, signal } from "@angular/core";
 import { Observable, tap } from "rxjs";
-import { environment } from "../../environments/environment";
-import { RoleEnum } from "../model/RoleEnum";
-import { IUser } from "../model/IUser";
-import { IJwt } from "../model/IJwt";
+import { environment } from "@environments/environment";
+import { RoleEnum } from "@model/RoleEnum";
+import { IUser } from "@model/IUser";
+import { IJwt } from "@model/IJwt";
 
 @Service()
 export class AuthService {

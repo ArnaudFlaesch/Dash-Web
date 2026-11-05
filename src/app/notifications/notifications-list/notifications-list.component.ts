@@ -4,8 +4,8 @@ import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
 import { MatTooltip } from "@angular/material/tooltip";
-import { INotificationToDisplay, NotificationTypeEnum } from "../../model/INotification";
-import { DateFormatPipe } from "../../pipes/date-format.pipe";
+import { INotificationToDisplay, NotificationTypeEnum } from "@model/INotification";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
 
 @Component({
   selector: "dash-notifications-list",

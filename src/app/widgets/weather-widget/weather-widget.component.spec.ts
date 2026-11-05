@@ -1,4 +1,4 @@
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
 import {
   HttpTestingController,
@@ -7,9 +7,9 @@ import {
 } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import { environment } from "../../../environments/environment";
-import { WidgetService } from "../../services/widget.service";
-import { ErrorHandlerService } from "../../services/error-handler.service";
+import { environment } from "@environments/environment";
+import { WidgetService } from "@services/widget.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { forecastData, weatherData } from "./weather-widget.fixtures";
 import { WeatherWidgetComponent } from "./weather-widget.component";
 import { WeatherWidgetService } from "./weather-widget.service";
@@ -50,10 +50,10 @@ describe("WeatherWidgetComponent", () => {
 
   describe("Normal cases", () => {
     it("should create", async () => {
-      expect(component.widgetData()).toEqual(undefined);
+      expect(component.widgetData()).toBeUndefined();
       expect(component.isFormValid()).toEqual(false);
       const cityName = "Paris";
-      expect(component.cityData()).toEqual(undefined);
+      expect(component.cityData()).toBeUndefined();
       expect(component.forecastResponse()).toEqual([]);
       expect(component.isWidgetLoaded()).toEqual(false);
       component.config.update((config) => ({ ...config, city: cityName }));
@@ -69,7 +69,7 @@ describe("WeatherWidgetComponent", () => {
       await flushResources();
 
       expect(component.cityData()?.name).toEqual(cityName);
-      expect(component.forecastResponse().length).toEqual(forecastData.list.length);
+      expect(component.forecastResponse()).toHaveLength(forecastData.list.length);
       expect(component.isWidgetLoaded()).toEqual(true);
     });
   });
@@ -84,7 +84,7 @@ describe("WeatherWidgetComponent", () => {
       requests[0].error(new ProgressEvent("Server error"));
       await flushResources();
 
-      expect(component.weather()).toEqual(undefined);
+      expect(component.weather()).toBeUndefined();
       expect(component.forecastResponse()).toEqual([]);
     });
   });

@@ -1,8 +1,8 @@
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { environment } from "../../environments/environment";
-import { ITab } from "../model/ITab";
+import { environment } from "@environments/environment";
+import { ITab } from "@model/ITab";
 import { TabService } from "./tab.service";
 
 describe("TabService", () => {

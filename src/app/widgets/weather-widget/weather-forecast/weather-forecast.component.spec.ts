@@ -69,7 +69,7 @@ describe("WeatherForecastComponent", () => {
   it("Should display nothing without forecast", async () => {
     fixture.componentRef.setInput("forecast", []);
     await fixture.whenStable();
-    expect(element.querySelectorAll(".forecast-container").length).toEqual(0);
+    expect(element.querySelectorAll(".forecast-container")).toHaveLength(0);
   });
 
   it("Should display the forecast of the day with the hours of the city", async () => {
@@ -77,7 +77,7 @@ describe("WeatherForecastComponent", () => {
     fixture.componentRef.setInput("timezone", 3600);
     await fixture.whenStable();
 
-    expect(element.querySelectorAll(".forecast-container").length).toEqual(4);
+    expect(element.querySelectorAll(".forecast-container")).toHaveLength(4);
     // 18:00, 21:00, 09:00 and 16:00 UTC in Paris (UTC+1)
     const hours = [19, 22, 10, 17].map((hour) =>
       new Date(2022, 2, 6, hour).toLocaleString("fr", { hour: "2-digit" })
