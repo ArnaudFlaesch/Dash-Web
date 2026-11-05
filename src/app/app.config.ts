@@ -21,7 +21,7 @@ import {
   Tooltip
 } from "chart.js";
 import { provideCharts } from "ng2-charts";
-import { authInterceptor } from "@core/auth/auth.interceptor";
+import { authInterceptor } from "@core/auth/auth-interceptor";
 import { routes } from "./app.routes";
 
 export const appConfig: ApplicationConfig = {
