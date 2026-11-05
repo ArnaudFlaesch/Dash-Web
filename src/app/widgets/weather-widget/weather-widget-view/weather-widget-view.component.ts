@@ -1,11 +1,11 @@
-import { Component, computed, inject, input, linkedSignal, signal } from "@angular/core";
+import { Component, computed, input, linkedSignal, signal } from "@angular/core";
 import { FormField, form } from "@angular/forms/signals";
 import { MatButton } from "@angular/material/button";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { format, isToday, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
-import { InitialUppercasePipe } from "../../../pipes/initial.uppercase.pipe";
-import { DateUtilsService } from "../../../services/date.utils.service/date.utils.service";
+import { InitialUppercasePipe } from "@pipes/initial.uppercase.pipe";
+import { dateInTimezone } from "@utils/date.utils";
 import { ForecastMode, ICity, IForecast, IWeatherAPIResponse } from "../IWeather";
 import { WeatherForecastComponent } from "../weather-forecast/weather-forecast.component";
 import { WeatherTodayComponent } from "../weather-today/weather-today.component";
@@ -24,6 +24,11 @@ import { WeatherTodayComponent } from "../weather-today/weather-today.component"
   styleUrl: "./weather-widget-view.component.scss"
 })
 export class WeatherWidgetViewComponent {
+  public readonly labels = {
+    week: "Semaine",
+    displayFullForecast: "Afficher les prévisions complètes"
+  };
+
   public readonly weather = input.required<IWeatherAPIResponse>();
   public readonly forecastResponse = input.required<IForecast[]>();
   public readonly cityData = input.required<ICity>();
@@ -43,13 +48,8 @@ export class WeatherWidgetViewComponent {
   public readonly isForecastModeWeek = computed(() => this.forecastMode() === ForecastMode.WEEK);
 
   public readonly forecastToDisplay = computed<IForecast[]>(() => {
-    const cityData = this.cityData();
-    const forecastData = this.forecastResponse();
-    if (!cityData || !forecastData) return [];
-    return this.filterForecastByMode(cityData, forecastData);
+    return this.filterForecastByMode(this.cityData(), this.forecastResponse());
   });
-
-  private readonly dateUtils = inject(DateUtilsService);
 
   public formatDate(date: Date): string {
     return format(date, "eee dd", { locale: fr });
@@ -77,11 +77,8 @@ export class WeatherWidgetViewComponent {
     switch (this.forecastMode()) {
       case ForecastMode.WEEK: {
         return forecastData.filter((forecastDay) => {
-          const forecastElement = this.dateUtils.formatDateFromTimestamp(
-            forecastDay.dt,
-            this.dateUtils.adjustTimeWithOffset(cityData.timezone)
-          );
-          return forecastElement.getHours() >= 15 && forecastElement.getHours() <= 18;
+          const forecastHour = dateInTimezone(forecastDay.dt, cityData.timezone).getHours();
+          return forecastHour >= 15 && forecastHour <= 18;
         });
       }
       case ForecastMode.DAY: {

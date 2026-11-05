@@ -4,8 +4,8 @@ import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
 import { MatTooltip } from "@angular/material/tooltip";
-import { INotificationToDisplay, NotificationTypeEnum } from "../../model/INotification";
-import { DateFormatPipe } from "../../pipes/date-format.pipe";
+import { INotificationToDisplay, NotificationTypeEnum } from "@model/INotification";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
 
 @Component({
   selector: "dash-notifications-list",
@@ -14,6 +14,11 @@ import { DateFormatPipe } from "../../pipes/date-format.pipe";
   imports: [MatTooltip, MatIcon, MatIconButton, MatMenuTrigger, MatBadge, MatMenu, DateFormatPipe]
 })
 export class NotificationsListComponent {
+  public readonly labels = {
+    notifications: "Notifications",
+    markAllAsRead: "Marquer tout comme lu"
+  };
+
   public readonly notificationsList = input.required<INotificationToDisplay[]>();
   public readonly unreadNotificationsForBadge = input<number>(0);
 

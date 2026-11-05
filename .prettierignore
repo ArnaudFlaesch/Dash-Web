@@ -1,5 +1,9 @@
 package-lock.json
 styleLintReport.json
-.angular
-dist/
+.angular/
+bundle-stats/
 coverage/
+cypress/reports/
+cypress/results/
+dist/
+documentation/

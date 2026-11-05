@@ -1,5 +1,5 @@
 import { defineConfig } from "cypress";
-import { displayBrowserInFullSize } from "./cypress/plugins";
+import { displayBrowserInFullSize, VIEWPORT } from "./cypress/plugins";
 
 export default defineConfig({
   e2e: {
@@ -9,9 +9,8 @@ export default defineConfig({
     baseUrl: "http://localhost:4200/",
     specPattern: "cypress/e2e/**/*.spec.ts",
     watchForFileChanges: false,
-    defaultCommandTimeout: 4000,
-    viewportWidth: 1920,
-    viewportHeight: 1080,
+    viewportWidth: VIEWPORT.width,
+    viewportHeight: VIEWPORT.height,
     screenshotOnRunFailure: false,
     expose: {
       BACKEND_URL: "localhost:8080"

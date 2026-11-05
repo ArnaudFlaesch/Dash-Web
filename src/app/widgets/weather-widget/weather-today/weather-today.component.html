@@ -3,16 +3,18 @@
     <div class="weather-container row items-center">
       <img
         class="current-weather-icon"
-        [src]="getIconFromWeatherApi(currentWeather[0].icon)"
+        [ngSrc]="getIconFromWeatherApi(currentWeather[0].icon)"
+        width="100"
+        height="100"
         [matTooltip]="currentWeather[0].description | initialUppercase"
         [alt]="currentWeather[0].description"
       />
 
       <div class="current-temperature-container column">
         <div>{{ currentWeather[0].description | initialUppercase }}</div>
-        <div matTooltip="Température actuelle" class="current-temperature row items-center">
+        <div [matTooltip]="labels.currentTemperature" class="current-temperature row items-center">
           <mat-icon>device_thermostat</mat-icon>
-          <div class="temperature">{{ weather().main.temp | number: "1.0-1" }} °C</div>
+          <div class="temperature">{{ weather().main.temp | number: "1.0-1" }} {{ labels.celsius }}</div>
         </div>
       </div>
     </div>
@@ -20,18 +22,18 @@
     <div class="time-data-container muted-text column">
       <div class="day-data-container row gap-md">
         <div class="time-container row items-center gap-sm">
-          <mat-icon matTooltip="Lever du soleil" class="sunrise-time">wb_sunny</mat-icon>
+          <mat-icon [matTooltip]="labels.sunrise" class="sunrise-time">wb_sunny</mat-icon>
           <div>{{ sunriseTime() }}</div>
         </div>
 
         <div class="time-container row items-center gap-sm">
-          <mat-icon matTooltip="Coucher du soleil" class="sunset-time">brightness_3</mat-icon>
+          <mat-icon [matTooltip]="labels.sunset" class="sunset-time">brightness_3</mat-icon>
           <div>{{ sunsetTime() }}</div>
         </div>
       </div>
 
       <div class="time-container row items-center gap-sm">
-        <mat-icon matTooltip="Dernière mise à jour à" class="lastupdated-time">schedule</mat-icon>
+        <mat-icon [matTooltip]="labels.lastUpdate" class="lastupdated-time">schedule</mat-icon>
         <div>{{ lastUpdateTime() }}</div>
       </div>
     </div>

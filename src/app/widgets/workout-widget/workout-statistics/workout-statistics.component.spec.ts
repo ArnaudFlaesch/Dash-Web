@@ -1,8 +1,6 @@
 import { TestBed } from "@angular/core/testing";
-import { DateFormatPipe } from "../../../pipes/date-format.pipe";
-import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
 import { IWorkoutType } from "../model/Workout";
-import { WorkoutWidgetService } from "../workout.widget.service";
 import { WorkoutStatisticsComponent } from "./workout-statistics.component";
 
 describe("WorkoutStatisticsComponent", () => {
@@ -10,8 +8,7 @@ describe("WorkoutStatisticsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DateFormatPipe],
-      providers: [WorkoutWidgetService, ErrorHandlerService]
+      imports: [DateFormatPipe]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(WorkoutStatisticsComponent);

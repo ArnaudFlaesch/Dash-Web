@@ -1,37 +1,30 @@
-import { SidebarOptions } from "./airparif-map/airparif-map.component";
 import Control from "ol/control/Control";
 
+export interface SidebarOptions {
+  element: HTMLElement;
+  position?: "left" | "right";
+}
+
+/** OpenLayers control displaying a collapsible sidebar, with tabs opening their panes. */
 export class SidebarControl extends Control {
   private readonly sidebarElement: HTMLElement;
-  private readonly container: HTMLElement | null;
   private readonly tabItems: HTMLElement[];
   private readonly panes: HTMLElement[];
   private readonly closeButtons: HTMLElement[];
 
   public constructor(options: SidebarOptions) {
-    const el =
-      typeof options.element === "string"
-        ? document.getElementById(options.element)
-        : options.element;
+    super({ element: options.element });
+    this.sidebarElement = options.element;
+    this.sidebarElement.classList.add(`sidebar-${options.position ?? "left"}`);
 
-    if (!el) {
-      throw new Error("Sidebar element not found");
-    }
-
-    super({ element: el });
-    this.sidebarElement = el;
-
-    const position = options.position ?? "left";
-    this.sidebarElement.classList.add(`sidebar-${position}`);
-
-    this.container = this.sidebarElement.querySelector(".sidebar-content");
+    const container = this.sidebarElement.querySelector(".sidebar-content");
     this.tabItems = Array.from(
       this.sidebarElement.querySelectorAll(".sidebar-tabs > ul > li, ul.sidebar-tabs > li")
     );
-    this.panes = this.container ? Array.from(this.container.querySelectorAll(".sidebar-pane")) : [];
-    this.closeButtons = this.container
-      ? Array.from(this.container.querySelectorAll(".sidebar-close"))
-      : [];
+    this.panes = Array.from(container?.querySelectorAll<HTMLElement>(".sidebar-pane") ?? []);
+    this.closeButtons = Array.from(
+      container?.querySelectorAll<HTMLElement>(".sidebar-close") ?? []
+    );
 
     this.bindEvents();
   }
@@ -79,8 +72,7 @@ export class SidebarControl extends Control {
     if (tab.classList.contains("active")) {
       this.close();
     } else if (!tab.classList.contains("disabled")) {
-      const link = tab.querySelector("a");
-      const hash = link?.hash?.slice(1);
+      const hash = tab.querySelector("a")?.hash.slice(1);
       if (hash) {
         this.open(hash);
       }

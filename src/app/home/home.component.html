@@ -2,12 +2,18 @@
   <header id="home-header-container" class="column">
     <div id="home-header-top-bar" class="row items-center gap-sm">
       <div id="brand" class="row items-center gap-sm">
-        <img src="logo.png" alt="" id="brand-logo" class="app-logo" />
-        <span id="brand-name">Dash</span>
+        <img ngSrc="logo.png" width="62" height="106" priority alt="" id="brand-logo" class="app-logo" />
+        <span id="brand-name">{{ labels.brandName }}</span>
       </div>
 
-      <nav id="tab-list-container" class="row items-center gap-xs" aria-label="Onglets">
-        <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)" class="row gap-xs">
+      <nav id="tab-list-container" class="row items-center gap-xs" [attr.aria-label]="labels.tabs">
+        <div
+          id="tab-list"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListDropped)="drop($event)"
+          class="row gap-xs"
+        >
           @for (tab of tabs(); track tab.id) {
             <dash-tab
               class="tab"
@@ -15,20 +21,20 @@
               (keydown.enter)="selectTab(tab.id)"
               (click)="selectTab(tab.id)"
               (tabDeletedEvent)="deleteTabFromDash($event)"
+              (tabUpdatedEvent)="updateTab($event)"
               [cdkDragDisabled]="!editModeEnabled()"
               [class.selected-item]="activeTab() === tab.id"
               [class.draggable]="editModeEnabled()"
               [attr.aria-current]="activeTab() === tab.id ? 'page' : null"
               [tab]="tab"
-              matTooltip="Double-cliquez pour renommer"
+              [matTooltip]="labels.doubleClickToRename"
               [matTooltipShowDelay]="800"
               cdkDrag
-              cdkDropListOrientation="horizontal"
               cdkDragBoundary="#tab-list"
             />
           }
         </div>
-        <button (click)="addNewTab()" matTooltip="Ajouter un nouvel onglet" id="add-new-tab-button" mat-icon-button>
+        <button (click)="addNewTab()" [matTooltip]="labels.addNewTab" id="add-new-tab-button" mat-icon-button>
           <mat-icon aria-hidden="false">add</mat-icon>
         </button>
       </nav>
@@ -36,19 +42,19 @@
       <div id="action-bar-buttons" class="row items-center gap-xs">
         <button
           [disabled]="tabs().length < 1"
-          matTooltip="Ajouter un nouveau widget"
+          [matTooltip]="labels.addNewWidget"
           (click)="openCreateWidgetModal()"
           id="open-add-widget-modal"
           mat-flat-button
         >
           <mat-icon aria-hidden="false">add</mat-icon>
-          <span id="add-widget-button-label">Widget</span>
+          <span id="add-widget-button-label">{{ labels.widget }}</span>
         </button>
 
         @if (editModeEnabled()) {
           <button
             (click)="toggleEditMode()"
-            matTooltip="Valider l'ordre des widgets"
+            [matTooltip]="labels.validateWidgetOrder"
             id="validate-widget-list-button"
             mat-icon-button
           >
@@ -57,7 +63,7 @@
         } @else {
           <button
             (click)="toggleEditMode()"
-            matTooltip="Changer l'ordre des widgets"
+            [matTooltip]="labels.changeWidgetOrder"
             id="toggle-edit-mode-button"
             mat-icon-button
           >
@@ -67,7 +73,7 @@
 
         <button
           (click)="refreshAllWidgets()"
-          matTooltip="Réactualiser tous les widgets"
+          [matTooltip]="labels.refreshAllWidgets"
           mat-icon-button
           id="reload-all-widgets-button"
         >
@@ -78,18 +84,18 @@
           <dash-notifications />
         }
 
-        <button mat-icon-button matTooltip="Applications" [matMenuTriggerFor]="appsMenu">
+        <button mat-icon-button [matTooltip]="labels.applications" [matMenuTriggerFor]="appsMenu">
           <mat-icon>apps</mat-icon>
         </button>
 
-        <button id="dash-menu" matTooltip="Menu utilisateur" mat-icon-button [matMenuTriggerFor]="dashMenu">
+        <button id="dash-menu" [matTooltip]="labels.userMenu" mat-icon-button [matMenuTriggerFor]="dashMenu">
           <mat-icon>account_circle</mat-icon>
         </button>
 
         <mat-menu #appsMenu="matMenu">
           <a mat-menu-item [href]="cashManagerApplicationUrl">
             <mat-icon>savings</mat-icon>
-            <span>CashManager</span>
+            <span>{{ labels.cashManager }}</span>
           </a>
         </mat-menu>
 
@@ -100,7 +106,7 @@
               <mat-slide-toggle
                 (change)="toggleTheme($event.checked)"
                 [formField]="toggleThemeForm"
-                aria-label="Thème sombre"
+                [attr.aria-label]="labels.darkTheme"
               />
               <mat-icon>dark_mode</mat-icon>
             </div>
@@ -108,16 +114,16 @@
           <mat-divider />
           <button mat-menu-item (click)="downloadConfig()" id="download-config-button">
             <mat-icon>download</mat-icon>
-            <span>Télécharger la configuration</span>
+            <span>{{ labels.downloadConfig }}</span>
           </button>
           <button mat-menu-item (click)="openImportConfigModal()" id="open-import-config-modal">
             <mat-icon>upload</mat-icon>
-            <span>Importer une configuration</span>
+            <span>{{ labels.importConfig }}</span>
           </button>
           <mat-divider />
           <button mat-menu-item (click)="logout()" id="logout-button">
             <mat-icon>logout</mat-icon>
-            <span>Déconnexion</span>
+            <span>{{ labels.logout }}</span>
           </button>
         </mat-menu>
       </div>
@@ -133,9 +139,9 @@
       <div id="edit-mode-banner" class="accent-soft row items-center justify-between gap-sm">
         <output class="row items-center gap-sm">
           <mat-icon>open_with</mat-icon>
-          <span>Glissez-déposez les widgets et les onglets pour les réorganiser.</span>
+          <span>{{ labels.editModeHint }}</span>
         </output>
-        <button mat-button (click)="toggleEditMode()">Terminer</button>
+        <button mat-button (click)="toggleEditMode()">{{ labels.finish }}</button>
       </div>
     }
 
@@ -143,21 +149,21 @@
       @if (tabs().length < 1) {
         <div id="no-tab-message" class="dashboard-message surface column items-center gap-md">
           <mat-icon id="no-tab-icon" class="dashboard-message-icon accent-text">tab</mat-icon>
-          <h2>Aucun onglet</h2>
-          <p class="muted-text">Créez un onglet pour commencer à composer votre dashboard.</p>
+          <h2>{{ labels.noTab }}</h2>
+          <p class="muted-text">{{ labels.noTabHint }}</p>
           <button mat-flat-button (click)="addNewTab()">
             <mat-icon>add</mat-icon>
-            Créer un onglet
+            {{ labels.createTab }}
           </button>
         </div>
       } @else if (activeWidgets().length < 1) {
         <div id="empty-tab-message" class="dashboard-message surface column items-center gap-md">
           <mat-icon id="empty-tab-icon" class="dashboard-message-icon accent-text">dashboard_customize</mat-icon>
-          <h2>Cet onglet est vide</h2>
-          <p class="muted-text">Ajoutez un widget : météo, flux RSS, agenda, Strava…</p>
+          <h2>{{ labels.emptyTab }}</h2>
+          <p class="muted-text">{{ labels.emptyTabHint }}</p>
           <button mat-flat-button (click)="openCreateWidgetModal()">
             <mat-icon>add</mat-icon>
-            Ajouter un widget
+            {{ labels.addWidget }}
           </button>
         </div>
       } @else {

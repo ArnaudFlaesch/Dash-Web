@@ -1,10 +1,10 @@
 <h1 mat-dialog-title>{{ eventDetail.title }}</h1>
 <mat-dialog-content>
-  <div>Début {{ eventDetail.start | dateFormat }}</div>
+  <div>{{ labels.start }} {{ eventDetail.start | dateFormat }}</div>
   @if (eventDetail.end) {
-    <div>Fin {{ eventDetail.end | dateFormat }}</div>
+    <div>{{ labels.end }} {{ eventDetail.end | dateFormat }}</div>
   }
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-raised-button mat-dialog-close>Ok</button>
+  <button mat-raised-button mat-dialog-close>{{ labels.ok }}</button>
 </mat-dialog-actions>

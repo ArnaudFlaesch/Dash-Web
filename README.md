@@ -47,8 +47,8 @@ possible d'exécuter la commande :
 
 > npm run start:dev
 
-Cette commande va permettre de se connecter au backend déployé sur Heroku
-directement.
+Cette commande va permettre de se connecter directement au backend déployé sur
+Google Cloud Run.
 
 Sinon, il est possible de récupérer le backend via Docker en commençant par sa
 base de données :
@@ -74,30 +74,34 @@ backend ici :
 
 ## Commandes utiles
 
-> npm run test
+> npm test
 
-Exécute les tests Jest (\*.spec.ts) présents dans le répertoire **src**.
+Exécute les tests unitaires Vitest (\*.spec.ts) présents dans le répertoire
+**src**, et les réexécute à chaque changement du code.
 
-> npm run test:watch
+> npm run test:coverage
 
-Même chose que la commande précédente, mais les tests seront réexécutés à chaque
-changement du code pour vérifier que l'application fonctionne toujours
-correctement.
+Exécute une seule fois les tests unitaires et génère le rapport de couverture
+dans le répertoire **coverage**.
 
 > npm run cy:open
 
 Lance le dashboard Cypress pour pouvoir exécuter manuellement les tests
-End-to-End.
+End-to-End (l'application et le backend doivent être démarrés).
 
 > npm run eslint
 
-Affiche la liste des erreurs liées au code Typescript à partir des règles
-définies dans le fichier **.eslintrc.js**.
+Affiche la liste des erreurs liées au code TypeScript et aux templates à partir
+des règles définies dans le fichier **eslint.config.mjs**.
 
 > npm run lint:styles
 
-Affiche la liste des erreurs liées au code CSS/Sass à partir des conventions et
-règles définies dans le fichier **.stylelintrc.json**.
+Affiche la liste des erreurs liées au code CSS/Sass à partir des règles
+définies dans le fichier **stylelint.config.mjs**.
+
+> npm run code:format
+
+Formate l'ensemble du code avec Prettier.
 
 ### Couverture de code
 

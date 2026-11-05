@@ -24,20 +24,20 @@ import {
   Tooltip
 } from "chart.js";
 import { provideCharts } from "ng2-charts";
-import { AppComponent } from "./app/app.component";
-import { AuthService } from "./app/services/auth.service/auth.service";
-import { authInterceptor } from "./app/services/auth.interceptor/auth.interceptor";
+import { AppComponent } from "@app/app.component";
+import { AuthService } from "@services/auth.service";
+import { authInterceptor } from "@services/auth.interceptor";
 
 registerLocaleData(localeFr);
 
 const routes: Routes = [
   {
     path: "login",
-    loadComponent: () => import("./app/login/login.component").then((m) => m.LoginComponent)
+    loadComponent: () => import("@app/login/login.component").then((m) => m.LoginComponent)
   },
   {
     path: "home",
-    loadComponent: () => import("./app/home/home.component").then((m) => m.HomeComponent),
+    loadComponent: () => import("@app/home/home.component").then((m) => m.HomeComponent),
     canActivate: [(): boolean => inject(AuthService).userHasValidToken()]
   },
   { path: "**", redirectTo: "home" }

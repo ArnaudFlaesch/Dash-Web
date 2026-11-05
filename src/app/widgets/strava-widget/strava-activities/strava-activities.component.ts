@@ -12,18 +12,6 @@ import {
 } from "@angular/material/expansion";
 import { MatIcon } from "@angular/material/icon";
 
-/** Icons of the most common types of Strava activities. */
-const ACTIVITY_TYPE_ICONS: Record<string, string> = {
-  Run: "directions_run",
-  TrailRun: "directions_run",
-  Ride: "directions_bike",
-  VirtualRide: "directions_bike",
-  MountainBikeRide: "directions_bike",
-  Swim: "pool",
-  Walk: "directions_walk",
-  Hike: "hiking"
-};
-
 @Component({
   selector: "dash-strava-activities",
   templateUrl: "./strava-activities.component.html",
@@ -39,24 +27,46 @@ const ACTIVITY_TYPE_ICONS: Record<string, string> = {
   ]
 })
 export class StravaActivitiesComponent {
-  public readonly activities = input.required<IActivity[]>();
+  /** Icons of the most common types of Strava activities. */
+  private readonly ACTIVITY_TYPE_ICONS: Record<string, string> = {
+    Run: "directions_run",
+    TrailRun: "directions_run",
+    Ride: "directions_bike",
+    VirtualRide: "directions_bike",
+    MountainBikeRide: "directions_bike",
+    Swim: "pool",
+    Walk: "directions_walk",
+    Hike: "hiking"
+  };
 
-  public getTitleToDisplay(activity: IActivity): string {
-    return `${format(new Date(activity.startDateLocal), "dd MMMM", { locale: fr })}  ${activity.name}  ${
-      Math.round(activity.distance * 1000) / 1000000
-    } kms`;
-  }
+  public readonly labels = {
+    kilometers: "km",
+    distance: "Distance",
+    duration: "Durée",
+    elevation: "Dénivelé",
+    meters: "m",
+    averageSpeed: "Vitesse moy.",
+    kilometersPerHour: "km/h",
+    maxSpeed: "Vitesse max",
+    achievements: "Trophées",
+    kudos: "Kudos",
+    comments: "Commentaires",
+    viewOnStrava: "Voir sur Strava"
+  };
+
+  public readonly activities = input.required<IActivity[]>();
 
   public formatDate(date: string): string {
     return format(new Date(date), "dd MMMM", { locale: fr });
   }
 
-  public roundDistance(distance: number): number {
-    return Math.round(distance * 100) / 100000;
+  /** Strava distances are in meters. */
+  public roundDistance(distanceInMeters: number): number {
+    return Math.round(distanceInMeters * 100) / 100000;
   }
 
   public getActivityIcon(activityType: string): string {
-    return ACTIVITY_TYPE_ICONS[activityType] ?? "fitness_center";
+    return this.ACTIVITY_TYPE_ICONS[activityType] ?? "fitness_center";
   }
 
   /** Duration in seconds displayed as "1 h 05" or "42 min". */
@@ -69,12 +79,5 @@ export class StravaActivitiesComponent {
   /** Strava speeds are in meters per second. */
   public toKilometersPerHour(speedInMetersPerSecond: number): number {
     return speedInMetersPerSecond * 3.6;
-  }
-
-  public convertDecimalTimeToTime(decimalTime: number): number {
-    const time = decimalTime / 60;
-    const decimalPart = time % 1;
-    const convertedDecimalPart = Math.round(decimalPart * 6) / 10;
-    return time - decimalPart + convertedDecimalPart;
   }
 }

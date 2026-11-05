@@ -6,15 +6,14 @@ import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
 import { catchError, forkJoin, of } from "rxjs";
-import { SafePipe } from "../../pipes/safe.pipe";
-import { WidgetComponent } from "../widget/widget.component";
-import { injectWidgetData } from "../widget.tokens";
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { WidgetComponent } from "@widgets/widget/widget.component";
+import { injectWidgetData } from "@widgets/widget.tokens";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { AirParifMapComponent } from "./airparif-map/airparif-map.component";
 import { AirParifWidgetService } from "./airparif-widget.service";
 import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from "./model/IAirParif";
 import { form, FormField, pattern } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 
 @Component({
   selector: "dash-airparif-widget",
@@ -29,11 +28,20 @@ import { requiredText } from "../../utils/form-validators";
     MatInput,
     MatTooltip,
     AirParifMapComponent,
-    SafePipe,
     FormField
   ]
 })
 export class AirParifWidgetComponent {
+  public readonly labels = {
+    title: "AirParif",
+    seeAirQualityDetails: "Voir le détail de la qualité de l'air",
+    apiKey: "Clé d'API",
+    apiKeyPlaceholder: "Saisissez la clé d'API AirParif",
+    communeCode: "Code commune",
+    communeCodePlaceholder: "Saisissez le code commune",
+    communeCodeHint: "Code INSEE à 5 chiffres, par exemple 75112 pour Paris 12e"
+  };
+
   public readonly config = signal({
     airParifApiKey: injectWidgetData("airParifApiKey", ""),
     communeInseeCode: injectWidgetData("communeInseeCode", "")
@@ -66,8 +74,9 @@ export class AirParifWidgetComponent {
   public readonly isWidgetLoaded = signal(true);
 
   public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
-  public readonly airParifWidgetService = inject(AirParifWidgetService);
+  public readonly airParifWebsiteUrl = inject(AirParifWidgetService).AIRPARIF_WEBSITE_URL;
   public readonly airParifMap = viewChild(AirParifMapComponent);
 
   // A new object on each refresh, so that the resource reloads even if the commune is unchanged
@@ -76,15 +85,12 @@ export class AirParifWidgetComponent {
   private readonly ERROR_GETTING_AIRPARIF_FORECAST =
     "Erreur lors de la récupération des prévisions d'AirParif.";
   private readonly errorHandlerService = inject(ErrorHandlerService);
+  private readonly airParifWidgetService = inject(AirParifWidgetService);
 
   public refreshWidget(): void {
     if (this.isFormValid()) {
       this.refreshedCommune.set({ communeInseeCode: this.config().communeInseeCode });
     }
-  }
-
-  public openSidebar(): void {
-    this.airParifMap()?.openSidebar();
   }
 
   public getIndiceClass(indice: AirParifIndiceEnum): string {
@@ -95,7 +101,7 @@ export class AirParifWidgetComponent {
     return this.airParifWidgetService.getIndiceLabel(indice);
   }
 
-  public getWidgetData(): { airParifApiKey: string; communeInseeCode: string } | undefined {
-    return this.isFormValid() ? this.config() : undefined;
+  public openSidebar(): void {
+    this.airParifMap()?.openSidebar();
   }
 }

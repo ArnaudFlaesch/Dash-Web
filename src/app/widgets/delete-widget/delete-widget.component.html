@@ -1,10 +1,10 @@
 <div id="delete-widget-container" class="column items-center justify-center">
   <mat-icon class="delete-widget-icon">delete_outline</mat-icon>
-  <h4>Êtes-vous sûr de vouloir supprimer ce widget ?</h4>
+  <h4>{{ labels.confirmDeletion }}</h4>
   <div id="delete-widget-actions" class="row">
-    <button (click)="cancelWidgetDeletion.emit()" mat-stroked-button class="cancel-button">Annuler</button>
+    <button (click)="cancelWidgetDeletion.emit()" mat-stroked-button class="cancel-button">{{ labels.cancel }}</button>
     <button (click)="validateWidgetDeletion.emit()" mat-flat-button color="warn" class="validate-deletion-button">
-      Supprimer
+      {{ labels.delete }}
     </button>
   </div>
 </div>

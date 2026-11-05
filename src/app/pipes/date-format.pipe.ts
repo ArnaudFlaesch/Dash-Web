@@ -4,10 +4,8 @@ import { Pipe, PipeTransform } from "@angular/core";
   name: "dateFormat"
 })
 export class DateFormatPipe implements PipeTransform {
-  public transform(value: string | Date, arg = "full"): string {
-    if (typeof value === "string") {
-      value = new Date(value);
-    }
-    return arg === "short" ? value.toLocaleDateString("fr") : value.toLocaleString("fr");
+  public transform(value: string | Date, format: "full" | "short" = "full"): string {
+    const date = new Date(value);
+    return format === "short" ? date.toLocaleDateString("fr") : date.toLocaleString("fr");
   }
 }

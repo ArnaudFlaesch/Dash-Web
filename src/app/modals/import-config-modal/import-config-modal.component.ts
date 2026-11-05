@@ -8,8 +8,8 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from "@angular/material/dialog";
-import { ConfigService } from "../../services/config.service/config.service";
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { ConfigService } from "@services/config.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 
 @Component({
   selector: "dash-import-config-modal",
@@ -17,6 +17,13 @@ import { ErrorHandlerService } from "../../services/error.handler.service";
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ImportConfigModalComponent {
+  public readonly labels = {
+    importConfig: "Importer la configuration",
+    selectConfigFile: "Sélectionner un fichier de configuration",
+    cancel: "Annuler",
+    upload: "Upload"
+  };
+
   public readonly fileToUpload = signal<File | null>(null);
 
   private readonly configService = inject(ConfigService);
@@ -26,10 +33,8 @@ export class ImportConfigModalComponent {
   private readonly ERROR_IMPORT_CONFIGURATION = "Erreur lors de l'import de la configuration.";
 
   public selectFile(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    if (target.files?.[0]) {
-      this.fileToUpload.set(target.files[0]);
-    }
+    // No file when the selection is cleared
+    this.fileToUpload.set((event.target as HTMLInputElement).files?.[0] ?? null);
   }
 
   public upload(): void {

@@ -7,17 +7,15 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { catchError, filter, of, switchMap } from "rxjs";
-import { MiniWidgetTypeEnum } from "../../enums/MiniWidgetTypeEnum";
-import { CreateMiniWidgetModalComponent } from "../../modals/create-mini-widget-modal/create-mini-widget-modal.component";
-import { IMiniWidgetConfig } from "../../model/IMiniWidgetConfig";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { MiniWidgetService } from "../../services/widget.service/miniwidget.service";
-import { WeatherMiniWidgetComponent } from "../weather-widget/weather-mini-widget/weather-miniwidget.component";
-import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
-
-const MINI_WIDGET_COMPONENTS: Record<MiniWidgetTypeEnum, Type<unknown>> = {
-  [MiniWidgetTypeEnum.WEATHER]: WeatherMiniWidgetComponent
-};
+import { MiniWidgetTypeEnum } from "@enums/MiniWidgetTypeEnum";
+import { WidgetTypePickerModalComponent } from "@modals/widget-type-picker-modal/widget-type-picker-modal.component";
+import { IMiniWidgetConfig } from "@model/IMiniWidgetConfig";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { MiniWidgetService } from "@services/mini-widget.service";
+import { WeatherMiniWidgetComponent } from "@widgets/weather-widget/weather-mini-widget/weather-miniwidget.component";
+import { createWidgetInjector } from "@widgets/widget.tokens";
+import { IWidgetTypePickerData } from "@model/IWidgetTypePicker";
+import { MINI_WIDGET_TYPE_OPTIONS } from "@model/WidgetTypeOptions";
 
 @Component({
   selector: "dash-miniwidget-list",
@@ -26,6 +24,14 @@ const MINI_WIDGET_COMPONENTS: Record<MiniWidgetTypeEnum, Type<unknown>> = {
   imports: [MatIconButton, MatTooltip, MatIcon, NgComponentOutlet]
 })
 export class MiniWidgetListComponent {
+  private readonly MINI_WIDGET_COMPONENTS: Record<MiniWidgetTypeEnum, Type<unknown>> = {
+    [MiniWidgetTypeEnum.WEATHER]: WeatherMiniWidgetComponent
+  };
+
+  public readonly labels = {
+    addNewMiniWidget: "Ajouter un nouveau mini widget"
+  };
+
   public readonly miniWidgetsResource = rxResource({
     stream: () =>
       this.miniWidgetService.getMiniWidgets().pipe(
@@ -38,7 +44,7 @@ export class MiniWidgetListComponent {
   });
 
   public readonly miniWidgetList = this.miniWidgetsResource.value;
-  public readonly miniWidgetComponents = MINI_WIDGET_COMPONENTS;
+  public readonly miniWidgetComponents = this.MINI_WIDGET_COMPONENTS;
 
   private readonly injector = inject(Injector);
   private readonly miniWidgetInjectors = new WeakMap<IMiniWidgetConfig, Injector>();
@@ -60,13 +66,20 @@ export class MiniWidgetListComponent {
 
   public openCreateMiniWidgetModal(): void {
     this.dialog
-      .open(CreateMiniWidgetModalComponent, { width: "640px" })
+      .open<WidgetTypePickerModalComponent, IWidgetTypePickerData, keyof typeof MiniWidgetTypeEnum>(
+        WidgetTypePickerModalComponent,
+        {
+          width: "640px",
+          data: {
+            title: "Ajouter un mini widget",
+            widgetTypes: MINI_WIDGET_TYPE_OPTIONS
+          }
+        }
+      )
       .afterClosed()
       .pipe(
         filter(Boolean),
-        switchMap((type: keyof typeof MiniWidgetTypeEnum) =>
-          this.miniWidgetService.addMiniWidget(MiniWidgetTypeEnum[type])
-        )
+        switchMap((type) => this.miniWidgetService.addMiniWidget(MiniWidgetTypeEnum[type]))
       )
       .subscribe({
         next: (createdMiniWidget) =>
@@ -80,13 +93,7 @@ export class MiniWidgetListComponent {
   public getMiniWidgetInjector(miniWidget: IMiniWidgetConfig): Injector {
     let miniWidgetInjector = this.miniWidgetInjectors.get(miniWidget);
     if (!miniWidgetInjector) {
-      miniWidgetInjector = Injector.create({
-        providers: [
-          { provide: WIDGET_ID, useValue: miniWidget.id },
-          { provide: WIDGET_DATA, useValue: miniWidget.data ?? {} }
-        ],
-        parent: this.injector
-      });
+      miniWidgetInjector = createWidgetInjector(this.injector, miniWidget);
       this.miniWidgetInjectors.set(miniWidget, miniWidgetInjector);
     }
     return miniWidgetInjector;

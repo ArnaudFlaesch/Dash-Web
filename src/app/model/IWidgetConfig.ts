@@ -1,9 +1,9 @@
-import { WidgetTypeEnum } from "../enums/WidgetTypeEnum";
+import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
 
-export type IWidgetConfig = {
+export interface IWidgetConfig {
   id: number;
   type: WidgetTypeEnum;
   data?: Record<string, unknown>;
   widgetOrder: number;
   tabId: number;
-};
+}

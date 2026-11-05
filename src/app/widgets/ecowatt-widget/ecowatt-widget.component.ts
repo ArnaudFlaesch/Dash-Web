@@ -1,19 +1,20 @@
 import { afterNextRender, Component, ElementRef, signal, viewChild } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
-import { SafePipe } from "../../pipes/safe.pipe";
-import { WidgetComponent } from "../widget/widget.component";
+import { WidgetComponent } from "@widgets/widget/widget.component";
 
 @Component({
   selector: "dash-ecowatt-widget",
   templateUrl: "./ecowatt-widget.component.html",
-  imports: [WidgetComponent, MatIcon, SafePipe],
+  imports: [WidgetComponent, MatIcon],
   host: { "(window:resize)": "resizeWidget()" }
 })
 export class EcowattWidgetComponent {
-  public readonly iframeContainer = viewChild<ElementRef<HTMLElement>>("iframeContainer");
+  public readonly labels = {
+    title: "Ecowatt",
+    iframeTitle: "ecowatt"
+  };
 
-  public readonly ecowattIframeUrl =
-    "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
+  public readonly iframeContainer = viewChild<ElementRef<HTMLElement>>("iframeContainer");
 
   public readonly isWidgetLoaded = signal(true);
   public readonly iframeContainerHeight = signal(0);
@@ -39,9 +40,5 @@ export class EcowattWidgetComponent {
       const src = iframe.src;
       iframe.src = src;
     }
-  }
-
-  public getWidgetData(): Record<string, never> {
-    return {};
   }
 }

@@ -1,17 +1,23 @@
-<dash-widget [widgetData]="getWidgetData()" (refreshWidgetAction)="refreshWidget()" [isWidgetLoaded]="isWidgetLoaded()">
+<dash-widget
+  [widgetData]="{}"
+  [isFormValid]="true"
+  [isWidgetLoaded]="isWidgetLoaded()"
+  (refreshWidgetAction)="refreshWidget()"
+>
   <ng-template #headerIcon>
     <mat-icon>electric_bolt</mat-icon>
   </ng-template>
 
   <ng-template #headerTitle>
-    <div class="ecowatt-widget-header">Ecowatt</div>
+    <div class="ecowatt-widget-header">{{ labels.title }}</div>
   </ng-template>
 
   <ng-template #body>
     <div id="ecowatt-info-container" #iframeContainer class="full-size">
+      <!-- Static source: trusted by Angular, without bypassing its sanitizer -->
       <iframe
-        [src]="ecowattIframeUrl | safe: 'resource_url'"
-        title="ecowatt"
+        src="https://www.monecowatt.fr/preview-homepage?prevision=1&amp;map=0&amp;ecogestes=0"
+        [title]="labels.iframeTitle"
         [width]="iframeContainerWidth()"
         [height]="iframeContainerHeight()"
       ></iframe>

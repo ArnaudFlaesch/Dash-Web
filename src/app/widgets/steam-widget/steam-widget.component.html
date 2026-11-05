@@ -1,18 +1,20 @@
 <dash-widget
-  [widgetData]="getWidgetData()"
+  [widgetData]="widgetData()"
   [isFormValid]="isFormValid()"
   (refreshWidgetAction)="refreshWidget()"
   [isWidgetLoaded]="true"
 >
   <ng-template #headerIcon>
-    <a href="{{ playerData()?.profileurl }}" class="steam-header">
-      <img src="{{ playerData()?.avatar }}" alt="{{ playerData()?.personaname }}" />
-    </a>
+    @if (playerData(); as playerData) {
+      <a [href]="playerData.profileurl" class="steam-header">
+        <img [ngSrc]="playerData.avatar" width="32" height="32" [alt]="playerData.personaname" />
+      </a>
+    }
   </ng-template>
 
   <ng-template #headerTitle>
     <div>
-      <a href="{{ playerData()?.profileurl }}" class="steam-header">
+      <a [href]="playerData()?.profileurl ?? ''" class="steam-header">
         {{ playerData()?.personaname }}
       </a>
     </div>
@@ -20,12 +22,12 @@
 
   <ng-template #editComponent>
     <mat-form-field appearance="outline">
-      <mat-label id="steam-user-id-label">Utilisateur Steam</mat-label>
+      <mat-label id="steam-user-id-label">{{ labels.steamUser }}</mat-label>
       <input
         matInput
         id="steam-user-id-input"
         [formField]="configForm.steamUserId"
-        placeholder="Saisissez l'user ID du joueur Steam'"
+        [placeholder]="labels.enterSteamUserId"
       />
     </mat-form-field>
   </ng-template>
@@ -34,14 +36,14 @@
     <form id="search-game-form">
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-icon matPrefix>search</mat-icon>
-        <mat-label>Recherchez un jeu</mat-label>
+        <mat-label>{{ labels.searchGame }}</mat-label>
         <input matInput [formField]="searchForm" />
         @if (searchQuery()) {
           <button
             mat-icon-button
             matSuffix
             type="button"
-            matTooltip="Annuler la recherche"
+            [matTooltip]="labels.cancelSearch"
             id="reset-form-button"
             (click)="resetForm()"
           >
@@ -64,7 +66,7 @@
             } @empty {
               <div class="no-game-found muted-text column items-center gap-xs">
                 <mat-icon>sports_esports</mat-icon>
-                <span>Aucun jeu trouvé</span>
+                <span>{{ labels.noGameFound }}</span>
               </div>
             }
           </mat-accordion>
@@ -79,7 +81,7 @@
       [pageSize]="pageSize"
       [pageIndex]="pageNumber()"
       [pageSizeOptions]="pageSizeOptions"
-      aria-label="Sélectionnez une page"
+      [attr.aria-label]="labels.selectPage"
     />
   </ng-template>
 </dash-widget>

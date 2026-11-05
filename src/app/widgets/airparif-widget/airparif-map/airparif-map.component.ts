@@ -6,7 +6,6 @@ import {
   ElementRef,
   inject,
   input,
-  linkedSignal,
   OnDestroy,
   signal,
   viewChild
@@ -20,62 +19,15 @@ import OSM from "ol/source/OSM";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
 import { AirParifWidgetService } from "../airparif-widget.service";
-import { AirParifIndiceEnum, ForecastMode, IAirParifCouleur, IForecast } from "../model/IAirParif";
+import {
+  AirParifIndiceEnum,
+  ForecastMode,
+  IAirParifCouleur,
+  IForecast,
+  IIndiceDetails,
+  IPollutant
+} from "../model/IAirParif";
 import { SidebarControl } from "../SidebarControl";
-
-type IPollutant = {
-  key: Exclude<keyof IForecast, "date" | "indice">;
-  formula: string;
-  name: string;
-};
-
-const POLLUTANTS: IPollutant[] = [
-  { key: "no2", formula: "NO₂", name: "Dioxyde d'azote" },
-  { key: "o3", formula: "O₃", name: "Ozone" },
-  { key: "pm10", formula: "PM₁₀", name: "Particules < 10 µm" },
-  { key: "pm25", formula: "PM₂.₅", name: "Particules fines < 2,5 µm" },
-  { key: "so2", formula: "SO₂", name: "Dioxyde de soufre" }
-];
-
-type IIndiceDetails = {
-  icon: string;
-  advice: string;
-};
-
-// Keyed by the keys of the enum, sent by the API
-const INDICE_DETAILS: Record<keyof typeof AirParifIndiceEnum, IIndiceDetails> = {
-  BON: {
-    icon: "sentiment_very_satisfied",
-    advice: "Qualité de l'air idéale pour vos activités en extérieur."
-  },
-  MOYEN: {
-    icon: "sentiment_satisfied",
-    advice: "Profitez normalement de vos activités en extérieur."
-  },
-  DEGRADE: {
-    icon: "sentiment_neutral",
-    advice: "Les personnes sensibles devraient limiter les efforts intenses en extérieur."
-  },
-  MAUVAIS: {
-    icon: "sentiment_dissatisfied",
-    advice: "Réduisez les activités physiques intenses en extérieur."
-  },
-  TRES_MAUVAIS: {
-    icon: "sentiment_very_dissatisfied",
-    advice: "Évitez les activités physiques intenses en extérieur."
-  },
-  EXTREMEMENT_MAUVAIS: {
-    icon: "masks",
-    advice: "Évitez toute activité physique en extérieur."
-  }
-};
-
-const SIDEBAR_PANE_ID = "home";
-
-export interface SidebarOptions {
-  element: HTMLElement | string;
-  position?: "left" | "right";
-}
 
 @Component({
   selector: "dash-airparif-map",
@@ -84,23 +36,80 @@ export interface SidebarOptions {
   imports: [MatIcon, MatProgressBar, DatePipe]
 })
 export class AirParifMapComponent implements AfterViewInit, OnDestroy {
+  private readonly POLLUTANTS: IPollutant[] = [
+    { key: "no2", formula: "NO₂", name: "Dioxyde d'azote" },
+    { key: "o3", formula: "O₃", name: "Ozone" },
+    { key: "pm10", formula: "PM₁₀", name: "Particules < 10 µm" },
+    { key: "pm25", formula: "PM₂.₅", name: "Particules fines < 2,5 µm" },
+    { key: "so2", formula: "SO₂", name: "Dioxyde de soufre" }
+  ];
+
+  // Keyed by the keys of the enum, sent by the API
+  private readonly INDICE_DETAILS: Record<keyof typeof AirParifIndiceEnum, IIndiceDetails> = {
+    BON: {
+      icon: "sentiment_very_satisfied",
+      advice: "Qualité de l'air idéale pour vos activités en extérieur."
+    },
+    MOYEN: {
+      icon: "sentiment_satisfied",
+      advice: "Profitez normalement de vos activités en extérieur."
+    },
+    DEGRADE: {
+      icon: "sentiment_neutral",
+      advice: "Les personnes sensibles devraient limiter les efforts intenses en extérieur."
+    },
+    MAUVAIS: {
+      icon: "sentiment_dissatisfied",
+      advice: "Réduisez les activités physiques intenses en extérieur."
+    },
+    TRES_MAUVAIS: {
+      icon: "sentiment_very_dissatisfied",
+      advice: "Évitez les activités physiques intenses en extérieur."
+    },
+    EXTREMEMENT_MAUVAIS: {
+      icon: "masks",
+      advice: "Évitez toute activité physique en extérieur."
+    }
+  };
+
+  private readonly SIDEBAR_PANE_ID = "home";
+
+  private readonly AIRPARIF_WMS_URL = "https://magellan.airparif.asso.fr/geoserver/siteweb/wms";
+
+  public readonly labels = {
+    airQuality: "Qualité de l'air",
+    close: "Fermer",
+    today: "Aujourd'hui",
+    tomorrow: "Demain",
+    globalIndice: "Indice global",
+    pollutantDetails: "Détail par polluant",
+    mapLegend: "Légende de la carte",
+    source: "Source : AirParif",
+    noForecast: "Aucune prévision disponible",
+    noForecastHint: "Vérifiez la clé d'API et le code commune dans la configuration du widget."
+  };
+
   public readonly mapContainer = viewChild<ElementRef<HTMLElement>>("map");
   public readonly sidebarContainer = viewChild<ElementRef<HTMLElement>>("sidebar");
   public readonly airParifCouleursIndices = input.required<IAirParifCouleur[]>();
   public readonly airParifForecast = input.required<IForecast[]>();
   public readonly airParifApiKey = input<string>();
   public readonly isLoading = input(false);
-  public readonly airParifWebsiteUrl = inject(AirParifWidgetService).getAirParifWebsiteUrl();
+  public readonly airParifWebsiteUrl = inject(AirParifWidgetService).AIRPARIF_WEBSITE_URL;
 
   public readonly forecastMode = signal(ForecastMode.TODAY);
-  public readonly forecastToDisplay = linkedSignal<IForecast | undefined>(
-    () => this.airParifForecast()[0]
+  // Forecast of the selected day, also when the forecasts are refreshed
+  public readonly forecastToDisplay = computed<IForecast | undefined>(
+    () => this.airParifForecast()[this.forecastMode() === ForecastMode.TODAY ? 0 : 1]
   );
 
   public readonly pollutants = computed(() => {
     const forecast = this.forecastToDisplay();
     return forecast
-      ? POLLUTANTS.map((pollutant) => ({ ...pollutant, indice: forecast[pollutant.key] }))
+      ? this.POLLUTANTS.map((pollutant) => ({
+          ...pollutant,
+          indice: forecast[pollutant.key]
+        }))
       : [];
   });
 
@@ -115,7 +124,6 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   );
 
   private readonly airParifWidgetService = inject(AirParifWidgetService);
-  private readonly airParifUrl = "https://magellan.airparif.asso.fr/geoserver/siteweb/wms";
 
   private map: Map | undefined;
   private sidebarControl: SidebarControl | undefined;
@@ -134,7 +142,7 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
   }
 
   public openSidebar(): void {
-    this.sidebarControl?.open(SIDEBAR_PANE_ID);
+    this.sidebarControl?.open(this.SIDEBAR_PANE_ID);
   }
 
   public selectTodayForecast(): void {
@@ -149,17 +157,17 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
     return this.airParifWidgetService.getIndiceClass(indice);
   }
 
+  public getIndiceLabel(indice: AirParifIndiceEnum): string {
+    return this.airParifWidgetService.getIndiceLabel(indice);
+  }
+
   // Class giving a light tint of the color of the indice
   public getIndiceSoftClass(indice: AirParifIndiceEnum): string {
     return this.airParifWidgetService.getIndiceClass(indice, "indice-soft");
   }
 
-  public getIndiceLabel(indice: AirParifIndiceEnum): string {
-    return this.airParifWidgetService.getIndiceLabel(indice);
-  }
-
   public getIndiceDetails(indice: AirParifIndiceEnum): IIndiceDetails | undefined {
-    return INDICE_DETAILS[indice as unknown as keyof typeof AirParifIndiceEnum];
+    return this.INDICE_DETAILS[indice as unknown as keyof typeof AirParifIndiceEnum];
   }
 
   private selectForecast(forecastMode: ForecastMode): void {
@@ -168,9 +176,6 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
       this.map?.addLayer(this.forecastLayers[forecastMode]);
     }
     this.forecastMode.set(forecastMode);
-    this.forecastToDisplay.set(
-      this.airParifForecast()[forecastMode === ForecastMode.TODAY ? 0 : 1]
-    );
   }
 
   private initMap(): void {
@@ -211,7 +216,7 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
     return new TileLayer({
       opacity: 0.5,
       source: new TileWMS({
-        url: this.airParifUrl,
+        url: this.AIRPARIF_WMS_URL,
         params: {
           SERVICE: "WMS",
           VERSION: "1.3.0",
@@ -220,9 +225,10 @@ export class AirParifMapComponent implements AfterViewInit, OnDestroy {
           TRANSPARENT: true,
           FORMAT: "image/png8",
           STYLES: "nouvel_indice_polygones",
-          ...(apiKey ? { authkey: apiKey } : {})
+          // OpenLayers leaves the undefined parameters out of the url
+          authkey: apiKey || undefined
         },
-        attributions: `<a href="${this.airParifWidgetService.getAirParifWebsiteUrl()}">AirParif</a>`
+        attributions: `<a href="${this.airParifWebsiteUrl}">AirParif</a>`
       })
     });
   }

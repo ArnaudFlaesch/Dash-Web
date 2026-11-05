@@ -4,8 +4,8 @@ import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatTooltip } from "@angular/material/tooltip";
-import { MiniWidgetService } from "../../services/widget.service/miniwidget.service";
-import { AbstractWidgetComponent } from "../abstract-widget/abstract-widget.component";
+import { MiniWidgetService } from "@services/mini-widget.service";
+import { AbstractWidgetComponent } from "@widgets/abstract-widget/abstract-widget.component";
 
 @Component({
   selector: "dash-mini-widget",
@@ -14,6 +14,15 @@ import { AbstractWidgetComponent } from "../abstract-widget/abstract-widget.comp
   imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })
 export class MiniWidgetComponent extends AbstractWidgetComponent {
+  public readonly labels = {
+    cancel: "Annuler",
+    validate: "Valider",
+    deleteWidget: "Supprimer le widget",
+    confirmDeletion: "Êtes-vous sûr de vouloir supprimer ce widget ?",
+    delete: "Supprimer",
+    doubleClickToEdit: "Double-cliquez pour modifier"
+  };
+
   private readonly miniWidgetService = inject(MiniWidgetService);
 
   public onValidation(): void {

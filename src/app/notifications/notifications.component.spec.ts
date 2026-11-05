@@ -1,13 +1,14 @@
 import { startOfYesterday } from "date-fns";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
-import { IPage } from "../model/IPage";
-import { environment } from "../../environments/environment";
-import { INotification, NotificationTypeEnum } from "../model/INotification";
-import { ErrorHandlerService } from "../services/error.handler.service";
-import { NotificationService } from "../services/notification.service/NotificationService";
-import { WidgetService } from "../services/widget.service/widget.service";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { vi } from "vitest";
+import { NotificationsListComponent } from "./notifications-list/notifications-list.component";
+import { IPage } from "@model/IPage";
+import { environment } from "@environments/environment";
+import { INotification, NotificationTypeEnum } from "@model/INotification";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { WidgetService } from "@services/widget.service";
 import { NotificationsComponent } from "./notifications.component";
 import { provideHttpClient } from "@angular/common/http";
 
@@ -17,13 +18,7 @@ describe("NotificationsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        WidgetService,
-        ErrorHandlerService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        NotificationService
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     })
       // Not rendered, so that the resources are only loaded by the test, not by the child components
       .overrideTemplate(NotificationsComponent, "")
@@ -110,5 +105,166 @@ describe("NotificationsComponent", () => {
     markNotificationAsReadRequest.flush(updatedNotificationsData);
 
     expect(component.unreadNotificationsForBadge()).toEqual(0);
+  });
+
+  /** Loads the notifications, then answers the request sent by the given action. */
+  async function loadNotifications(content: INotification[]): Promise<void> {
+    TestBed.tick();
+    httpTestingController
+      .expectOne(environment.backend_url + "/notifications/")
+      .flush({ ...notificationsData, content });
+    await flushResources();
+  }
+
+  const today = new Date(2026, 10, 4, 9, 30);
+  const twoDaysAgo = new Date(2026, 10, 2, 18, 15);
+  const notifications: INotification[] = [
+    {
+      id: 1,
+      message: "Older notification",
+      notificationType: NotificationTypeEnum.INFO,
+      notificationDate: twoDaysAgo.toISOString(),
+      isRead: false
+    },
+    {
+      id: 2,
+      message: "Today notification",
+      notificationType: NotificationTypeEnum.WARN,
+      notificationDate: today.toISOString(),
+      isRead: false
+    }
+  ];
+
+  it("Should display the time of today's notifications and the day of the older ones", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 10, 4, 12, 0));
+    await loadNotifications(notifications);
+    expect(component.notificationsToDisplay().map((n) => n.notificationDateToDisplay)).toEqual([
+      "02/11",
+      "09:30"
+    ]);
+    vi.useRealTimers();
+  });
+
+  it("Should mark one notification as read and sort the notifications by date", async () => {
+    await loadNotifications(notifications);
+    component.markNotificationAsRead(1);
+
+    const request = httpTestingController.expectOne(
+      environment.backend_url + "/notifications/markNotificationAsRead"
+    );
+    expect(request.request.body).toEqual({ notificationIds: [1] });
+    request.flush([{ ...notifications[0], isRead: true }]);
+
+    expect(component.notificationsFromDatabase().map((n) => [n.id, n.isRead])).toEqual([
+      [2, false],
+      [1, true]
+    ]);
+    expect(component.unreadNotificationsForBadge()).toEqual(1);
+  });
+
+  it("Should display an error when the notifications can't be loaded", async () => {
+    const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
+    TestBed.tick();
+    httpTestingController
+      .expectOne(environment.backend_url + "/notifications/")
+      .flush(null, { status: 500, statusText: "Server error" });
+    await flushResources();
+    expect(component.notificationsFromDatabase()).toEqual([]);
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      "Erreur lors de la récupération des notifications."
+    );
+  });
+
+  it("Should display an error when a notification can't be marked as read", async () => {
+    const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
+    await loadNotifications(notifications);
+    component.markNotificationAsRead(1);
+    httpTestingController
+      .expectOne(environment.backend_url + "/notifications/markNotificationAsRead")
+      .flush(null, { status: 500, statusText: "Server error" });
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      "Erreur lors du traitement de la requête."
+    );
+    expect(component.unreadNotificationsForBadge()).toEqual(2);
+  });
+
+  it("Should reload the notifications when the widgets are refreshed", async () => {
+    await loadNotifications(notifications);
+    TestBed.inject(WidgetService).refreshAllWidgets();
+    TestBed.tick();
+    httpTestingController
+      .expectOne(environment.backend_url + "/notifications/")
+      .flush({ ...notificationsData, content: [] });
+    await flushResources();
+    expect(component.notificationsFromDatabase()).toEqual([]);
+  });
+});
+
+describe("NotificationsComponent template", () => {
+  let fixture: ComponentFixture<NotificationsComponent>;
+  let httpTestingController: HttpTestingController;
+
+  const notifications: INotification[] = [
+    {
+      id: 1,
+      message: "username: Connexion utilisateur",
+      notificationType: NotificationTypeEnum.WARN,
+      notificationDate: new Date().toISOString(),
+      isRead: false
+    }
+  ];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(NotificationsComponent);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    TestBed.tick();
+    httpTestingController.expectOne(environment.backend_url + "/notifications/").flush({
+      content: notifications,
+      totalPages: 1,
+      totalElements: 1,
+      last: true,
+      size: 1,
+      number: 0
+    });
+    await new Promise((resolve) => setTimeout(resolve));
+    await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  function getList(): NotificationsListComponent {
+    return fixture.debugElement.query(
+      (debugElement) => debugElement.name === "dash-notifications-list"
+    ).componentInstance as NotificationsListComponent;
+  }
+
+  it("Should pass the notifications and the unread count to the list", () => {
+    expect(getList().unreadNotificationsForBadge()).toEqual(1);
+    expect(getList().notificationsList()).toEqual(
+      fixture.componentInstance.notificationsToDisplay()
+    );
+  });
+
+  it("Should mark the notifications as read when the list asks to", () => {
+    getList().markNotificationAsReadEvent.emit(1);
+    const request = httpTestingController.expectOne(
+      environment.backend_url + "/notifications/markNotificationAsRead"
+    );
+    expect(request.request.body).toEqual({ notificationIds: [1] });
+    request.flush([{ ...notifications[0], isRead: true }]);
+
+    getList().markAllNotificationsAsReadEvent.emit();
+    httpTestingController
+      .expectOne(environment.backend_url + "/notifications/markNotificationAsRead")
+      .flush([]);
   });
 });

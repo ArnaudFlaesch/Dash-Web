@@ -1,5 +1,5 @@
 <dash-widget
-  [widgetData]="getWidgetData()"
+  [widgetData]="{}"
   [isFormValid]="true"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
@@ -9,7 +9,7 @@
   </ng-template>
 
   <ng-template #headerTitle>
-    <div>Workout</div>
+    <div>{{ labels.title }}</div>
   </ng-template>
 
   <ng-template #body>
@@ -18,15 +18,15 @@
         <div class="workout-view column gap-md">
           <section class="workout-section column gap-sm">
             <div class="row items-center justify-between">
-              <h3 class="workout-section-title muted-text">Sessions</h3>
+              <h3 class="workout-section-title muted-text">{{ labels.sessions }}</h3>
               <button mat-stroked-button (click)="goToStatisticsView()">
                 <mat-icon>insights</mat-icon>
-                Statistiques
+                {{ labels.statistics }}
               </button>
             </div>
 
             <mat-form-field appearance="outline" subscriptSizing="dynamic" class="workout-month-field">
-              <mat-label>Mois</mat-label>
+              <mat-label>{{ labels.month }}</mat-label>
               <input matInput [matDatepicker]="picker" [formField]="selectedMonthForm" />
               <mat-datepicker-toggle matIconSuffix [for]="picker" />
               <mat-datepicker
@@ -44,13 +44,13 @@
                   {{ workoutSession.workoutDate | dateFormat: "short" }}
                 </button>
               } @empty {
-                <span class="workout-empty-message muted-text">Aucune session ce mois-ci.</span>
+                <span class="workout-empty-message muted-text">{{ labels.noSessionThisMonth }}</span>
               }
             </div>
 
             <div class="workout-inline-form row items-center gap-sm">
               <mat-form-field id="workout-date-picker-field" appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Nouvelle session</mat-label>
+                <mat-label>{{ labels.newSession }}</mat-label>
                 <input [formField]="workoutDateForm" matInput [matDatepicker]="workoutDatePicker" />
                 <mat-hint>{{ dateFormat }}</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="workoutDatePicker" />
@@ -63,7 +63,7 @@
                 (click)="createWorkoutSession()"
               >
                 <mat-icon>add</mat-icon>
-                Créer
+                {{ labels.create }}
               </button>
             </div>
           </section>
@@ -72,7 +72,7 @@
             <section class="workout-stats-cards">
               @if (workoutStatsByWeek().length) {
                 <div id="workout-stats-by-week-container" class="workout-stats-card inset">
-                  <div class="workout-stats-header muted-text">Cette semaine</div>
+                  <div class="workout-stats-header muted-text">{{ labels.thisWeek }}</div>
                   @for (workoutStat of workoutStatsByWeek(); track workoutStat.workoutTypeName) {
                     <div class="workout-stat row justify-between">
                       <span>{{ workoutStat.workoutTypeName }}</span>
@@ -83,7 +83,7 @@
               }
               @if (workoutStatsByMonth().length) {
                 <div id="workout-stats-by-month-container" class="workout-stats-card inset">
-                  <div class="workout-stats-header muted-text">Ce mois-ci</div>
+                  <div class="workout-stats-header muted-text">{{ labels.thisMonth }}</div>
                   @for (workoutStat of workoutStatsByMonth(); track workoutStat.workoutTypeName) {
                     <div class="workout-stat row justify-between">
                       <span>{{ workoutStat.workoutTypeName }}</span>
@@ -96,18 +96,23 @@
           }
 
           <section class="workout-section column gap-sm">
-            <h3 class="workout-section-title muted-text">Types d'exercices</h3>
+            <h3 class="workout-section-title muted-text">{{ labels.workoutTypes }}</h3>
             <div id="workout-types-grid" class="row gap-xs">
               @for (workoutType of workoutTypes(); track workoutType.id) {
                 <span class="workout-type-name accent-soft">{{ workoutType.name }}</span>
               } @empty {
-                <span class="workout-empty-message muted-text">Aucun type d'exercice.</span>
+                <span class="workout-empty-message muted-text">{{ labels.noWorkoutType }}</span>
               }
             </div>
             <div class="workout-inline-form row items-center gap-sm">
               <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Ajouter un type d'exercice</mat-label>
-                <input matInput id="add-workout-input" [formField]="workoutNameForm" placeholder="Pompes, tractions…" />
+                <mat-label>{{ labels.addWorkoutType }}</mat-label>
+                <input
+                  matInput
+                  id="add-workout-input"
+                  [formField]="workoutNameForm"
+                  [placeholder]="labels.workoutTypePlaceholder"
+                />
               </mat-form-field>
               <button
                 mat-flat-button
@@ -116,7 +121,7 @@
                 (click)="addWorkoutType()"
               >
                 <mat-icon>add</mat-icon>
-                Ajouter
+                {{ labels.add }}
               </button>
             </div>
           </section>
@@ -125,10 +130,10 @@
       @case (widgetViewEnum.WORKOUT_STATISTICS_VIEW) {
         <div class="workout-view column gap-sm">
           <div class="row items-center gap-xs">
-            <button mat-icon-button matTooltip="Retour aux sessions" (click)="backToWorkoutSessionsList()">
+            <button mat-icon-button [matTooltip]="labels.backToSessions" (click)="backToWorkoutSessionsList()">
               <mat-icon>arrow_back</mat-icon>
             </button>
-            <h3 class="workout-section-title muted-text">Statistiques</h3>
+            <h3 class="workout-section-title muted-text">{{ labels.statistics }}</h3>
           </div>
           <div class="workout-periods row gap-xs">
             <button
@@ -136,28 +141,28 @@
               [class.selected]="isLastThreeMonthsWorkoutStatisticsSelected()"
               (click)="getWorkoutsStatsOfLastThreeMonths()"
             >
-              3 derniers mois
+              {{ labels.lastThreeMonths }}
             </button>
             <button
               class="workout-period tile"
               [class.selected]="isLastSixMonthsWorkoutStatisticsSelected()"
               (click)="getWorkoutsStatsOfLastSixMonths()"
             >
-              6 derniers mois
+              {{ labels.lastSixMonths }}
             </button>
             <button
               class="workout-period tile"
               [class.selected]="isCurrentYearWorkoutStatisticsSelected()"
               (click)="getWorkoutsStatsOfCurrentYear()"
             >
-              Cette année
+              {{ labels.currentYear }}
             </button>
             <button
               class="workout-period tile"
               [class.selected]="isLastYearWorkoutStatisticsSelected()"
               (click)="getWorkoutsStatsOfPastYear()"
             >
-              Année dernière
+              {{ labels.lastYear }}
             </button>
           </div>
           <dash-workout-statistics [workoutTypes]="workoutTypes()" [workoutStatsByMonth]="workoutStatsOfMonths()" />
@@ -168,7 +173,7 @@
           <div class="workout-view column gap-sm">
             <button mat-button class="workout-back-button" (click)="backToWorkoutSessionsList()">
               <mat-icon>arrow_back</mat-icon>
-              Sessions
+              {{ labels.sessions }}
             </button>
             <dash-workout-session-edit
               [workoutTypes]="workoutTypes()"

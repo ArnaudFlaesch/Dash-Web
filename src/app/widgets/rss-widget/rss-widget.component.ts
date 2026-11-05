@@ -1,52 +1,31 @@
+import { NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 import { MatIconButton } from "@angular/material/button";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
-import { SafePipe } from "../../pipes/safe.pipe";
-import { IWidgetConfig } from "../../model/IWidgetConfig";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
-import { injectWidgetData, WIDGET_ID } from "../widget.tokens";
+import { IWidgetConfig } from "@model/IWidgetConfig";
+import { isResourceLoaded } from "@utils/resource.utils";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { WidgetService } from "@services/widget.service";
+import { injectWidgetData, WIDGET_ID } from "@widgets/widget.tokens";
 import { IArticle, IRSSHeader } from "./IArticle";
 import { RssFeedComponent } from "./rss-feed/rss-feed.component";
-import { RssWidgetService } from "./rss.widget.service";
+import { RssWidgetService } from "./rss-widget.service";
 import { catchError, map, of } from "rxjs";
-import { WidgetComponent } from "../widget/widget.component";
-
-/**
- * Some feeds give the guid as an object (e.g. { isPermaLink: "true", "": "https://..." }),
- * so it is converted to a string to be compared with the read articles.
- */
-function guidToString(guid: unknown): string {
-  if (typeof guid === "string") {
-    return guid;
-  }
-  if (typeof guid === "number") {
-    return guid.toString();
-  }
-  if (guid && typeof guid === "object") {
-    const value = (guid as Record<string, unknown>)[""];
-    return typeof value === "string" ? value : JSON.stringify(guid);
-  }
-  return "";
-}
-
-/** Read articles guids as strings, without duplicates. */
-function toReadArticlesGuids(guids: unknown[]): string[] {
-  return [...new Set(guids.map(guidToString))];
-}
+import { WidgetComponent } from "@widgets/widget/widget.component";
 
 @Component({
   selector: "dash-rss-widget",
   templateUrl: "./rss-widget.component.html",
   styleUrl: "./rss-widget.component.scss",
   imports: [
+    NgOptimizedImage,
     WidgetComponent,
     MatFormField,
     MatLabel,
@@ -55,11 +34,40 @@ function toReadArticlesGuids(guids: unknown[]): string[] {
     MatIconButton,
     MatTooltip,
     MatIcon,
-    RssFeedComponent,
-    SafePipe
+    RssFeedComponent
   ]
 })
 export class RssWidgetComponent {
+  /**
+   * Some feeds give the guid as an object (e.g. { isPermaLink: "true", "": "https://..." }),
+   * so it is converted to a string to be compared with the read articles.
+   */
+  private guidToString(guid: unknown): string {
+    if (typeof guid === "string") {
+      return guid;
+    }
+    if (typeof guid === "number") {
+      return guid.toString();
+    }
+    if (guid && typeof guid === "object") {
+      const value = (guid as Record<string, unknown>)[""];
+      return typeof value === "string" ? value : JSON.stringify(guid);
+    }
+    return "";
+  }
+
+  /** Read articles guids as strings, without duplicates. */
+  private toReadArticlesGuids(guids: unknown[]): string[] {
+    return [...new Set(guids.map((guid) => this.guidToString(guid)))];
+  }
+
+  public readonly labels = {
+    logo: "logo",
+    url: "URL",
+    enterRssFeedUrl: "Saisissez l'URL du flux RSS",
+    markAllFeedAsRead: "Marquer tout le flux comme lu"
+  };
+
   public readonly config = signal({ url: injectWidgetData("url", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.url));
 
@@ -75,7 +83,7 @@ export class RssWidgetComponent {
                 ...channel,
                 item: (channel.item ?? []).map((article): IArticle => ({
                   ...article,
-                  guid: guidToString(article.guid)
+                  guid: this.guidToString(article.guid)
                 }))
               }
             : undefined
@@ -89,15 +97,14 @@ export class RssWidgetComponent {
   });
 
   public readonly rssFeedResult = this.rssFeedResource.value;
-  public readonly isWidgetLoaded = computed(() =>
-    ["resolved", "local"].includes(this.rssFeedResource.status())
-  );
+  public readonly isWidgetLoaded = computed(() => isResourceLoaded(this.rssFeedResource.status()));
   public readonly isLogoBroken = signal(false);
   public readonly readArticles = signal(
-    toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
+    this.toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
   );
 
   public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   private readonly ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
   private readonly ERROR_MARKING_FEED_AS_READ = "Erreur pendant la mise à jour du widget RSS.";
@@ -117,15 +124,15 @@ export class RssWidgetComponent {
   }
 
   public markArticleAsRead(guid: string): void {
-    this.updateRssFeed(toReadArticlesGuids([guid, ...this.readArticles()]));
+    this.updateRssFeed(this.toReadArticlesGuids([guid, ...this.readArticles()]));
   }
 
   public markAllFeedAsRead(): void {
-    this.updateRssFeed(this.rssFeedResult()?.item.map((article) => article.guid) ?? []);
-  }
-
-  public getWidgetData(): { url: string } | undefined {
-    return this.isFormValid() ? this.config() : undefined;
+    // Without a loaded feed, the saved read articles would be erased
+    const articles = this.rssFeedResult()?.item;
+    if (articles) {
+      this.updateRssFeed(articles.map((article) => article.guid));
+    }
   }
 
   private updateRssFeed(readArticlesGuids: string[]): void {
@@ -140,7 +147,7 @@ export class RssWidgetComponent {
       .subscribe({
         next: (response: IWidgetConfig) =>
           this.readArticles.set(
-            toReadArticlesGuids((response.data?.["readArticlesGuids"] as unknown[]) ?? [])
+            this.toReadArticlesGuids((response.data?.["readArticlesGuids"] as unknown[]) ?? [])
           ),
         error: (error: HttpErrorResponse) => {
           this.readArticles.set(previousReadArticles);

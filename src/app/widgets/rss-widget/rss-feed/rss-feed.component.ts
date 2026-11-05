@@ -6,9 +6,8 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from "@angular/material/expansion";
-import { isThisYear, isToday } from "date-fns";
-import { DateFormatPipe } from "../../../pipes/date-format.pipe";
-import { SafePipe } from "../../../pipes/safe.pipe";
+import { isThisYear, isToday, isValid } from "date-fns";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
 import { IArticle } from "../IArticle";
 
 @Component({
@@ -21,11 +20,15 @@ import { IArticle } from "../IArticle";
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
     MatExpansionPanelContent,
-    DateFormatPipe,
-    SafePipe
+    DateFormatPipe
   ]
 })
 export class RssFeedComponent {
+  public readonly labels = {
+    publishedOn: "Publié le",
+    by: "par"
+  };
+
   public readonly feed = input.required<IArticle[]>();
   public readonly readArticles = input.required<string[]>();
   public readonly markArticleAsReadEvent = output<string>();
@@ -39,7 +42,10 @@ export class RssFeedComponent {
 
   public formatTitleForArticle(article: IArticle): string {
     const articleDate = new Date(article.pubDate || article.updated || "");
-    return `${this.getPublicationDateToDisplay(articleDate)} ${article.title}`;
+    // Some articles have no (valid) publication date
+    return isValid(articleDate)
+      ? `${this.getPublicationDateToDisplay(articleDate)} ${article.title}`
+      : (article.title ?? "");
   }
 
   public isArticleRead(guid: string): boolean {
@@ -68,7 +74,8 @@ export class RssFeedComponent {
     return articleDate.toLocaleTimeString("fr", {
       day: "2-digit",
       month: "2-digit",
-      ...(isThisYear(articleDate) ? {} : { year: "numeric" as const })
+      // An undefined option is ignored
+      year: isThisYear(articleDate) ? undefined : "numeric"
     });
   }
 }

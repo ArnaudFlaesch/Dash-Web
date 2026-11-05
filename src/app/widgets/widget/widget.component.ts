@@ -4,9 +4,9 @@ import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatTooltip } from "@angular/material/tooltip";
-import { WidgetService } from "../../services/widget.service/widget.service";
-import { AbstractWidgetComponent } from "../abstract-widget/abstract-widget.component";
-import { DeleteWidgetComponent } from "../delete-widget/delete-widget.component";
+import { WidgetService } from "@services/widget.service";
+import { AbstractWidgetComponent } from "@widgets/abstract-widget/abstract-widget.component";
+import { DeleteWidgetComponent } from "@widgets/delete-widget/delete-widget.component";
 
 @Component({
   selector: "dash-widget",
@@ -23,6 +23,15 @@ import { DeleteWidgetComponent } from "../delete-widget/delete-widget.component"
   ]
 })
 export class WidgetComponent extends AbstractWidgetComponent {
+  public readonly labels = {
+    widgetConfiguration: "Configuration du widget",
+    deleteWidget: "Supprimer le widget",
+    cancel: "Annuler",
+    validate: "Valider",
+    refreshWidget: "Actualiser le widget",
+    editWidget: "Modifier le widget"
+  };
+
   public readonly headerIcon = contentChild.required<TemplateRef<unknown>>("headerIcon");
   public readonly headerTitle = contentChild.required<TemplateRef<unknown>>("headerTitle");
   public readonly additionalActions = contentChild<TemplateRef<unknown>>("additionalActions");

@@ -23,35 +23,23 @@ import { MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/fo
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { DEFAULT_DATE_FORMAT } from "../../utils/Constants";
-import { requiredText } from "../../utils/form-validators";
-import { DateFormatPipe } from "../../pipes/date-format.pipe";
-import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
-import { WidgetComponent } from "../widget/widget.component";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { requiredText } from "@utils/form-validators";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
+import { toUtcWallClock } from "@utils/date.utils";
+import { WidgetComponent } from "@widgets/widget/widget.component";
 import {
   IWorkoutSession,
   IWorkoutStatByMonth,
   IWorkoutStatsByPeriod,
-  IWorkoutType
+  IWorkoutType,
+  WORKOUT_STATISTICS,
+  WORKOUT_WIDGET_VIEW
 } from "./model/Workout";
 import { WorkoutSessionEditComponent } from "./workout-session-edit/workout-session-edit.component";
 import { WorkoutStatisticsComponent } from "./workout-statistics/workout-statistics.component";
-import { WorkoutWidgetService } from "./workout.widget.service";
+import { WorkoutWidgetService } from "./workout-widget.service";
 import { catchError, Observable, of } from "rxjs";
-
-enum WORKOUT_WIDGET_VIEW {
-  WORKOUT_SESSIONS_LIST_VIEW = 1,
-  WORKOUT_STATISTICS_VIEW = 2,
-  EDIT_WORKOUT_SESSION_VIEW = 3
-}
-
-enum WORKOUT_STATISTICS {
-  LAST_YEAR = 1,
-  CURRENT_YEAR = 2,
-  LAST_SIX_MONTHS = 3,
-  LAST_THREE_MONTHS = 4
-}
 
 @Component({
   selector: "dash-workout-widget",
@@ -78,11 +66,33 @@ enum WORKOUT_STATISTICS {
   ]
 })
 export class WorkoutWidgetComponent {
+  public readonly labels = {
+    title: "Workout",
+    sessions: "Sessions",
+    statistics: "Statistiques",
+    month: "Mois",
+    noSessionThisMonth: "Aucune session ce mois-ci.",
+    newSession: "Nouvelle session",
+    create: "Créer",
+    thisWeek: "Cette semaine",
+    thisMonth: "Ce mois-ci",
+    workoutTypes: "Types d'exercices",
+    noWorkoutType: "Aucun type d'exercice.",
+    addWorkoutType: "Ajouter un type d'exercice",
+    workoutTypePlaceholder: "Pompes, tractions…",
+    add: "Ajouter",
+    backToSessions: "Retour aux sessions",
+    lastThreeMonths: "3 derniers mois",
+    lastSixMonths: "6 derniers mois",
+    currentYear: "Cette année",
+    lastYear: "Année dernière"
+  };
+
   public readonly currentWorkoutSessionToEdit = signal<IWorkoutSession | undefined>(undefined);
   public readonly selectedWorkoutStatistics = signal<WORKOUT_STATISTICS | undefined>(undefined);
   public readonly widgetView = signal(WORKOUT_WIDGET_VIEW.WORKOUT_SESSIONS_LIST_VIEW);
 
-  public readonly dateFormat = DEFAULT_DATE_FORMAT;
+  public readonly dateFormat = "DD/MM/YYYY";
   public readonly widgetViewEnum = WORKOUT_WIDGET_VIEW;
 
   public readonly workoutNameInput = signal<string>("");
@@ -193,7 +203,6 @@ export class WorkoutWidgetComponent {
 
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
-  private readonly dateUtilsService = inject(DateUtilsService);
 
   public refreshWidget(): void {
     this.refreshRequest.set({});
@@ -229,13 +238,9 @@ export class WorkoutWidgetComponent {
   }
 
   public createWorkoutSession(): void {
-    const workoutDateVal = this.workoutDateInput();
     if (this.workoutDateForm().valid()) {
-      const workoutDate = this.dateUtilsService.formatDateWithOffsetToUtc(
-        typeof workoutDateVal === "string"
-          ? new Date(Date.parse(workoutDateVal))
-          : new Date(workoutDateVal)
-      );
+      // The datepicker sets a Date, typed as a string by the form
+      const workoutDate = toUtcWallClock(new Date(this.workoutDateInput()));
       this.workoutWidgetService.createWorkoutSession(workoutDate).subscribe({
         next: (addedWorkoutSession) => {
           this.workoutSessions.update((oldWorkoutSessions) => [
@@ -250,18 +255,12 @@ export class WorkoutWidgetComponent {
     }
   }
 
-  public getWidgetData(): Record<string, never> {
-    return {};
-  }
-
   public selectMonth(monthDate: Date): void {
     this.selectedMonthInput.set(monthDate);
   }
 
   public setMonthAndYear(normalizedMonthAndYear: Date, datepicker: MatDatepicker<Date>): void {
-    this.selectMonth(
-      new Date(normalizedMonthAndYear.getFullYear(), normalizedMonthAndYear.getMonth(), 1)
-    );
+    this.selectMonth(startOfMonth(normalizedMonthAndYear));
     datepicker.close();
   }
 

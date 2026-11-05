@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from "@angular/common";
 import { Component, inject, signal } from "@angular/core";
 import { form, FormField } from "@angular/forms/signals";
 import { MatButton, MatIconButton } from "@angular/material/button";
@@ -7,15 +8,16 @@ import { MatInput } from "@angular/material/input";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
-import { AuthService } from "../services/auth.service/auth.service";
-import { ErrorHandlerService } from "../services/error.handler.service";
-import { requiredText } from "../utils/form-validators";
+import { AuthService } from "@services/auth.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { requiredText } from "@utils/form-validators";
 
 @Component({
   selector: "dash-login",
   templateUrl: "./login.component.html",
   styleUrl: "./login.component.scss",
   imports: [
+    NgOptimizedImage,
     RouterLink,
     MatButton,
     MatIconButton,
@@ -30,6 +32,21 @@ import { requiredText } from "../utils/form-validators";
   ]
 })
 export class LoginComponent {
+  public readonly labels = {
+    logoAlt: "dash logo",
+    title: "Dash",
+    subtitle: "Votre tableau de bord personnel",
+    usernameLabel: "Nom d'utilisateur",
+    username: "Username",
+    passwordLabel: "Mot de passe",
+    password: "Password",
+    hidePassword: "Masquer le mot de passe",
+    showPassword: "Afficher le mot de passe",
+    login: "Se connecter",
+    or: "ou",
+    tryDemo: "Essayer la démo"
+  };
+
   public readonly isLoading = signal(false);
   public readonly isPasswordVisible = signal(false);
 
@@ -39,7 +56,7 @@ export class LoginComponent {
     requiredText(path.password);
   });
 
-  public readonly authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly router = inject(Router);
 

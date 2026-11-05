@@ -1,61 +1,39 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# Compiled output
+# Build output
 /dist
-/documentation
-/tmp
 /out-tsc
-/bazel-out
+/tmp
+/bundle-stats
+/documentation
 
-# Node
+# Dependencies
 /node_modules
 npm-debug.log
-yarn-error.log
+
+# Angular cache
+/.angular/cache
+
+# Tests and reports
+/coverage
+/cypress/downloads
+/cypress/reports
+/cypress/results
+/cypress/screenshots
+styleLintReport.json
+
+# Secrets
+src/environments/env.vars.secret.ts
 
 # IDEs and editors
 .idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
+.vscode/
+.claude/
+.history/
 *.sublime-workspace
 
-# Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
-
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
+# Tools caches (Snyk)
+.dccache
+.iac-data/
 
 # System files
 .DS_Store
 Thumbs.db
-
-.dccache
-
-cypress/results
-cypress/reports
-
-src/environments/env.vars.secret.ts
-
-cypress/downloads/
-cypress/screenshots/
-
-.iac-data/
-
-.vscode/
-
-styleLintReport.json
-
-.claude/

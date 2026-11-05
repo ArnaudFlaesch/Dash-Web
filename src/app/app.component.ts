@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
-import { AuthService } from "./services/auth.service/auth.service";
-import { ThemeService } from "./services/theme.service/theme.service";
+import { AuthService } from "./services/auth.service";
+import { ThemeService } from "./services/theme.service";
 
 @Component({
   selector: "dash-root",
@@ -9,8 +9,6 @@ import { ThemeService } from "./services/theme.service/theme.service";
   imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
-  public readonly title = "Dash";
-
   private readonly authService = inject(AuthService);
   private readonly themeService = inject(ThemeService);
   private readonly router = inject(Router);

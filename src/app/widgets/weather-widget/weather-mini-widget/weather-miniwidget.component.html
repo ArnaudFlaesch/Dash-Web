@@ -1,13 +1,13 @@
 <dash-mini-widget
   [isFormValid]="isFormValid()"
-  [widgetData]="getWidgetData()"
+  [widgetData]="widgetData()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #editComponent>
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Ville</mat-label>
-      <input id="city-name-input" matInput [formField]="configForm.city" placeholder="Saisissez de nom de la ville" />
+      <mat-label>{{ labels.city }}</mat-label>
+      <input id="city-name-input" matInput [formField]="configForm.city" [placeholder]="labels.enterCityName" />
     </mat-form-field>
   </ng-template>
 
@@ -16,7 +16,9 @@
       <div class="mini-widget-weather-container row">
         <img
           class="current-weather-icon"
-          [src]="getIconFromWeatherApi(weather.weather[0].icon)"
+          [ngSrc]="getIconFromWeatherApi(weather.weather[0].icon)"
+          width="100"
+          height="100"
           [matTooltip]="weather.weather[0].description | initialUppercase"
           matTooltipTouchGestures="off"
           [alt]="weather.weather[0].description"
@@ -24,8 +26,10 @@
         <div class="weather-data-container column justify-center">
           <div class="city-name">{{ config().city }}</div>
           <div class="temperature-container muted-text row">
-            <mat-icon matTooltip="Température actuelle" matTooltipTouchGestures="off">device_thermostat</mat-icon>
-            <div>{{ weather.main.temp | number: "1.0-1" }} °C</div>
+            <mat-icon [matTooltip]="labels.currentTemperature" matTooltipTouchGestures="off"
+              >device_thermostat</mat-icon
+            >
+            <div>{{ weather.main.temp | number: "1.0-1" }} {{ labels.celsius }}</div>
           </div>
         </div>
       </div>

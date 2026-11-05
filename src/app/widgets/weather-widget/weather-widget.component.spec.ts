@@ -1,140 +1,16 @@
-import { WIDGET_ID } from "../widget.tokens";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
 import { provideHttpClient } from "@angular/common/http";
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
-import { DateUtilsService } from "../../services/date.utils.service/date.utils.service";
-import { WidgetService } from "../../services/widget.service/widget.service";
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { IForecastAPIResponse, IWeatherAPIResponse } from "./IWeather";
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+  TestRequest
+} from "@angular/common/http/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { vi } from "vitest";
+import { environment } from "@environments/environment";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { forecastData, weatherData } from "./weather-widget.fixtures";
 import { WeatherWidgetComponent } from "./weather-widget.component";
-import { WeatherWidgetService } from "./weather.widget.service";
-
-export const weatherData: IWeatherAPIResponse = {
-  coord: { lon: 2.3488, lat: 48.8534 },
-  weather: [{ id: 800, main: "Clear", description: "ciel dégagé", icon: "01d" }],
-  base: "stations",
-  main: {
-    temp: 7.57,
-    feels_like: 3.75,
-    tempMin: 6.11,
-    tempMax: 8.54,
-    pressure: 1022,
-    humidity: 45
-  },
-  visibility: 10000,
-  wind: {
-    speed: 7.2,
-    deg: 50,
-    gust: 0
-  },
-  clouds: { all: 0 },
-  dt: 1646586617,
-  sys: {
-    type: 2,
-    id: 2041230,
-    country: "FR",
-    sunrise: 1646547788,
-    sunset: 1646588459
-  },
-  timezone: 3600,
-  id: 2988507,
-  name: "Paris",
-  cod: 200
-};
-
-export const forecastData: IForecastAPIResponse = {
-  cod: "200",
-  message: 0,
-  cnt: 40,
-  list: [
-    {
-      dt: 1646589600,
-      main: {
-        temp: 7.57,
-        feelsLike: 5.19,
-        tempMin: 7.23,
-        tempMax: 7.57,
-        pressure: 1022,
-        seaLevel: 1022,
-        grndLevel: 1018,
-        humidity: 45,
-        tempKf: 0.34
-      },
-      weather: [{ id: 800, main: "Clear", description: "ciel dégagé", icon: "01n" }],
-      clouds: { all: 0 },
-      wind: { speed: 3.68, deg: 43 },
-      sys: { pod: "n" },
-      dtText: "2022-03-06 18:00:00"
-    },
-    {
-      dt: 1646600400,
-      main: {
-        temp: 6.76,
-        feelsLike: 3.67,
-        tempMin: 5.15,
-        tempMax: 6.76,
-        pressure: 1023,
-        seaLevel: 1023,
-        grndLevel: 1019,
-        humidity: 49,
-        tempKf: 1.61
-      },
-      weather: [{ id: 800, main: "Clear", description: "ciel dégagé", icon: "01n" }],
-      clouds: { all: 3 },
-      wind: { speed: 4.71, deg: 38 },
-      sys: { pod: "n" },
-      dtText: "2022-03-06 21:00:00"
-    },
-    {
-      dt: 1646643600,
-      main: {
-        temp: 4.78,
-        feelsLike: 1.44,
-        tempMin: 3.39,
-        tempMax: 4.78,
-        pressure: 1023,
-        seaLevel: 1023,
-        grndLevel: 1019,
-        humidity: 56,
-        tempKf: 1.39
-      },
-      weather: [{ id: 800, main: "Sunny", description: "Ensoleillé", icon: "01n" }],
-      clouds: { all: 6 },
-      wind: { speed: 4.26, deg: 41 },
-      sys: { pod: "n" },
-      dtText: "2022-03-07 00:00:00"
-    },
-    {
-      dt: 1646841600,
-      main: {
-        temp: 1.93,
-        feelsLike: -1.6,
-        tempMin: 1.93,
-        tempMax: 1.93,
-        pressure: 1023,
-        seaLevel: 1023,
-        grndLevel: 1018,
-        humidity: 66,
-        tempKf: 0
-      },
-      weather: [{ id: 800, main: "Cloudy", description: "Nuageux", icon: "01n" }],
-      clouds: { all: 6 },
-      wind: { speed: 3.54, deg: 39 },
-      sys: { pod: "n" },
-      dtText: "2022-03-07 03:00:00"
-    }
-  ],
-  city: {
-    id: 2988507,
-    name: "Paris",
-    coord: { lat: 48.8534, lon: 2.3488 },
-    country: "FR",
-    population: 2138551,
-    timezone: 3600,
-    sunrise: 1646547788,
-    sunset: 1646588459
-  }
-};
 
 describe("WeatherWidgetComponent", () => {
   let component: WeatherWidgetComponent;
@@ -145,10 +21,6 @@ describe("WeatherWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        WeatherWidgetService,
-        DateUtilsService,
-        ErrorHandlerService,
-        WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
     })
@@ -173,15 +45,15 @@ describe("WeatherWidgetComponent", () => {
 
   describe("Normal cases", () => {
     it("should create", async () => {
-      expect(component.getWidgetData()).toEqual(undefined);
+      expect(component.widgetData()).toBeUndefined();
       expect(component.isFormValid()).toEqual(false);
       const cityName = "Paris";
-      expect(component.cityData()).toEqual(undefined);
+      expect(component.cityData()).toBeUndefined();
       expect(component.forecastResponse()).toEqual([]);
       expect(component.isWidgetLoaded()).toEqual(false);
       component.config.update((config) => ({ ...config, city: cityName }));
       expect(component.isFormValid()).toEqual(true);
-      expect(component.getWidgetData()).toEqual({ city: cityName });
+      expect(component.widgetData()).toEqual({ city: cityName });
       component.refreshWidget();
       TestBed.tick();
 
@@ -192,7 +64,7 @@ describe("WeatherWidgetComponent", () => {
       await flushResources();
 
       expect(component.cityData()?.name).toEqual(cityName);
-      expect(component.forecastResponse().length).toEqual(forecastData.list.length);
+      expect(component.forecastResponse()).toHaveLength(forecastData.list.length);
       expect(component.isWidgetLoaded()).toEqual(true);
     });
   });
@@ -207,8 +79,159 @@ describe("WeatherWidgetComponent", () => {
       requests[0].error(new ProgressEvent("Server error"));
       await flushResources();
 
-      expect(component.weather()).toEqual(undefined);
+      expect(component.weather()).toBeUndefined();
       expect(component.forecastResponse()).toEqual([]);
+    });
+  });
+});
+
+describe("WeatherWidgetComponent template", () => {
+  const weatherPath = environment.backend_url + "/weatherWidget/";
+  const ERROR_GETTING_WEATHER_DATA = "Erreur lors de la récupération des données météorologiques.";
+  let fixture: ComponentFixture<WeatherWidgetComponent>;
+  let component: WeatherWidgetComponent;
+  let element: HTMLElement;
+  let httpTestingController: HttpTestingController;
+
+  function createComponent(widgetData: Record<string, unknown> | undefined): void {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: WIDGET_ID, useValue: 1 },
+        { provide: WIDGET_DATA, useValue: widgetData }
+      ]
+    });
+    fixture = TestBed.createComponent(WeatherWidgetComponent);
+    component = fixture.componentInstance;
+    element = fixture.nativeElement;
+    httpTestingController = TestBed.inject(HttpTestingController);
+  }
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  function query<T extends HTMLElement = HTMLElement>(selector: string): T | null {
+    return element.querySelector<T>(selector);
+  }
+
+  function expectWeatherRequests(city: string): TestRequest[] {
+    return [
+      httpTestingController.expectOne(`${weatherPath}weather?city=${city}`),
+      httpTestingController.expectOne(`${weatherPath}forecast?city=${city}`)
+    ];
+  }
+
+  describe("Edit mode", () => {
+    beforeEach(async () => {
+      createComponent(undefined);
+      await fixture.whenStable();
+    });
+
+    it("Should display the city input", () => {
+      const input = query<HTMLInputElement>("#city-name-input");
+      expect(input?.placeholder).toEqual(component.labels.enterCityName);
+      expect(query("mat-label")?.textContent).toEqual(component.labels.city);
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
+    });
+
+    it("Should not validate a blank city", async () => {
+      const input = query<HTMLInputElement>("#city-name-input")!;
+      input.value = "   ";
+      input.dispatchEvent(new Event("input"));
+      await fixture.whenStable();
+      expect(component.isFormValid()).toBe(false);
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
+    });
+
+    it("Should save the city and load its weather", async () => {
+      const input = query<HTMLInputElement>("#city-name-input")!;
+      input.value = "Lyon";
+      input.dispatchEvent(new Event("input"));
+      await fixture.whenStable();
+      expect(component.config()).toEqual({ city: "Lyon" });
+
+      query(".validate-button")?.click();
+      const saveRequest = httpTestingController.expectOne(
+        environment.backend_url + "/widget/updateWidgetData/1"
+      );
+      expect(saveRequest.request.body).toEqual({ data: { city: "Lyon" } });
+      saveRequest.flush({});
+      // Not whenStable: the pending weather requests would keep the fixture unstable
+      TestBed.tick();
+
+      const [weatherRequest, forecastRequest] = expectWeatherRequests("Lyon");
+      weatherRequest.flush({ ...weatherData, name: "Lyon" });
+      forecastRequest.flush(forecastData);
+      await fixture.whenStable();
+      expect(query(".widget-header")?.textContent).toContain(
+        `${component.labels.weatherTodayIn} Lyon`
+      );
+      expect(query("dash-weather-widget-view")).toBeTruthy();
+    });
+  });
+
+  describe("Read mode", () => {
+    beforeEach(() => {
+      createComponent({ city: "Paris" });
+      TestBed.tick();
+    });
+
+    it("Should display a spinner, then the weather of the city", async () => {
+      expect(query(".widget-header")?.textContent).toContain(
+        `${component.labels.weatherTodayIn} Paris`
+      );
+      expect(query("mat-spinner")).toBeTruthy();
+      const [weatherRequest, forecastRequest] = expectWeatherRequests("Paris");
+      weatherRequest.flush(weatherData);
+      forecastRequest.flush(forecastData);
+      await fixture.whenStable();
+
+      expect(query("mat-spinner")).toBeNull();
+      expect(query("dash-weather-widget-view dash-weather-today")).toBeTruthy();
+      expect(query("dash-weather-widget-view dash-weather-forecast")).toBeTruthy();
+    });
+
+    it("Should not display the weather view without weather description", async () => {
+      const [weatherRequest, forecastRequest] = expectWeatherRequests("Paris");
+      weatherRequest.flush({ ...weatherData, weather: undefined });
+      forecastRequest.flush(forecastData);
+      await fixture.whenStable();
+      expect(component.isWidgetLoaded()).toBe(true);
+      expect(query("dash-weather-widget-view")).toBeNull();
+    });
+
+    it("Should reload the weather when the widget is refreshed", async () => {
+      expectWeatherRequests("Paris").forEach((request, index) =>
+        request.flush([weatherData, forecastData][index])
+      );
+      await fixture.whenStable();
+
+      query(".refresh-button")?.click();
+      TestBed.tick();
+      expectWeatherRequests("Paris").forEach((request, index) =>
+        request.flush([weatherData, forecastData][index])
+      );
+      await fixture.whenStable();
+      expect(query("dash-weather-widget-view")).toBeTruthy();
+    });
+
+    it("Should display an error when the weather can't be loaded", async () => {
+      const handleErrorSpy = vi
+        .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
+        .mockImplementation(() => undefined);
+      const [weatherRequest, forecastRequest] = expectWeatherRequests("Paris");
+      weatherRequest.flush(null, { status: 500, statusText: "Server error" });
+      await fixture.whenStable();
+
+      expect(forecastRequest.cancelled).toBe(true);
+
+      expect(handleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(handleErrorSpy).toHaveBeenCalledWith(expect.anything(), ERROR_GETTING_WEATHER_DATA);
+      expect(component.isWidgetLoaded()).toBe(false);
+      expect(query("mat-spinner")).toBeTruthy();
+      expect(query("dash-weather-widget-view")).toBeNull();
     });
   });
 });

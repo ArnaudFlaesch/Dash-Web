@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, input, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
@@ -13,14 +14,15 @@ import { MatProgressBar } from "@angular/material/progress-bar";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { catchError, map, of } from "rxjs";
 import { IAchievement, IGameInfoDisplay } from "../ISteam";
-import { ErrorHandlerService } from "../../../services/error.handler.service";
-import { SteamWidgetService } from "../steam.widget.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { SteamWidgetService } from "../steam-widget.service";
 
 @Component({
   selector: "dash-game-details",
   templateUrl: "./game-details.component.html",
   styleUrl: "./game-details.component.scss",
   imports: [
+    NgOptimizedImage,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
@@ -32,6 +34,15 @@ import { SteamWidgetService } from "../steam.widget.service";
   ]
 })
 export class GameDetailsComponent {
+  public readonly labels = {
+    gameIcon: "game icon",
+    percent: "%",
+    achievements: "Succès :",
+    completedAchievements: "Succès complétés :",
+    communityHub: "Community hub",
+    noAchievements: "Aucun succès pour ce jeu."
+  };
+
   public readonly gameInfo = input.required<IGameInfoDisplay>();
   public readonly steamUserId = input.required<string>();
   public readonly profileUrl = input.required<string>();
@@ -57,6 +68,8 @@ export class GameDetailsComponent {
   public readonly completedAchievements = computed(() =>
     this.achievements().filter((achievement) => achievement.achieved === 1)
   );
+  // Kept short so that the text stays on one line, without surrounding spaces
+  public readonly completedCount = computed(() => this.completedAchievements().length);
   public readonly completionStatus = computed(() =>
     this.achievements().length
       ? Math.floor((this.completedAchievements().length / this.achievements().length) * 100)

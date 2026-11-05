@@ -1,14 +1,14 @@
-export type IIncident = {
+export interface IIncident {
   id: number;
   lastIncidentDate: string;
-};
+}
 
-export type IIncidentStreak = {
+export interface IIncidentStreak {
   streakStartDate: string;
   streakEndDate: string;
-};
+}
 
-export enum IIncidentViewEnum {
+export enum IncidentViewEnum {
   CURRENT_STREAK,
   PAST_STREAKS
 }

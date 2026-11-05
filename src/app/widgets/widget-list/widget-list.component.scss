@@ -20,12 +20,6 @@
     border-radius: $border-radius-lg;
     outline-offset: 3px;
   }
-
-  &.cdk-drop-list-dragging .widget-container:not(.cdk-drag-placeholder) {
-    @include motion-safe {
-      transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
-    }
-  }
 }
 
 // The dragged widget is a copy of this component's element, so it keeps these styles

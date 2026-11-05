@@ -5,11 +5,12 @@ import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatTooltip } from "@angular/material/tooltip";
-import { catchError, of } from "rxjs";
-import { DateFormatPipe } from "../../../pipes/date-format.pipe";
-import { ErrorHandlerService } from "../../../services/error.handler.service";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
+import { isResourceLoaded } from "@utils/resource.utils";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
-import { WorkoutWidgetService } from "../workout.widget.service";
+import { WorkoutWidgetService } from "../workout-widget.service";
+import { catchError, of } from "rxjs";
 
 @Component({
   selector: "dash-workout-session-edit",
@@ -18,8 +19,17 @@ import { WorkoutWidgetService } from "../workout.widget.service";
   imports: [MatIconButton, MatIcon, MatProgressSpinner, MatTooltip, DateFormatPipe]
 })
 export class WorkoutSessionEditComponent {
+  public readonly labels = {
+    sessionOf: "Session du",
+    finish: "Terminer",
+    editReps: "Modifier les répétitions",
+    noWorkoutType: "Ajoutez des types d'exercices pour compter vos répétitions."
+  };
+
   public readonly workoutTypes = input.required<IWorkoutType[]>();
   public readonly currentWorkoutSessionToEdit = input.required<IWorkoutSession>();
+  // Kept short so that the title stays on one line, without surrounding spaces
+  public readonly sessionDate = computed(() => this.currentWorkoutSessionToEdit().workoutDate);
 
   public readonly sessionEditMode = signal(false);
   public readonly isWidgetUpdating = signal(false);
@@ -40,7 +50,7 @@ export class WorkoutSessionEditComponent {
   public readonly workoutExercises = this.workoutExercisesResource.value;
   // "local" once the exercises have been updated in place after a rep change
   public readonly workoutExercisesLoaded = computed(() =>
-    ["resolved", "local"].includes(this.workoutExercisesResource.status())
+    isResourceLoaded(this.workoutExercisesResource.status())
   );
 
   private readonly ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
@@ -51,7 +61,10 @@ export class WorkoutSessionEditComponent {
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
 
   public decrementExerciceNumberOfReps(workoutTypeId: number): void {
-    this.updateNumberOfReps(workoutTypeId, -1);
+    // The number of reps cannot be negative
+    if (this.getExerciceNumberOfReps(workoutTypeId) > 0) {
+      this.updateNumberOfReps(workoutTypeId, -1);
+    }
   }
 
   public incrementExerciceNumberOfReps(workoutTypeId: number): void {
@@ -85,8 +98,10 @@ export class WorkoutSessionEditComponent {
           ]);
           this.isWidgetUpdating.set(false);
         },
-        error: (error) =>
-          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_EXERCISE)
+        error: (error) => {
+          this.isWidgetUpdating.set(false);
+          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_EXERCISE);
+        }
       });
   }
 }

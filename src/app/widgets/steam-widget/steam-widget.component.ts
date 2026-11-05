@@ -1,15 +1,15 @@
+import { NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
 import { rxResource, toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { catchError, map, of } from "rxjs";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { catchError, debounceTime, distinctUntilChanged, map, of } from "rxjs";
 
-import { ErrorHandlerService } from "../../services/error.handler.service";
+import { ErrorHandlerService } from "@services/error-handler.service";
 import { IGameInfoDisplay, IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
-import { SteamWidgetService } from "./steam.widget.service";
+import { SteamWidgetService } from "./steam-widget.service";
 import { GameDetailsComponent } from "./game-details/game-details.component";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -18,14 +18,15 @@ import { MatInput } from "@angular/material/input";
 import { MatAccordion } from "@angular/material/expansion";
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from "@angular/material/form-field";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { WidgetComponent } from "../widget/widget.component";
-import { injectWidgetData } from "../widget.tokens";
+import { WidgetComponent } from "@widgets/widget/widget.component";
+import { injectWidgetData } from "@widgets/widget.tokens";
 
 @Component({
   selector: "dash-steam-widget",
   templateUrl: "./steam-widget.component.html",
   styleUrl: "./steam-widget.component.scss",
   imports: [
+    NgOptimizedImage,
     WidgetComponent,
     MatFormField,
     MatLabel,
@@ -43,6 +44,15 @@ import { injectWidgetData } from "../widget.tokens";
   ]
 })
 export class SteamWidgetComponent {
+  public readonly labels = {
+    steamUser: "Utilisateur Steam",
+    enterSteamUserId: "Saisissez l'user ID du joueur Steam'",
+    searchGame: "Recherchez un jeu",
+    cancelSearch: "Annuler la recherche",
+    noGameFound: "Aucun jeu trouvé",
+    selectPage: "Sélectionnez une page"
+  };
+
   public readonly config = signal({ steamUserId: injectWidgetData("steamUserId", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.steamUserId));
   public readonly searchQuery = signal("");
@@ -101,6 +111,7 @@ export class SteamWidgetComponent {
   );
 
   public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   // A new object on each refresh, so that the resources reload even if the user is unchanged
   private readonly refreshedSteamUser = signal<{ steamUserId: string } | undefined>(undefined);
@@ -132,10 +143,6 @@ export class SteamWidgetComponent {
 
   public resetForm(): void {
     this.searchQuery.set("");
-  }
-
-  public getWidgetData(): { steamUserId: string } | undefined {
-    return this.isFormValid() ? this.config() : undefined;
   }
 
   private gameInfoResponseToGameInfoDisplay(gameInfoResponse: IGameInfoResponse): IGameInfoDisplay {

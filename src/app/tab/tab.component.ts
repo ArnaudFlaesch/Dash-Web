@@ -2,10 +2,10 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, linkedSignal, output, signal } from "@angular/core";
 import { form, FormField } from "@angular/forms/signals";
 import { MatIcon } from "@angular/material/icon";
-import { ITab } from "../model/Tab";
-import { requiredText } from "../utils/form-validators";
-import { ErrorHandlerService } from "../services/error.handler.service";
-import { TabService } from "../services/tab.service/tab.service";
+import { ITab } from "@model/ITab";
+import { requiredText } from "@utils/form-validators";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { TabService } from "@services/tab.service";
 
 @Component({
   selector: "dash-tab",
@@ -14,8 +14,16 @@ import { TabService } from "../services/tab.service/tab.service";
   imports: [MatIcon, FormField]
 })
 export class TabComponent {
+  public readonly labels = {
+    tabName: "Tab name",
+    saveName: "Enregistrer le nom",
+    save: "Enregistrer",
+    deleteTab: "Supprimer l'onglet"
+  };
+
   public readonly tab = input.required<ITab>();
   public readonly tabDeletedEvent = output<number>();
+  public readonly tabUpdatedEvent = output<ITab>();
   public readonly editMode = signal(false);
   public readonly tabLabel = linkedSignal(() => this.tab().label);
   public readonly tabLabelForm = form(this.tabLabel, (path) => requiredText(path));
@@ -34,6 +42,7 @@ export class TabComponent {
     }
     const { id, tabOrder } = this.tab();
     this.tabService.updateTab(id, this.tabLabel(), tabOrder).subscribe({
+      next: (updatedTab) => this.tabUpdatedEvent.emit(updatedTab),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_UPDATE_TAB),
       complete: () => this.toggleEditMode()
@@ -42,11 +51,5 @@ export class TabComponent {
 
   public toggleEditMode(): void {
     this.editMode.update((editMode) => !editMode);
-  }
-
-  public enterSaveTabName(event: KeyboardEvent): void {
-    if (event.key === "Enter") {
-      this.saveTabName();
-    }
   }
 }

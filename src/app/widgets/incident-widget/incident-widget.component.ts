@@ -2,23 +2,25 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 
-import { ErrorHandlerService } from "../../services/error.handler.service";
-import { IIncident, IIncidentStreak, IIncidentViewEnum } from "./IIncident";
-import { IncidentWidgetService } from "./incident.widget.service";
+import { isResourceLoaded } from "@utils/resource.utils";
+import { ErrorHandlerService } from "@services/error-handler.service";
+import { IIncident, IIncidentStreak, IncidentViewEnum } from "./IIncident";
+import { IncidentWidgetService } from "./incident-widget.service";
 import { differenceInDays } from "date-fns";
 import { MatDialog } from "@angular/material/dialog";
-import { ConfirmModalComponent } from "../../modals/confirm-modal/confirm-modal.component";
-import { DateFormatPipe } from "../../pipes/date-format.pipe";
+import { ConfirmModalComponent } from "@modals/confirm-modal/confirm-modal.component";
+import { DateFormatPipe } from "@pipes/date-format.pipe";
 import { MatButton } from "@angular/material/button";
 
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "../../utils/form-validators";
+import { requiredText } from "@utils/form-validators";
 import { MatInput } from "@angular/material/input";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
-import { WidgetComponent } from "../widget/widget.component";
-import { injectWidgetData, WIDGET_ID } from "../widget.tokens";
-import { catchError, map, of } from "rxjs";
+import { WidgetComponent } from "@widgets/widget/widget.component";
+import { injectWidgetData, WIDGET_ID } from "@widgets/widget.tokens";
+import { catchError, filter, map, of } from "rxjs";
+import { IConfirmModalData } from "@model/IConfirmModalData";
 
 @Component({
   selector: "dash-incident-widget",
@@ -36,6 +38,18 @@ import { catchError, map, of } from "rxjs";
   ]
 })
 export class IncidentWidgetComponent {
+  public readonly labels = {
+    incident: "Incident",
+    incidentType: "Type d'incident",
+    incidentTypePlaceholder: "Saisissez le type d'incident",
+    lastIncidentOn: "Dernier incident le",
+    pastStreaks: "Séries précédentes",
+    days: "jours",
+    end: "Terminer",
+    currentStreak: "Série actuelle",
+    start: "Départ"
+  };
+
   public readonly config = signal({ incidentName: injectWidgetData("incidentName", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.incidentName));
 
@@ -77,23 +91,23 @@ export class IncidentWidgetComponent {
     () => this.incidentConfigResource.value()?.lastIncidentDate
   );
   public readonly isWidgetLoaded = computed(() =>
-    ["resolved", "local"].includes(this.incidentConfigResource.status())
+    isResourceLoaded(this.incidentConfigResource.status())
   );
 
   public readonly isWidgetViewCurrentStreak = computed(
-    () => this.widgetView() === IIncidentViewEnum.CURRENT_STREAK
+    () => this.widgetView() === IncidentViewEnum.CURRENT_STREAK
   );
   public readonly isWidgetViewPastStreaks = computed(
-    () => this.widgetView() === IIncidentViewEnum.PAST_STREAKS
+    () => this.widgetView() === IncidentViewEnum.PAST_STREAKS
   );
   public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
   public readonly daysSinceLastIncident = computed(() => {
     const lastIncidentDate = this.lastIncidentDate();
-    if (!lastIncidentDate) return 0;
-    return differenceInDays(new Date(), Date.parse(lastIncidentDate));
+    return lastIncidentDate ? differenceInDays(new Date(), Date.parse(lastIncidentDate)) : 0;
   });
 
-  private readonly widgetView = signal(IIncidentViewEnum.CURRENT_STREAK);
+  private readonly widgetView = signal(IncidentViewEnum.CURRENT_STREAK);
   // A new object on each refresh, so that the resources reload
   private readonly refreshRequest = signal<object | undefined>(undefined);
 
@@ -119,43 +133,35 @@ export class IncidentWidgetComponent {
   }
 
   public openEndStreakModal(): void {
-    const dialogRef = this.dialog.open(ConfirmModalComponent, {
-      height: "400px",
-      width: "600px",
-      data: { confirmMessage: "Êtes-vous sûr de vouloir clôturer cette série ?" }
-    });
-
-    dialogRef.afterClosed().subscribe((choice: string) => {
-      if (choice === "ok") {
-        this.endCurrentStreak();
-      }
-    });
+    this.dialog
+      .open<ConfirmModalComponent, IConfirmModalData, boolean>(ConfirmModalComponent, {
+        width: "600px",
+        data: { confirmMessage: "Êtes-vous sûr de vouloir clôturer cette série ?" }
+      })
+      .afterClosed()
+      .pipe(filter(Boolean))
+      .subscribe(() => this.endCurrentStreak());
   }
 
   public goToCurrentStreakView(): void {
-    this.widgetView.set(IIncidentViewEnum.CURRENT_STREAK);
+    this.widgetView.set(IncidentViewEnum.CURRENT_STREAK);
   }
 
   public goToPastStreaksView(): void {
-    this.widgetView.set(IIncidentViewEnum.PAST_STREAKS);
-  }
-
-  public getDaysSinceLastIncident(): number {
-    return this.daysSinceLastIncident();
+    this.widgetView.set(IncidentViewEnum.PAST_STREAKS);
   }
 
   public getNumberOfDaysFromStreak(streakStartDate: string, streakEndDate: string): number {
     return differenceInDays(Date.parse(streakEndDate), Date.parse(streakStartDate));
   }
 
-  public getWidgetConfig(): { incidentName: string } | undefined {
-    return this.isFormValid() ? this.config() : undefined;
-  }
-
   private endCurrentStreak(): void {
     this.incidentWidgetService.endStreak(this.widgetId).subscribe({
-      next: (updatedIncidentConfig) =>
-        this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate),
+      next: (updatedIncidentConfig) => {
+        this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate);
+        // The ended streak is saved as a past streak
+        this.streaksResource.reload();
+      },
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_ENDING_NEW_STREAK)
     });
   }

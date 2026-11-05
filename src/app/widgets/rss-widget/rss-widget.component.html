@@ -1,12 +1,14 @@
 <dash-widget
-  [widgetData]="getWidgetData()"
+  [widgetData]="widgetData()"
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
 >
   <ng-template #headerIcon>
-    @if (rssFeedResult()?.image?.url && !isLogoBroken()) {
-      <img class="rss-widget-header" [src]="rssFeedResult()?.image?.url" alt="logo" (error)="isLogoBroken.set(true)" />
+    @if (!isLogoBroken() && rssFeedResult()?.image?.url; as logoUrl) {
+      <span class="rss-widget-logo">
+        <img class="rss-widget-header" [ngSrc]="logoUrl" fill [alt]="labels.logo" (error)="isLogoBroken.set(true)" />
+      </span>
     } @else {
       <mat-icon>rss_feed</mat-icon>
     }
@@ -15,7 +17,7 @@
   <ng-template #headerTitle>
     @if (rssFeedResult(); as rssFeedResult) {
       @if (rssFeedResult.image && rssFeedResult.image.link !== undefined) {
-        <a [href]="rssFeedResult.image.link | safe: 'url'">
+        <a [href]="rssFeedResult.image.link">
           <div class="rss-title">{{ rssFeedResult.title }}</div>
         </a>
       } @else {
@@ -26,15 +28,15 @@
 
   <ng-template #editComponent>
     <mat-form-field appearance="outline">
-      <mat-label>URL</mat-label>
-      <input matInput id="rss-feed-url" [formField]="configForm.url" placeholder="Saisissez l'URL du flux RSS" />
+      <mat-label>{{ labels.url }}</mat-label>
+      <input matInput id="rss-feed-url" [formField]="configForm.url" [placeholder]="labels.enterRssFeedUrl" />
     </mat-form-field>
   </ng-template>
 
   <ng-template #additionalActions>
     <button
       mat-icon-button
-      matTooltip="Marquer tout le flux comme lu"
+      [matTooltip]="labels.markAllFeedAsRead"
       class="mark-all-articles-as-read-button"
       (click)="markAllFeedAsRead()"
     >

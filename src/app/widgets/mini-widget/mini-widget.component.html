@@ -4,14 +4,14 @@
       <ng-container *ngTemplateOutlet="editComponent() ?? null" />
 
       @if (isWidgetLoaded() && widgetData()) {
-        <button class="cancel-button" matTooltip="Annuler" mat-icon-button (click)="cancelEdition()">
+        <button class="cancel-button" [matTooltip]="labels.cancel" mat-icon-button (click)="cancelEdition()">
           <mat-icon>undo</mat-icon>
         </button>
       }
 
       <button
         class="validate-button"
-        matTooltip="Valider"
+        [matTooltip]="labels.validate"
         mat-icon-button
         (click)="onValidation()"
         color="primary"
@@ -19,7 +19,7 @@
       >
         <mat-icon>check</mat-icon>
       </button>
-      <button mat-icon-button matTooltip="Supprimer le widget" (click)="toDeleteMode()" color="alert">
+      <button mat-icon-button [matTooltip]="labels.deleteWidget" (click)="toDeleteMode()" color="alert">
         <mat-icon aria-hidden="false">delete</mat-icon>
       </button>
     </div>
@@ -27,11 +27,11 @@
 
   @if (isModeDelete()) {
     <div class="delete-mini-widget">
-      <h4>Êtes-vous sûr de vouloir supprimer ce widget ?</h4>
+      <h4>{{ labels.confirmDeletion }}</h4>
       <div id="delete-mini-widget-actions" class="row gap-sm">
-        <button (click)="toReadMode()" mat-button class="cancel-button">Annuler</button>
+        <button (click)="toReadMode()" mat-button class="cancel-button">{{ labels.cancel }}</button>
         <button (click)="deleteMiniWidget()" mat-raised-button color="warn" class="validate-deletion-button">
-          Supprimer
+          {{ labels.delete }}
         </button>
       </div>
     </div>
@@ -41,7 +41,7 @@
     <!-- Touch gestures are kept, so that the list of mini widgets can be scrolled on phones -->
     <div
       (dblclick)="toEditMode()"
-      matTooltip="Double-cliquez pour modifier"
+      [matTooltip]="labels.doubleClickToEdit"
       [matTooltipShowDelay]="800"
       matTooltipTouchGestures="off"
     >

@@ -1,40 +1,36 @@
 <div class="weather-forecast-container column">
   <dash-weather-today [weather]="weather()" />
-  @if (cityData() && forecastResponse()) {
-    <div class="forecast-data-container">
-      <div class="forecast-selector">
-        @for (date of forecastDays(); track date.getTime()) {
-          <button
-            [color]="isSelectedDay(date) ? 'primary' : ''"
-            mat-raised-button
-            (click)="selectDayForecast(date)"
-            class="select-forecast"
-          >
-            {{ formatDate(date) | initialUppercase }}
-          </button>
-        }
-
+  <div class="forecast-data-container">
+    <div class="forecast-selector">
+      @for (date of forecastDays(); track date.getTime()) {
         <button
-          [color]="isForecastModeWeek() ? 'primary' : ''"
+          [color]="isSelectedDay(date) ? 'primary' : ''"
           mat-raised-button
-          id="toggle-week-forecast"
-          (click)="selectWeekForecast()"
+          (click)="selectDayForecast(date)"
+          class="select-forecast"
         >
-          Semaine
+          {{ formatDate(date) | initialUppercase }}
         </button>
-      </div>
-      <div class="toggle-forecast">
-        <mat-slide-toggle color="'primary'" [formField]="displayAllForecastForm">
-          Afficher les prévisions complètes
-        </mat-slide-toggle>
-      </div>
-      @if (cityData()) {
-        <dash-weather-forecast
-          [forecast]="forecastToDisplay()"
-          [forecastMode]="forecastMode()"
-          [timezone]="cityData().timezone"
-        />
       }
+
+      <button
+        [color]="isForecastModeWeek() ? 'primary' : ''"
+        mat-raised-button
+        id="toggle-week-forecast"
+        (click)="selectWeekForecast()"
+      >
+        {{ labels.week }}
+      </button>
     </div>
-  }
+    <div class="toggle-forecast">
+      <mat-slide-toggle color="primary" [formField]="displayAllForecastForm">
+        {{ labels.displayFullForecast }}
+      </mat-slide-toggle>
+    </div>
+    <dash-weather-forecast
+      [forecast]="forecastToDisplay()"
+      [forecastMode]="forecastMode()"
+      [timezone]="cityData().timezone"
+    />
+  </div>
 </div>

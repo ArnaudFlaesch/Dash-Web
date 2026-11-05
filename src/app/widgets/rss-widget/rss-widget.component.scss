@@ -7,3 +7,15 @@
   font-size: 0.9em;
   line-height: 1.4;
 }
+
+// The size of the logo of the feed is unknown, it fills this box keeping its aspect ratio
+.rss-widget-logo {
+  position: relative;
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+
+  .rss-widget-header {
+    object-fit: contain;
+  }
+}
