@@ -44,6 +44,7 @@
       <div id="date-navigation-container" class="row gap-xs">
         <button
           mat-raised-button
+          class="calendar-navigation-button"
           [matTooltip]="labels.previous"
           mwlCalendarPreviousView
           [view]="view()"
@@ -58,6 +59,7 @@
         </button>
         <button
           mat-raised-button
+          class="calendar-navigation-button"
           [matTooltip]="labels.next"
           mwlCalendarNextView
           [view]="view()"
