@@ -195,6 +195,41 @@ describe("RssWidgetComponent", () => {
     expect(component.readArticles()).toEqual([articleUrl]);
   });
 
+  it("Should not load the feed while the url is missing", () => {
+    component.refreshWidget();
+    TestBed.tick();
+    httpTestingController.expectNone(() => true);
+    expect(component.rssFeedResult()).toBeUndefined();
+  });
+
+  it("Should not erase the read articles when the feed is not loaded", () => {
+    component.readArticles.set(["guid-already-read"]);
+
+    component.markAllFeedAsRead();
+
+    httpTestingController.expectNone(
+      environment.backend_url + `/widget/updateWidgetData/${widgetId}`
+    );
+    expect(component.readArticles()).toEqual(["guid-already-read"]);
+  });
+
+  it("Should have no read article when the saved widget has no data", async () => {
+    component.config.update((config) => ({ ...config, url: urlFeed }));
+    component.refreshWidget();
+    TestBed.tick();
+    httpTestingController
+      .expectOne(environment.backend_url + "/rssWidget/?url=" + urlFeed)
+      .flush(rssFeedData);
+    await flushResources();
+
+    component.markArticleAsRead(rssFeedData.channel.item[0].guid);
+    httpTestingController
+      .expectOne(environment.backend_url + `/widget/updateWidgetData/${widgetId}`)
+      .flush({ id: 37 });
+
+    expect(component.readArticles()).toEqual([]);
+  });
+
   it("Should get widget data and check form", () => {
     expect(component.widgetData()).toEqual(undefined);
     expect(component.isFormValid()).toEqual(false);

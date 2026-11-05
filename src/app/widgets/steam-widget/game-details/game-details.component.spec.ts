@@ -202,16 +202,17 @@ describe("GameDetailsComponent rendering", () => {
     await fixture.whenStable();
 
     expect(element.querySelector("mat-progress-spinner")).toBeNull();
-    expect(element.querySelector(".progress-value")?.textContent).toContain(
+    // Exact texts, without surrounding spaces, as checked by the end-to-end tests
+    expect(element.querySelector(".progress-value")?.textContent).toEqual(
       `66${component.labels.percent}`
     );
     expect(element.querySelector(".achievements-progress")?.getAttribute("href")).toEqual(
       gameInfo.playerAchievementUrl
     );
-    expect(element.querySelector(".totalachievements")?.textContent).toContain(
+    expect(element.querySelector(".totalachievements")?.textContent).toEqual(
       `${component.labels.achievements} 3`
     );
-    expect(element.querySelector(".completed-achievements")?.textContent).toContain(
+    expect(element.querySelector(".completed-achievements")?.textContent).toEqual(
       `${component.labels.completedAchievements} 2`
     );
     const communityHubLink = element.querySelector(".community-hub-link") as HTMLAnchorElement;

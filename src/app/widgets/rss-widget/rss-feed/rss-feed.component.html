@@ -17,13 +17,15 @@
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <div class="rss-feed-content">
-          <a [href]="article.link | safe: 'url'">
+          <a [href]="article.link">
             <div class="article-content">
               {{ stripHtmlFromContent(article.description) }}
             </div>
             <div class="article-pubdate muted-text">
-              {{ labels.publishedOn }}
-              {{ article.pubDate || article.updated || "" | dateFormat }}
+              @if (article.pubDate || article.updated; as publicationDate) {
+                {{ labels.publishedOn }}
+                {{ publicationDate | dateFormat }}
+              }
               {{ article.author && labels.by + " " + article.author }}
             </div>
           </a>

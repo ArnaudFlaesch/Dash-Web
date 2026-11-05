@@ -9,7 +9,6 @@ import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
-import { SafePipe } from "../../pipes/safe.pipe";
 import { IWidgetConfig } from "../../model/IWidgetConfig";
 import { isResourceLoaded } from "../../utils/resource.utils";
 import { ErrorHandlerService } from "../../services/error-handler.service";
@@ -35,8 +34,7 @@ import { WidgetComponent } from "../widget/widget.component";
     MatIconButton,
     MatTooltip,
     MatIcon,
-    RssFeedComponent,
-    SafePipe
+    RssFeedComponent
   ]
 })
 export class RssWidgetComponent {
@@ -130,7 +128,11 @@ export class RssWidgetComponent {
   }
 
   public markAllFeedAsRead(): void {
-    this.updateRssFeed(this.rssFeedResult()?.item.map((article) => article.guid) ?? []);
+    // Without a loaded feed, the saved read articles would be erased
+    const articles = this.rssFeedResult()?.item;
+    if (articles) {
+      this.updateRssFeed(articles.map((article) => article.guid));
+    }
   }
 
   private updateRssFeed(readArticlesGuids: string[]): void {

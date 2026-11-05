@@ -6,6 +6,9 @@ import { WidgetService } from "../../services/widget.service";
 import { EcowattWidgetComponent } from "./ecowatt-widget.component";
 import { provideHttpClient } from "@angular/common/http";
 
+const ECOWATT_IFRAME_URL =
+  "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
+
 describe("EcowattWidgetComponent", () => {
   let component: EcowattWidgetComponent;
   let fixture: ComponentFixture<EcowattWidgetComponent>;
@@ -50,7 +53,7 @@ describe("EcowattWidgetComponent", () => {
       component.labels.title
     );
     expect(element.querySelector(".edit-button")).toBeNull();
-    expect(getIframe()?.src).toEqual(component.ecowattIframeUrl);
+    expect(getIframe()?.src).toEqual(ECOWATT_IFRAME_URL);
     expect(getIframe()?.title).toEqual(component.labels.iframeTitle);
   });
 
@@ -87,6 +90,6 @@ describe("EcowattWidgetComponent", () => {
     expect(component.iframeContainerHeight()).toEqual(350);
     expect(component.iframeContainerWidth()).toEqual(500);
     expect(srcAssignments).toEqual(1);
-    expect(iframe.src).toEqual(component.ecowattIframeUrl);
+    expect(iframe.src).toEqual(ECOWATT_IFRAME_URL);
   });
 });

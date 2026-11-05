@@ -162,6 +162,38 @@ describe("RssFeedComponent template", () => {
     );
   });
 
+  it("Should not display an invalid date for an article without publication date", async () => {
+    const articleWithoutDate: IArticle = {
+      guid: "guid-3",
+      title: "Article sans date",
+      link: "https://www.example.com/article-3",
+      description: "Contenu",
+      author: "Jean",
+      pubDate: ""
+    };
+    fixture.componentRef.setInput("feed", [articleWithoutDate]);
+    await fixture.whenStable();
+
+    expect(getTitles()[0].textContent?.trim()).toEqual(articleWithoutDate.title);
+    await openArticle(0);
+    const publicationText = element.querySelector(".article-pubdate")?.textContent ?? "";
+    expect(publicationText).not.toContain("Invalid Date");
+    expect(publicationText).not.toContain(component.labels.publishedOn);
+    expect(publicationText.trim()).toEqual(`${component.labels.by} Jean`);
+  });
+
+  it("Should keep Angular's sanitization of the article links", async () => {
+    fixture.componentRef.setInput("feed", [
+      { ...articles[0], guid: "guid-4", link: "javascript:alert(1)" }
+    ]);
+    await fixture.whenStable();
+    await openArticle(0);
+
+    expect(element.querySelector(".rss-feed-content a")?.getAttribute("href")).toEqual(
+      "unsafe:javascript:alert(1)"
+    );
+  });
+
   it("Should close the opened article", async () => {
     await openArticle(1);
     await openArticle(1);

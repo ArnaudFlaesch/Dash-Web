@@ -14,8 +14,9 @@
 
   <ng-template #body>
     <div id="ecowatt-info-container" #iframeContainer class="full-size">
+      <!-- Static source: trusted by Angular, without bypassing its sanitizer -->
       <iframe
-        [src]="ecowattIframeUrl | safe: 'resource_url'"
+        src="https://www.monecowatt.fr/preview-homepage?prevision=1&amp;map=0&amp;ecogestes=0"
         [title]="labels.iframeTitle"
         [width]="iframeContainerWidth()"
         [height]="iframeContainerHeight()"

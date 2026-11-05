@@ -102,8 +102,9 @@ describe("WorkoutSessionEditComponent", () => {
     await fixture.whenStable();
 
     expect(element.querySelector("mat-spinner")).toBeNull();
-    expect(element.querySelector("#workout-session-date")?.textContent).toContain(
-      component.labels.sessionOf
+    // Exact text, without surrounding spaces, as checked by the end-to-end tests
+    expect(element.querySelector("#workout-session-date")?.textContent).toEqual(
+      `${component.labels.sessionOf} ${new Date(currentWorkoutSessionToEdit.workoutDate).toLocaleDateString("fr")}`
     );
   });
 

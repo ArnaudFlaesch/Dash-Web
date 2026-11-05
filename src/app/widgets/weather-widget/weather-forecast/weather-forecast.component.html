@@ -2,14 +2,12 @@
   @for (forecastDay of forecast(); track forecastDay.dt) {
     <div class="forecast-container inset">
       <div class="forecast row">
-        @if (forecastDay) {
-          <div class="forecast-time">
-            {{ getDateToDisplay(forecastDay.dt, timezone()) }}
-          </div>
-        }
+        <div class="forecast-time">
+          {{ getDateToDisplay(forecastDay.dt, timezone()) }}
+        </div>
         <div>
           <img
-            [ngSrc]="getIconFromWeatherApi(forecastDay.weather[0].icon || '')"
+            [ngSrc]="getIconFromWeatherApi(forecastDay.weather[0].icon)"
             width="100"
             height="100"
             class="current-weather-icon"

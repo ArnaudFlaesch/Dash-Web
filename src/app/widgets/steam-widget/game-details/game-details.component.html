@@ -22,9 +22,7 @@
         <div class="row items-center justify-between gap-sm">
           <a [href]="gameInfo().playerAchievementUrl" class="game-achievements-data muted-text column">
             <div class="totalachievements">{{ labels.achievements }} {{ achievements().length }}</div>
-            <div class="completed-achievements">
-              {{ labels.completedAchievements }} {{ completedAchievements().length }}
-            </div>
+            <div class="completed-achievements">{{ labels.completedAchievements }} {{ completedCount() }}</div>
           </a>
           <a mat-stroked-button [href]="gameInfo().appIdLink" class="community-hub-link">
             <mat-icon>forum</mat-icon>

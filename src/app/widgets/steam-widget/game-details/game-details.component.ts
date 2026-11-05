@@ -68,6 +68,8 @@ export class GameDetailsComponent {
   public readonly completedAchievements = computed(() =>
     this.achievements().filter((achievement) => achievement.achieved === 1)
   );
+  // Kept short so that the text stays on one line, without surrounding spaces
+  public readonly completedCount = computed(() => this.completedAchievements().length);
   public readonly completionStatus = computed(() =>
     this.achievements().length
       ? Math.floor((this.completedAchievements().length / this.achievements().length) * 100)

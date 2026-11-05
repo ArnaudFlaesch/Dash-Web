@@ -17,7 +17,7 @@
   <ng-template #headerTitle>
     @if (rssFeedResult(); as rssFeedResult) {
       @if (rssFeedResult.image && rssFeedResult.image.link !== undefined) {
-        <a [href]="rssFeedResult.image.link | safe: 'url'">
+        <a [href]="rssFeedResult.image.link">
           <div class="rss-title">{{ rssFeedResult.title }}</div>
         </a>
       } @else {

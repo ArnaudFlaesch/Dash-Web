@@ -6,9 +6,8 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from "@angular/material/expansion";
-import { isThisYear, isToday } from "date-fns";
+import { isThisYear, isToday, isValid } from "date-fns";
 import { DateFormatPipe } from "../../../pipes/date-format.pipe";
-import { SafePipe } from "../../../pipes/safe.pipe";
 import { IArticle } from "../IArticle";
 
 @Component({
@@ -21,8 +20,7 @@ import { IArticle } from "../IArticle";
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
     MatExpansionPanelContent,
-    DateFormatPipe,
-    SafePipe
+    DateFormatPipe
   ]
 })
 export class RssFeedComponent {
@@ -44,7 +42,10 @@ export class RssFeedComponent {
 
   public formatTitleForArticle(article: IArticle): string {
     const articleDate = new Date(article.pubDate || article.updated || "");
-    return `${this.getPublicationDateToDisplay(articleDate)} ${article.title}`;
+    // Some articles have no (valid) publication date
+    return isValid(articleDate)
+      ? `${this.getPublicationDateToDisplay(articleDate)} ${article.title}`
+      : (article.title ?? "");
   }
 
   public isArticleRead(guid: string): boolean {

@@ -28,6 +28,8 @@ export class WorkoutSessionEditComponent {
 
   public readonly workoutTypes = input.required<IWorkoutType[]>();
   public readonly currentWorkoutSessionToEdit = input.required<IWorkoutSession>();
+  // Kept short so that the title stays on one line, without surrounding spaces
+  public readonly sessionDate = computed(() => this.currentWorkoutSessionToEdit().workoutDate);
 
   public readonly sessionEditMode = signal(false);
   public readonly isWidgetUpdating = signal(false);

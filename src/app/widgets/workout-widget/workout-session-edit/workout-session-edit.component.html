@@ -1,8 +1,6 @@
 @if (currentWorkoutSessionToEdit() && workoutExercisesLoaded()) {
   <div id="workout-widget-header" class="row items-center justify-between">
-    <h3 id="workout-session-date">
-      {{ labels.sessionOf }} {{ currentWorkoutSessionToEdit().workoutDate | dateFormat: "short" }}
-    </h3>
+    <h3 id="workout-session-date">{{ labels.sessionOf }} {{ sessionDate() | dateFormat: "short" }}</h3>
 
     @if (sessionEditMode()) {
       <button
