@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { vi } from "vitest";
 import { AppComponent } from "./app.component";
-import { AuthService } from "./services/auth.service";
-import { ThemeService } from "./services/theme.service";
+import { AuthService } from "./core/auth/auth.service";
+import { ThemeService } from "./core/theme/theme.service";
 
 describe("AppComponent", () => {
   let component: AppComponent;

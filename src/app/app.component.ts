@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
-import { AuthService } from "./services/auth.service";
-import { ThemeService } from "./services/theme.service";
+import { AuthService } from "./core/auth/auth.service";
+import { ThemeService } from "./core/theme/theme.service";
 
 @Component({
   selector: "dash-root",
