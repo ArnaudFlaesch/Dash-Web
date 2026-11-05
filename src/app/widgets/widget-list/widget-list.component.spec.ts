@@ -16,7 +16,8 @@ import { WidgetTypeEnum } from "../../enums/WidgetTypeEnum";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
 import { HomeComponent } from "../../home/home.component";
-import { CdkDragDrop } from "@angular/cdk/drag-drop";
+import { CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
+import { By } from "@angular/platform-browser";
 import { IWidgetConfig } from "../../model/IWidgetConfig";
 import { WIDGET_DATA, WIDGET_ID } from "../widget.tokens";
 
@@ -217,6 +218,11 @@ describe("WidgetListComponent template", () => {
     await fixture.whenStable();
     expect(list?.classList).toContain("edit-mode");
     expect(element.querySelectorAll(".widget-container.cdk-drag-disabled").length).toEqual(0);
+  });
+
+  it("Should sort the widgets of the grid both horizontally and vertically", () => {
+    const dropList = fixture.debugElement.query(By.css("#widget-list")).injector.get(CdkDropList);
+    expect(dropList.orientation).toEqual("mixed");
   });
 
   it("Should keep the widget components when the widgets are reordered", async () => {

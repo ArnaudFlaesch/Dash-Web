@@ -13,7 +13,8 @@ import { TabService } from "../services/tab.service";
 import { ThemeService } from "../services/theme.service";
 import { WidgetService } from "../services/widget.service";
 import { HomeComponent } from "./home.component";
-import { CdkDragDrop } from "@angular/cdk/drag-drop";
+import { CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
+import { By } from "@angular/platform-browser";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { NEVER, Observable, of } from "rxjs";
@@ -527,6 +528,12 @@ describe("HomeComponent template", () => {
     await render();
     expect(getElement("#dashboard-loading-spinner")).toBeNull();
     expect(getElement("#brand-name").textContent?.trim()).toEqual(component.labels.brandName);
+  });
+
+  it("Should sort the tabs horizontally", async () => {
+    await loadDashboard();
+    const dropList = fixture.debugElement.query(By.css("#tab-list")).injector.get(CdkDropList);
+    expect(dropList.orientation).toEqual("horizontal");
   });
 
   it("Should display the tabs and the widgets of the first tab", async () => {

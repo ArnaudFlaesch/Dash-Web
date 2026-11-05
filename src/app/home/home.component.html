@@ -7,7 +7,13 @@
       </div>
 
       <nav id="tab-list-container" class="row items-center gap-xs" [attr.aria-label]="labels.tabs">
-        <div id="tab-list" cdkDropList (cdkDropListDropped)="drop($event)" class="row gap-xs">
+        <div
+          id="tab-list"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListDropped)="drop($event)"
+          class="row gap-xs"
+        >
           @for (tab of tabs(); track tab.id) {
             <dash-tab
               class="tab"
@@ -24,7 +30,6 @@
               [matTooltip]="labels.doubleClickToRename"
               [matTooltipShowDelay]="800"
               cdkDrag
-              cdkDropListOrientation="horizontal"
               cdkDragBoundary="#tab-list"
             />
           }
