@@ -1,21 +1,8 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ErrorHandlerService } from "@services/error-handler.service";
-import { ThemeService } from "@services/theme.service";
-import { WidgetService } from "@services/widget.service";
-import { AirParifWidgetService } from "@widgets/airparif-widget/airparif-widget.service";
-import { CalendarWidgetService } from "@widgets/calendar-widget/calendar-widget.service";
-import { IncidentWidgetService } from "@widgets/incident-widget/incident-widget.service";
-import { RssWidgetService } from "@widgets/rss-widget/rss-widget.service";
-import { SteamWidgetService } from "@widgets/steam-widget/steam-widget.service";
-import { StravaWidgetService } from "@widgets/strava-widget/strava-widget.service";
-import { WeatherWidgetService } from "@widgets/weather-widget/weather-widget.service";
-import { WorkoutWidgetService } from "@widgets/workout-widget/workout-widget.service";
 import { WidgetListComponent } from "./widget-list.component";
 import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
 import { provideHttpClient } from "@angular/common/http";
-import { provideRouter } from "@angular/router";
-import { HomeComponent } from "@app/home/home.component";
 import { CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
 import { By } from "@angular/platform-browser";
 import { IWidgetConfig } from "@model/IWidgetConfig";
@@ -27,27 +14,7 @@ describe("WidgetListComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        provideRouter([
-          {
-            path: "home",
-            component: HomeComponent
-          }
-        ]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        RssWidgetService,
-        SteamWidgetService,
-        StravaWidgetService,
-        AirParifWidgetService,
-        WeatherWidgetService,
-        CalendarWidgetService,
-        WorkoutWidgetService,
-        IncidentWidgetService,
-        ErrorHandlerService,
-        WidgetService,
-        ThemeService
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WidgetListComponent);

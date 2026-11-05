@@ -1,8 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { WeatherWidgetService } from "../weather-widget.service";
 import { WeatherForecastComponent } from "./weather-forecast.component";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { provideHttpClient } from "@angular/common/http";
 import { ForecastMode, IForecast } from "../IWeather";
 
 /** Forecast at a timestamp in seconds. Not imported from the weather widget spec, so that its tests are not run a second time. */
@@ -44,10 +41,6 @@ describe("WeatherForecastComponent", () => {
   let element: HTMLElement;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [WeatherWidgetService, provideHttpClient(), provideHttpClientTesting()]
-    }).compileComponents();
-
     fixture = TestBed.createComponent(WeatherForecastComponent);
     component = fixture.componentInstance;
     element = fixture.nativeElement;

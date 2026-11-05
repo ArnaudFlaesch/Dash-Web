@@ -212,8 +212,7 @@ describe("StravaActivitiesComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [],
-      providers: []
+      imports: []
     }).compileComponents();
 
     fixture = TestBed.createComponent(StravaActivitiesComponent);

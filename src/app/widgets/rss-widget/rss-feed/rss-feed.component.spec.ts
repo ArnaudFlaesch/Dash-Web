@@ -10,8 +10,7 @@ describe("RssFeedComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [],
-      providers: []
+      imports: []
     }).compileComponents();
 
     fixture = TestBed.createComponent(RssFeedComponent);

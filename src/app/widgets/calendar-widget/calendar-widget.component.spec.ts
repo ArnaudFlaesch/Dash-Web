@@ -10,10 +10,8 @@ import localeFr from "@angular/common/locales/fr";
 import { addMonths, endOfDay, subMonths } from "date-fns";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
-import { WidgetService } from "@services/widget.service";
 import { ErrorHandlerService } from "@services/error-handler.service";
 import { CalendarWidgetComponent } from "./calendar-widget.component";
-import { CalendarWidgetService } from "./calendar-widget.service";
 import { EventDetailModalComponent } from "./event-detail-modal/event-detail-modal.component";
 import { ICalendarData } from "./ICalendarData";
 import { provideHttpClient } from "@angular/common/http";
@@ -30,10 +28,7 @@ describe("CalendarWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        CalendarWidgetService,
         DateAdapter,
-        ErrorHandlerService,
-        WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
     })

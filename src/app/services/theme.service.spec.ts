@@ -7,7 +7,6 @@ describe("ThemeService", () => {
   beforeEach(() => {
     localStorage.removeItem("preferredTheme");
     document.body.classList.remove("dark-mode");
-    TestBed.configureTestingModule({});
     themeService = TestBed.inject(ThemeService);
   });
 

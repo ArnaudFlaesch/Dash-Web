@@ -6,11 +6,7 @@ import { provideRouter } from "@angular/router";
 import { environment } from "@environments/environment";
 import { WidgetTypeEnum } from "@enums/WidgetTypeEnum";
 import { IWidgetConfig } from "@model/IWidgetConfig";
-import { AuthService } from "@services/auth.service";
-import { ConfigService } from "@services/config.service";
 import { ErrorHandlerService } from "@services/error-handler.service";
-import { TabService } from "@services/tab.service";
-import { ThemeService } from "@services/theme.service";
 import { WidgetService } from "@services/widget.service";
 import { HomeComponent } from "./home.component";
 import { CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
@@ -68,12 +64,6 @@ describe("HomeComponent", () => {
         ]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        AuthService,
-        TabService,
-        WidgetService,
-        ConfigService,
-        ErrorHandlerService,
-        ThemeService,
         {
           provide: MatDialog,
           useValue: {

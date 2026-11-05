@@ -9,8 +9,6 @@ import { ErrorHandlerService } from "@services/error-handler.service";
 import { MiniWidgetService } from "@services/mini-widget.service";
 import { MiniWidgetListComponent } from "./miniwidget-list.component";
 import { provideHttpClient } from "@angular/common/http";
-import { WeatherWidgetService } from "@widgets/weather-widget/weather-widget.service";
-import { WidgetService } from "@services/widget.service";
 import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
 import { WidgetTypePickerModalComponent } from "@modals/widget-type-picker-modal/widget-type-picker-modal.component";
 import { MINI_WIDGET_TYPE_OPTIONS } from "@model/WidgetTypeOptions";
@@ -34,10 +32,6 @@ describe("MiniWidgetListComponent", () => {
     dialogResult = undefined;
     await TestBed.configureTestingModule({
       providers: [
-        MiniWidgetService,
-        WidgetService,
-        ErrorHandlerService,
-        WeatherWidgetService,
         provideHttpClient(),
         provideHttpClientTesting(),
         {

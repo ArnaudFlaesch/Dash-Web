@@ -1,10 +1,6 @@
 import { WIDGET_ID } from "@widgets/widget.tokens";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ErrorHandlerService } from "@services/error-handler.service";
-import { WidgetService } from "@services/widget.service";
 import { EcowattWidgetComponent } from "./ecowatt-widget.component";
-import { provideHttpClient } from "@angular/common/http";
 
 const ECOWATT_IFRAME_URL =
   "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
@@ -16,13 +12,7 @@ describe("EcowattWidgetComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        ErrorHandlerService,
-        WidgetService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: WIDGET_ID, useValue: 1 }
-      ]
+      providers: [{ provide: WIDGET_ID, useValue: 1 }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(EcowattWidgetComponent);

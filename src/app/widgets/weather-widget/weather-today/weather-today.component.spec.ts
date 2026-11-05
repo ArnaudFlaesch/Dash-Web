@@ -1,8 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { WeatherWidgetService } from "../weather-widget.service";
 import { WeatherTodayComponent } from "./weather-today.component";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { provideHttpClient } from "@angular/common/http";
 import { DecimalPipe } from "@angular/common";
 import { LOCALE_ID } from "@angular/core";
 import { IWeatherAPIResponse } from "../IWeather";
@@ -37,10 +34,6 @@ describe("WeatherTodayComponent", () => {
   let element: HTMLElement;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [WeatherWidgetService, provideHttpClient(), provideHttpClientTesting()]
-    }).compileComponents();
-
     fixture = TestBed.createComponent(WeatherTodayComponent);
     component = fixture.componentInstance;
     element = fixture.nativeElement;

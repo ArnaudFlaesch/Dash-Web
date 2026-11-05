@@ -30,9 +30,7 @@ describe("LoginComponent", () => {
           }
         ]),
         provideHttpClient(),
-        provideHttpClientTesting(),
-        AuthService,
-        ErrorHandlerService
+        provideHttpClientTesting()
       ]
     }).compileComponents();
 

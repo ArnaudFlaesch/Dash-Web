@@ -1,11 +1,9 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { vi } from "vitest";
 import { AppComponent } from "./app.component";
 import { AuthService } from "./services/auth.service";
 import { ThemeService } from "./services/theme.service";
-import { provideHttpClient } from "@angular/common/http";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -14,9 +12,6 @@ describe("AppComponent", () => {
   beforeEach(async () => {
     localStorage.removeItem("user");
     localStorage.removeItem("preferredTheme");
-    await TestBed.configureTestingModule({
-      providers: [AuthService, provideHttpClient(), provideHttpClientTesting(), ThemeService]
-    }).compileComponents();
     navigateSpy = vi.spyOn(TestBed.inject(Router), "navigate").mockResolvedValue(true);
     const fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;

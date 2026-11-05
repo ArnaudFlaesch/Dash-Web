@@ -8,7 +8,6 @@ import { IPage } from "@model/IPage";
 import { environment } from "@environments/environment";
 import { INotification, NotificationTypeEnum } from "@model/INotification";
 import { ErrorHandlerService } from "@services/error-handler.service";
-import { NotificationService } from "@services/notification.service";
 import { WidgetService } from "@services/widget.service";
 import { NotificationsComponent } from "./notifications.component";
 import { provideHttpClient } from "@angular/common/http";
@@ -19,13 +18,7 @@ describe("NotificationsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        WidgetService,
-        ErrorHandlerService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        NotificationService
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     })
       // Not rendered, so that the resources are only loaded by the test, not by the child components
       .overrideTemplate(NotificationsComponent, "")

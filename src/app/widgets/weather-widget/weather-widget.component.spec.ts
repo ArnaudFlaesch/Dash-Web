@@ -8,11 +8,9 @@ import {
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
-import { WidgetService } from "@services/widget.service";
 import { ErrorHandlerService } from "@services/error-handler.service";
 import { forecastData, weatherData } from "./weather-widget.fixtures";
 import { WeatherWidgetComponent } from "./weather-widget.component";
-import { WeatherWidgetService } from "./weather-widget.service";
 
 describe("WeatherWidgetComponent", () => {
   let component: WeatherWidgetComponent;
@@ -23,9 +21,6 @@ describe("WeatherWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        WeatherWidgetService,
-        ErrorHandlerService,
-        WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
     })

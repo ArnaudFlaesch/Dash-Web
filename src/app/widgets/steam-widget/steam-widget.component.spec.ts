@@ -7,10 +7,8 @@ import { vi } from "vitest";
 import { IPage } from "@model/IPage";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@services/error-handler.service";
-import { WidgetService } from "@services/widget.service";
 import { IGameInfoResponse, IPlayerDataResponse } from "./ISteam";
 import { SteamWidgetComponent } from "./steam-widget.component";
-import { SteamWidgetService } from "./steam-widget.service";
 import { provideHttpClient } from "@angular/common/http";
 
 describe("SteamWidgetComponent", () => {
@@ -22,9 +20,6 @@ describe("SteamWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        SteamWidgetService,
-        WidgetService,
-        ErrorHandlerService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
     })

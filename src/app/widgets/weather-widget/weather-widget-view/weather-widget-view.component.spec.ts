@@ -1,10 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { provideHttpClient } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { format } from "date-fns";
 import { forecastData, weatherData } from "../weather-widget.fixtures";
-import { WeatherWidgetService } from "../weather-widget.service";
 import { WeatherWidgetViewComponent } from "./weather-widget-view.component";
 import { vi } from "vitest";
 
@@ -16,8 +13,7 @@ describe("WeatherWidgetViewComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WeatherWidgetViewComponent],
-      providers: [WeatherWidgetService, provideHttpClient(), provideHttpClientTesting()]
+      imports: [WeatherWidgetViewComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WeatherWidgetViewComponent);
@@ -62,9 +58,6 @@ describe("WeatherWidgetViewComponent template", () => {
 
   beforeEach(async () => {
     vi.setSystemTime(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
-    await TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
-    }).compileComponents();
 
     fixture = TestBed.createComponent(WeatherWidgetViewComponent);
     component = fixture.componentInstance;

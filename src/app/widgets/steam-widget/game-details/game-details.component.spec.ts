@@ -2,7 +2,6 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ErrorHandlerService } from "@services/error-handler.service";
 import { IGameInfoDisplay } from "../ISteam";
-import { SteamWidgetService } from "../steam-widget.service";
 import { environment } from "@environments/environment";
 import { GameDetailsComponent } from "./game-details.component";
 import { provideHttpClient } from "@angular/common/http";
@@ -17,12 +16,7 @@ describe("GameDetailsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        SteamWidgetService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        ErrorHandlerService
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     })
       // Not rendered, so that the resources are only loaded by the test, not by the child components
       .overrideTemplate(GameDetailsComponent, "")

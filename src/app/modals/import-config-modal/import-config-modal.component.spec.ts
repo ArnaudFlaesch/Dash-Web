@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialogRef } from "@angular/material/dialog";
-import { ConfigService } from "@services/config.service";
 import { ErrorHandlerService } from "@services/error-handler.service";
 import { ImportConfigModalComponent } from "./import-config-modal.component";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
@@ -20,8 +19,6 @@ describe("ImportConfigModalComponent", () => {
     closeSpy = vi.fn();
     await TestBed.configureTestingModule({
       providers: [
-        ConfigService,
-        ErrorHandlerService,
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: MatDialogRef, useValue: { close: closeSpy } }

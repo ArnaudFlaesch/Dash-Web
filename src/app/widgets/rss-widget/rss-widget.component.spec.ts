@@ -5,9 +5,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Mock, vi } from "vitest";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@services/error-handler.service";
-import { WidgetService } from "@services/widget.service";
 import { RssWidgetComponent } from "./rss-widget.component";
-import { RssWidgetService } from "./rss-widget.service";
 
 describe("RssWidgetComponent", () => {
   let component: RssWidgetComponent;
@@ -18,9 +16,6 @@ describe("RssWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        RssWidgetService,
-        WidgetService,
-        ErrorHandlerService,
         { provide: WIDGET_ID, useValue: widgetId }
       ]
     })

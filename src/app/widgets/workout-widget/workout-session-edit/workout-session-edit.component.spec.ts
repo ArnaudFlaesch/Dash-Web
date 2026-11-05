@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@services/error-handler.service";
 import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../model/Workout";
-import { WorkoutWidgetService } from "../workout-widget.service";
 import { WorkoutSessionEditComponent } from "./workout-session-edit.component";
 import { provideHttpClient } from "@angular/common/http";
 import { vi } from "vitest";
@@ -22,12 +21,7 @@ describe("WorkoutSessionEditComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        WorkoutWidgetService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        ErrorHandlerService
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkoutSessionEditComponent);

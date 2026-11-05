@@ -5,9 +5,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@services/error-handler.service";
-import { WidgetService } from "@services/widget.service";
 import { AirParifWidgetComponent } from "./airparif-widget.component";
-import { AirParifWidgetService } from "./airparif-widget.service";
 import { AirParifIndiceEnum } from "./model/IAirParif";
 
 describe("AirParifWidgetComponent", () => {
@@ -70,9 +68,6 @@ describe("AirParifWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        AirParifWidgetService,
-        ErrorHandlerService,
-        WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
     })

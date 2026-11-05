@@ -8,8 +8,6 @@ import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@services/error-handler.service";
 import { IActivity, IAthlete, ITokenData } from "./IStrava";
 import { StravaWidgetComponent } from "./strava-widget.component";
-import { StravaWidgetService } from "./strava-widget.service";
-import { WidgetService } from "@services/widget.service";
 import { HomeComponent } from "@app/home/home.component";
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from "@angular/router";
 import { vi } from "vitest";
@@ -29,9 +27,6 @@ describe("StravaWidgetComponent", () => {
         ]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        StravaWidgetService,
-        ErrorHandlerService,
-        WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
     })

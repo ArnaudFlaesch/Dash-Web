@@ -8,9 +8,6 @@ import { LOCALE_ID } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { ErrorHandlerService } from "@services/error-handler.service";
-import { MiniWidgetService } from "@services/mini-widget.service";
-import { WidgetService } from "@services/widget.service";
-import { WeatherWidgetService } from "../weather-widget.service";
 import { WeatherMiniWidgetComponent } from "./weather-miniwidget.component";
 
 // Not imported from the weather widget spec, so that its tests are not run a second time
@@ -30,10 +27,6 @@ describe("WeatherMiniWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        WeatherWidgetService,
-        ErrorHandlerService,
-        WidgetService,
-        MiniWidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
     })

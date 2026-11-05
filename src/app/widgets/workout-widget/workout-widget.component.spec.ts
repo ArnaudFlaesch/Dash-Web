@@ -17,10 +17,7 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
-import { AuthService } from "@services/auth.service";
-import { WidgetService } from "@services/widget.service";
 import { WorkoutWidgetComponent } from "./workout-widget.component";
-import { WorkoutWidgetService } from "./workout-widget.service";
 import { provideHttpClient } from "@angular/common/http";
 import { MAT_DATE_LOCALE } from "@angular/material/core";
 import { provideDateFnsAdapter } from "@angular/material-date-fns-adapter";
@@ -38,10 +35,6 @@ describe("WorkoutWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        WorkoutWidgetService,
-        AuthService,
-        ErrorHandlerService,
-        WidgetService,
         { provide: WIDGET_ID, useValue: 1 }
       ]
     })

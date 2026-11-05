@@ -30,8 +30,7 @@ describe("NotificationsListComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [],
-      providers: []
+      imports: []
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotificationsListComponent);

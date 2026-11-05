@@ -7,10 +7,8 @@ import { vi } from "vitest";
 import { startOfYesterday } from "date-fns";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@services/error-handler.service";
-import { WidgetService } from "@services/widget.service";
 import { IIncident, IIncidentStreak } from "./IIncident";
 import { IncidentWidgetComponent } from "./incident-widget.component";
-import { IncidentWidgetService } from "./incident-widget.service";
 import { provideHttpClient } from "@angular/common/http";
 
 describe("IncidentWidgetComponent", () => {
@@ -22,9 +20,6 @@ describe("IncidentWidgetComponent", () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        ErrorHandlerService,
-        IncidentWidgetService,
-        WidgetService,
         { provide: WIDGET_ID, useValue: widgetId }
       ]
     })
