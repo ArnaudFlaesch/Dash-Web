@@ -14,14 +14,11 @@
     "module": "preserve",
     "paths": {
       "@app/*": ["./src/app/*"],
-      "@enums/*": ["./src/app/enums/*"],
+      "@core/*": ["./src/app/core/*"],
       "@environments/*": ["./src/environments/*"],
-      "@modals/*": ["./src/app/modals/*"],
-      "@model/*": ["./src/app/model/*"],
-      "@pipes/*": ["./src/app/pipes/*"],
-      "@services/*": ["./src/app/services/*"],
-      "@utils/*": ["./src/app/utils/*"],
-      "@widgets/*": ["./src/app/widgets/*"]
+      "@features/*": ["./src/app/features/*"],
+      "@shared/*": ["./src/app/shared/*"],
+      "@widgets/*": ["./src/app/features/widgets/*"]
     }
   },
   "angularCompilerOptions": {
