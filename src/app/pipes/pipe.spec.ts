@@ -1,6 +1,6 @@
 import { DateFormatPipe } from "./date-format.pipe";
 import { InitialUppercasePipe } from "./initial.uppercase.pipe";
-import { vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 describe("InitialUppercasePipe", () => {
   const component = new InitialUppercasePipe();

@@ -35,11 +35,11 @@
       [class.info]="notification.notificationType === notificationTypeEnum.INFO"
       [class.warn]="notification.notificationType === notificationTypeEnum.WARN"
     >
-      <span>{{ notification.message }}</span>
+      <span class="notification-message">{{ notification.message }}</span>
       <span [matTooltip]="notification.notificationDate | dateFormat: 'short'" class="notification-date">
         {{ notification.notificationDateToDisplay }}
       </span>
-      <mat-icon>{{ notification.notificationTypeToDisplay }}</mat-icon>
+      <mat-icon class="notification-type-icon">{{ notification.notificationTypeToDisplay }}</mat-icon>
       @if (!notification.isRead) {
         <button
           class="mark-notification-as-read-button"
@@ -48,6 +48,8 @@
         >
           <mat-icon>check</mat-icon>
         </button>
+      } @else {
+        <span class="mark-notification-as-read-placeholder"></span>
       }
     </div>
   }
