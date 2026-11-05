@@ -50,6 +50,7 @@ describe("RssFeedComponent", () => {
   it("Should remove html from article content", () => {
     expect(component.stripHtmlFromContent(`<div>${""}</div>`)).toEqual("");
     expect(component.stripHtmlFromContent(`<div></div>`)).toEqual("");
+    expect(component.stripHtmlFromContent(undefined)).toEqual("");
     const expectedContent = "RSS content";
     expect(component.stripHtmlFromContent(`<div>${expectedContent}</div>`)).toEqual(
       expectedContent

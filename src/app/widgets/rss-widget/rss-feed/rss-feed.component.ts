@@ -35,9 +35,9 @@ export class RssFeedComponent {
   public readonly currentOpenedArticle = signal<string | undefined>(undefined);
 
   public stripHtmlFromContent(content?: string): string {
-    const div = document.createElement("div");
-    div.innerHTML = content ?? "";
-    return div.textContent ?? div.innerText ?? "";
+    // The content is parsed in an inert document: no script is executed and no resource is loaded
+    const parsedContent = new DOMParser().parseFromString(content ?? "", "text/html");
+    return parsedContent.body.textContent;
   }
 
   public formatTitleForArticle(article: IArticle): string {

@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+/* global before, after, beforeEach, describe, it, cy */
+
 describe("Ecowatt Widget tests", () => {
   const tabName = "Ecowatt";
 
