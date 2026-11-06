@@ -96,7 +96,7 @@ describe("Home", () => {
   }
 
   function getElement<T extends HTMLElement>(selector: string): T {
-    return (fixture.nativeElement as HTMLElement).querySelector(selector) as T;
+    return (fixture.nativeElement as HTMLElement).querySelector<T>(selector)!;
   }
 
   function getTabs(): HTMLElement[] {

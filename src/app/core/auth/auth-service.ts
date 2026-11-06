@@ -17,7 +17,7 @@ export class AuthService {
       throw new Error("Invalid token");
     }
     // The payload is encoded in base64url
-    return JSON.parse(atob(payload.replaceAll("-", "+").replaceAll("_", "/")));
+    return JSON.parse(atob(payload.replaceAll("-", "+").replaceAll("_", "/"))) as Jwt;
   }
 
   public readonly isUserAdmin = computed(
@@ -66,7 +66,7 @@ export class AuthService {
   private readStoredUser(): User | null {
     const userData = localStorage.getItem(this.USER_STORAGE_KEY);
     try {
-      return userData ? JSON.parse(userData) : null;
+      return userData ? (JSON.parse(userData) as User) : null;
     } catch {
       return null;
     }

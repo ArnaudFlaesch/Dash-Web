@@ -93,7 +93,7 @@ describe("SteamWidget", () => {
   }
 
   function goToNextPage(): void {
-    (element.querySelector(".mat-mdc-paginator-navigation-next") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>(".mat-mdc-paginator-navigation-next")!.click();
     TestBed.tick();
   }
 
@@ -104,9 +104,9 @@ describe("SteamWidget", () => {
     expect(element.querySelector("#steam-user-id-label")?.textContent).toContain(
       "Utilisateur Steam"
     );
-    const input = element.querySelector("#steam-user-id-input") as HTMLInputElement;
+    const input = element.querySelector<HTMLInputElement>("#steam-user-id-input")!;
     expect(input.placeholder).toEqual("Saisissez l'ID utilisateur du joueur Steam");
-    expect((element.querySelector(".validate-button") as HTMLButtonElement).disabled).toBe(true);
+    expect(element.querySelector<HTMLButtonElement>(".validate-button")!.disabled).toBe(true);
     httpTestingController.expectNone(() => true);
   });
 
@@ -124,11 +124,11 @@ describe("SteamWidget", () => {
     await createWidget();
     await fixture.whenStable();
 
-    const input = element.querySelector("#steam-user-id-input") as HTMLInputElement;
+    const input = element.querySelector<HTMLInputElement>("#steam-user-id-input")!;
     input.value = steamUserId;
     input.dispatchEvent(new Event("input"));
     await fixture.whenStable();
-    const validateButton = element.querySelector(".validate-button") as HTMLButtonElement;
+    const validateButton = element.querySelector<HTMLButtonElement>(".validate-button")!;
     expect(validateButton.disabled).toBe(false);
 
     validateButton.click();
@@ -162,7 +162,7 @@ describe("SteamWidget", () => {
     const headerLinks = element.querySelectorAll<HTMLAnchorElement>("a.steam-header");
     expect(headerLinks).toHaveLength(2);
     expect(headerLinks[0].getAttribute("href")).toEqual(player.profileurl);
-    const avatar = headerLinks[0].querySelector("img") as HTMLImageElement;
+    const avatar = headerLinks[0].querySelector<HTMLImageElement>("img")!;
     expect(avatar.src).toEqual(player.avatar);
     expect(avatar.alt).toEqual(player.personaname);
     expect(headerLinks[1].textContent).toContain(player.personaname);
@@ -251,7 +251,7 @@ describe("SteamWidget", () => {
     await renderResponses();
     expect(element.querySelector("#reset-form-button")).toBeNull();
 
-    const searchInput = element.querySelector("#search-game-form input") as HTMLInputElement;
+    const searchInput = element.querySelector<HTMLInputElement>("#search-game-form input")!;
     searchInput.value = "Lost";
     searchInput.dispatchEvent(new Event("input"));
     TestBed.tick();
@@ -267,7 +267,7 @@ describe("SteamWidget", () => {
     expect(getGameDetails()).toHaveLength(1);
     expect(getPaginatorRange()).toMatch(/^1\D+1\D+1$/);
 
-    const resetButton = element.querySelector("#reset-form-button") as HTMLButtonElement;
+    const resetButton = element.querySelector<HTMLButtonElement>("#reset-form-button")!;
     expect(resetButton).not.toBeNull();
     resetButton.click();
     TestBed.tick();

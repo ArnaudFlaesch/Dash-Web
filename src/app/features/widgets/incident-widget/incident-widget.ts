@@ -41,8 +41,21 @@ export class IncidentWidget {
     start: "Départ"
   };
 
+  private readonly ERROR_MESSAGES = {
+    startingNewStreak: "Erreur lors du démarrage de la série.",
+    endingNewStreak: "Erreur lors de la clôture de la série.",
+    gettingIncidentStreaks: "Erreur lors de la récupération des séries."
+  };
+
   protected readonly config = signal({ incidentName: injectWidgetData("incidentName", "") });
   protected readonly configForm = form(this.config, (path) => requiredText(path.incidentName));
+  private readonly widgetView = signal(IncidentView.CURRENT_STREAK);
+  // A new object on each refresh, so that the resources reload
+  private readonly refreshRequest = signal<object | undefined>(undefined);
+  // Also updated when a streak is started or ended
+  protected readonly lastIncidentDate = linkedSignal(
+    () => this.incidentConfigResource.value()?.lastIncidentDate
+  );
 
   /** Incident configuration of the widget, reloaded on each refresh. */
   private readonly incidentConfigResource = rxResource({
@@ -50,7 +63,7 @@ export class IncidentWidget {
     stream: () =>
       this.incidentWidgetService.getIncidentConfigForWidget(this.widgetId).pipe(
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingIncidentStreaks);
           return of(undefined);
         })
       ),
@@ -69,7 +82,7 @@ export class IncidentWidget {
           )
         ),
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_INCIDENT_STREAKS);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingIncidentStreaks);
           return of([]);
         })
       ),
@@ -77,14 +90,9 @@ export class IncidentWidget {
   });
 
   protected readonly streaks = this.streaksResource.value;
-  // Also updated when a streak is started or ended
-  protected readonly lastIncidentDate = linkedSignal(
-    () => this.incidentConfigResource.value()?.lastIncidentDate
-  );
   protected readonly isWidgetLoaded = computed(() =>
     isResourceLoaded(this.incidentConfigResource.status())
   );
-
   protected readonly isWidgetViewCurrentStreak = computed(
     () => this.widgetView() === IncidentView.CURRENT_STREAK
   );
@@ -97,14 +105,6 @@ export class IncidentWidget {
     const lastIncidentDate = this.lastIncidentDate();
     return lastIncidentDate ? differenceInDays(new Date(), Date.parse(lastIncidentDate)) : 0;
   });
-
-  private readonly widgetView = signal(IncidentView.CURRENT_STREAK);
-  // A new object on each refresh, so that the resources reload
-  private readonly refreshRequest = signal<object | undefined>(undefined);
-
-  private readonly ERROR_STARTING_NEW_STREAK = "Erreur lors du démarrage de la série.";
-  private readonly ERROR_ENDING_NEW_STREAK = "Erreur lors de la clôture de la série.";
-  private readonly ERROR_GETTING_INCIDENT_STREAKS = "Erreur lors de la récupération des séries.";
 
   private readonly dialog = inject(MatDialog);
   private readonly incidentWidgetService = inject(IncidentWidgetService);
@@ -119,7 +119,8 @@ export class IncidentWidget {
     this.incidentWidgetService.startFirstStreak(this.widgetId).subscribe({
       next: (updatedIncidentConfig) =>
         this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate),
-      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_STARTING_NEW_STREAK)
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.startingNewStreak)
     });
   }
 
@@ -153,7 +154,8 @@ export class IncidentWidget {
         // The ended streak is saved as a past streak
         this.streaksResource.reload();
       },
-      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_ENDING_NEW_STREAK)
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.endingNewStreak)
     });
   }
 }

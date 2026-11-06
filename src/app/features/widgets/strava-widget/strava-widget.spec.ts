@@ -7,7 +7,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { Activity, Athlete, TokenData } from "./strava";
+import { Activity, Athlete } from "./strava";
 import { StravaWidget } from "./strava-widget";
 import { StravaWidgetService } from "./strava-widget-service";
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from "@angular/router";
@@ -104,7 +104,7 @@ const tokenResponse = {
   refreshToken: "NEW_REFRESH_TOKEN",
   accessToken: "NEW_TOKEN",
   athlete
-} as TokenData;
+};
 
 describe("StravaWidget", () => {
   let fixture: ComponentFixture<StravaWidget>;
@@ -150,7 +150,7 @@ describe("StravaWidget", () => {
   function findButton(text: string): HTMLButtonElement {
     return Array.from(element.querySelectorAll("button")).find((button) =>
       button.textContent?.includes(text)
-    ) as HTMLButtonElement;
+    )!;
   }
 
   function getPageNumber(): string | undefined {
@@ -186,7 +186,7 @@ describe("StravaWidget", () => {
     expect(element.querySelector(".strava-login")?.textContent).toContain(
       "Connectez votre compte Strava pour suivre vos activités."
     );
-    const loginButton = element.querySelector("#login-to-strava-button") as HTMLButtonElement;
+    const loginButton = element.querySelector<HTMLButtonElement>("#login-to-strava-button")!;
     expect(loginButton.textContent).toContain("Se connecter à Strava");
 
     loginButton.click();
@@ -205,7 +205,7 @@ describe("StravaWidget", () => {
       const pageUrl = location.href;
       createWidget();
       await fixture.whenStable();
-      (element.querySelector("#login-to-strava-button") as HTMLButtonElement).click();
+      element.querySelector<HTMLButtonElement>("#login-to-strava-button")!.click();
 
       expect(openSpy).toHaveBeenCalledWith(expect.any(String), "_self");
       const loginUrl = new URL(openSpy.mock.calls[0][0] as string);
@@ -253,7 +253,7 @@ describe("StravaWidget", () => {
     expect(element.querySelector("#strava-widget-header")?.getAttribute("href")).toEqual(
       `https://www.strava.com/athletes/${athlete.id}`
     );
-    const profilePicture = element.querySelector("#strava-profile-picture") as HTMLImageElement;
+    const profilePicture = element.querySelector<HTMLImageElement>("#strava-profile-picture")!;
     expect(profilePicture.src).toEqual(athlete.profileMedium);
     expect(profilePicture.alt).toEqual("Athlete profile");
     expect(element.querySelector(".strava-header")?.textContent).toContain("Arnaud Flaesch");
@@ -332,7 +332,7 @@ describe("StravaWidget", () => {
   it("should navigate between the pages of activities", async () => {
     await createLoggedInWidget(activities);
     const moreRecentButton = findButton("Plus récentes");
-    const olderButton = element.querySelector(".older-activities-button") as HTMLButtonElement;
+    const olderButton = element.querySelector<HTMLButtonElement>(".older-activities-button")!;
     expect(getPageNumber()).toEqual("Page 1");
     expect(moreRecentButton.disabled).toBe(true);
     expect(olderButton.disabled).toBe(false);
@@ -348,7 +348,7 @@ describe("StravaWidget", () => {
     const pageTwoMoreRecentButton = findButton("Plus récentes");
     expect(pageTwoMoreRecentButton.disabled).toBe(false);
     // Last page, as it is not full
-    expect((element.querySelector(".older-activities-button") as HTMLButtonElement).disabled).toBe(
+    expect(element.querySelector<HTMLButtonElement>(".older-activities-button")!.disabled).toBe(
       true
     );
     expect(element.querySelectorAll(".strava-activity")).toHaveLength(3);
@@ -366,7 +366,7 @@ describe("StravaWidget", () => {
     // More activities than a page: not the expected page, so not followed by another one
     await createLoggedInWidget([...activities, createActivity({ id: 26 })]);
 
-    const olderButton = element.querySelector(".older-activities-button") as HTMLButtonElement;
+    const olderButton = element.querySelector<HTMLButtonElement>(".older-activities-button")!;
     expect(olderButton.disabled).toBe(false);
     olderButton.click();
     findButton("Plus récentes").dispatchEvent(new MouseEvent("click"));

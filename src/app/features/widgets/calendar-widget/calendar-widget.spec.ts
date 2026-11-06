@@ -44,7 +44,7 @@ describe("CalendarWidget", () => {
       ]
     });
     fixture = TestBed.createComponent(CalendarWidget);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     httpTestingController = TestBed.inject(HttpTestingController);
   }
 

@@ -39,21 +39,6 @@ export class StravaWidget implements OnInit {
   private readonly STORAGE_STRAVA_REFRESH_TOKEN_KEY = "strava_refresh_token";
   private readonly STORAGE_TOKEN_EXPIRATION_DATE_KEY = "strava_token_expires_at";
 
-  /** Most recent activities first. */
-  private byMostRecentActivity(activityA: Activity, activityB: Activity): number {
-    return Date.parse(activityB.startDate) - Date.parse(activityA.startDate);
-  }
-
-  /** Oldest activities first. */
-  private byOldestActivity(activityA: Activity, activityB: Activity): number {
-    return Date.parse(activityA.startDate) - Date.parse(activityB.startDate);
-  }
-
-  /** Distance of an activity in kilometers, rounded to the millimeter. */
-  private toKilometers(distanceInMeters: number): number {
-    return Math.round(distanceInMeters * 1000) / 1000000;
-  }
-
   protected readonly labels = {
     athleteProfile: "Athlete profile",
     strava: "Strava",
@@ -71,10 +56,16 @@ export class StravaWidget implements OnInit {
     connectStravaAccount: "Connectez votre compte Strava pour suivre vos activités.",
     loginToStrava: "Se connecter à Strava"
   };
+  private readonly ERROR_MESSAGES = {
+    gettingToken: "Erreur lors de la connexion à Strava.",
+    noRefreshToken: "Vous n'êtes pas connecté à Strava.",
+    gettingAthleteData: "Erreur lors de la récupération de vos informations Strava.",
+    gettingActivities: "Erreur lors de la récupération des activités Strava."
+  };
 
   protected readonly athlete = signal<Athlete | undefined>(undefined);
   protected readonly pageNumber = signal(1);
-  protected readonly paginationActivities = 25;
+  private readonly isAthleteLoaded = signal(true);
 
   /** Page of activities of the logged in athlete, reloaded when the athlete or the page changes. */
   private readonly activitiesResource = rxResource({
@@ -90,7 +81,7 @@ export class StravaWidget implements OnInit {
           )
         ),
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACTIVITIES);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingActivities);
           return of([]);
         })
       ),
@@ -135,7 +126,11 @@ export class StravaWidget implements OnInit {
       { count: 0, distance: 0, elevation: 0 }
     )
   );
+  protected readonly isWidgetLoaded = computed(
+    () => this.isAthleteLoaded() && !this.activitiesResource.isLoading()
+  );
 
+  protected readonly paginationActivities = 25;
   protected readonly chartOptions: ChartConfiguration["options"] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -147,22 +142,8 @@ export class StravaWidget implements OnInit {
       activities: { position: "right", beginAtZero: true, grid: { display: false } }
     }
   };
-
-  protected readonly isWidgetLoaded = computed(
-    () => this.isAthleteLoaded() && !this.activitiesResource.isLoading()
-  );
-
-  private readonly isAthleteLoaded = signal(true);
-
   // Strava redirects to the current page, encoded so that its query parameters are kept
   private readonly loginToStravaUrl = `https://www.strava.com/oauth/authorize?client_id=${this.STRAVA_CLIENT_ID}&redirect_uri=${encodeURIComponent(location.href)}&response_type=code&scope=read,activity:read`;
-
-  private readonly ERROR_GETTING_TOKEN = "Erreur lors de la connexion à Strava.";
-  private readonly ERROR_NO_REFRESH_TOKEN = "Vous n'êtes pas connecté à Strava.";
-  private readonly ERROR_GETTING_ATHLETE_DATA =
-    "Erreur lors de la récupération de vos informations Strava.";
-  private readonly ERROR_GETTING_ACTIVITIES =
-    "Erreur lors de la récupération des activités Strava.";
 
   private readonly stravaWidgetService = inject(StravaWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
@@ -180,6 +161,21 @@ export class StravaWidget implements OnInit {
       }
     }, 1000);
     this.destroyRef.onDestroy(() => clearTimeout(initTimeout));
+  }
+
+  /** Most recent activities first. */
+  private byMostRecentActivity(activityA: Activity, activityB: Activity): number {
+    return Date.parse(activityB.startDate) - Date.parse(activityA.startDate);
+  }
+
+  /** Oldest activities first. */
+  private byOldestActivity(activityA: Activity, activityB: Activity): number {
+    return Date.parse(activityA.startDate) - Date.parse(activityB.startDate);
+  }
+
+  /** Distance of an activity in kilometers, rounded to the millimeter. */
+  private toKilometers(distanceInMeters: number): number {
+    return Math.round(distanceInMeters * 1000) / 1000000;
   }
 
   protected refreshWidget(): void {
@@ -203,7 +199,10 @@ export class StravaWidget implements OnInit {
       await this.router.navigate(["/"]);
     } catch (error) {
       this.isAthleteLoaded.set(true);
-      this.errorHandlerService.handleError(error as HttpErrorResponse, this.ERROR_GETTING_TOKEN);
+      this.errorHandlerService.handleError(
+        error as HttpErrorResponse,
+        this.ERROR_MESSAGES.gettingToken
+      );
     }
   }
 
@@ -266,7 +265,7 @@ export class StravaWidget implements OnInit {
         .subscribe({
           next: (response) => this.athlete.set(response),
           error: (error: HttpErrorResponse) =>
-            this.errorHandlerService.handleError(error, this.ERROR_GETTING_ATHLETE_DATA)
+            this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingAthleteData)
         });
     }
   }
@@ -302,7 +301,7 @@ export class StravaWidget implements OnInit {
             this.athlete.set(response.athlete);
           },
           error: (error: HttpErrorResponse) =>
-            this.errorHandlerService.handleError(error, this.ERROR_NO_REFRESH_TOKEN)
+            this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.noRefreshToken)
         });
     }
   }

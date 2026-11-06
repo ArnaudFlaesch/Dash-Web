@@ -32,11 +32,17 @@ export class MiniWidgetList {
     addNewMiniWidget: "Ajouter un nouveau mini widget"
   };
 
+  private readonly ERROR_MESSAGES = {
+    getMiniWidgets: "Erreur lors de la récupération des mini widgets.",
+    addMiniWidget: "Erreur lors de l'ajout d'un mini widget.",
+    deleteMiniWidget: "Erreur lors de la suppression du mini widget."
+  };
+
   private readonly miniWidgetsResource = rxResource({
     stream: () =>
       this.miniWidgetService.getMiniWidgets().pipe(
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_GET_MINI_WIDGETS);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.getMiniWidgets);
           return of([]);
         })
       ),
@@ -44,19 +50,14 @@ export class MiniWidgetList {
   });
 
   protected readonly miniWidgetList = this.miniWidgetsResource.value;
+
   protected readonly miniWidgetComponents = this.MINI_WIDGET_COMPONENTS;
+  private readonly miniWidgetInjectors = new WeakMap<MiniWidgetConfig, Injector>();
 
   private readonly injector = inject(Injector);
-  private readonly miniWidgetInjectors = new WeakMap<MiniWidgetConfig, Injector>();
   private readonly dialog = inject(MatDialog);
   private readonly miniWidgetService = inject(MiniWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-
-  private readonly ERROR_MESSAGE_GET_MINI_WIDGETS =
-    "Erreur lors de la récupération des mini widgets.";
-  private readonly ERROR_MESSAGE_ADD_MINI_WIDGET = "Erreur lors de l'ajout d'un mini widget.";
-  private readonly ERROR_MESSAGE_DELETE_MINI_WIDGET =
-    "Erreur lors de la suppression du mini widget.";
 
   public constructor() {
     this.miniWidgetService.miniWidgetDeleted
@@ -85,7 +86,7 @@ export class MiniWidgetList {
         next: (createdMiniWidget) =>
           this.miniWidgetList.update((miniWidgetList) => [...miniWidgetList, createdMiniWidget]),
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_ADD_MINI_WIDGET)
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.addMiniWidget)
       });
   }
 
@@ -105,8 +106,8 @@ export class MiniWidgetList {
         this.miniWidgetList.update((miniWidgetList) =>
           miniWidgetList.filter((miniWidget) => miniWidget.id !== miniWidgetId)
         ),
-      error: (error) =>
-        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_DELETE_MINI_WIDGET)
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.deleteMiniWidget)
     });
   }
 }

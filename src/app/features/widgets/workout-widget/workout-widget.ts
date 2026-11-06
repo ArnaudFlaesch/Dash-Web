@@ -87,29 +87,35 @@ export class WorkoutWidget {
     currentYear: "Cette année",
     lastYear: "Année dernière"
   };
+  private readonly ERROR_MESSAGES = {
+    gettingWorkoutTypes: "Erreur lors de la récupération de la liste des types d'exercices.",
+    gettingWorkoutSessions: "Erreur lors de la récupération de la liste des sessions d'exercices.",
+    creatingWorkoutType: "Erreur lors de la création d'un type d'exercice.",
+    creatingWorkoutSession: "Erreur lors de la création d'une session d'exercices.",
+    gettingWorkoutStats: "Erreur lors de la récupération des statistiques."
+  };
 
   protected readonly currentWorkoutSessionToEdit = signal<WorkoutSession | undefined>(undefined);
   private readonly selectedWorkoutStatistics = signal<WorkoutStatisticsPeriod | undefined>(
     undefined
   );
   protected readonly widgetView = signal(WorkoutWidgetView.WORKOUT_SESSIONS_LIST_VIEW);
-
-  protected readonly dateFormat = "DD/MM/YYYY";
-  protected readonly WorkoutWidgetView = WorkoutWidgetView;
-
   private readonly workoutNameInput = signal<string>("");
   protected readonly workoutNameForm = form(this.workoutNameInput, (path) => requiredText(path));
   private readonly workoutDateInput = signal<string>("");
   protected readonly workoutDateForm = form(this.workoutDateInput, (path) => required(path));
   protected readonly selectedMonthInput = signal<Date>(startOfMonth(new Date()));
   protected readonly selectedMonthForm = form(this.selectedMonthInput);
+  // A new object on each refresh, so that the resources reload
+  /** Set by the first refresh of the widget, the next ones reload the resources. */
+  private readonly refreshRequest = signal<object | undefined>(undefined);
 
   private readonly workoutTypesResource = rxResource({
     params: () => this.refreshRequest(),
     stream: () =>
       this.handleError(
         this.workoutWidgetService.getWorkoutTypes(),
-        this.ERROR_GETTING_WORKOUT_TYPES
+        this.ERROR_MESSAGES.gettingWorkoutTypes
       ),
     defaultValue: [] as WorkoutType[]
   });
@@ -123,7 +129,7 @@ export class WorkoutWidget {
           startOfMonth(selectedMonth),
           endOfMonth(selectedMonth)
         ),
-        this.ERROR_GETTING_WORKOUT_SESSIONS
+        this.ERROR_MESSAGES.gettingWorkoutSessions
       ),
     defaultValue: [] as WorkoutSession[]
   });
@@ -134,7 +140,7 @@ export class WorkoutWidget {
       const today = new Date();
       return this.handleError(
         this.workoutWidgetService.getWorkoutStatsByPeriod(startOfISOWeek(today), endOfWeek(today)),
-        this.ERROR_GETTING_WORKOUT_STATS
+        this.ERROR_MESSAGES.gettingWorkoutStats
       );
     },
     defaultValue: [] as WorkoutStatsByPeriod[]
@@ -149,7 +155,7 @@ export class WorkoutWidget {
           startOfMonth(selectedMonth),
           endOfMonth(selectedMonth)
         ),
-        this.ERROR_GETTING_WORKOUT_STATS
+        this.ERROR_MESSAGES.gettingWorkoutStats
       ),
     defaultValue: [] as WorkoutStatsByPeriod[]
   });
@@ -163,7 +169,7 @@ export class WorkoutWidget {
     stream: ({ params: [dateIntervalStart, dateIntervalEnd] }) =>
       this.handleError(
         this.workoutWidgetService.getWorkoutStatsByMonth(dateIntervalStart, dateIntervalEnd),
-        this.ERROR_GETTING_WORKOUT_STATS
+        this.ERROR_MESSAGES.gettingWorkoutStats
       ),
     defaultValue: [] as WorkoutStatByMonth[]
   });
@@ -177,7 +183,6 @@ export class WorkoutWidget {
   protected readonly isWidgetLoaded = computed(() =>
     ["resolved", "reloading", "local"].includes(this.workoutTypesResource.status())
   );
-
   protected readonly isLastYearWorkoutStatisticsSelected = computed(
     () => this.selectedWorkoutStatistics() === WorkoutStatisticsPeriod.LAST_YEAR
   );
@@ -191,18 +196,8 @@ export class WorkoutWidget {
     () => this.selectedWorkoutStatistics() === WorkoutStatisticsPeriod.LAST_THREE_MONTHS
   );
 
-  private readonly ERROR_GETTING_WORKOUT_TYPES =
-    "Erreur lors de la récupération de la liste des types d'exercices.";
-  private readonly ERROR_GETTING_WORKOUT_SESSIONS =
-    "Erreur lors de la récupération de la liste des sessions d'exercices.";
-  private readonly ERROR_CREATING_WORKOUT_TYPE = "Erreur lors de la création d'un type d'exercice.";
-  private readonly ERROR_CREATING_WORKOUT_SESSION =
-    "Erreur lors de la création d'une session d'exercices.";
-  private readonly ERROR_GETTING_WORKOUT_STATS = "Erreur lors de la récupération des statistiques.";
-
-  // A new object on each refresh, so that the resources reload
-  /** Set by the first refresh of the widget, the next ones reload the resources. */
-  private readonly refreshRequest = signal<object | undefined>(undefined);
+  protected readonly dateFormat = "DD/MM/YYYY";
+  protected readonly WorkoutWidgetView = WorkoutWidgetView;
 
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
@@ -243,8 +238,8 @@ export class WorkoutWidget {
           this.workoutTypes.update((oldWorkoutTypes) => [...oldWorkoutTypes, addedWorkoutType]);
           this.workoutNameInput.set("");
         },
-        error: (error) =>
-          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_TYPE)
+        error: (error: HttpErrorResponse) =>
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.creatingWorkoutType)
       });
     }
   }
@@ -261,8 +256,8 @@ export class WorkoutWidget {
           ]);
           this.editWorkoutSession(addedWorkoutSession);
         },
-        error: (error) =>
-          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_SESSION)
+        error: (error: HttpErrorResponse) =>
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.creatingWorkoutSession)
       });
     }
   }

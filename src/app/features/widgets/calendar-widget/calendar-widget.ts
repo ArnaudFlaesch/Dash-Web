@@ -67,12 +67,22 @@ export class CalendarWidget {
     week: "Semaine"
   };
 
+  private readonly ERROR_MESSAGES = {
+    parsingEvents: "Erreur lors de la récupération des évènements."
+  };
+
   protected readonly viewDate = signal(new Date());
   private readonly config = signal({
     calendarUrls: injectWidgetData<string[]>("calendarUrls", [])
   });
   protected readonly configForm = form(this.config, (path) => minLength(path.calendarUrls, 1));
   protected readonly isWidgetLoaded = signal(true);
+  protected readonly view = signal(CalendarView.Month);
+  protected readonly activeDayIsOpen = signal(true);
+  // A new object on each refresh, so that the resource reloads even if the urls are unchanged
+  private readonly refreshedCalendarUrls = signal<{ calendarUrls: string[] } | undefined>(
+    undefined
+  );
 
   /** Events of all the calendars saved on the last refresh, a failing calendar is skipped. */
   private readonly eventsResource = rxResource({
@@ -83,7 +93,7 @@ export class CalendarWidget {
           this.calendarWidgetService.getCalendarEvents(calendarUrl).pipe(
             map((calendarData) => this.parseEvents(calendarData)),
             catchError((error: HttpErrorResponse) => {
-              this.errorHandlerService.handleError(error, this.ERROR_PARSING_EVENTS);
+              this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.parsingEvents);
               return of([]);
             })
           )
@@ -96,10 +106,6 @@ export class CalendarWidget {
   });
 
   protected readonly events = this.eventsResource.value;
-  protected readonly view = signal(CalendarView.Month);
-  protected readonly activeDayIsOpen = signal(true);
-  protected readonly locale = inject(LOCALE_ID);
-
   protected readonly isCalendarViewMonth = computed(() => this.view() === CalendarView.Month);
   protected readonly isCalendarViewWeek = computed(() => this.view() === CalendarView.Week);
   protected readonly isCalendarViewDay = computed(() => this.view() === CalendarView.Day);
@@ -109,15 +115,10 @@ export class CalendarWidget {
   protected readonly calendarView = CalendarView;
   protected readonly weekStartsOn = 1;
 
-  // A new object on each refresh, so that the resource reloads even if the urls are unchanged
-  private readonly refreshedCalendarUrls = signal<{ calendarUrls: string[] } | undefined>(
-    undefined
-  );
-
+  protected readonly locale = inject(LOCALE_ID);
   private readonly dialog = inject(MatDialog);
   private readonly calendarWidgetService = inject(CalendarWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
   protected refreshWidget(): void {
     this.refreshedCalendarUrls.set({ calendarUrls: this.config().calendarUrls });

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { NgTemplateOutlet } from "@angular/common";
 import { Component, contentChild, inject, TemplateRef } from "@angular/core";
 import { MatButton, MatIconButton } from "@angular/material/button";
@@ -41,7 +42,8 @@ export class Widget extends AbstractWidget {
   protected onValidation(): void {
     this.widgetService.updateWidgetData(this.widgetId, { ...this.widgetData() }).subscribe({
       next: () => this.onWidgetDataSaved(),
-      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_DATA)
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_DATA)
     });
   }
 

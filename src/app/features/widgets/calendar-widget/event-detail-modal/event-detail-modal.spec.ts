@@ -29,7 +29,7 @@ describe("EventDetailModal", () => {
   it("Should display the data in the modal", async () => {
     createComponent(calendarEvent);
     await fixture.whenStable();
-    const element: HTMLElement = fixture.nativeElement;
+    const element = fixture.nativeElement as HTMLElement;
 
     expect(element.querySelector("h1")?.textContent?.trim()).toEqual(calendarEvent.title);
     expect(getContentLines()).toEqual([

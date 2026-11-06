@@ -43,12 +43,12 @@ describe("GameDetails", () => {
 
   /** Opens the panel of the game, which loads its achievements. */
   function openPanel(): void {
-    (element.querySelector("mat-expansion-panel-header") as HTMLElement).click();
+    element.querySelector<HTMLElement>("mat-expansion-panel-header")!.click();
     TestBed.tick();
   }
 
   it("should display the game, without loading its achievements", () => {
-    const image = element.querySelector(".game-info img") as HTMLImageElement;
+    const image = element.querySelector<HTMLImageElement>(".game-info img")!;
     expect(image.src).toEqual(gameInfo.gameImgSrc);
     expect(image.alt).toEqual("game icon");
     expect(element.querySelector(".game-info p")?.textContent).toContain(gameInfo.name);
@@ -80,7 +80,7 @@ describe("GameDetails", () => {
     expect(element.querySelector(".completed-achievements")?.textContent).toEqual(
       "Succès complétés : 2"
     );
-    const communityHubLink = element.querySelector(".community-hub-link") as HTMLAnchorElement;
+    const communityHubLink = element.querySelector<HTMLAnchorElement>(".community-hub-link")!;
     expect(communityHubLink.getAttribute("href")).toEqual(gameInfo.appIdLink);
     expect(communityHubLink.textContent).toContain("Community hub");
     expect(element.querySelector(".no-achievements")).toBeNull();

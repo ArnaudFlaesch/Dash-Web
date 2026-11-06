@@ -78,7 +78,7 @@ describe("MiniWidget", () => {
     host = fixture.componentInstance;
     host.widgetData.set(widgetData);
     host.isWidgetLoaded.set(isWidgetLoaded);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     await fixture.whenStable();
   }
 

@@ -24,13 +24,15 @@ export class ImportConfigModal {
     upload: "Upload"
   };
 
+  private readonly ERROR_MESSAGES = {
+    importConfiguration: "Erreur lors de l'import de la configuration."
+  };
+
   protected readonly fileToUpload = signal<File | null>(null);
 
   private readonly configService = inject(ConfigService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly dialogRef = inject<MatDialogRef<ImportConfigModal>>(MatDialogRef);
-
-  private readonly ERROR_IMPORT_CONFIGURATION = "Erreur lors de l'import de la configuration.";
 
   protected selectFile(event: Event): void {
     // No file when the selection is cleared
@@ -42,7 +44,7 @@ export class ImportConfigModal {
     if (file) {
       this.configService.importConfig(file).subscribe({
         error: (error: HttpErrorResponse) =>
-          this.errorHandlerService.handleError(error, this.ERROR_IMPORT_CONFIGURATION),
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.importConfiguration),
         complete: () => {
           this.dialogRef.close();
           window.location.reload();

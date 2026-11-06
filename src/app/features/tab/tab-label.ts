@@ -21,14 +21,18 @@ export class TabLabel {
     deleteTab: "Supprimer l'onglet"
   };
 
+  private readonly ERROR_MESSAGES = {
+    updateTab: "Erreur lors de la modification d'un onglet."
+  };
+
   public readonly tab = input.required<Tab>();
   public readonly tabDeletedEvent = output<number>();
   public readonly tabUpdatedEvent = output<Tab>();
+
   protected readonly editMode = signal(false);
   protected readonly tabLabel = linkedSignal(() => this.tab().label);
   protected readonly tabLabelForm = form(this.tabLabel, (path) => requiredText(path));
 
-  private readonly ERROR_MESSAGE_UPDATE_TAB = "Erreur lors de la modification d'un onglet.";
   private readonly tabService = inject(TabService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
@@ -44,7 +48,7 @@ export class TabLabel {
     this.tabService.updateTab(id, this.tabLabel(), tabOrder).subscribe({
       next: (updatedTab) => this.tabUpdatedEvent.emit(updatedTab),
       error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_MESSAGE_UPDATE_TAB),
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateTab),
       complete: () => this.toggleEditMode()
     });
   }

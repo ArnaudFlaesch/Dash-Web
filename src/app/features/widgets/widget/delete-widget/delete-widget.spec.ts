@@ -16,7 +16,7 @@ describe("DeleteWidget", () => {
 
     fixture = TestBed.createComponent(DeleteWidget);
     component = fixture.componentInstance;
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     cancelSpy = vi.fn();
     validateSpy = vi.fn();
     component.cancelWidgetDeletion.subscribe(cancelSpy);

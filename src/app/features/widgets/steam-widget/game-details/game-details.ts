@@ -43,9 +43,15 @@ export class GameDetails {
     noAchievements: "Aucun succès pour ce jeu."
   };
 
+  private readonly ERROR_MESSAGES = {
+    gettingAchievementsData: "Erreur lors de la récupération des succès."
+  };
+
   public readonly gameInfo = input.required<GameInfoDisplay>();
   public readonly steamUserId = input.required<string>();
   public readonly profileUrl = input.required<string>();
+
+  private readonly isPanelOpened = signal(false);
 
   /** Achievements of the player for this game, loaded once the panel has been opened. */
   protected readonly achievementsResource = rxResource({
@@ -57,7 +63,7 @@ export class GameDetails {
       this.steamWidgetService.getAchievementList(steamUserId, appId).pipe(
         map((response) => response.playerstats.achievements ?? []),
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACHIEVEMENTS_DATA);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingAchievementsData);
           return of([]);
         })
       ),
@@ -76,9 +82,6 @@ export class GameDetails {
       : undefined
   );
 
-  private readonly isPanelOpened = signal(false);
-
-  private readonly ERROR_GETTING_ACHIEVEMENTS_DATA = "Erreur lors de la récupération des succès.";
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 

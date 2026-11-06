@@ -2,16 +2,15 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { WeatherToday } from "./weather-today";
 import { DecimalPipe } from "@angular/common";
 import { LOCALE_ID } from "@angular/core";
-import { WeatherApiResponse } from "../weather";
 import { weatherData } from "../weather-widget-fixtures";
 
 describe("WeatherToday", () => {
   let fixture: ComponentFixture<WeatherToday>;
   let element: HTMLElement;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(WeatherToday);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
   });
 
   it("Should display the current weather", async () => {
@@ -50,7 +49,7 @@ describe("WeatherToday", () => {
     fixture.componentRef.setInput("weather", {
       ...weatherData,
       weather: undefined
-    } as unknown as WeatherApiResponse);
+    });
     await fixture.whenStable();
     expect(element.querySelector(".weather-today-container")).toBeNull();
   });

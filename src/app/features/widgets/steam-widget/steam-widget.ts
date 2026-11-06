@@ -52,19 +52,22 @@ export class SteamWidget {
     noGameFound: "Aucun jeu trouvé",
     selectPage: "Sélectionnez une page"
   };
+  private readonly ERROR_MESSAGES = {
+    gettingPlayerData: "Erreur lors de la récupération de vos informations Steam.",
+    gettingOwnedGames: "Erreur lors de la récupération de la liste des jeux."
+  };
 
   protected readonly config = signal({ steamUserId: injectWidgetData("steamUserId", "") });
   protected readonly configForm = form(this.config, (path) => requiredText(path.steamUserId));
   protected readonly searchQuery = signal("");
   protected readonly searchForm = form(this.searchQuery);
-
-  protected readonly pageSize = 25;
-  protected readonly pageSizeOptions = [this.pageSize];
   // Back to the first page when the search changes
   protected readonly pageNumber = linkedSignal({
     source: () => this.debouncedSearchQuery(),
     computation: () => 0
   });
+  // A new object on each refresh, so that the resources reload even if the user is unchanged
+  private readonly refreshedSteamUser = signal<{ steamUserId: string } | undefined>(undefined);
 
   /** Player of the Steam user saved on the last refresh, reloaded on each refresh. */
   private readonly playerDataResource = rxResource({
@@ -73,7 +76,7 @@ export class SteamWidget {
       this.steamWidgetService.getPlayerData(steamUserId).pipe(
         map((response: PlayerDataResponse[]) => response.at(0)),
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_PLAYER_DATA);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingPlayerData);
           return of(undefined);
         })
       )
@@ -94,7 +97,7 @@ export class SteamWidget {
     stream: ({ params: { steamUserId, search, pageNumber } }) =>
       this.steamWidgetService.getOwnedGames(steamUserId, search, pageNumber).pipe(
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_OWNED_GAMES);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingOwnedGames);
           return of(undefined);
         })
       )
@@ -111,21 +114,15 @@ export class SteamWidget {
       this.gameInfoResponseToGameInfoDisplay(game)
     )
   );
-
   protected readonly isFormValid = computed(() => this.configForm().valid());
   protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
-
-  // A new object on each refresh, so that the resources reload even if the user is unchanged
-  private readonly refreshedSteamUser = signal<{ steamUserId: string } | undefined>(undefined);
   private readonly debouncedSearchQuery = toSignal(
     toObservable(this.searchQuery).pipe(debounceTime(500), distinctUntilChanged()),
     { initialValue: "" }
   );
 
-  private readonly ERROR_GETTING_PLAYER_DATA =
-    "Erreur lors de la récupération de vos informations Steam.";
-  private readonly ERROR_GETTING_OWNED_GAMES =
-    "Erreur lors de la récupération de la liste des jeux.";
+  protected readonly pageSize = 25;
+  protected readonly pageSizeOptions = [this.pageSize];
 
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);

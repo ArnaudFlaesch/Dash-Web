@@ -27,7 +27,7 @@ describe("WidgetTypePickerModal", () => {
   it("Should display a tile for each widget type", async () => {
     const fixture = TestBed.createComponent(WidgetTypePickerModal);
     await fixture.whenStable();
-    const element: HTMLElement = fixture.nativeElement;
+    const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector("h1")?.textContent).toEqual("Ajouter un widget");
     expect(element.querySelectorAll(".widget-type-tile")).toHaveLength(WIDGET_TYPE_OPTIONS.length);
   });

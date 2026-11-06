@@ -26,10 +26,13 @@ export class WorkoutSessionEdit {
     noWorkoutType: "Ajoutez des types d'exercices pour compter vos répétitions."
   };
 
+  private readonly ERROR_MESSAGES = {
+    creatingWorkoutExercise: "Erreur lors de l'ajout d'un exercice.",
+    gettingWorkoutExercises: "Erreur lors de la récupération des exercices."
+  };
+
   public readonly workoutTypes = input.required<WorkoutType[]>();
   public readonly currentWorkoutSessionToEdit = input.required<WorkoutSession>();
-  // Kept short so that the title stays on one line, without surrounding spaces
-  protected readonly sessionDate = computed(() => this.currentWorkoutSessionToEdit().workoutDate);
 
   protected readonly sessionEditMode = signal(false);
   protected readonly isWidgetUpdating = signal(false);
@@ -40,7 +43,7 @@ export class WorkoutSessionEdit {
     stream: ({ params: workoutSessionId }) =>
       this.workoutWidgetService.getWorkoutExercises(workoutSessionId).pipe(
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WORKOUT_EXERCISES);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingWorkoutExercises);
           return of([]);
         })
       ),
@@ -48,14 +51,12 @@ export class WorkoutSessionEdit {
   });
 
   private readonly workoutExercises = this.workoutExercisesResource.value;
+  // Kept short so that the title stays on one line, without surrounding spaces
+  protected readonly sessionDate = computed(() => this.currentWorkoutSessionToEdit().workoutDate);
   // "local" once the exercises have been updated in place after a rep change
   protected readonly workoutExercisesLoaded = computed(() =>
     isResourceLoaded(this.workoutExercisesResource.status())
   );
-
-  private readonly ERROR_CREATING_WORKOUT_EXERCISE = "Erreur lors de l'ajout d'un exercice.";
-  private readonly ERROR_GETTING_WORKOUT_EXERCISES =
-    "Erreur lors de la récupération des exercices.";
 
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
@@ -98,9 +99,9 @@ export class WorkoutSessionEdit {
           ]);
           this.isWidgetUpdating.set(false);
         },
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
           this.isWidgetUpdating.set(false);
-          this.errorHandlerService.handleError(error, this.ERROR_CREATING_WORKOUT_EXERCISE);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.creatingWorkoutExercise);
         }
       });
   }

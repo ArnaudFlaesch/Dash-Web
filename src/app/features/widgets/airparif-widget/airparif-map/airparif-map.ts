@@ -95,7 +95,6 @@ export class AirparifMap implements AfterViewInit, OnDestroy {
   public readonly airParifForecast = input.required<AirparifForecast[]>();
   public readonly airParifApiKey = input<string>();
   public readonly isLoading = input(false);
-  protected readonly airParifWebsiteUrl = inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL;
 
   private readonly forecastMode = signal(ForecastMode.TODAY);
   // Forecast of the selected day, also when the forecasts are refreshed
@@ -125,11 +124,12 @@ export class AirparifMap implements AfterViewInit, OnDestroy {
     () => this.forecastMode() === ForecastMode.TOMORROW
   );
 
-  private readonly airParifWidgetService = inject(AirparifWidgetService);
-
   private map: Map | undefined;
   private sidebarControl: SidebarControl | undefined;
   private forecastLayers: Record<ForecastMode, TileLayer<TileWMS>> | undefined;
+
+  protected readonly airParifWebsiteUrl = inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL;
+  private readonly airParifWidgetService = inject(AirparifWidgetService);
 
   public ngAfterViewInit(): void {
     this.initMap();

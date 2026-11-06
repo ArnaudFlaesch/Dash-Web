@@ -43,7 +43,7 @@ describe("Login", () => {
   });
 
   function getElement<T extends HTMLElement>(selector: string): T {
-    return (fixture.nativeElement as HTMLElement).querySelector(selector) as T;
+    return (fixture.nativeElement as HTMLElement).querySelector<T>(selector)!;
   }
 
   async function typeInInput(selector: string, value: string): Promise<void> {

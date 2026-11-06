@@ -25,9 +25,14 @@ export class WeatherWidget {
     city: "Ville",
     enterCityName: "Saisissez le nom de la ville"
   };
+  private readonly ERROR_MESSAGES = {
+    gettingWeatherData: "Erreur lors de la récupération des données météorologiques."
+  };
 
   protected readonly config = signal({ city: injectWidgetData("city", "") });
   protected readonly configForm = form(this.config, (path) => requiredText(path.city));
+  // A new object on each refresh, so that the resource reloads even if the city is unchanged
+  private readonly refreshedCity = signal<{ city: string } | undefined>(undefined);
 
   /** Weather and forecast of the city saved on the last refresh, reloaded on each refresh. */
   private readonly weatherResource = rxResource({
@@ -38,7 +43,7 @@ export class WeatherWidget {
         this.weatherWidgetService.fetchForecastData(city)
       ]).pipe(
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WEATHER_DATA);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingWeatherData);
           return of(undefined);
         })
       ),
@@ -50,18 +55,12 @@ export class WeatherWidget {
     () => this.weatherResource.value()?.[1].list ?? []
   );
   protected readonly cityData = computed(() => this.weatherResource.value()?.[1].city);
-
   protected readonly isWidgetLoaded = computed(
     () => !this.weatherResource.isLoading() && this.weatherResource.value() !== undefined
   );
   protected readonly isFormValid = computed(() => this.configForm().valid());
   protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
-  // A new object on each refresh, so that the resource reloads even if the city is unchanged
-  private readonly refreshedCity = signal<{ city: string } | undefined>(undefined);
-
-  private readonly ERROR_GETTING_WEATHER_DATA =
-    "Erreur lors de la récupération des données météorologiques.";
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 

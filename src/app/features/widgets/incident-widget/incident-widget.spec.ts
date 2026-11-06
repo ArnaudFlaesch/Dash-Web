@@ -18,7 +18,7 @@ describe("IncidentWidget", () => {
     environment.backend_url + "/incidentWidget/incidentWidgetConfig?widgetId=" + widgetId;
   const startStreakUrl = environment.backend_url + "/incidentWidget/startFirstStreak";
   const endStreakUrl = environment.backend_url + "/incidentWidget/endStreak";
-  const incidentConfig = { id: 4, lastIncidentDate: startOfYesterday().toISOString() } as Incident;
+  const incidentConfig = { id: 4, lastIncidentDate: startOfYesterday().toISOString() };
   // Configuration of an incident which has never happened
   const configWithoutIncident = { id: incidentConfig.id } as Incident;
   const streaksUrl =
@@ -111,7 +111,7 @@ describe("IncidentWidget", () => {
     // The configuration is not valid, so the widget is not loaded
     httpTestingController.expectNone(incidentConfigUrl);
 
-    const input = element.querySelector("#incident-name") as HTMLInputElement;
+    const input = element.querySelector<HTMLInputElement>("#incident-name")!;
     input.value = "Chute";
     input.dispatchEvent(new Event("input"));
     await fixture.whenStable();
@@ -186,7 +186,7 @@ describe("IncidentWidget", () => {
       "Série actuelle"
     );
 
-    (element.querySelector("#go-to-current-streak-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>("#go-to-current-streak-button")!.click();
     await fixture.whenStable();
     expect(element.querySelector("#past-streaks-list")).toBeNull();
     expect(element.querySelector("#incident-widget-body")).not.toBeNull();
@@ -196,7 +196,7 @@ describe("IncidentWidget", () => {
     const { fixture, element } = await createWidget(incidentConfig);
     const openSpy = mockConfirmModal(true);
 
-    (element.querySelector("#end-current-streak-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>("#end-current-streak-button")!.click();
     expect(openSpy).toHaveBeenCalledWith(ConfirmModal, {
       width: "600px",
       data: { confirmMessage: "Êtes-vous sûr de vouloir clôturer cette série ?" }
@@ -219,7 +219,7 @@ describe("IncidentWidget", () => {
     const { fixture, element } = await createWidget(incidentConfig);
     mockConfirmModal(false);
 
-    (element.querySelector("#end-current-streak-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>("#end-current-streak-button")!.click();
     await fixture.whenStable();
 
     httpTestingController.expectNone(endStreakUrl);
@@ -247,7 +247,7 @@ describe("IncidentWidget", () => {
     const { fixture, element } = await createWidget(incidentConfig);
     mockConfirmModal(true);
 
-    (element.querySelector("#end-current-streak-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>("#end-current-streak-button")!.click();
     httpTestingController
       .expectOne(endStreakUrl)
       .flush(null, { status: 500, statusText: "Internal Server Error" });

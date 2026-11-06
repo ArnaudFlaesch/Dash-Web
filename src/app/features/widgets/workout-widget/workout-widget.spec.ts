@@ -107,7 +107,7 @@ describe("WorkoutWidget", () => {
     workoutSessions: WorkoutSession[]
   ): Promise<void> {
     fixture = TestBed.createComponent(WorkoutWidget);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     TestBed.tick();
     flushWidgetRequests(workoutTypes, workoutSessions);
     await flushResources();
@@ -153,7 +153,7 @@ describe("WorkoutWidget", () => {
   describe("Loading", () => {
     it("should display a spinner, then the sessions, the statistics and the workout types", async () => {
       fixture = TestBed.createComponent(WorkoutWidget);
-      element = fixture.nativeElement;
+      element = fixture.nativeElement as HTMLElement;
       TestBed.tick();
       expect(query(".loading-spinner")).not.toBeNull();
       expect(query("#workout-types-grid")).toBeNull();
@@ -212,7 +212,7 @@ describe("WorkoutWidget", () => {
         .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
         .mockImplementation(() => undefined);
       fixture = TestBed.createComponent(WorkoutWidget);
-      element = fixture.nativeElement;
+      element = fixture.nativeElement as HTMLElement;
       TestBed.tick();
 
       for (const url of [

@@ -28,7 +28,7 @@ describe("WeatherMiniWidget", () => {
       ]
     });
     fixture = TestBed.createComponent(WeatherMiniWidget);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     httpTestingController = TestBed.inject(HttpTestingController);
   }
 

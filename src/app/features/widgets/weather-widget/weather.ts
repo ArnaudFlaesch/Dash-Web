@@ -17,7 +17,7 @@ export interface WeatherApiResponse {
   base: string;
   main: {
     temp: number;
-    feels_like: number;
+    feelsLike: number;
     tempMin: number;
     tempMax: number;
     pressure: number;

@@ -132,14 +132,14 @@ describe("WorkoutSessionEdit", () => {
     const element = await displaySession([]);
     expect(element.querySelector("#validate-session-button")).toBeNull();
 
-    (element.querySelector("#edit-session-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>("#edit-session-button")!.click();
     await fixture.whenStable();
     expect(element.querySelector("#edit-session-button")).toBeNull();
     expect(element.querySelector(".workout-exercise-container")?.classList).toContain("edit-mode");
     expect(element.querySelector(".add-rep-to-workout-button")).not.toBeNull();
     expect(element.querySelector(".subtract-rep-to-workout-button")).not.toBeNull();
 
-    (element.querySelector("#validate-session-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>("#validate-session-button")!.click();
     await fixture.whenStable();
     expect(element.querySelector("#edit-session-button")).not.toBeNull();
     expect(element.querySelector(".add-rep-to-workout-button")).toBeNull();
@@ -148,10 +148,10 @@ describe("WorkoutSessionEdit", () => {
   it("should update the reps with the buttons, disabled while the update is sent", async () => {
     const element = await displaySession([{ workoutTypeId: 1, numberOfReps: 3 }]);
     await toEditMode(element);
-    const addButton = element.querySelector(".add-rep-to-workout-button") as HTMLButtonElement;
-    const subtractButton = element.querySelector(
+    const addButton = element.querySelector<HTMLButtonElement>(".add-rep-to-workout-button")!;
+    const subtractButton = element.querySelector<HTMLButtonElement>(
       ".subtract-rep-to-workout-button"
-    ) as HTMLButtonElement;
+    )!;
 
     addButton.click();
     TestBed.tick();
@@ -183,7 +183,7 @@ describe("WorkoutSessionEdit", () => {
       .mockImplementation(() => undefined);
     const element = await displaySession([{ workoutTypeId: 1, numberOfReps: 3 }]);
     await toEditMode(element);
-    const addButton = element.querySelector(".add-rep-to-workout-button") as HTMLButtonElement;
+    const addButton = element.querySelector<HTMLButtonElement>(".add-rep-to-workout-button")!;
 
     addButton.click();
     httpTestingController

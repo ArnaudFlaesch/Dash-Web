@@ -63,7 +63,7 @@ describe("AbstractWidget", () => {
     TestBed.configureTestingModule({ providers: [{ provide: WIDGET_ID, useValue: 3 }] });
     fixture = TestBed.createComponent(Host);
     host = fixture.componentInstance;
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
   });
 
   async function render(): Promise<void> {

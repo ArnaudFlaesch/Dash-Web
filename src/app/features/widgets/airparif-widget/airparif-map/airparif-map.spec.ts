@@ -21,7 +21,7 @@ describe("AirparifMap", () => {
     }
   });
 
-  beforeEach(async () => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(AirparifMap);
     component = fixture.componentInstance;
   });
@@ -139,7 +139,7 @@ describe("AirparifMap", () => {
         so2: "BON",
         indice: "MOYEN"
       }
-    ] as unknown as AirparifForecast[]);
+    ] as unknown);
     fixture.componentRef.setInput("airParifCouleursIndices", []);
     fixture.componentRef.setInput("airParifApiKey", "test-key");
     await fixture.whenStable();
@@ -348,7 +348,7 @@ describe("AirparifMap", () => {
       fixture.componentRef.setInput("airParifForecast", [
         { ...forecasts[0], date: "2022-10-09" },
         { ...forecasts[1], date: "2022-10-10", indice: "MAUVAIS" }
-      ] as unknown as AirparifForecast[]);
+      ] as unknown);
       await fixture.whenStable();
 
       // The tomorrow tab is still selected, so its forecast is displayed
@@ -368,7 +368,7 @@ describe("AirparifMap", () => {
     it("Should display a default icon for an unknown indice", async () => {
       fixture.componentRef.setInput("airParifForecast", [
         { ...forecasts[0], indice: "INCONNU" }
-      ] as unknown as AirparifForecast[]);
+      ] as unknown);
       await fixture.whenStable();
 
       expect(element.querySelector("#global-indice-color mat-icon")?.textContent).toContain("air");

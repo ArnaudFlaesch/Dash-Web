@@ -57,7 +57,7 @@ describe("RssWidget", () => {
       ]
     });
     fixture = TestBed.createComponent(RssWidget);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     httpTestingController = TestBed.inject(HttpTestingController);
   }
 

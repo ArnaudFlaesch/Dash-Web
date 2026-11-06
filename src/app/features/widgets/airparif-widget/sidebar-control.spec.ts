@@ -83,7 +83,7 @@ describe("SidebarControl", () => {
   it("should not handle the click on a link which is not a tab", () => {
     const element = createSidebarElement();
     new SidebarControl({ element });
-    const externalLink = element.querySelector("#external-tab a") as HTMLAnchorElement;
+    const externalLink = element.querySelector<HTMLAnchorElement>("#external-tab a")!;
     let isPreventedBySidebar: boolean | undefined;
     // Called after the listeners of the sidebar, the navigation is not supported by the tests
     externalLink.addEventListener("click", (event) => {

@@ -24,13 +24,18 @@ export class Notifications {
     [NotificationType.WARN]: "warning"
   };
 
+  private readonly ERROR_MESSAGES = {
+    markingNotificationAsRead: "Erreur lors du traitement de la requête.",
+    gettingNotifications: "Erreur lors de la récupération des notifications."
+  };
+
   /** Notifications, reloaded each time the widgets are refreshed. */
   private readonly notificationsResource = rxResource({
     stream: () =>
       this.notificationService.getNotifications().pipe(
         map((notifications) => notifications.content),
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_NOTIFICATIONS);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingNotifications);
           return of([]);
         })
       ),
@@ -51,9 +56,6 @@ export class Notifications {
 
   private readonly notificationService = inject(NotificationService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
-  private readonly ERROR_GETTING_NOTIFICATIONS =
-    "Erreur lors de la récupération des notifications.";
 
   public constructor() {
     inject(WidgetService)
@@ -83,8 +85,8 @@ export class Notifications {
           )
         );
       },
-      error: (error) =>
-        this.errorHandlerService.handleError(error, this.ERROR_MARKING_NOTIFICATION_AS_READ)
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.markingNotificationAsRead)
     });
   }
 

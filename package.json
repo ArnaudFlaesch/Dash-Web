@@ -54,6 +54,7 @@
     "@compodoc/compodoc": "2.0.0",
     "@eslint/js": "10.0.1",
     "@vitest/coverage-v8": "5.1.0",
+    "@vitest/eslint-plugin": "1.6.28",
     "angular-eslint": "22.6.0",
     "cypress": "16.2.1",
     "esbuild-visualizer": "0.7.0",

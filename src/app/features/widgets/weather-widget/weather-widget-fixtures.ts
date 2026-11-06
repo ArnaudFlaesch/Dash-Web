@@ -7,7 +7,7 @@ export const weatherData: WeatherApiResponse = {
   base: "stations",
   main: {
     temp: 7.57,
-    feels_like: 3.75,
+    feelsLike: 3.75,
     tempMin: 6.11,
     tempMax: 8.54,
     pressure: 1022,

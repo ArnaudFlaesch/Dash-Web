@@ -98,14 +98,14 @@ describe("AirparifWidget", () => {
   }
 
   async function typeInInput(selector: string, value: string): Promise<void> {
-    const input = element.querySelector(selector) as HTMLInputElement;
+    const input = element.querySelector<HTMLInputElement>(selector)!;
     input.value = value;
     input.dispatchEvent(new Event("input"));
     await fixture.whenStable();
   }
 
   function getValidateButton(): HTMLButtonElement {
-    return element.querySelector(".validate-button") as HTMLButtonElement;
+    return element.querySelector<HTMLButtonElement>(".validate-button")!;
   }
 
   /** Answers the requests of the forecast and of the colors of the indices. */
@@ -124,13 +124,13 @@ describe("AirparifWidget", () => {
     await fixture.whenStable();
 
     expect(element.querySelector("#airparif-api-key-label")?.textContent).toContain("Clé d'API");
-    expect((element.querySelector("#airparif-api-key") as HTMLInputElement).placeholder).toEqual(
+    expect(element.querySelector<HTMLInputElement>("#airparif-api-key")!.placeholder).toEqual(
       "Saisissez la clé d'API Airparif"
     );
     expect(element.querySelector("#commune-insee-code-label")?.textContent).toContain(
       "Code commune"
     );
-    expect((element.querySelector("#commune-insee-code") as HTMLInputElement).placeholder).toEqual(
+    expect(element.querySelector<HTMLInputElement>("#commune-insee-code")!.placeholder).toEqual(
       "Saisissez le code commune"
     );
     expect(element.querySelector("mat-hint")?.textContent).toContain(
@@ -194,7 +194,7 @@ describe("AirparifWidget", () => {
     // Loading
     expect(element.querySelector("#map-loading")).not.toBeNull();
     expect(element.querySelector("#airparif-today-chip")).toBeNull();
-    const titleLink = element.querySelector(".widget-header a") as HTMLAnchorElement;
+    const titleLink = element.querySelector<HTMLAnchorElement>(".widget-header a")!;
     expect(titleLink.getAttribute("href")).toEqual(
       TestBed.inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL
     );
@@ -206,13 +206,13 @@ describe("AirparifWidget", () => {
     );
 
     expect(element.querySelector("#map-loading")).toBeNull();
-    const todayChip = element.querySelector("#airparif-today-chip") as HTMLButtonElement;
+    const todayChip = element.querySelector<HTMLButtonElement>("#airparif-today-chip")!;
     expect(todayChip.textContent).toContain("Très mauvais");
     expect(element.querySelector("#airparif-today-dot")?.className).toEqual("indice-tres-mauvais");
     expect(element.querySelector("#global-indice-value")?.textContent).toContain("Très mauvais");
 
     // The chip opens the sidebar of the map, with the details of the forecast
-    const sidebar = element.querySelector("#sidebar") as HTMLElement;
+    const sidebar = element.querySelector<HTMLElement>("#sidebar")!;
     expect(sidebar.classList).toContain("collapsed");
     todayChip.click();
     expect(sidebar.classList).not.toContain("collapsed");
@@ -222,7 +222,7 @@ describe("AirparifWidget", () => {
     await createWidget(widgetData);
     await flushForecast();
 
-    (element.querySelector(".refresh-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>(".refresh-button")!.click();
     TestBed.tick();
     await flushForecast([{ ...forecastData[0], indice: "BON" }]);
 
@@ -237,7 +237,7 @@ describe("AirparifWidget", () => {
     await createWidget(widgetData);
     await flushForecast();
 
-    const todayChip = element.querySelector("#airparif-today-chip") as HTMLButtonElement;
+    const todayChip = element.querySelector<HTMLButtonElement>("#airparif-today-chip")!;
     expect(() => todayChip.click()).not.toThrow();
     expect(element.querySelector("#sidebar")).toBeNull();
   });

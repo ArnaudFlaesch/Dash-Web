@@ -38,29 +38,6 @@ import { Widget } from "@widgets/widget/widget";
   ]
 })
 export class RssWidget {
-  /**
-   * Some feeds give the guid as an object (e.g. { isPermaLink: "true", "": "https://..." }),
-   * so it is converted to a string to be compared with the read articles.
-   */
-  private guidToString(guid: unknown): string {
-    if (typeof guid === "string") {
-      return guid;
-    }
-    if (typeof guid === "number") {
-      return guid.toString();
-    }
-    if (guid && typeof guid === "object") {
-      const value = (guid as Record<string, unknown>)[""];
-      return typeof value === "string" ? value : JSON.stringify(guid);
-    }
-    return "";
-  }
-
-  /** Read articles guids as strings, without duplicates. */
-  private toReadArticlesGuids(guids: unknown[]): string[] {
-    return [...new Set(guids.map((guid) => this.guidToString(guid)))];
-  }
-
   protected readonly labels = {
     logo: "logo",
     url: "URL",
@@ -68,8 +45,19 @@ export class RssWidget {
     markAllFeedAsRead: "Marquer tout le flux comme lu"
   };
 
+  private readonly ERROR_MESSAGES = {
+    gettingRssFeed: "Erreur pendant la récupération du flux RSS.",
+    markingFeedAsRead: "Erreur pendant la mise à jour du widget RSS."
+  };
+
   protected readonly config = signal({ url: injectWidgetData("url", "") });
   protected readonly configForm = form(this.config, (path) => requiredText(path.url));
+  protected readonly isLogoBroken = signal(false);
+  protected readonly readArticles = signal(
+    this.toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
+  );
+  // A new object on each refresh, so that the resource reloads even if the url is unchanged
+  private readonly refreshedFeed = signal<{ url: string } | undefined>(undefined);
 
   /** Channel of the RSS feed saved on the last refresh, reloaded on each refresh. */
   private readonly rssFeedResource = rxResource({
@@ -89,7 +77,7 @@ export class RssWidget {
             : undefined
         ),
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_RSS_FEED);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingRssFeed);
           return of(undefined);
         })
       ),
@@ -100,19 +88,8 @@ export class RssWidget {
   protected readonly isWidgetLoaded = computed(() =>
     isResourceLoaded(this.rssFeedResource.status())
   );
-  protected readonly isLogoBroken = signal(false);
-  protected readonly readArticles = signal(
-    this.toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
-  );
-
   protected readonly isFormValid = computed(() => this.configForm().valid());
   protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
-
-  private readonly ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
-  private readonly ERROR_MARKING_FEED_AS_READ = "Erreur pendant la mise à jour du widget RSS.";
-
-  // A new object on each refresh, so that the resource reloads even if the url is unchanged
-  private readonly refreshedFeed = signal<{ url: string } | undefined>(undefined);
 
   private readonly widgetId = inject(WIDGET_ID);
   private readonly rssWidgetService = inject(RssWidgetService);
@@ -153,8 +130,31 @@ export class RssWidget {
           ),
         error: (error: HttpErrorResponse) => {
           this.readArticles.set(previousReadArticles);
-          this.errorHandlerService.handleError(error, this.ERROR_MARKING_FEED_AS_READ);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.markingFeedAsRead);
         }
       });
+  }
+
+  /**
+   * Some feeds give the guid as an object (e.g. { isPermaLink: "true", "": "https://..." }),
+   * so it is converted to a string to be compared with the read articles.
+   */
+  private guidToString(guid: unknown): string {
+    if (typeof guid === "string") {
+      return guid;
+    }
+    if (typeof guid === "number") {
+      return guid.toString();
+    }
+    if (guid && typeof guid === "object") {
+      const value = (guid as Record<string, unknown>)[""];
+      return typeof value === "string" ? value : JSON.stringify(guid);
+    }
+    return "";
+  }
+
+  /** Read articles guids as strings, without duplicates. */
+  private toReadArticlesGuids(guids: unknown[]): string[] {
+    return [...new Set(guids.map((guid) => this.guidToString(guid)))];
   }
 }

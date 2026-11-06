@@ -15,7 +15,7 @@ describe("EcowattWidget", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(EcowattWidget);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
   });
 
   it("Should load the widget, refreshed before its iframe container is rendered", async () => {

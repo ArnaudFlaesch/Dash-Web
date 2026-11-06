@@ -9,7 +9,7 @@ describe("App", () => {
   let component: App;
   let navigateSpy: ReturnType<typeof vi.spyOn>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     localStorage.removeItem("user");
     localStorage.removeItem("preferredTheme");
     navigateSpy = vi.spyOn(TestBed.inject(Router), "navigate").mockResolvedValue(true);

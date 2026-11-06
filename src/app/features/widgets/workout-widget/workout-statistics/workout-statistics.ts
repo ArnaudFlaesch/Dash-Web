@@ -48,6 +48,6 @@ export class WorkoutStatistics {
         ] = workoutStatByMonth.totalNumberOfReps;
       }
       return repListOfPeriod;
-    }, new Array(monthsTimes.length).fill(0));
+    }, new Array<number>(monthsTimes.length).fill(0));
   }
 }

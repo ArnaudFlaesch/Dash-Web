@@ -15,7 +15,7 @@ describe("WeatherWidgetView", () => {
     vi.setSystemTime(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
     fixture = TestBed.createComponent(WeatherWidgetView);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     fixture.componentRef.setInput("weather", weatherData);
     fixture.componentRef.setInput("cityData", forecastData.city);
     fixture.componentRef.setInput("forecastResponse", [

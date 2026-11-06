@@ -66,18 +66,6 @@ import { WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-ty
   ]
 })
 export class Home {
-  private readonly ERROR_MESSAGES = {
-    initDashboard: "Erreur lors de l'initialisation du dashboard.",
-    exportConfiguration: "Erreur lors de l'export de la configuration.",
-    getWidgets: "Erreur lors de la récupération des widgets.",
-    addWidget: "Erreur lors de l'ajout d'un widget.",
-    updateWidgetsOrder: "Erreur lors de la mise à jour des widgets.",
-    deleteWidget: "Erreur lors de la suppression d'un widget.",
-    addTab: "Erreur lors de l'ajout d'un onglet.",
-    updateTabs: "Erreur lors de la mise à jour des onglets.",
-    deleteTab: "Erreur lors de la suppression d'un onglet."
-  };
-
   private readonly REFRESH_INTERVAL = 10 * 60 * 1000;
   private readonly MODAL_WIDTH = "640px";
   private readonly CASH_MANAGER_URL = "https://arnaudflaesch.github.io/CashManager/";
@@ -108,6 +96,22 @@ export class Home {
     emptyTabHint: "Ajoutez un widget : météo, flux RSS, agenda, Strava…",
     addWidget: "Ajouter un widget"
   };
+
+  private readonly ERROR_MESSAGES = {
+    initDashboard: "Erreur lors de l'initialisation du dashboard.",
+    exportConfiguration: "Erreur lors de l'export de la configuration.",
+    getWidgets: "Erreur lors de la récupération des widgets.",
+    addWidget: "Erreur lors de l'ajout d'un widget.",
+    updateWidgetsOrder: "Erreur lors de la mise à jour des widgets.",
+    deleteWidget: "Erreur lors de la suppression d'un widget.",
+    addTab: "Erreur lors de l'ajout d'un onglet.",
+    updateTabs: "Erreur lors de la mise à jour des onglets.",
+    deleteTab: "Erreur lors de la suppression d'un onglet."
+  };
+
+  protected readonly editModeEnabled = signal(false);
+  private readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
+  protected readonly toggleThemeForm = form(this.isDarkTheme);
 
   private readonly tabsResource = rxResource({
     stream: () =>
@@ -149,11 +153,9 @@ export class Home {
   protected readonly activeWidgets = this.widgetsResource.value;
   protected readonly isDashboardLoaded = computed(() => !this.tabsResource.isLoading());
   protected readonly areWidgetsLoaded = computed(() => !this.widgetsResource.isLoading());
-  protected readonly editModeEnabled = signal(false);
-  private readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
-  protected readonly toggleThemeForm = form(this.isDarkTheme);
-  protected readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
   protected readonly canUserSeeNotifications = inject(AuthService).isUserAdmin;
+
+  protected readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
 
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -287,7 +289,8 @@ export class Home {
     const updatedTabs = tabs.map((tab, index) => ({ ...tab, tabOrder: index }));
     this.tabService.updateTabs(updatedTabs).subscribe({
       next: (tabs) => this.tabs.set(tabs),
-      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateTabs)
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateTabs)
     });
   }
 

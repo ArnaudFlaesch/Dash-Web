@@ -1,4 +1,8 @@
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+  TestRequest
+} from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
@@ -37,7 +41,7 @@ describe("WidgetList", () => {
     // Not whenStable: the pending requests of the widgets would keep the fixture unstable
     TestBed.tick();
 
-    const element: HTMLElement = fixture.nativeElement;
+    const element = fixture.nativeElement as HTMLElement;
     expect(
       [...element.querySelectorAll(".widget-container")].map((container) =>
         container.firstElementChild?.tagName.toLowerCase()
@@ -60,6 +64,7 @@ describe("WidgetList rendering", () => {
   let fixture: ComponentFixture<WidgetList>;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
+  let weatherRequests: TestRequest[];
 
   const renderedWidgets: WidgetConfig[] = [
     { id: 1, type: WidgetType.ECOWATT, widgetOrder: 0, tabId: 1 },
@@ -72,7 +77,7 @@ describe("WidgetList rendering", () => {
       providers: [provideHttpClient(), provideHttpClientTesting()]
     });
     fixture = TestBed.createComponent(WidgetList);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     httpTestingController = TestBed.inject(HttpTestingController);
     fixture.componentRef.setInput(
       "widgetList",
@@ -80,16 +85,18 @@ describe("WidgetList rendering", () => {
     );
     // Not whenStable: the pending requests of the weather widget would keep the fixture unstable
     TestBed.tick();
-    // The weather widget is created with its saved city
-    const weatherRequests = httpTestingController.match((request) =>
+    weatherRequests = httpTestingController.match((request) =>
       request.url.includes("/weatherWidget/")
     );
+    weatherRequests.forEach((request) => request.flush({}));
+    await fixture.whenStable();
+  });
+
+  it("Should create the weather widget with its saved city", () => {
     expect(weatherRequests).toHaveLength(2);
     weatherRequests.forEach((request) => {
       expect(request.request.params.get("city")).toEqual("Paris");
-      request.flush({});
     });
-    await fixture.whenStable();
   });
 
   afterEach(() => {

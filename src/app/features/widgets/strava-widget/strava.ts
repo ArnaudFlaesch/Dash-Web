@@ -49,8 +49,8 @@ export interface Activity {
   startDateLocal: string;
   timezone: string;
   utcOffset: number;
-  startLatlng: [number, number];
-  endLatlng: [number, number];
+  startLatlng: number[];
+  endLatlng: number[];
   locationCity?: string;
   locationState?: string;
   locationCountry: string;
@@ -74,7 +74,7 @@ export interface Activity {
   flagged: boolean;
   gearId: string;
   fromAcceptedTag: boolean;
-  uploadIdStr: number;
+  uploadIdStr: string;
   averageSpeed: number;
   maxSpeed: number;
   hasHeartrate: boolean;

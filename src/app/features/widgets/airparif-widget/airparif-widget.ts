@@ -42,6 +42,12 @@ export class AirparifWidget {
     communeCodeHint: "Code INSEE à 5 chiffres, par exemple 75112 pour Paris 12e"
   };
 
+  private readonly ERROR_MESSAGES = {
+    gettingAirparifForecast: "Erreur lors de la récupération des prévisions d'Airparif."
+  };
+
+  public readonly airParifMap = viewChild(AirparifMap);
+
   protected readonly config = signal({
     airParifApiKey: injectWidgetData("airParifApiKey", ""),
     communeInseeCode: injectWidgetData("communeInseeCode", "")
@@ -52,6 +58,9 @@ export class AirparifWidget {
     // 5 characters, the second one being A or B for Corsica
     pattern(path.communeInseeCode, /^\s*\d[\dAB]\d{3}\s*$/i);
   });
+  protected readonly isWidgetLoaded = signal(true);
+  // A new object on each refresh, so that the resource reloads even if the commune is unchanged
+  private readonly refreshedCommune = signal<{ communeInseeCode: string } | undefined>(undefined);
 
   /** Forecast of the commune saved on the last refresh, with the colors of the indices. */
   protected readonly airParifResource = rxResource({
@@ -62,7 +71,7 @@ export class AirparifWidget {
         this.airParifWidgetService.getColors()
       ]).pipe(
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_AIRPARIF_FORECAST);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingAirparifForecast);
           return of<[AirparifForecast[], AirparifCouleur[]]>([[], []]);
         })
       ),
@@ -71,19 +80,10 @@ export class AirparifWidget {
 
   protected readonly airParifForecast = computed(() => this.airParifResource.value()[0]);
   protected readonly airParifCouleursIndices = computed(() => this.airParifResource.value()[1]);
-  protected readonly isWidgetLoaded = signal(true);
-
   protected readonly isFormValid = computed(() => this.configForm().valid());
   protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   protected readonly airParifWebsiteUrl = inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL;
-  public readonly airParifMap = viewChild(AirparifMap);
-
-  // A new object on each refresh, so that the resource reloads even if the commune is unchanged
-  private readonly refreshedCommune = signal<{ communeInseeCode: string } | undefined>(undefined);
-
-  private readonly ERROR_GETTING_AIRPARIF_FORECAST =
-    "Erreur lors de la récupération des prévisions d'Airparif.";
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly airParifWidgetService = inject(AirparifWidgetService);
 

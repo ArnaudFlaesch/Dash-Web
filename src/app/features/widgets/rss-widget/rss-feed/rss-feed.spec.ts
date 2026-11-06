@@ -34,7 +34,7 @@ describe("RssFeed", () => {
     vi.setSystemTime(new Date(2022, 2, 15, 12, 0, 0)); // 15/03/2022
     fixture = TestBed.createComponent(RssFeed);
     component = fixture.componentInstance;
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     markArticleAsReadSpy = vi.fn();
     component.markArticleAsReadEvent.subscribe(markArticleAsReadSpy);
     fixture.componentRef.setInput("feed", articles);

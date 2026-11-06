@@ -8,9 +8,9 @@ describe("WeatherForecast", () => {
   let fixture: ComponentFixture<WeatherForecast>;
   let element: HTMLElement;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(WeatherForecast);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
   });
 
   function getForecastTimes(): string[] {

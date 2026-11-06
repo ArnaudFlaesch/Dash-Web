@@ -37,7 +37,7 @@ describe("MiniWidgetList", () => {
       .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
       .mockImplementation(() => undefined);
     fixture = TestBed.createComponent(MiniWidgetList);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
