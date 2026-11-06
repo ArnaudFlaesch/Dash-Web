@@ -15,7 +15,7 @@
           class="row gap-xs"
         >
           @for (tab of tabs(); track tab.id) {
-            <dash-tab
+            <dash-tab-label
               class="tab"
               tabindex="0"
               (keydown.enter)="selectTab(tab.id)"
@@ -130,7 +130,7 @@
     </div>
 
     <div id="mini-widgets-container">
-      <dash-miniwidget-list />
+      <dash-mini-widget-list />
     </div>
   </header>
 

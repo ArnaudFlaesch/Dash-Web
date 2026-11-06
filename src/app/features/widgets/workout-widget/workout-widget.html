@@ -14,7 +14,7 @@
 
   <ng-template #body>
     @switch (widgetView()) {
-      @case (widgetViewEnum.WORKOUT_SESSIONS_LIST_VIEW) {
+      @case (WorkoutWidgetView.WORKOUT_SESSIONS_LIST_VIEW) {
         <div class="workout-view column gap-md">
           <section class="workout-section column gap-sm">
             <div class="row items-center justify-between">
@@ -127,7 +127,7 @@
           </section>
         </div>
       }
-      @case (widgetViewEnum.WORKOUT_STATISTICS_VIEW) {
+      @case (WorkoutWidgetView.WORKOUT_STATISTICS_VIEW) {
         <div class="workout-view column gap-sm">
           <div class="row items-center gap-xs">
             <button mat-icon-button [matTooltip]="labels.backToSessions" (click)="backToWorkoutSessionsList()">
@@ -168,7 +168,7 @@
           <dash-workout-statistics [workoutTypes]="workoutTypes()" [workoutStatsByMonth]="workoutStatsOfMonths()" />
         </div>
       }
-      @case (widgetViewEnum.EDIT_WORKOUT_SESSION_VIEW) {
+      @case (WorkoutWidgetView.EDIT_WORKOUT_SESSION_VIEW) {
         @if (currentWorkoutSessionToEdit(); as currentWorkoutSessionToEdit) {
           <div class="workout-view column gap-sm">
             <button mat-button class="workout-back-button" (click)="backToWorkoutSessionsList()">

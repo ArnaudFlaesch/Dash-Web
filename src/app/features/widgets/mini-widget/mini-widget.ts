@@ -14,7 +14,7 @@ import { AbstractWidget } from "@widgets/abstract-widget/abstract-widget";
   imports: [NgTemplateOutlet, MatIconButton, MatTooltip, MatIcon, MatButton, MatProgressSpinner]
 })
 export class MiniWidget extends AbstractWidget {
-  public readonly labels = {
+  protected readonly labels = {
     cancel: "Annuler",
     validate: "Valider",
     deleteWidget: "Supprimer le widget",
@@ -25,14 +25,14 @@ export class MiniWidget extends AbstractWidget {
 
   private readonly miniWidgetService = inject(MiniWidgetService);
 
-  public onValidation(): void {
+  protected onValidation(): void {
     this.miniWidgetService.updateWidgetData(this.widgetId, { ...this.widgetData() }).subscribe({
       next: () => this.onWidgetDataSaved(),
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_DATA)
     });
   }
 
-  public deleteMiniWidget(): void {
+  protected deleteMiniWidget(): void {
     this.miniWidgetService.notifyMiniWidgetDeleted(this.widgetId);
   }
 }

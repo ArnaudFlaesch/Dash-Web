@@ -97,7 +97,7 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "coverageReporters": ["lcov", "text-summary"],
-            "coverageExclude": ["**/*.spec.ts", "**/*.fixtures.ts"]
+            "coverageExclude": ["**/*.spec.ts", "**/*-fixtures.ts"]
           }
         }
       }

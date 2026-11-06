@@ -6,7 +6,7 @@
     <h1 id="login-page-title">{{ labels.title }}</h1>
     <p id="login-page-subtitle" class="muted-text">{{ labels.subtitle }}</p>
 
-    <form id="login-form" class="column" (submit)="$event.preventDefault(); handleLogin()">
+    <form id="login-form" class="column" (submit)="$event.preventDefault(); login()">
       <mat-form-field appearance="outline">
         <mat-label>{{ labels.usernameLabel }}</mat-label>
         <mat-icon matPrefix>person</mat-icon>

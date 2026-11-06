@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Service } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "@environments/environment";
-import { IPage } from "@shared/models/page.model";
-import { IAchievementResponse, IGameInfoResponse, IPlayerDataResponse } from "./steam.model";
+import { Page } from "@shared/pagination/page";
+import { AchievementResponse, GameInfoResponse, PlayerDataResponse } from "./steam";
 
 @Service()
 export class SteamWidgetService {
@@ -15,8 +15,8 @@ export class SteamWidgetService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.backend_url}/steamWidget`;
 
-  public getPlayerData(steamUserId: string): Observable<IPlayerDataResponse[]> {
-    return this.http.get<IPlayerDataResponse[]>(`${this.baseUrl}/playerData`, {
+  public getPlayerData(steamUserId: string): Observable<PlayerDataResponse[]> {
+    return this.http.get<PlayerDataResponse[]>(`${this.baseUrl}/playerData`, {
       params: { steamUserId }
     });
   }
@@ -25,8 +25,8 @@ export class SteamWidgetService {
     steamUserId: string,
     search?: string,
     pageNumber?: number
-  ): Observable<IPage<IGameInfoResponse>> {
-    return this.http.get<IPage<IGameInfoResponse>>(`${this.baseUrl}/ownedGames`, {
+  ): Observable<Page<GameInfoResponse>> {
+    return this.http.get<Page<GameInfoResponse>>(`${this.baseUrl}/ownedGames`, {
       // Angular would send undefined values as "undefined": the optional parameters are left out
       params: {
         steamUserId,
@@ -36,8 +36,8 @@ export class SteamWidgetService {
     });
   }
 
-  public getAchievementList(steamUserId: string, appId: string): Observable<IAchievementResponse> {
-    return this.http.get<IAchievementResponse>(`${this.baseUrl}/achievementList`, {
+  public getAchievementList(steamUserId: string, appId: string): Observable<AchievementResponse> {
+    return this.http.get<AchievementResponse>(`${this.baseUrl}/achievementList`, {
       params: { steamUserId, appId }
     });
   }

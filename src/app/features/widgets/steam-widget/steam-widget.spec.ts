@@ -1,269 +1,30 @@
-import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
-import { PageEvent } from "@angular/material/paginator";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget-tokens";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { vi } from "vitest";
-import { IPage } from "@shared/models/page.model";
+import { Page } from "@shared/pagination/page";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { IGameInfoResponse, IPlayerDataResponse } from "./steam.model";
+import { GameInfoResponse, PlayerDataResponse } from "./steam";
 import { SteamWidget } from "./steam-widget";
+import { GameDetails } from "./game-details/game-details";
 import { provideHttpClient } from "@angular/common/http";
 
 describe("SteamWidget", () => {
-  let component: SteamWidget;
-  let httpTestingController: HttpTestingController;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: WIDGET_ID, useValue: 1 }
-      ]
-    })
-      // Not rendered, so that the resources are only loaded by the test, not by the child components
-      .overrideTemplate(SteamWidget, "")
-      .compileComponents();
-
-    const fixture = TestBed.createComponent(SteamWidget);
-    component = fixture.componentInstance;
-    httpTestingController = TestBed.inject(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
-  async function flushResources(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve));
-    TestBed.tick();
-  }
-
-  const playerData: IPlayerDataResponse[] = [
-    {
-      personaname: "Nono",
-      profileurl: "https://steamcommunity.com/id/Nauno93/",
-      avatar:
-        "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/d1/d16c8dc08c0d3d71f7b7e47ba2b13e78418cd6d3.jpg"
-    }
-  ];
-  const ownedGamesData: IPage<IGameInfoResponse> = {
-    totalElements: 10,
-    content: [
-      {
-        appid: "220",
-        name: "Half-Life 2",
-        imgIconUrl: "fcfb366051782b8ebf2aa297f3b746395858cb62",
-        imgLogoUrl: "e4ad9cf1b7dc8475c1118625daf9abd4bdcbcad0"
-      },
-      {
-        appid: "340",
-        name: "Half-Life 2: Lost Coast",
-        imgIconUrl: "795e85364189511f4990861b578084deef086cb1",
-        imgLogoUrl: "867cce5c4f37d5ed4aeffb57c60e220ddffe4134"
-      },
-      {
-        appid: "280",
-        name: "Half-Life: Source",
-        imgIconUrl: "b4f572a6cc5a6a84ae84634c31414b9123d2f26b",
-        imgLogoUrl: "a612dd944b768e55389140298dcfda2165db8ced"
-      }
-    ],
-    totalPages: 1,
-    last: true,
-    size: 3,
-    number: 0
-  };
-
-  it("should create", async () => {
-    expect(component.playerData()).toBeUndefined();
-    expect(component.ownedGamesDisplay()).toEqual([]);
-    const steamUserId = "1337";
-    expect(component.isFormValid()).toEqual(false);
-    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
-    expect(component.isFormValid()).toEqual(true);
-    component.refreshWidget();
-    TestBed.tick();
-
-    const playerDataRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`
-    );
-    playerDataRequest.flush(playerData);
-    await flushResources();
-    const getOwnedGamesRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`
-    );
-    getOwnedGamesRequest.flush(ownedGamesData);
-    await flushResources();
-
-    expect(component.playerData()?.personaname).toEqual(playerData[0].personaname);
-    expect(component.ownedGamesDisplay()).toHaveLength(3);
-  });
-
-  it("Should load new data on page navigation and search", async () => {
-    // Only the timers of the search debounce are faked
-    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
-    expect(component.ownedGamesDisplay()).toEqual([]);
-    expect(component.pageNumber()).toEqual(0);
-    const pageIndex = 2;
-    const pageEvent = {
-      pageIndex: pageIndex,
-      pageSize: 25,
-      length: 150
-    } as PageEvent;
-    component.onPageChanged(pageEvent);
-    expect(component.pageNumber()).toEqual(0);
-
-    const steamUserId = "1337";
-    const ownedGamesUrl = `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`;
-    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
-    component.refreshWidget();
-    TestBed.tick();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`)
-      .flush(playerData);
-    await flushResources();
-    httpTestingController.expectOne(ownedGamesUrl).flush(ownedGamesData);
-    await flushResources();
-
-    expect(component.isOwnedGamesLoading()).toEqual(false);
-    component.onPageChanged(pageEvent);
-    TestBed.tick();
-    expect(component.pageNumber()).toEqual(pageIndex);
-    // The spinner is displayed until the page is received
-    expect(component.isOwnedGamesLoading()).toEqual(true);
-    httpTestingController
-      .expectOne(`${ownedGamesUrl}&pageNumber=${pageIndex}`)
-      .flush(ownedGamesData);
-    await flushResources();
-    expect(component.isOwnedGamesLoading()).toEqual(false);
-
-    // The search is debounced, then goes back to the first page
-    const searchValue = "Mario";
-    component.searchQuery.set(searchValue);
-    TestBed.tick();
-    httpTestingController.expectNone(`${ownedGamesUrl}&search=${searchValue}`);
-    vi.advanceTimersByTime(500);
-    TestBed.tick();
-    expect(component.pageNumber()).toEqual(0);
-    httpTestingController.expectOne(`${ownedGamesUrl}&search=${searchValue}`).flush(ownedGamesData);
-    await flushResources();
-
-    component.resetForm();
-    expect(component.searchQuery()).toEqual("");
-    vi.useRealTimers();
-  });
-
-  it("Should stop loading when the page navigation fails", async () => {
-    const errorHandlerService = TestBed.inject(ErrorHandlerService);
-    const handleErrorSpy = vi
-      .spyOn(errorHandlerService, "handleError")
-      .mockImplementation(() => undefined);
-    const steamUserId = "1337";
-    const ownedGamesUrl = `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`;
-    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
-    component.refreshWidget();
-    TestBed.tick();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`)
-      .flush(playerData);
-    await flushResources();
-    httpTestingController.expectOne(ownedGamesUrl).flush(ownedGamesData);
-    await flushResources();
-
-    const pageIndex = 1;
-    component.onPageChanged({ pageIndex: pageIndex, pageSize: 25, length: 150 } as PageEvent);
-    TestBed.tick();
-    expect(component.isOwnedGamesLoading()).toEqual(true);
-    httpTestingController
-      .expectOne(`${ownedGamesUrl}&pageNumber=${pageIndex}`)
-      .flush(null, { status: 500, statusText: "Internal Server Error" });
-    await flushResources();
-
-    expect(component.isOwnedGamesLoading()).toEqual(false);
-    expect(handleErrorSpy).toHaveBeenCalled();
-    expect(component.ownedGamesDisplay()).toEqual([]);
-  });
-
-  it("Should get widget data and check form", () => {
-    expect(component.widgetData()).toBeUndefined();
-    expect(component.isFormValid()).toEqual(false);
-    const steamUserId = "1337";
-    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
-    expect(component.widgetData()).toEqual({
-      steamUserId: steamUserId
-    });
-    expect(component.isFormValid()).toEqual(true);
-  });
-
-  it("Should not load anything without Steam user", () => {
-    component.refreshWidget();
-    TestBed.tick();
-    httpTestingController.expectNone(() => true);
-    expect(component.playerData()).toBeUndefined();
-  });
-
-  it("Should build the links of the games, even when the player is received after the games", async () => {
-    const steamUserId = "1337";
-    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
-    component.refreshWidget();
-    TestBed.tick();
-    const playerDataRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`
-    );
-    httpTestingController
-      .expectOne(`${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`)
-      .flush(ownedGamesData);
-    await flushResources();
-    playerDataRequest.flush(playerData);
-    await flushResources();
-
-    expect(component.ownedGamesDisplay()[0]).toEqual({
-      ...ownedGamesData.content[0],
-      appIdLink: "https://steamcommunity.com/app/220",
-      playerAchievementUrl: "https://steamcommunity.com/id/Nauno93/stats/220/achievements/",
-      gameImgSrc:
-        "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/220/fcfb366051782b8ebf2aa297f3b746395858cb62.jpg"
-    });
-  });
-
-  it("Should handle the error when getting the player", async () => {
-    const handleErrorSpy = vi
-      .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
-      .mockImplementation(() => undefined);
-    const steamUserId = "1337";
-    component.config.update((config) => ({ ...config, steamUserId: steamUserId }));
-    component.refreshWidget();
-    TestBed.tick();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`)
-      .flush(null, { status: 500, statusText: "Internal Server Error" });
-    httpTestingController
-      .expectOne(`${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`)
-      .flush(ownedGamesData);
-    await flushResources();
-
-    expect(handleErrorSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ status: 500 }),
-      "Erreur lors de la récupération de vos informations Steam."
-    );
-    expect(component.playerData()).toBeUndefined();
-  });
-});
-
-describe("SteamWidget rendering", () => {
   const steamUserId = "1337";
   const playerDataUrl = `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`;
   const ownedGamesUrl = `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`;
-  const player: IPlayerDataResponse = {
+  const updateWidgetUrl = `${environment.backend_url}/widget/updateWidgetData/1`;
+  const ERROR_GETTING_PLAYER_DATA = "Erreur lors de la récupération de vos informations Steam.";
+  const ERROR_GETTING_OWNED_GAMES = "Erreur lors de la récupération de la liste des jeux.";
+  const player: PlayerDataResponse = {
     personaname: "Nono",
     profileurl: "https://steamcommunity.com/id/Nauno93/",
     avatar: "https://steamcdn.example/avatar.jpg"
   };
-  const games: IPage<IGameInfoResponse> = {
+  const games: Page<GameInfoResponse> = {
     totalElements: 30,
     content: [
       { appid: "220", name: "Half-Life 2", imgIconUrl: "icon220", imgLogoUrl: "logo220" },
@@ -276,7 +37,6 @@ describe("SteamWidget rendering", () => {
   };
 
   let fixture: ComponentFixture<SteamWidget>;
-  let component: SteamWidget;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
   let handleErrorSpy: ReturnType<typeof vi.spyOn>;
@@ -295,18 +55,16 @@ describe("SteamWidget rendering", () => {
       .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
       .mockImplementation(() => undefined);
     fixture = TestBed.createComponent(SteamWidget);
-    component = fixture.componentInstance;
     element = fixture.nativeElement as HTMLElement;
     TestBed.tick();
   }
 
   /** Creates the widget of the saved Steam user, and answers its requests. */
-  async function createLoadedWidget(ownedGames: IPage<IGameInfoResponse>): Promise<void> {
+  async function createLoadedWidget(ownedGames: Page<GameInfoResponse>): Promise<void> {
     await createWidget({ steamUserId });
     httpTestingController.expectOne(playerDataUrl).flush([player]);
     httpTestingController.expectOne(ownedGamesUrl).flush(ownedGames);
-    await flushResources();
-    await fixture.whenStable();
+    await renderResponses();
   }
 
   afterEach(() => {
@@ -320,21 +78,70 @@ describe("SteamWidget rendering", () => {
     TestBed.tick();
   }
 
+  /** Lets the resources receive the flushed responses, then renders them. */
+  async function renderResponses(): Promise<void> {
+    await flushResources();
+    await fixture.whenStable();
+  }
+
+  function getGameDetails(): NodeListOf<HTMLElement> {
+    return element.querySelectorAll("dash-game-details");
+  }
+
+  function getPaginatorRange(): string | undefined {
+    return element.querySelector(".mat-mdc-paginator-range-label")?.textContent?.trim();
+  }
+
+  function goToNextPage(): void {
+    (element.querySelector(".mat-mdc-paginator-navigation-next") as HTMLButtonElement).click();
+    TestBed.tick();
+  }
+
   it("should display the configuration form without saved Steam user", async () => {
     await createWidget();
     await fixture.whenStable();
 
     expect(element.querySelector("#steam-user-id-label")?.textContent).toContain(
-      component.labels.steamUser
+      "Utilisateur Steam"
     );
     const input = element.querySelector("#steam-user-id-input") as HTMLInputElement;
-    expect(input.placeholder).toEqual(component.labels.enterSteamUserId);
+    expect(input.placeholder).toEqual("Saisissez l'ID utilisateur du joueur Steam");
+    expect((element.querySelector(".validate-button") as HTMLButtonElement).disabled).toBe(true);
     httpTestingController.expectNone(() => true);
+  });
 
+  it("should not load anything without Steam user", async () => {
+    await createWidget();
+    await fixture.whenStable();
+
+    // Even if the widget asks for a refresh
+    fixture.debugElement.query(By.css("dash-widget")).triggerEventHandler("refreshWidgetAction");
+    await fixture.whenStable();
+    httpTestingController.expectNone(() => true);
+  });
+
+  it("should save the typed Steam user, then load its player and games", async () => {
+    await createWidget();
+    await fixture.whenStable();
+
+    const input = element.querySelector("#steam-user-id-input") as HTMLInputElement;
     input.value = steamUserId;
     input.dispatchEvent(new Event("input"));
     await fixture.whenStable();
-    expect(component.widgetData()).toEqual({ steamUserId });
+    const validateButton = element.querySelector(".validate-button") as HTMLButtonElement;
+    expect(validateButton.disabled).toBe(false);
+
+    validateButton.click();
+    const saveRequest = httpTestingController.expectOne(updateWidgetUrl);
+    expect(saveRequest.request.body).toEqual({ data: { steamUserId } });
+    saveRequest.flush({});
+    TestBed.tick();
+    httpTestingController.expectOne(playerDataUrl).flush([player]);
+    httpTestingController.expectOne(ownedGamesUrl).flush(games);
+    await renderResponses();
+
+    expect(element.querySelector(".widget-header")?.textContent).toContain(player.personaname);
+    expect(getGameDetails()).toHaveLength(2);
   });
 
   it("should display a spinner until the games are loaded", async () => {
@@ -344,10 +151,9 @@ describe("SteamWidget rendering", () => {
     expect(element.querySelector(".games-loading")).not.toBeNull();
 
     httpTestingController.expectOne(ownedGamesUrl).flush(games);
-    await flushResources();
-    await fixture.whenStable();
+    await renderResponses();
     expect(element.querySelector(".games-loading")).toBeNull();
-    expect(element.querySelectorAll("dash-game-details")).toHaveLength(2);
+    expect(getGameDetails()).toHaveLength(2);
   });
 
   it("should display the player and the games", async () => {
@@ -361,58 +167,105 @@ describe("SteamWidget rendering", () => {
     expect(avatar.alt).toEqual(player.personaname);
     expect(headerLinks[1].textContent).toContain(player.personaname);
 
-    const gameDetails = element.querySelectorAll("dash-game-details");
+    const gameDetails = getGameDetails();
     expect(gameDetails).toHaveLength(2);
     expect(gameDetails[0].textContent).toContain("Half-Life 2");
     expect(gameDetails[1].textContent).toContain("Half-Life 2: Lost Coast");
     expect(element.querySelector(".no-game-found")).toBeNull();
-    expect(element.querySelector(".mat-mdc-paginator-range-label")?.textContent).toContain("30");
-    expect(element.querySelector("mat-paginator")?.getAttribute("aria-label")).toEqual(
-      component.labels.selectPage
+    expect(element.querySelector("#search-game-form mat-label")?.textContent).toContain(
+      "Recherchez un jeu"
     );
+    expect(getPaginatorRange()).toContain("30");
+    expect(element.querySelector("mat-paginator")?.getAttribute("aria-label")).toEqual(
+      "Sélectionnez une page"
+    );
+  });
+
+  it("should give the links of the games to their details, even when the player is received after the games", async () => {
+    await createWidget({ steamUserId });
+    const playerDataRequest = httpTestingController.expectOne(playerDataUrl);
+    httpTestingController.expectOne(ownedGamesUrl).flush(games);
+    await flushResources();
+    playerDataRequest.flush([player]);
+    await renderResponses();
+
+    const gameDetails = fixture.debugElement.query(By.directive(GameDetails))
+      .componentInstance as GameDetails;
+    expect(gameDetails.steamUserId()).toEqual(steamUserId);
+    expect(gameDetails.profileUrl()).toEqual(player.profileurl);
+    expect(gameDetails.gameInfo()).toEqual({
+      ...games.content[0],
+      appIdLink: "https://steamcommunity.com/app/220",
+      playerAchievementUrl: "https://steamcommunity.com/id/Nauno93/stats/220/achievements/",
+      gameImgSrc:
+        "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/220/icon220.jpg"
+    });
   });
 
   it("should display a message when no game is found", async () => {
     await createLoadedWidget({ ...games, totalElements: 0, content: [] });
 
-    expect(element.querySelector(".no-game-found")?.textContent).toContain(
-      component.labels.noGameFound
-    );
+    expect(element.querySelector(".no-game-found")?.textContent).toContain("Aucun jeu trouvé");
     expect(element.querySelector("dash-game-details")).toBeNull();
   });
 
   it("should load the next page of games from the paginator", async () => {
     await createLoadedWidget(games);
 
-    (element.querySelector(".mat-mdc-paginator-navigation-next") as HTMLButtonElement).click();
-    TestBed.tick();
+    goToNextPage();
+    // The spinner is displayed until the page is received
+    expect(element.querySelector(".games-loading")).not.toBeNull();
     httpTestingController
       .expectOne(`${ownedGamesUrl}&pageNumber=1`)
       .flush({ ...games, content: [games.content[0]], number: 1 });
-    await flushResources();
-    await fixture.whenStable();
+    await renderResponses();
 
-    expect(component.pageNumber()).toEqual(1);
-    expect(element.querySelectorAll("dash-game-details")).toHaveLength(1);
+    expect(element.querySelector(".games-loading")).toBeNull();
+    expect(getPaginatorRange()).toMatch(/^26\D+30\D+30$/);
+    expect(getGameDetails()).toHaveLength(1);
   });
 
-  it("should search the games, then cancel the search", async () => {
+  it("should stop loading when the page navigation fails", async () => {
+    await createLoadedWidget(games);
+
+    goToNextPage();
+    httpTestingController
+      .expectOne(`${ownedGamesUrl}&pageNumber=1`)
+      .flush(null, { status: 500, statusText: "Internal Server Error" });
+    await renderResponses();
+
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      ERROR_GETTING_OWNED_GAMES
+    );
+    expect(element.querySelector(".games-loading")).toBeNull();
+    expect(getGameDetails()).toHaveLength(0);
+  });
+
+  it("should search the games from the first page, then cancel the search", async () => {
+    // Only the timers of the search debounce are faked
     vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
     await createLoadedWidget(games);
+    goToNextPage();
+    httpTestingController.expectOne(`${ownedGamesUrl}&pageNumber=1`).flush(games);
+    await renderResponses();
     expect(element.querySelector("#reset-form-button")).toBeNull();
 
     const searchInput = element.querySelector("#search-game-form input") as HTMLInputElement;
     searchInput.value = "Lost";
     searchInput.dispatchEvent(new Event("input"));
     TestBed.tick();
+    // The search is debounced
+    httpTestingController.expectNone((request) => request.url.endsWith("/ownedGames"));
     vi.advanceTimersByTime(500);
     TestBed.tick();
+    // Back to the first page, without page number
     httpTestingController
       .expectOne(`${ownedGamesUrl}&search=Lost`)
       .flush({ ...games, totalElements: 1, content: [games.content[1]] });
-    await flushResources();
-    await fixture.whenStable();
-    expect(element.querySelectorAll("dash-game-details")).toHaveLength(1);
+    await renderResponses();
+    expect(getGameDetails()).toHaveLength(1);
+    expect(getPaginatorRange()).toMatch(/^1\D+1\D+1$/);
 
     const resetButton = element.querySelector("#reset-form-button") as HTMLButtonElement;
     expect(resetButton).not.toBeNull();
@@ -423,9 +276,8 @@ describe("SteamWidget rendering", () => {
     vi.advanceTimersByTime(500);
     TestBed.tick();
     httpTestingController.expectOne(ownedGamesUrl).flush(games);
-    await flushResources();
-    await fixture.whenStable();
-    expect(element.querySelectorAll("dash-game-details")).toHaveLength(2);
+    await renderResponses();
+    expect(getGameDetails()).toHaveLength(2);
   });
 
   it("should not display the games without player", async () => {
@@ -434,16 +286,16 @@ describe("SteamWidget rendering", () => {
       .expectOne(playerDataUrl)
       .flush(null, { status: 500, statusText: "Internal Server Error" });
     httpTestingController.expectOne(ownedGamesUrl).flush(games);
-    await flushResources();
-    await fixture.whenStable();
+    await renderResponses();
 
     expect(handleErrorSpy).toHaveBeenCalledWith(
       expect.objectContaining({ status: 500 }),
-      "Erreur lors de la récupération de vos informations Steam."
+      ERROR_GETTING_PLAYER_DATA
     );
     // So the links to the achievements, which need the profile of the player, are never displayed
     expect(element.querySelector("dash-game-details")).toBeNull();
     expect(element.querySelector(".no-game-found")).toBeNull();
+    expect(element.querySelector("a.steam-header img")).toBeNull();
     expect(element.querySelector("a.steam-header")?.getAttribute("href")).toEqual("");
   });
 
@@ -451,10 +303,10 @@ describe("SteamWidget rendering", () => {
     await createWidget({ steamUserId });
     httpTestingController.expectOne(playerDataUrl).flush([]);
     httpTestingController.expectOne(ownedGamesUrl).flush(games);
-    await flushResources();
-    await fixture.whenStable();
+    await renderResponses();
 
-    expect(component.playerData()).toBeUndefined();
+    expect(element.querySelector("a.steam-header img")).toBeNull();
+    expect(element.querySelector("a.steam-header")?.textContent?.trim()).toEqual("");
     expect(element.querySelector("dash-game-details")).toBeNull();
   });
 });

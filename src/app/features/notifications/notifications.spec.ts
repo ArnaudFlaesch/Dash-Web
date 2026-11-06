@@ -4,28 +4,27 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { NotificationsList } from "./notifications-list/notifications-list";
-import { IPage } from "@shared/models/page.model";
+import { Page } from "@shared/pagination/page";
 import { environment } from "@environments/environment";
-import { INotification, NotificationTypeEnum } from "@features/notifications/notification.model";
+import { AppNotification, NotificationType } from "@features/notifications/app-notification";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { WidgetService } from "@widgets/widget-service";
 import { Notifications } from "./notifications";
 import { provideHttpClient } from "@angular/common/http";
 
 describe("Notifications", () => {
-  let component: Notifications;
+  let fixture: ComponentFixture<Notifications>;
   let httpTestingController: HttpTestingController;
+
+  const notificationsUrl = environment.backend_url + "/notifications/";
+  const markAsReadUrl = environment.backend_url + "/notifications/markNotificationAsRead";
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()]
-    })
-      // Not rendered, so that the resources are only loaded by the test, not by the child components
-      .overrideTemplate(Notifications, "")
-      .compileComponents();
+    }).compileComponents();
 
-    const fixture = TestBed.createComponent(Notifications);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(Notifications);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
@@ -33,10 +32,18 @@ describe("Notifications", () => {
     httpTestingController.verify();
   });
 
-  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
+  /** Lets the resources receive the flushed responses, then renders the result. */
   async function flushResources(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve));
     TestBed.tick();
+    await fixture.whenStable();
+  }
+
+  /** The child list, whose inputs hold what the component displays. */
+  function getList(): NotificationsList {
+    return fixture.debugElement.query(
+      (debugElement) => debugElement.name === "dash-notifications-list"
+    ).componentInstance as NotificationsList;
   }
 
   const notificationDate = new Date();
@@ -45,21 +52,21 @@ describe("Notifications", () => {
       {
         id: 1,
         message: "username: Connexion utilisateur",
-        notificationType: NotificationTypeEnum.WARN,
+        notificationType: NotificationType.WARN,
         notificationDate: notificationDate.toString(),
         isRead: false
       },
       {
         id: 2,
         message: "username: Action user",
-        notificationType: NotificationTypeEnum.INFO,
+        notificationType: NotificationType.INFO,
         notificationDate: notificationDate.toString(),
         isRead: false
       },
       {
         id: 3,
         message: "username: Action user",
-        notificationType: NotificationTypeEnum.INFO,
+        notificationType: NotificationType.INFO,
         notificationDate: startOfYesterday(),
         isRead: true
       }
@@ -69,67 +76,61 @@ describe("Notifications", () => {
     last: true,
     size: 1,
     number: 0
-  } as IPage<INotification>;
+  } as Page<AppNotification>;
+
+  /** Loads the given notifications. */
+  async function loadNotifications(content: AppNotification[]): Promise<void> {
+    TestBed.tick();
+    httpTestingController.expectOne(notificationsUrl).flush({ ...notificationsData, content });
+    await flushResources();
+  }
 
   it("should create component and get notifications", async () => {
-    TestBed.tick();
-    const notificationsRequest = httpTestingController.expectOne(
-      environment.backend_url + "/notifications/"
-    );
-    notificationsRequest.flush(notificationsData);
-    await flushResources();
+    await loadNotifications(notificationsData.content);
 
-    expect(component.notificationsFromDatabase()).toEqual(notificationsData.content);
-    expect(component.notificationsToDisplay()[0].notificationTypeToDisplay).toEqual("warning");
-    expect(component.notificationsToDisplay()[1].notificationTypeToDisplay).toEqual("info");
-    expect(component.notificationsToDisplay()[1].notificationTypeToDisplay).toEqual("info");
-    expect(component.unreadNotificationsForBadge()).toEqual(2);
+    const list = getList();
+    expect(list.notificationsList()).toMatchObject(notificationsData.content);
+    expect(list.notificationsList().map((n) => n.notificationTypeToDisplay)).toEqual([
+      "warning",
+      "info",
+      "info"
+    ]);
+    expect(list.unreadNotificationsForBadge()).toEqual(2);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector(".mat-badge-content")?.textContent
+    ).toContain("2");
   });
 
   it("Should mark all notifications as read", async () => {
-    TestBed.tick();
-    const notificationsRequest = httpTestingController.expectOne(
-      environment.backend_url + "/notifications/"
-    );
-    notificationsRequest.flush(notificationsData);
-    await flushResources();
+    await loadNotifications(notificationsData.content);
 
-    component.markAllNotificationsAsRead();
+    getList().markAllNotificationsAsReadEvent.emit();
 
-    const markNotificationAsReadRequest = httpTestingController.expectOne(
-      environment.backend_url + "/notifications/markNotificationAsRead"
-    );
+    const markNotificationAsReadRequest = httpTestingController.expectOne(markAsReadUrl);
+    expect(markNotificationAsReadRequest.request.body).toEqual({ notificationIds: [1, 2, 3] });
     const updatedNotificationsData = notificationsData.content.map((notif) => {
       return { ...notif, ...{ isRead: true } };
     });
     markNotificationAsReadRequest.flush(updatedNotificationsData);
+    await fixture.whenStable();
 
-    expect(component.unreadNotificationsForBadge()).toEqual(0);
+    expect(getList().unreadNotificationsForBadge()).toEqual(0);
   });
-
-  /** Loads the notifications, then answers the request sent by the given action. */
-  async function loadNotifications(content: INotification[]): Promise<void> {
-    TestBed.tick();
-    httpTestingController
-      .expectOne(environment.backend_url + "/notifications/")
-      .flush({ ...notificationsData, content });
-    await flushResources();
-  }
 
   const today = new Date(2026, 10, 4, 9, 30);
   const twoDaysAgo = new Date(2026, 10, 2, 18, 15);
-  const notifications: INotification[] = [
+  const notifications: AppNotification[] = [
     {
       id: 1,
       message: "Older notification",
-      notificationType: NotificationTypeEnum.INFO,
+      notificationType: NotificationType.INFO,
       notificationDate: twoDaysAgo.toISOString(),
       isRead: false
     },
     {
       id: 2,
       message: "Today notification",
-      notificationType: NotificationTypeEnum.WARN,
+      notificationType: NotificationType.WARN,
       notificationDate: today.toISOString(),
       isRead: false
     }
@@ -139,38 +140,43 @@ describe("Notifications", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date(2026, 10, 4, 12, 0));
     await loadNotifications(notifications);
-    expect(component.notificationsToDisplay().map((n) => n.notificationDateToDisplay)).toEqual([
-      "02/11",
-      "09:30"
-    ]);
+    expect(
+      getList()
+        .notificationsList()
+        .map((n) => n.notificationDateToDisplay)
+    ).toEqual(["02/11", "09:30"]);
     vi.useRealTimers();
   });
 
   it("Should mark one notification as read and sort the notifications by date", async () => {
     await loadNotifications(notifications);
-    component.markNotificationAsRead(1);
+    getList().markNotificationAsReadEvent.emit(1);
 
-    const request = httpTestingController.expectOne(
-      environment.backend_url + "/notifications/markNotificationAsRead"
-    );
+    const request = httpTestingController.expectOne(markAsReadUrl);
     expect(request.request.body).toEqual({ notificationIds: [1] });
     request.flush([{ ...notifications[0], isRead: true }]);
+    await fixture.whenStable();
 
-    expect(component.notificationsFromDatabase().map((n) => [n.id, n.isRead])).toEqual([
+    expect(
+      getList()
+        .notificationsList()
+        .map((n) => [n.id, n.isRead])
+    ).toEqual([
       [2, false],
       [1, true]
     ]);
-    expect(component.unreadNotificationsForBadge()).toEqual(1);
+    expect(getList().unreadNotificationsForBadge()).toEqual(1);
   });
 
   it("Should display an error when the notifications can't be loaded", async () => {
     const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
     TestBed.tick();
     httpTestingController
-      .expectOne(environment.backend_url + "/notifications/")
+      .expectOne(notificationsUrl)
       .flush(null, { status: 500, statusText: "Server error" });
     await flushResources();
-    expect(component.notificationsFromDatabase()).toEqual([]);
+    expect(getList().notificationsList()).toEqual([]);
+    expect(getList().unreadNotificationsForBadge()).toEqual(0);
     expect(handleErrorSpy).toHaveBeenCalledWith(
       expect.objectContaining({ status: 500 }),
       "Erreur lors de la récupération des notifications."
@@ -180,91 +186,25 @@ describe("Notifications", () => {
   it("Should display an error when a notification can't be marked as read", async () => {
     const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
     await loadNotifications(notifications);
-    component.markNotificationAsRead(1);
+    getList().markNotificationAsReadEvent.emit(1);
     httpTestingController
-      .expectOne(environment.backend_url + "/notifications/markNotificationAsRead")
+      .expectOne(markAsReadUrl)
       .flush(null, { status: 500, statusText: "Server error" });
+    await fixture.whenStable();
     expect(handleErrorSpy).toHaveBeenCalledWith(
       expect.objectContaining({ status: 500 }),
       "Erreur lors du traitement de la requête."
     );
-    expect(component.unreadNotificationsForBadge()).toEqual(2);
+    expect(getList().unreadNotificationsForBadge()).toEqual(2);
   });
 
   it("Should reload the notifications when the widgets are refreshed", async () => {
     await loadNotifications(notifications);
+    expect(getList().notificationsList()).toHaveLength(2);
     TestBed.inject(WidgetService).refreshAllWidgets();
     TestBed.tick();
-    httpTestingController
-      .expectOne(environment.backend_url + "/notifications/")
-      .flush({ ...notificationsData, content: [] });
+    httpTestingController.expectOne(notificationsUrl).flush({ ...notificationsData, content: [] });
     await flushResources();
-    expect(component.notificationsFromDatabase()).toEqual([]);
-  });
-});
-
-describe("Notifications template", () => {
-  let fixture: ComponentFixture<Notifications>;
-  let httpTestingController: HttpTestingController;
-
-  const notifications: INotification[] = [
-    {
-      id: 1,
-      message: "username: Connexion utilisateur",
-      notificationType: NotificationTypeEnum.WARN,
-      notificationDate: new Date().toISOString(),
-      isRead: false
-    }
-  ];
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(Notifications);
-    httpTestingController = TestBed.inject(HttpTestingController);
-    TestBed.tick();
-    httpTestingController.expectOne(environment.backend_url + "/notifications/").flush({
-      content: notifications,
-      totalPages: 1,
-      totalElements: 1,
-      last: true,
-      size: 1,
-      number: 0
-    });
-    await new Promise((resolve) => setTimeout(resolve));
-    await fixture.whenStable();
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  function getList(): NotificationsList {
-    return fixture.debugElement.query(
-      (debugElement) => debugElement.name === "dash-notifications-list"
-    ).componentInstance as NotificationsList;
-  }
-
-  it("Should pass the notifications and the unread count to the list", () => {
-    expect(getList().unreadNotificationsForBadge()).toEqual(1);
-    expect(getList().notificationsList()).toEqual(
-      fixture.componentInstance.notificationsToDisplay()
-    );
-  });
-
-  it("Should mark the notifications as read when the list asks to", () => {
-    getList().markNotificationAsReadEvent.emit(1);
-    const request = httpTestingController.expectOne(
-      environment.backend_url + "/notifications/markNotificationAsRead"
-    );
-    expect(request.request.body).toEqual({ notificationIds: [1] });
-    request.flush([{ ...notifications[0], isRead: true }]);
-
-    getList().markAllNotificationsAsReadEvent.emit();
-    httpTestingController
-      .expectOne(environment.backend_url + "/notifications/markNotificationAsRead")
-      .flush([]);
+    expect(getList().notificationsList()).toEqual([]);
   });
 });

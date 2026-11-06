@@ -1,132 +1,70 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { Injector } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { provideRouter } from "@angular/router";
 import { WidgetList } from "./widget-list";
-import { WidgetTypeEnum } from "@widgets/widget-type.enum";
+import { WidgetType } from "@widgets/widget-type";
 import { provideHttpClient } from "@angular/common/http";
 import { CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
 import { By } from "@angular/platform-browser";
-import { IWidgetConfig } from "@widgets/widget-config.model";
-import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
+import { WidgetConfig } from "@widgets/widget-config";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget-tokens";
 
 describe("WidgetList", () => {
-  let component: WidgetList;
   let fixture: ComponentFixture<WidgetList>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WidgetList);
-    component = fixture.componentInstance;
   });
 
-  it("Should display the widgets", () => {
-    const widgetListConfig = [
-      {
-        id: 43,
-        type: WidgetTypeEnum.WEATHER,
-        widgetOrder: 1,
-        tabId: 1
-      },
-      {
-        id: 44,
-        type: WidgetTypeEnum.RSS,
-        widgetOrder: 2,
-        tabId: 1
-      },
-      {
-        id: 45,
-        type: 3,
-        widgetOrder: WidgetTypeEnum.CALENDAR,
-        tabId: 1
-      },
-      {
-        id: 46,
-        type: WidgetTypeEnum.STRAVA,
-        widgetOrder: 4,
-        tabId: 1
-      },
-      {
-        id: 47,
-        type: WidgetTypeEnum.STEAM,
-        widgetOrder: 5,
-        tabId: 1
-      },
-      {
-        id: 48,
-        type: WidgetTypeEnum.WORKOUT,
-        widgetOrder: 6,
-        tabId: 1
-      },
-      {
-        id: 49,
-        type: WidgetTypeEnum.AIRPARIF,
-        widgetOrder: 7,
-        tabId: 1
-      },
-      {
-        id: 51,
-        type: WidgetTypeEnum.ECOWATT,
-        widgetOrder: 9,
-        tabId: 1
-      },
-      {
-        id: 52,
-        type: WidgetTypeEnum.INCIDENT,
-        widgetOrder: 10,
-        tabId: 1
-      }
+  it("Should display every type of widget", () => {
+    const widgetListConfig: WidgetConfig[] = [
+      { id: 43, type: WidgetType.WEATHER, widgetOrder: 1, tabId: 1 },
+      { id: 44, type: WidgetType.RSS, widgetOrder: 2, tabId: 1 },
+      { id: 45, type: WidgetType.CALENDAR, widgetOrder: 3, tabId: 1 },
+      { id: 46, type: WidgetType.STRAVA, widgetOrder: 4, tabId: 1 },
+      { id: 47, type: WidgetType.STEAM, widgetOrder: 5, tabId: 1 },
+      { id: 48, type: WidgetType.WORKOUT, widgetOrder: 6, tabId: 1 },
+      { id: 49, type: WidgetType.AIRPARIF, widgetOrder: 7, tabId: 1 },
+      { id: 51, type: WidgetType.ECOWATT, widgetOrder: 9, tabId: 1 },
+      { id: 52, type: WidgetType.INCIDENT, widgetOrder: 10, tabId: 1 }
     ];
     fixture.componentRef.setInput("widgetList", widgetListConfig);
-    expect(component).toBeTruthy();
-  });
+    // Not whenStable: the pending requests of the widgets would keep the fixture unstable
+    TestBed.tick();
 
-  const widgets: IWidgetConfig[] = [
-    { id: 1, type: WidgetTypeEnum.WEATHER, widgetOrder: 0, tabId: 1, data: { city: "Paris" } },
-    { id: 2, type: WidgetTypeEnum.RSS, widgetOrder: 1, tabId: 1 },
-    { id: 3, type: WidgetTypeEnum.STEAM, widgetOrder: 2, tabId: 1 }
-  ];
-
-  it("Should reorder the widgets and emit the new order", () => {
-    fixture.componentRef.setInput(
-      "widgetList",
-      widgets.map((widget) => ({ ...widget }))
-    );
-    let emittedWidgets: IWidgetConfig[] = [];
-    component.updateWidgetsOrderEvent.subscribe(
-      (updatedWidgets) => (emittedWidgets = updatedWidgets)
-    );
-
-    component.drop({ previousIndex: 0, currentIndex: 2 } as CdkDragDrop<IWidgetConfig[]>);
-
-    expect(component.widgets().map((widget) => widget.id)).toEqual([2, 3, 1]);
-    expect(emittedWidgets.map((widget) => [widget.id, widget.widgetOrder])).toEqual([
-      [2, 0],
-      [3, 1],
-      [1, 2]
+    const element: HTMLElement = fixture.nativeElement;
+    expect(
+      [...element.querySelectorAll(".widget-container")].map((container) =>
+        container.firstElementChild?.tagName.toLowerCase()
+      )
+    ).toEqual([
+      "dash-weather-widget",
+      "dash-rss-widget",
+      "dash-calendar-widget",
+      "dash-strava-widget",
+      "dash-steam-widget",
+      "dash-workout-widget",
+      "dash-airparif-widget",
+      "dash-ecowatt-widget",
+      "dash-incident-widget"
     ]);
-  });
-
-  it("Should provide the widget id and data to each widget", () => {
-    const injector = component.getWidgetInjector(widgets[0]);
-    expect(injector.get(WIDGET_ID)).toEqual(1);
-    expect(injector.get(WIDGET_DATA)).toEqual({ city: "Paris" });
-    expect(component.getWidgetInjector(widgets[0])).toBe(injector);
-    expect(component.getWidgetInjector(widgets[1]).get(WIDGET_DATA)).toEqual({});
   });
 });
 
-describe("WidgetList template", () => {
+describe("WidgetList rendering", () => {
   let fixture: ComponentFixture<WidgetList>;
-  let component: WidgetList;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
 
-  const renderedWidgets: IWidgetConfig[] = [
-    { id: 1, type: WidgetTypeEnum.ECOWATT, widgetOrder: 0, tabId: 1 },
-    { id: 2, type: WidgetTypeEnum.RSS, widgetOrder: 1, tabId: 1 },
-    { id: 3, type: WidgetTypeEnum.WEATHER, widgetOrder: 2, tabId: 1, data: { city: "Paris" } }
+  const renderedWidgets: WidgetConfig[] = [
+    { id: 1, type: WidgetType.ECOWATT, widgetOrder: 0, tabId: 1 },
+    { id: 2, type: WidgetType.RSS, widgetOrder: 1, tabId: 1 },
+    { id: 3, type: WidgetType.WEATHER, widgetOrder: 2, tabId: 1, data: { city: "Paris" } }
   ];
 
   beforeEach(async () => {
@@ -134,7 +72,6 @@ describe("WidgetList template", () => {
       providers: [provideHttpClient(), provideHttpClientTesting()]
     });
     fixture = TestBed.createComponent(WidgetList);
-    component = fixture.componentInstance;
     element = fixture.nativeElement;
     httpTestingController = TestBed.inject(HttpTestingController);
     fixture.componentRef.setInput(
@@ -158,6 +95,10 @@ describe("WidgetList template", () => {
   afterEach(() => {
     httpTestingController.verify();
   });
+
+  function getDropList(): CdkDropList<WidgetConfig[]> {
+    return fixture.debugElement.query(By.css("#widget-list")).injector.get(CdkDropList);
+  }
 
   function getWidgetTags(): string[] {
     return [...element.querySelectorAll(".widget-container")].map(
@@ -188,14 +129,36 @@ describe("WidgetList template", () => {
   });
 
   it("Should sort the widgets of the grid both horizontally and vertically", () => {
-    const dropList = fixture.debugElement.query(By.css("#widget-list")).injector.get(CdkDropList);
-    expect(dropList.orientation).toEqual("mixed");
+    expect(getDropList().orientation).toEqual("mixed");
   });
 
-  it("Should keep the widget components when the widgets are reordered", async () => {
+  function getWidgetInjector(selector: string): Injector {
+    return fixture.debugElement.query(By.css(selector)).injector;
+  }
+
+  it("Should provide the widget id and data to each widget", () => {
+    expect(getWidgetInjector("dash-weather-widget").get(WIDGET_ID)).toEqual(3);
+    expect(getWidgetInjector("dash-weather-widget").get(WIDGET_DATA)).toEqual({ city: "Paris" });
+    expect(getWidgetInjector("dash-rss-widget").get(WIDGET_ID)).toEqual(2);
+    expect(getWidgetInjector("dash-rss-widget").get(WIDGET_DATA)).toEqual({});
+  });
+
+  it("Should reorder the widgets, emit the new order and keep the widget components", async () => {
+    let emittedWidgets: WidgetConfig[] = [];
+    fixture.componentInstance.updateWidgetsOrderEvent.subscribe(
+      (updatedWidgets) => (emittedWidgets = updatedWidgets)
+    );
     const ecowattWidget = element.querySelector("dash-ecowatt-widget");
-    component.drop({ previousIndex: 0, currentIndex: 2 } as CdkDragDrop<IWidgetConfig[]>);
+    getDropList().dropped.emit({ previousIndex: 0, currentIndex: 2 } as CdkDragDrop<
+      WidgetConfig[]
+    >);
     await fixture.whenStable();
+
+    expect(emittedWidgets.map((widget) => [widget.id, widget.widgetOrder])).toEqual([
+      [2, 0],
+      [3, 1],
+      [1, 2]
+    ]);
 
     expect(getWidgetTags()).toEqual([
       "dash-rss-widget",

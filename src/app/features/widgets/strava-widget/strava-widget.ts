@@ -11,7 +11,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { fr } from "date-fns/locale";
 import { catchError, finalize, firstValueFrom, map, of } from "rxjs";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { IActivitiesStatsByMonth, IActivity, IAthlete, ITokenData } from "./strava.model";
+import { ActivitiesStatsByMonth, Activity, Athlete, TokenData } from "./strava";
 import { StravaActivities } from "./strava-activities/strava-activities";
 import { StravaWidgetService } from "./strava-widget-service";
 import { BaseChartDirective } from "ng2-charts";
@@ -40,12 +40,12 @@ export class StravaWidget implements OnInit {
   private readonly STORAGE_TOKEN_EXPIRATION_DATE_KEY = "strava_token_expires_at";
 
   /** Most recent activities first. */
-  private byMostRecentActivity(activityA: IActivity, activityB: IActivity): number {
+  private byMostRecentActivity(activityA: Activity, activityB: Activity): number {
     return Date.parse(activityB.startDate) - Date.parse(activityA.startDate);
   }
 
   /** Oldest activities first. */
-  private byOldestActivity(activityA: IActivity, activityB: IActivity): number {
+  private byOldestActivity(activityA: Activity, activityB: Activity): number {
     return Date.parse(activityA.startDate) - Date.parse(activityB.startDate);
   }
 
@@ -54,7 +54,7 @@ export class StravaWidget implements OnInit {
     return Math.round(distanceInMeters * 1000) / 1000000;
   }
 
-  public readonly labels = {
+  protected readonly labels = {
     athleteProfile: "Athlete profile",
     strava: "Strava",
     activities: "Activités",
@@ -72,12 +72,12 @@ export class StravaWidget implements OnInit {
     loginToStrava: "Se connecter à Strava"
   };
 
-  public readonly athlete = signal<IAthlete | undefined>(undefined);
-  public readonly pageNumber = signal(1);
-  public readonly paginationActivities = 25;
+  protected readonly athlete = signal<Athlete | undefined>(undefined);
+  protected readonly pageNumber = signal(1);
+  protected readonly paginationActivities = 25;
 
   /** Page of activities of the logged in athlete, reloaded when the athlete or the page changes. */
-  public readonly activitiesResource = rxResource({
+  private readonly activitiesResource = rxResource({
     params: () => {
       const token = this.athlete() && this.getTokenValue();
       return token && this.isUserLoggedIn() ? { token, pageNumber: this.pageNumber() } : undefined;
@@ -94,11 +94,11 @@ export class StravaWidget implements OnInit {
           return of([]);
         })
       ),
-    defaultValue: [] as IActivity[]
+    defaultValue: [] as Activity[]
   });
 
-  public readonly activities = this.activitiesResource.value;
-  public readonly activitiesChartData = computed<
+  protected readonly activities = this.activitiesResource.value;
+  protected readonly activitiesChartData = computed<
     ChartData<keyof ChartTypeRegistry, number[], string>
   >(() => {
     const activitiesStats = this.getStatsFromActivities();
@@ -106,7 +106,7 @@ export class StravaWidget implements OnInit {
       labels: activitiesStats.map((stat) => format(stat.x, "MMM yyyy", { locale: fr })),
       datasets: [
         {
-          label: "Distance (kms)",
+          label: "Distance (km)",
           data: activitiesStats.map((stat) => stat.y),
           backgroundColor: "rgb(252 76 2 / 70%)"
         },
@@ -125,7 +125,7 @@ export class StravaWidget implements OnInit {
   });
 
   /** Totals of the displayed activities, distance in kilometers and elevation in meters. */
-  public readonly activitiesSummary = computed(() =>
+  protected readonly activitiesSummary = computed(() =>
     this.activities().reduce(
       (summary, activity) => ({
         count: summary.count + 1,
@@ -136,7 +136,7 @@ export class StravaWidget implements OnInit {
     )
   );
 
-  public readonly chartOptions: ChartConfiguration["options"] = {
+  protected readonly chartOptions: ChartConfiguration["options"] = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: { legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } } },
@@ -148,7 +148,7 @@ export class StravaWidget implements OnInit {
     }
   };
 
-  public readonly isWidgetLoaded = computed(
+  protected readonly isWidgetLoaded = computed(
     () => this.isAthleteLoaded() && !this.activitiesResource.isLoading()
   );
 
@@ -182,11 +182,11 @@ export class StravaWidget implements OnInit {
     this.destroyRef.onDestroy(() => clearTimeout(initTimeout));
   }
 
-  public refreshWidget(): void {
+  protected refreshWidget(): void {
     this.getUserData();
   }
 
-  public getUserData(): void {
+  private getUserData(): void {
     if (this.isUserLoggedIn()) {
       this.getAthleteData();
     } else if (this.getRefreshTokenValue()) {
@@ -194,10 +194,10 @@ export class StravaWidget implements OnInit {
     }
   }
 
-  public async getToken(apiCode: string): Promise<void> {
+  private async getToken(apiCode: string): Promise<void> {
     this.isAthleteLoaded.set(false);
     try {
-      const response: ITokenData = await firstValueFrom(this.stravaWidgetService.getToken(apiCode));
+      const response: TokenData = await firstValueFrom(this.stravaWidgetService.getToken(apiCode));
       this.storeTokenData(response);
       this.getAthleteData();
       await this.router.navigate(["/"]);
@@ -207,7 +207,7 @@ export class StravaWidget implements OnInit {
     }
   }
 
-  public getActivitiesByMonth(): Record<string, number[]> {
+  private getActivitiesByMonth(): Record<string, number[]> {
     return this.activities()
       .toSorted((activityA, activityB) => this.byOldestActivity(activityA, activityB))
       .reduce((activitiesByMonth: Record<string, number[]>, activity) => {
@@ -217,14 +217,14 @@ export class StravaWidget implements OnInit {
       }, {});
   }
 
-  public getStatsFromActivities(): IActivitiesStatsByMonth[] {
+  private getStatsFromActivities(): ActivitiesStatsByMonth[] {
     return Object.entries(this.getActivitiesByMonth()).map(([month, distances]) => ({
       x: new Date(month),
       y: Math.round(distances.reduce((total, distance) => total + distance, 0))
     }));
   }
 
-  public isUserLoggedIn(): boolean {
+  protected isUserLoggedIn(): boolean {
     const token = this.getTokenValue();
     const refreshToken = this.getRefreshTokenValue();
     const tokenExpirationDate = this.getTokenExpiresAtValue();
@@ -236,23 +236,23 @@ export class StravaWidget implements OnInit {
     );
   }
 
-  public loginToStrava(): void {
+  protected loginToStrava(): void {
     window.open(this.loginToStravaUrl, "_self");
   }
 
-  public getNextActivitiesPage(): void {
+  protected getNextActivitiesPage(): void {
     if (this.pageNumber() > 1) {
       this.pageNumber.update((pageNumber) => pageNumber - 1);
     }
   }
 
-  public getPreviousActivitiesPage(): void {
+  protected getPreviousActivitiesPage(): void {
     if (this.activities().length === this.paginationActivities) {
       this.pageNumber.update((pageNumber) => pageNumber + 1);
     }
   }
 
-  public getAthleteProfileUrl(athleteId: number): string {
+  protected getAthleteProfileUrl(athleteId: number): string {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
   }
 
@@ -271,7 +271,7 @@ export class StravaWidget implements OnInit {
     }
   }
 
-  private storeTokenData(tokenData: ITokenData): void {
+  private storeTokenData(tokenData: TokenData): void {
     localStorage.setItem(this.STORAGE_STRAVA_TOKEN_KEY, tokenData.accessToken);
     localStorage.setItem(this.STORAGE_STRAVA_REFRESH_TOKEN_KEY, tokenData.refreshToken);
     localStorage.setItem(this.STORAGE_TOKEN_EXPIRATION_DATE_KEY, tokenData.expiresAt);
@@ -297,7 +297,7 @@ export class StravaWidget implements OnInit {
         .getRefreshToken(refreshToken)
         .pipe(finalize(() => this.isAthleteLoaded.set(true)))
         .subscribe({
-          next: (response: ITokenData) => {
+          next: (response: TokenData) => {
             this.storeTokenData(response);
             this.athlete.set(response.athlete);
           },

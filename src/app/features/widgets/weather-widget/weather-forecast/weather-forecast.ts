@@ -2,9 +2,9 @@ import { DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { Component, inject, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { InitialUppercasePipe } from "@shared/pipes/initial-uppercase-pipe";
-import { dateInTimezone } from "@shared/utils/date.utils";
-import { ForecastMode, IForecast } from "../weather.model";
+import { InitialUppercasePipe } from "@shared/text/initial-uppercase-pipe";
+import { dateInTimezone } from "@shared/dates/timezone";
+import { ForecastMode, Forecast } from "../weather";
 import { WeatherWidgetService } from "../weather-widget-service";
 
 @Component({
@@ -14,25 +14,25 @@ import { WeatherWidgetService } from "../weather-widget-service";
   imports: [NgOptimizedImage, MatTooltip, MatIcon, InitialUppercasePipe, DecimalPipe]
 })
 export class WeatherForecast {
-  public readonly labels = {
-    maxTemperature: "Température maximum",
+  protected readonly labels = {
+    maxTemperature: "Température maximale",
     celsius: "°C",
-    minTemperature: "Température minimum",
+    minTemperature: "Température minimale",
     humidity: "Humidité",
     percent: "%"
   };
 
-  public readonly forecast = input.required<IForecast[]>();
+  public readonly forecast = input.required<Forecast[]>();
   public readonly timezone = input(0);
   public readonly forecastMode = input<ForecastMode>(ForecastMode.DAY);
 
   private readonly weatherWidgetService = inject(WeatherWidgetService);
 
-  public getIconFromWeatherApi(icon: string): string {
+  protected getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getWeatherIconUrl(icon);
   }
 
-  public getDateToDisplay(dateTime: number, timezone: number): string {
+  protected getDateToDisplay(dateTime: number, timezone: number): string {
     const options: Intl.DateTimeFormatOptions =
       this.forecastMode() === ForecastMode.DAY
         ? { hour: "2-digit" }

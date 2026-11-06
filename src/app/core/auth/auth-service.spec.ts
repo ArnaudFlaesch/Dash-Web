@@ -2,7 +2,7 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "@environments/environment";
-import { RoleEnum } from "@core/auth/role.enum";
+import { Role } from "@core/auth/role";
 import { AuthService } from "./auth-service";
 
 /** Builds an unsigned JWT whose payload only contains the expiration date (in seconds). */
@@ -35,7 +35,7 @@ describe("AuthService", () => {
       username: "admin",
       email: "admin@email.com",
       accessToken: createToken(Date.now() / 1000 + 3600),
-      roles: [RoleEnum.ROLE_ADMIN]
+      roles: [Role.ROLE_ADMIN]
     };
     expect(authService.isUserAdmin()).toBe(false);
 

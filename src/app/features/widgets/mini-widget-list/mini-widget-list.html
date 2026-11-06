@@ -1,0 +1,19 @@
+<div id="mini-widget-list-container" class="row items-center gap-xs">
+  <div id="mini-widget-list" class="row gap-xs">
+    @for (miniWidget of miniWidgetList(); track miniWidget.id) {
+      <div class="mini-widget-container">
+        <ng-container
+          *ngComponentOutlet="miniWidgetComponents[miniWidget.type]; injector: getMiniWidgetInjector(miniWidget)"
+        />
+      </div>
+    }
+  </div>
+  <button
+    (click)="openCreateMiniWidgetModal()"
+    [matTooltip]="labels.addNewMiniWidget"
+    id="add-mini-widget-button"
+    mat-icon-button
+  >
+    <mat-icon aria-hidden="false">add</mat-icon>
+  </button>
+</div>

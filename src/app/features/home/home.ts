@@ -22,11 +22,11 @@ import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { MatTooltip } from "@angular/material/tooltip";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, filter, of, switchMap } from "rxjs";
-import { WidgetTypeEnum } from "@widgets/widget-type.enum";
+import { WidgetType } from "@widgets/widget-type";
 import { ImportConfigModal } from "@features/home/import-config-modal/import-config-modal";
 import { WidgetTypePickerModal } from "@widgets/widget-type-picker-modal/widget-type-picker-modal";
-import { IWidgetConfig } from "@widgets/widget-config.model";
-import { ITab } from "@features/tab/tab.model";
+import { WidgetConfig } from "@widgets/widget-config";
+import { Tab } from "@features/tab/tab";
 import { Notifications } from "@features/notifications/notifications";
 import { AuthService } from "@core/auth/auth-service";
 import { ConfigService } from "@features/home/config-service";
@@ -34,10 +34,10 @@ import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { TabService } from "@features/tab/tab-service";
 import { ThemeService } from "@core/theme/theme-service";
 import { WidgetService } from "@widgets/widget-service";
-import { Tab } from "@features/tab/tab";
-import { MiniWidgetList } from "@widgets/miniwidget-list/miniwidget-list";
+import { TabLabel } from "@features/tab/tab-label";
+import { MiniWidgetList } from "@widgets/mini-widget-list/mini-widget-list";
 import { WidgetList } from "@widgets/widget-list/widget-list";
-import { IWidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker.model";
+import { WidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker-data";
 import { WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-type-options";
 
 @Component({
@@ -47,7 +47,7 @@ import { WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-ty
   imports: [
     NgOptimizedImage,
     CdkDropList,
-    Tab,
+    TabLabel,
     CdkDrag,
     MatButton,
     MatIconButton,
@@ -82,7 +82,7 @@ export class Home {
   private readonly MODAL_WIDTH = "640px";
   private readonly CASH_MANAGER_URL = "https://arnaudflaesch.github.io/CashManager/";
 
-  public readonly labels = {
+  protected readonly labels = {
     brandName: "Dash",
     tabs: "Onglets",
     doubleClickToRename: "Double-cliquez pour renommer",
@@ -109,7 +109,7 @@ export class Home {
     addWidget: "Ajouter un widget"
   };
 
-  public readonly tabsResource = rxResource({
+  private readonly tabsResource = rxResource({
     stream: () =>
       this.tabService.getTabs().pipe(
         catchError((error: HttpErrorResponse) => {
@@ -117,12 +117,12 @@ export class Home {
           return of([]);
         })
       ),
-    defaultValue: [] as ITab[]
+    defaultValue: [] as Tab[]
   });
 
-  public readonly tabs = this.tabsResource.value;
+  protected readonly tabs = this.tabsResource.value;
   // The tab from the url once the tabs are loaded, then kept as long as it exists, else the first tab
-  public readonly activeTab = linkedSignal<ITab[], number>({
+  protected readonly activeTab = linkedSignal<Tab[], number>({
     source: this.tabs,
     computation: (tabs, previous) => {
       const tabId =
@@ -134,7 +134,7 @@ export class Home {
   });
 
   /** Widgets of the active tab, reloaded when another tab is selected. */
-  public readonly widgetsResource = rxResource({
+  private readonly widgetsResource = rxResource({
     params: () => (this.activeTab() === -1 ? undefined : { tabId: this.activeTab() }),
     stream: ({ params: { tabId } }) =>
       this.widgetService.getWidgets(tabId).pipe(
@@ -143,17 +143,17 @@ export class Home {
           return of([]);
         })
       ),
-    defaultValue: [] as IWidgetConfig[]
+    defaultValue: [] as WidgetConfig[]
   });
 
-  public readonly activeWidgets = this.widgetsResource.value;
-  public readonly isDashboardLoaded = computed(() => !this.tabsResource.isLoading());
-  public readonly areWidgetsLoaded = computed(() => !this.widgetsResource.isLoading());
-  public readonly editModeEnabled = signal(false);
-  public readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
-  public readonly toggleThemeForm = form(this.isDarkTheme);
-  public readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
-  public readonly canUserSeeNotifications = inject(AuthService).isUserAdmin;
+  protected readonly activeWidgets = this.widgetsResource.value;
+  protected readonly isDashboardLoaded = computed(() => !this.tabsResource.isLoading());
+  protected readonly areWidgetsLoaded = computed(() => !this.widgetsResource.isLoading());
+  protected readonly editModeEnabled = signal(false);
+  private readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
+  protected readonly toggleThemeForm = form(this.isDarkTheme);
+  protected readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
+  protected readonly canUserSeeNotifications = inject(AuthService).isUserAdmin;
 
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -176,7 +176,7 @@ export class Home {
     inject(DestroyRef).onDestroy(() => clearInterval(refreshInterval));
   }
 
-  public addNewTab(): void {
+  protected addNewTab(): void {
     this.tabService.addTab("Nouvel onglet").subscribe({
       next: (insertedTab) => {
         this.tabs.update((tabs) => [...tabs, insertedTab]);
@@ -187,7 +187,7 @@ export class Home {
     });
   }
 
-  public selectTab(tabId: number): void {
+  protected selectTab(tabId: number): void {
     if (this.activeTab() !== tabId) {
       this.activeTab.set(tabId);
       const url = this.router
@@ -198,11 +198,11 @@ export class Home {
   }
 
   /** Keeps the renamed tab, else its previous name would be sent back when the tabs are reordered. */
-  public updateTab(updatedTab: ITab): void {
+  protected updateTab(updatedTab: Tab): void {
     this.tabs.update((tabs) => tabs.map((tab) => (tab.id === updatedTab.id ? updatedTab : tab)));
   }
 
-  public deleteWidgetFromDashboard(id: number): void {
+  private deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.deleteWidget),
@@ -213,7 +213,7 @@ export class Home {
     });
   }
 
-  public deleteTabFromDash(tabId: number): void {
+  protected deleteTabFromDash(tabId: number): void {
     this.tabService.deleteTab(tabId).subscribe({
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.deleteTab),
@@ -221,9 +221,9 @@ export class Home {
     });
   }
 
-  public openCreateWidgetModal(): void {
+  protected openCreateWidgetModal(): void {
     this.dialog
-      .open<WidgetTypePickerModal, IWidgetTypePickerData, keyof typeof WidgetTypeEnum>(
+      .open<WidgetTypePickerModal, WidgetTypePickerData, keyof typeof WidgetType>(
         WidgetTypePickerModal,
         {
           width: this.MODAL_WIDTH,
@@ -236,7 +236,7 @@ export class Home {
       .afterClosed()
       .pipe(
         filter(Boolean),
-        switchMap((type) => this.widgetService.addWidget(WidgetTypeEnum[type], this.activeTab()))
+        switchMap((type) => this.widgetService.addWidget(WidgetType[type], this.activeTab()))
       )
       .subscribe({
         next: (widget) => this.activeWidgets.update((activeWidgets) => [...activeWidgets, widget]),
@@ -245,15 +245,15 @@ export class Home {
       });
   }
 
-  public refreshAllWidgets(): void {
+  protected refreshAllWidgets(): void {
     this.widgetService.refreshAllWidgets();
   }
 
-  public openImportConfigModal(): void {
+  protected openImportConfigModal(): void {
     this.dialog.open(ImportConfigModal, { width: this.MODAL_WIDTH });
   }
 
-  public downloadConfig(): void {
+  protected downloadConfig(): void {
     this.configService.exportConfig().subscribe({
       next: (response) => {
         const downloadLink = this.document.createElement("a");
@@ -269,19 +269,19 @@ export class Home {
     });
   }
 
-  public async logout(): Promise<void> {
+  protected async logout(): Promise<void> {
     this.authService.logout();
     await this.router.navigate(["login"]);
   }
 
-  public updateWidgetOrder(updatedWidgets: IWidgetConfig[]): void {
+  protected updateWidgetOrder(updatedWidgets: WidgetConfig[]): void {
     this.widgetService.updateWidgetsOrder(updatedWidgets).subscribe({
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateWidgetsOrder)
     });
   }
 
-  public drop(event: CdkDragDrop<ITab[]>): void {
+  protected drop(event: CdkDragDrop<Tab[]>): void {
     const tabs = [...this.tabs()];
     moveItemInArray(tabs, event.previousIndex, event.currentIndex);
     const updatedTabs = tabs.map((tab, index) => ({ ...tab, tabOrder: index }));
@@ -291,11 +291,11 @@ export class Home {
     });
   }
 
-  public toggleEditMode(): void {
+  protected toggleEditMode(): void {
     this.editModeEnabled.update((editModeEnabled) => !editModeEnabled);
   }
 
-  public toggleTheme(isToggleChecked: boolean): void {
+  protected toggleTheme(isToggleChecked: boolean): void {
     this.themeService.selectDarkMode(isToggleChecked);
   }
 

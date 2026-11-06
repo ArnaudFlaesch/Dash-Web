@@ -1,272 +1,33 @@
-import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
-import { CalendarView, DateAdapter, provideCalendar } from "angular-calendar";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget-tokens";
+import {
+  CalendarEvent,
+  CalendarMonthViewComponent,
+  DateAdapter,
+  provideCalendar
+} from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { MatDialog } from "@angular/material/dialog";
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
-import { addMonths, endOfDay, subMonths } from "date-fns";
+import { endOfDay } from "date-fns";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { CalendarWidget } from "./calendar-widget";
 import { EventDetailModal } from "./event-detail-modal/event-detail-modal";
-import { ICalendarData } from "./calendar-data.model";
+import { CalendarData } from "./calendar-data";
 import { provideHttpClient } from "@angular/common/http";
 
 const calendarPath = environment.backend_url + `/calendarWidget/`;
 const ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
 describe("CalendarWidget", () => {
-  let component: CalendarWidget;
-  let httpTestingController: HttpTestingController;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        DateAdapter,
-        { provide: WIDGET_ID, useValue: 1 }
-      ]
-    })
-      // Not rendered, so that the resources are only loaded by the test, not by the child components
-      .overrideTemplate(CalendarWidget, "")
-      .compileComponents();
-
-    const fixture = TestBed.createComponent(CalendarWidget);
-    component = fixture.componentInstance;
-    httpTestingController = TestBed.inject(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
-  async function flushResources(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve));
-    TestBed.tick();
-  }
-
-  /** Loads the events of a single calendar. */
-  async function loadEvents(calendarData: ICalendarData[]): Promise<void> {
-    component.config.set({ calendarUrls: ["https://calendar.ical"] });
-    component.refreshWidget();
-    TestBed.tick();
-    httpTestingController.expectOne(calendarPath).flush(calendarData);
-    await flushResources();
-  }
-
-  it("should create", async () => {
-    expect(component.config().calendarUrls).toEqual([]);
-    component.refreshWidget();
-    TestBed.tick();
-    expect(component.events()).toEqual([]);
-    expect(component.isCalendarViewMonth()).toEqual(true);
-    component.config.set({ calendarUrls: ["https://calendar.ical"] });
-    component.refreshWidget();
-    TestBed.tick();
-    const getCalendarDataRequest = httpTestingController.expectOne(
-      environment.backend_url + `/calendarWidget/`
-    );
-    const getCalendarData = [
-      {
-        startDate: "2022-11-01T00:00:00.000+00:00",
-        endDate: "2022-11-02T00:00:00.000+00:00",
-        description: "La Toussaint"
-      },
-      {
-        startDate: "2021-05-23T00:00:00.000+00:00",
-        endDate: "2021-05-24T00:00:00.000+00:00",
-        description: "Pentecôte"
-      },
-      {
-        startDate: "2022-12-25T00:00:00.000+00:00",
-        endDate: "2022-12-26T00:00:00.000+00:00",
-        description: "Noël"
-      },
-      {
-        startDate: "2023-12-24T00:00:00.000+00:00",
-        endDate: "2023-12-25T00:00:00.000+00:00",
-        description: "La veille de Noël"
-      },
-      {
-        startDate: "2021-11-01T00:00:00.000+00:00",
-        endDate: "2021-11-02T00:00:00.000+00:00",
-        description: "La Toussaint"
-      },
-      {
-        startDate: "2022-07-14T00:00:00.000+00:00",
-        endDate: "2022-07-15T00:00:00.000+00:00",
-        description: "La fête nationale"
-      }
-    ];
-    getCalendarDataRequest.flush(getCalendarData);
-    await flushResources();
-    expect(component.events()).toHaveLength(6);
-    const calendarEvent = component.events()[0];
-    expect(calendarEvent.title).toEqual("La Toussaint");
-  });
-
-  it("Should check actual view", () => {
-    component.setView(CalendarView.Day);
-    expect(component.isCalendarViewMonth()).toEqual(false);
-    expect(component.isCalendarViewWeek()).toEqual(false);
-    expect(component.isCalendarViewDay()).toEqual(true);
-  });
-
-  it("Should update the calendar urls", () => {
-    expect(component.config().calendarUrls).toEqual([]);
-    expect(component.widgetData()).toBeUndefined();
-    component.onCalendarUrlAdded();
-    expect(component.config().calendarUrls).toEqual([""]);
-    expect(component.widgetData()).toEqual({ calendarUrls: [""] });
-    component.removeCalendarUrl(0);
-    expect(component.widgetData()).toBeUndefined();
-  });
-
-  it("Should send one request per calendar url", async () => {
-    const calendarUrls = ["https://first.ical", "https://second.ical"];
-    component.config.set({ calendarUrls });
-    component.refreshWidget();
-    TestBed.tick();
-
-    const requests = httpTestingController.match(calendarPath);
-    expect(requests.map((request) => request.request.method)).toEqual(["POST", "POST"]);
-    expect(requests.map((request) => request.request.body)).toEqual(
-      calendarUrls.map((calendarUrl) => ({ calendarUrl }))
-    );
-    requests[0].flush([
-      {
-        startDate: "2022-11-01T10:00:00.000Z",
-        endDate: "2022-11-01T11:00:00.000Z",
-        description: "Réunion"
-      }
-    ]);
-    requests[1].flush([
-      {
-        startDate: "2022-11-02T10:00:00.000Z",
-        endDate: "2022-11-02T11:00:00.000Z",
-        description: "Rendez-vous"
-      }
-    ]);
-    await flushResources();
-    expect(component.events().map((event) => event.title)).toEqual(["Réunion", "Rendez-vous"]);
-  });
-
-  it("Should skip a failing calendar and display an error", async () => {
-    const handleErrorSpy = vi
-      .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
-      .mockImplementation(() => undefined);
-    component.config.set({ calendarUrls: ["https://failing.ical", "https://working.ical"] });
-    component.refreshWidget();
-    TestBed.tick();
-
-    const requests = httpTestingController.match(calendarPath);
-    requests[0].flush(null, { status: 500, statusText: "Server error" });
-    requests[1].flush([
-      {
-        startDate: "2022-11-02T10:00:00.000Z",
-        endDate: "2022-11-02T11:00:00.000Z",
-        description: "Rendez-vous"
-      }
-    ]);
-    await flushResources();
-
-    expect(handleErrorSpy).toHaveBeenCalledTimes(1);
-    expect(handleErrorSpy.mock.calls[0][1]).toEqual(ERROR_PARSING_EVENTS);
-    expect(component.events().map((event) => event.title)).toEqual(["Rendez-vous"]);
-  });
-
-  it("Should ignore the incomplete events", async () => {
-    await loadEvents([
-      { startDate: "", endDate: "2022-11-02T00:00:00.000Z", description: "No start" },
-      { startDate: "2022-11-01T00:00:00.000Z", endDate: "", description: "No end" },
-      {
-        startDate: "2022-11-01T00:00:00.000Z",
-        endDate: "2022-11-02T00:00:00.000Z",
-        description: ""
-      },
-      {
-        startDate: "2022-11-01T00:00:00.000Z",
-        endDate: "2022-11-02T00:00:00.000Z",
-        description: "Complete"
-      }
-    ]);
-    expect(component.events().map((event) => event.title)).toEqual(["Complete"]);
-  });
-
-  it("Should keep the hours of an event which is not all day long", async () => {
-    await loadEvents([
-      {
-        startDate: "2022-11-01T10:30:00.000Z",
-        endDate: "2022-11-01T12:00:00.000Z",
-        description: "Réunion"
-      }
-    ]);
-    const [event] = component.events();
-    expect(event.allDay).toBe(false);
-    expect(event.start).toEqual(new Date("2022-11-01T10:30:00.000Z"));
-    expect(event.end).toEqual(new Date("2022-11-01T12:00:00.000Z"));
-  });
-
-  describe("All day events, whatever the timezone of the browser", () => {
-    // Node applies a change of the TZ environment variable at runtime (no Node types in this project)
-    const env = (globalThis as unknown as { process: { env: Record<string, string | undefined> } })
-      .process.env;
-    const initialTimezone = env["TZ"];
-
-    afterEach(() => {
-      if (initialTimezone === undefined) {
-        delete env["TZ"];
-      } else {
-        env["TZ"] = initialTimezone;
-      }
-    });
-
-    // West of UTC, with a half-hour offset, and east of UTC
-    ["America/New_York", "Asia/Kolkata", "Europe/Paris", "Pacific/Auckland"].forEach((timezone) => {
-      it(`Should display an all day event on its own day in ${timezone}`, async () => {
-        env["TZ"] = timezone;
-        await loadEvents([
-          {
-            startDate: "2022-11-01T00:00:00.000+00:00",
-            endDate: "2022-11-02T00:00:00.000+00:00",
-            description: "La Toussaint"
-          }
-        ]);
-        const [event] = component.events();
-        expect(event.allDay).toBe(true);
-        expect(event.start).toEqual(new Date(2022, 10, 1));
-        expect(event.end).toEqual(endOfDay(new Date(2022, 10, 1)));
-      });
-    });
-  });
-
-  it("Should open the detail of an event", () => {
-    const openSpy = vi.spyOn(TestBed.inject(MatDialog), "open").mockReturnValue(undefined as never);
-    const event = { title: "Réunion", start: new Date(2022, 10, 1) };
-    component.openEventDetail(event);
-    expect(openSpy).toHaveBeenCalledWith(EventDetailModal, {
-      width: "500px",
-      data: event
-    });
-  });
-
-  it("Should close the opened day of the month view", () => {
-    expect(component.activeDayIsOpen()).toBe(true);
-    component.closeOpenMonthViewDay();
-    expect(component.activeDayIsOpen()).toBe(false);
-  });
-});
-
-describe("CalendarWidget template", () => {
   const calendarUrl = "https://calendar.ical";
   let fixture: ComponentFixture<CalendarWidget>;
-  let component: CalendarWidget;
   let httpTestingController: HttpTestingController;
   let element: HTMLElement;
 
@@ -283,7 +44,6 @@ describe("CalendarWidget template", () => {
       ]
     });
     fixture = TestBed.createComponent(CalendarWidget);
-    component = fixture.componentInstance;
     element = fixture.nativeElement;
     httpTestingController = TestBed.inject(HttpTestingController);
   }
@@ -302,15 +62,43 @@ describe("CalendarWidget template", () => {
     );
   }
 
+  /** Events given to the month view, displayed by default. */
+  function getDisplayedEvents(): CalendarEvent[] {
+    return fixture.debugElement.query(By.directive(CalendarMonthViewComponent)).componentInstance
+      .events;
+  }
+
+  function getSelectedDate(): string | undefined {
+    return query("#calendar-selected-date h3")?.textContent?.trim();
+  }
+
+  /** Creates the widget with saved calendars, which loads their events. */
+  function createWidgetWithCalendars(calendarUrls: string[]): void {
+    createComponent({ calendarUrls });
+    TestBed.tick();
+  }
+
+  /** Creates the widget with a single calendar, and loads its events. */
+  async function loadEvents(calendarData: CalendarData[]): Promise<void> {
+    createWidgetWithCalendars([calendarUrl]);
+    httpTestingController.expectOne(calendarPath).flush(calendarData);
+    await fixture.whenStable();
+  }
+
   describe("Edit mode", () => {
     beforeEach(async () => {
       createComponent(undefined);
       await fixture.whenStable();
     });
 
-    it("Should add and remove calendar urls", async () => {
+    it("Should not load events without calendar", () => {
       expect(query(".widget-edit-mode")).toBeTruthy();
-      expect(query("#add-calendar-url")?.textContent).toContain(component.labels.addCalendar);
+      expect(query("mwl-calendar-month-view")).toBeNull();
+      httpTestingController.expectNone(calendarPath);
+    });
+
+    it("Should add and remove calendar urls", async () => {
+      expect(query("#add-calendar-url")?.textContent).toContain("Ajouter un calendrier");
       expect(element.querySelectorAll(".calendar-url-container")).toHaveLength(0);
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
 
@@ -318,21 +106,41 @@ describe("CalendarWidget template", () => {
       await fixture.whenStable();
       query("#add-calendar-url")?.click();
       await fixture.whenStable();
-      const inputs = element.querySelectorAll<HTMLInputElement>(".calendar-url-container input");
+      let inputs = element.querySelectorAll<HTMLInputElement>(".calendar-url-container input");
       expect(inputs).toHaveLength(2);
-      expect(inputs[0].placeholder).toEqual(component.labels.enterIcalUrl);
-      expect(inputs[0].getAttribute("aria-label")).toEqual(component.labels.calendarUrl);
+      expect(inputs[0].placeholder).toEqual("Saisissez une URL iCal");
+      expect(inputs[0].getAttribute("aria-label")).toEqual("URL du calendrier");
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(false);
 
       inputs[0].value = calendarUrl;
       inputs[0].dispatchEvent(new Event("input"));
       await fixture.whenStable();
-      expect(component.config().calendarUrls).toEqual([calendarUrl, ""]);
 
       element.querySelectorAll<HTMLButtonElement>(".remove-calendar-url")[1].click();
       await fixture.whenStable();
-      expect(component.config().calendarUrls).toEqual([calendarUrl]);
-      expect(element.querySelectorAll(".calendar-url-container")).toHaveLength(1);
+      inputs = element.querySelectorAll<HTMLInputElement>(".calendar-url-container input");
+      expect([...inputs].map((input) => input.value)).toEqual([calendarUrl]);
+
+      element.querySelectorAll<HTMLButtonElement>(".remove-calendar-url")[0].click();
+      await fixture.whenStable();
+      expect(element.querySelectorAll(".calendar-url-container")).toHaveLength(0);
+      // Without calendar, the configuration can't be saved
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
+    });
+
+    it("Should save an empty calendar url", async () => {
+      query("#add-calendar-url")?.click();
+      await fixture.whenStable();
+
+      query(".validate-button")?.click();
+      const saveRequest = httpTestingController.expectOne(
+        environment.backend_url + "/widget/updateWidgetData/1"
+      );
+      expect(saveRequest.request.body).toEqual({ data: { calendarUrls: [""] } });
+      saveRequest.flush({});
+      TestBed.tick();
+      httpTestingController.expectOne(calendarPath).flush([]);
+      await fixture.whenStable();
     });
 
     it("Should save the calendar urls and load the events", async () => {
@@ -361,58 +169,231 @@ describe("CalendarWidget template", () => {
     });
   });
 
+  describe("Events loading", () => {
+    it("Should load the events of the calendar", async () => {
+      await loadEvents([
+        {
+          startDate: "2022-11-01T00:00:00.000+00:00",
+          endDate: "2022-11-02T00:00:00.000+00:00",
+          description: "La Toussaint"
+        },
+        {
+          startDate: "2021-05-23T00:00:00.000+00:00",
+          endDate: "2021-05-24T00:00:00.000+00:00",
+          description: "Pentecôte"
+        },
+        {
+          startDate: "2022-12-25T00:00:00.000+00:00",
+          endDate: "2022-12-26T00:00:00.000+00:00",
+          description: "Noël"
+        },
+        {
+          startDate: "2023-12-24T00:00:00.000+00:00",
+          endDate: "2023-12-25T00:00:00.000+00:00",
+          description: "La veille de Noël"
+        },
+        {
+          startDate: "2021-11-01T00:00:00.000+00:00",
+          endDate: "2021-11-02T00:00:00.000+00:00",
+          description: "La Toussaint"
+        },
+        {
+          startDate: "2022-07-14T00:00:00.000+00:00",
+          endDate: "2022-07-15T00:00:00.000+00:00",
+          description: "La fête nationale"
+        }
+      ]);
+      expect(getDisplayedEvents().map((event) => event.title)).toEqual([
+        "La Toussaint",
+        "Pentecôte",
+        "Noël",
+        "La veille de Noël",
+        "La Toussaint",
+        "La fête nationale"
+      ]);
+    });
+
+    it("Should send one request per calendar url", async () => {
+      const calendarUrls = ["https://first.ical", "https://second.ical"];
+      createWidgetWithCalendars(calendarUrls);
+
+      const requests = httpTestingController.match(calendarPath);
+      expect(requests.map((request) => request.request.method)).toEqual(["POST", "POST"]);
+      expect(requests.map((request) => request.request.body)).toEqual(
+        calendarUrls.map((url) => ({ calendarUrl: url }))
+      );
+      requests[0].flush([
+        {
+          startDate: "2022-11-01T10:00:00.000Z",
+          endDate: "2022-11-01T11:00:00.000Z",
+          description: "Réunion"
+        }
+      ]);
+      requests[1].flush([
+        {
+          startDate: "2022-11-02T10:00:00.000Z",
+          endDate: "2022-11-02T11:00:00.000Z",
+          description: "Rendez-vous"
+        }
+      ]);
+      await fixture.whenStable();
+      expect(getDisplayedEvents().map((event) => event.title)).toEqual(["Réunion", "Rendez-vous"]);
+    });
+
+    it("Should skip a failing calendar and display an error", async () => {
+      createWidgetWithCalendars(["https://failing.ical", "https://working.ical"]);
+      const handleErrorSpy = vi
+        .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
+        .mockImplementation(() => undefined);
+
+      const requests = httpTestingController.match(calendarPath);
+      requests[0].flush(null, { status: 500, statusText: "Server error" });
+      requests[1].flush([
+        {
+          startDate: "2022-11-02T10:00:00.000Z",
+          endDate: "2022-11-02T11:00:00.000Z",
+          description: "Rendez-vous"
+        }
+      ]);
+      await fixture.whenStable();
+
+      expect(handleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(handleErrorSpy.mock.calls[0][1]).toEqual(ERROR_PARSING_EVENTS);
+      expect(getDisplayedEvents().map((event) => event.title)).toEqual(["Rendez-vous"]);
+    });
+
+    it("Should ignore the incomplete events", async () => {
+      await loadEvents([
+        { startDate: "", endDate: "2022-11-02T00:00:00.000Z", description: "No start" },
+        { startDate: "2022-11-01T00:00:00.000Z", endDate: "", description: "No end" },
+        {
+          startDate: "2022-11-01T00:00:00.000Z",
+          endDate: "2022-11-02T00:00:00.000Z",
+          description: ""
+        },
+        {
+          startDate: "2022-11-01T00:00:00.000Z",
+          endDate: "2022-11-02T00:00:00.000Z",
+          description: "Complete"
+        }
+      ]);
+      expect(getDisplayedEvents().map((event) => event.title)).toEqual(["Complete"]);
+    });
+
+    it("Should keep the hours of an event which is not all day long", async () => {
+      await loadEvents([
+        {
+          startDate: "2022-11-01T10:30:00.000Z",
+          endDate: "2022-11-01T12:00:00.000Z",
+          description: "Réunion"
+        }
+      ]);
+      const [event] = getDisplayedEvents();
+      expect(event.allDay).toBe(false);
+      expect(event.start).toEqual(new Date("2022-11-01T10:30:00.000Z"));
+      expect(event.end).toEqual(new Date("2022-11-01T12:00:00.000Z"));
+    });
+
+    describe("All day events, whatever the timezone of the browser", () => {
+      // Node applies a change of the TZ environment variable at runtime (no Node types in this project)
+      const env = (
+        globalThis as unknown as { process: { env: Record<string, string | undefined> } }
+      ).process.env;
+      const initialTimezone = env["TZ"];
+
+      afterEach(() => {
+        if (initialTimezone === undefined) {
+          delete env["TZ"];
+        } else {
+          env["TZ"] = initialTimezone;
+        }
+      });
+
+      // West of UTC, with a half-hour offset, and east of UTC
+      ["America/New_York", "Asia/Kolkata", "Europe/Paris", "Pacific/Auckland"].forEach(
+        (timezone) => {
+          it(`Should display an all day event on its own day in ${timezone}`, async () => {
+            env["TZ"] = timezone;
+            await loadEvents([
+              {
+                startDate: "2022-11-01T00:00:00.000+00:00",
+                endDate: "2022-11-02T00:00:00.000+00:00",
+                description: "La Toussaint"
+              }
+            ]);
+            const [event] = getDisplayedEvents();
+            expect(event.allDay).toBe(true);
+            expect(event.start).toEqual(new Date(2022, 10, 1));
+            expect(event.end).toEqual(endOfDay(new Date(2022, 10, 1)));
+          });
+        }
+      );
+    });
+  });
+
   describe("Read mode", () => {
     beforeEach(async () => {
       vi.useFakeTimers({ toFake: ["Date"] });
       vi.setSystemTime(new Date(2022, 10, 1, 12));
-      createComponent({ calendarUrls: [calendarUrl] });
-      TestBed.tick();
-      httpTestingController.expectOne(calendarPath).flush([
+      await loadEvents([
         {
           startDate: "2022-11-01T09:00:00.000Z",
           endDate: "2022-11-01T10:00:00.000Z",
           description: "Réunion d'équipe"
         }
       ]);
-      await fixture.whenStable();
     });
 
     afterEach(() => {
       vi.useRealTimers();
     });
 
-    it("Should display the header and the month view", () => {
-      expect(query(".widget-read-mode .widget-header")?.textContent).toContain(
-        component.labels.calendar
+    function getOpenedDayEventTitle(): HTMLElement | null {
+      return query("mwl-calendar-month-view .cal-open-day-events .cal-event-title");
+    }
+
+    function expectSelectedView(view: "Jour" | "Mois" | "Semaine"): void {
+      (["Jour", "Mois", "Semaine"] as const).forEach((viewLabel) =>
+        expect(getButtonByText(viewLabel)?.classList.contains("mat-primary")).toBe(
+          viewLabel === view
+        )
       );
-      expect(getButtonByText(component.labels.day)).toBeTruthy();
-      expect(getButtonByText(component.labels.week)).toBeTruthy();
-      expect(getButtonByText(component.labels.month)).toBeTruthy();
+    }
+
+    it("Should display the header and the month view", () => {
+      expect(query(".widget-read-mode .widget-header")?.textContent).toContain("Agenda");
+      expect(getButtonByText("Jour")).toBeTruthy();
+      expect(getButtonByText("Semaine")).toBeTruthy();
+      expect(getButtonByText("Mois")).toBeTruthy();
+      expectSelectedView("Mois");
       expect(query("mwl-calendar-month-view")).toBeTruthy();
-      expect(query("#calendar-selected-date h3")?.textContent?.trim()).toEqual("Novembre 2022");
-      expect(component.events().map((event) => event.title)).toEqual(["Réunion d'équipe"]);
+      expect(getSelectedDate()).toEqual("Novembre 2022");
+      expect(getDisplayedEvents().map((event) => event.title)).toEqual(["Réunion d'équipe"]);
+      // The day of the view date is opened
+      expect(getOpenedDayEventTitle()?.textContent).toContain("Réunion d'équipe");
     });
 
     it("Should switch between the day, week and month views", async () => {
-      getButtonByText(component.labels.week)?.click();
+      getButtonByText("Semaine")?.click();
       await fixture.whenStable();
-      expect(component.isCalendarViewWeek()).toBe(true);
+      expectSelectedView("Semaine");
       expect(query("mwl-calendar-week-view")).toBeTruthy();
       expect(query("mwl-calendar-month-view")).toBeNull();
       expect(query("mwl-calendar-week-view")?.textContent).toContain("Réunion d'équipe");
 
-      getButtonByText(component.labels.day)?.click();
+      getButtonByText("Jour")?.click();
       await fixture.whenStable();
-      expect(component.isCalendarViewDay()).toBe(true);
+      expectSelectedView("Jour");
       expect(query("mwl-calendar-day-view")).toBeTruthy();
 
-      getButtonByText(component.labels.month)?.click();
+      getButtonByText("Mois")?.click();
       await fixture.whenStable();
-      expect(component.isCalendarViewMonth()).toBe(true);
+      expectSelectedView("Mois");
       expect(query("mwl-calendar-month-view")).toBeTruthy();
+      expect(query("mwl-calendar-day-view")).toBeNull();
     });
 
-    it("Should navigate between the months", async () => {
+    it("Should navigate between the months, and close the opened day", async () => {
       const navigationButtons = element.querySelectorAll<HTMLButtonElement>(
         "#date-navigation-container button"
       );
@@ -420,29 +401,32 @@ describe("CalendarWidget template", () => {
 
       navigationButtons[2].click();
       await fixture.whenStable();
-      expect(component.viewDate().getMonth()).toEqual(addMonths(new Date(), 1).getMonth());
-      expect(component.activeDayIsOpen()).toBe(false);
+      expect(getSelectedDate()).toEqual("Décembre 2022");
 
       navigationButtons[0].click();
       await fixture.whenStable();
+      expect(getSelectedDate()).toEqual("Novembre 2022");
+      // Back on the month of the opened day, which has been closed
+      expect(getOpenedDayEventTitle()).toBeNull();
+
       navigationButtons[0].click();
       await fixture.whenStable();
-      expect(component.viewDate().getMonth()).toEqual(subMonths(new Date(), 1).getMonth());
+      expect(getSelectedDate()).toEqual("Octobre 2022");
 
       navigationButtons[1].click();
       await fixture.whenStable();
-      expect(component.viewDate().getMonth()).toEqual(new Date().getMonth());
+      expect(getSelectedDate()).toEqual("Novembre 2022");
     });
 
-    it("Should open the detail of an event clicked in the opened day of the month view", async () => {
+    it("Should open the detail of an event clicked in the opened day of the month view", () => {
       const openSpy = vi
         .spyOn(TestBed.inject(MatDialog), "open")
         .mockReturnValue(undefined as never);
 
-      query("mwl-calendar-month-view .cal-open-day-events .cal-event-title")?.click();
+      getOpenedDayEventTitle()?.click();
       expect(openSpy).toHaveBeenCalledWith(EventDetailModal, {
         width: "500px",
-        data: component.events()[0]
+        data: getDisplayedEvents()[0]
       });
     });
 
@@ -450,13 +434,13 @@ describe("CalendarWidget template", () => {
       const openSpy = vi
         .spyOn(TestBed.inject(MatDialog), "open")
         .mockReturnValue(undefined as never);
-      component.setView(CalendarView.Week);
+      getButtonByText("Semaine")?.click();
       await fixture.whenStable();
 
       query<HTMLElement>("mwl-calendar-week-view .cal-event-title")?.click();
       expect(openSpy).toHaveBeenCalledWith(EventDetailModal, {
         width: "500px",
-        data: component.events()[0]
+        data: expect.objectContaining({ title: "Réunion d'équipe" })
       });
     });
 
@@ -465,7 +449,7 @@ describe("CalendarWidget template", () => {
       TestBed.tick();
       httpTestingController.expectOne(calendarPath).flush([]);
       await fixture.whenStable();
-      expect(component.events()).toEqual([]);
+      expect(getDisplayedEvents()).toEqual([]);
     });
 
     it("Should display an error when the events can't be loaded", async () => {
@@ -479,7 +463,7 @@ describe("CalendarWidget template", () => {
         .flush(null, { status: 500, statusText: "Server error" });
       await fixture.whenStable();
       expect(handleErrorSpy).toHaveBeenCalledWith(expect.anything(), ERROR_PARSING_EVENTS);
-      expect(component.events()).toEqual([]);
+      expect(getDisplayedEvents()).toEqual([]);
     });
   });
 });

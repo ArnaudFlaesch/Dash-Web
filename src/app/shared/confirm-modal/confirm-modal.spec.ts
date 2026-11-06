@@ -33,11 +33,11 @@ describe("ConfirmModal", () => {
 
   it("Should display the confirmation message", () => {
     const element: HTMLElement = fixture.nativeElement;
-    expect(element.querySelector("h1")?.textContent?.trim()).toEqual(component.labels.confirmation);
+    expect(element.querySelector("h1")?.textContent?.trim()).toEqual("Confirmation");
     expect(element.querySelector("mat-dialog-content")?.textContent?.trim()).toEqual("test");
     expect(getButtons().map((button) => button.textContent?.trim())).toEqual([
-      component.labels.close,
-      component.labels.confirm
+      "Fermer",
+      "Confirmer"
     ]);
   });
 

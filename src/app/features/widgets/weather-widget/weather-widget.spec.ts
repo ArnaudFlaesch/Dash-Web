@@ -1,4 +1,4 @@
-import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget-tokens";
 import { provideHttpClient } from "@angular/common/http";
 import {
   HttpTestingController,
@@ -9,87 +9,13 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { forecastData, weatherData } from "./weather-widget.fixtures";
+import { forecastData, weatherData } from "./weather-widget-fixtures";
 import { WeatherWidget } from "./weather-widget";
 
 describe("WeatherWidget", () => {
-  let component: WeatherWidget;
-  let httpTestingController: HttpTestingController;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: WIDGET_ID, useValue: 1 }
-      ]
-    })
-      // Not rendered, so that the resources are only loaded by the test, not by the child components
-      .overrideTemplate(WeatherWidget, "")
-      .compileComponents();
-
-    const fixture = TestBed.createComponent(WeatherWidget);
-    component = fixture.componentInstance;
-    httpTestingController = TestBed.inject(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
-  async function flushResources(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve));
-    TestBed.tick();
-  }
-
-  describe("Normal cases", () => {
-    it("should create", async () => {
-      expect(component.widgetData()).toBeUndefined();
-      expect(component.isFormValid()).toEqual(false);
-      const cityName = "Paris";
-      expect(component.cityData()).toBeUndefined();
-      expect(component.forecastResponse()).toEqual([]);
-      expect(component.isWidgetLoaded()).toEqual(false);
-      component.config.update((config) => ({ ...config, city: cityName }));
-      expect(component.isFormValid()).toEqual(true);
-      expect(component.widgetData()).toEqual({ city: cityName });
-      component.refreshWidget();
-      TestBed.tick();
-
-      const requests = httpTestingController.match({ method: "GET" });
-      requests[0].flush(weatherData);
-      await flushResources();
-      requests[1].flush(forecastData);
-      await flushResources();
-
-      expect(component.cityData()?.name).toEqual(cityName);
-      expect(component.forecastResponse()).toHaveLength(forecastData.list.length);
-      expect(component.isWidgetLoaded()).toEqual(true);
-    });
-  });
-
-  describe("Error cases", () => {
-    it("should display error messages", async () => {
-      const cityName = "Paris";
-      component.config.update((config) => ({ ...config, city: cityName }));
-      component.refreshWidget();
-      TestBed.tick();
-      const requests = httpTestingController.match({ method: "GET" });
-      requests[0].error(new ProgressEvent("Server error"));
-      await flushResources();
-
-      expect(component.weather()).toBeUndefined();
-      expect(component.forecastResponse()).toEqual([]);
-    });
-  });
-});
-
-describe("WeatherWidget template", () => {
   const weatherPath = environment.backend_url + "/weatherWidget/";
   const ERROR_GETTING_WEATHER_DATA = "Erreur lors de la récupération des données météorologiques.";
   let fixture: ComponentFixture<WeatherWidget>;
-  let component: WeatherWidget;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
 
@@ -103,7 +29,6 @@ describe("WeatherWidget template", () => {
       ]
     });
     fixture = TestBed.createComponent(WeatherWidget);
-    component = fixture.componentInstance;
     element = fixture.nativeElement;
     httpTestingController = TestBed.inject(HttpTestingController);
   }
@@ -123,34 +48,37 @@ describe("WeatherWidget template", () => {
     ];
   }
 
+  async function typeCity(city: string): Promise<void> {
+    const input = query<HTMLInputElement>("#city-name-input")!;
+    input.value = city;
+    input.dispatchEvent(new Event("input"));
+    await fixture.whenStable();
+  }
+
   describe("Edit mode", () => {
     beforeEach(async () => {
       createComponent(undefined);
       await fixture.whenStable();
     });
 
-    it("Should display the city input", () => {
+    it("Should display the city input without loading the weather", () => {
       const input = query<HTMLInputElement>("#city-name-input");
-      expect(input?.placeholder).toEqual(component.labels.enterCityName);
-      expect(query("mat-label")?.textContent).toEqual(component.labels.city);
+      expect(input?.placeholder).toEqual("Saisissez le nom de la ville");
+      expect(input?.value).toEqual("");
+      expect(query("mat-label")?.textContent).toEqual("Ville");
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
+      expect(query("dash-weather-widget-view")).toBeNull();
+      httpTestingController.expectNone(() => true);
     });
 
     it("Should not validate a blank city", async () => {
-      const input = query<HTMLInputElement>("#city-name-input")!;
-      input.value = "   ";
-      input.dispatchEvent(new Event("input"));
-      await fixture.whenStable();
-      expect(component.isFormValid()).toBe(false);
+      await typeCity("   ");
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
     });
 
     it("Should save the city and load its weather", async () => {
-      const input = query<HTMLInputElement>("#city-name-input")!;
-      input.value = "Lyon";
-      input.dispatchEvent(new Event("input"));
-      await fixture.whenStable();
-      expect(component.config()).toEqual({ city: "Lyon" });
+      await typeCity("Lyon");
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(false);
 
       query(".validate-button")?.click();
       const saveRequest = httpTestingController.expectOne(
@@ -163,12 +91,13 @@ describe("WeatherWidget template", () => {
 
       const [weatherRequest, forecastRequest] = expectWeatherRequests("Lyon");
       weatherRequest.flush({ ...weatherData, name: "Lyon" });
-      forecastRequest.flush(forecastData);
+      forecastRequest.flush({ ...forecastData, city: { ...forecastData.city, name: "Lyon" } });
       await fixture.whenStable();
-      expect(query(".widget-header")?.textContent).toContain(
-        `${component.labels.weatherTodayIn} Lyon`
-      );
+      expect(query(".widget-header")?.textContent).toContain("La météo aujourd'hui à Lyon");
+      expect(query("mat-spinner")).toBeNull();
       expect(query("dash-weather-widget-view")).toBeTruthy();
+      // One button per day of the forecast
+      expect(element.querySelectorAll(".select-forecast")).toHaveLength(3);
     });
   });
 
@@ -179,9 +108,7 @@ describe("WeatherWidget template", () => {
     });
 
     it("Should display a spinner, then the weather of the city", async () => {
-      expect(query(".widget-header")?.textContent).toContain(
-        `${component.labels.weatherTodayIn} Paris`
-      );
+      expect(query(".widget-header")?.textContent).toContain("La météo aujourd'hui à Paris");
       expect(query("mat-spinner")).toBeTruthy();
       const [weatherRequest, forecastRequest] = expectWeatherRequests("Paris");
       weatherRequest.flush(weatherData);
@@ -198,8 +125,28 @@ describe("WeatherWidget template", () => {
       weatherRequest.flush({ ...weatherData, weather: undefined });
       forecastRequest.flush(forecastData);
       await fixture.whenStable();
-      expect(component.isWidgetLoaded()).toBe(true);
+      // Loaded: the spinner is replaced by the (empty) body
+      expect(query("mat-spinner")).toBeNull();
       expect(query("dash-weather-widget-view")).toBeNull();
+    });
+
+    it("Should not display the weather view without city in the forecast", async () => {
+      const [weatherRequest, forecastRequest] = expectWeatherRequests("Paris");
+      weatherRequest.flush(weatherData);
+      forecastRequest.flush({ ...forecastData, city: undefined });
+      await fixture.whenStable();
+      expect(query("mat-spinner")).toBeNull();
+      expect(query("dash-weather-widget-view")).toBeNull();
+    });
+
+    it("Should display the weather without forecast when the forecast has no list", async () => {
+      const [weatherRequest, forecastRequest] = expectWeatherRequests("Paris");
+      weatherRequest.flush(weatherData);
+      forecastRequest.flush({ ...forecastData, list: undefined });
+      await fixture.whenStable();
+      expect(query("dash-weather-widget-view dash-weather-today")).toBeTruthy();
+      expect(query(".select-forecast")).toBeNull();
+      expect(query("dash-weather-forecast .forecast-container")).toBeNull();
     });
 
     it("Should reload the weather when the widget is refreshed", async () => {
@@ -229,7 +176,21 @@ describe("WeatherWidget template", () => {
 
       expect(handleErrorSpy).toHaveBeenCalledTimes(1);
       expect(handleErrorSpy).toHaveBeenCalledWith(expect.anything(), ERROR_GETTING_WEATHER_DATA);
-      expect(component.isWidgetLoaded()).toBe(false);
+      // Not loaded: the spinner is kept
+      expect(query("mat-spinner")).toBeTruthy();
+      expect(query("dash-weather-widget-view")).toBeNull();
+    });
+
+    it("Should display an error when the server can't be reached", async () => {
+      const handleErrorSpy = vi
+        .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
+        .mockImplementation(() => undefined);
+      const [weatherRequest, forecastRequest] = expectWeatherRequests("Paris");
+      forecastRequest.error(new ProgressEvent("Server error"));
+      await fixture.whenStable();
+
+      expect(weatherRequest.cancelled).toBe(true);
+      expect(handleErrorSpy).toHaveBeenCalledWith(expect.anything(), ERROR_GETTING_WEATHER_DATA);
       expect(query("mat-spinner")).toBeTruthy();
       expect(query("dash-weather-widget-view")).toBeNull();
     });

@@ -1,4 +1,4 @@
-import { WIDGET_ID } from "@widgets/widget.tokens";
+import { WIDGET_ID } from "@widgets/widget-tokens";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { EcowattWidget } from "./ecowatt-widget";
 
@@ -6,7 +6,6 @@ const ECOWATT_IFRAME_URL =
   "https://www.monecowatt.fr/preview-homepage?prevision=1&map=0&ecogestes=0";
 
 describe("EcowattWidget", () => {
-  let component: EcowattWidget;
   let fixture: ComponentFixture<EcowattWidget>;
   let element: HTMLElement;
 
@@ -16,13 +15,14 @@ describe("EcowattWidget", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(EcowattWidget);
-    component = fixture.componentInstance;
     element = fixture.nativeElement;
   });
 
-  it("should create", () => {
-    component.refreshWidget();
-    expect(component.iframeContainerHeight()).toBeGreaterThanOrEqual(0);
+  it("Should load the widget, refreshed before its iframe container is rendered", async () => {
+    // The widget is refreshed on init, before its body (and so the iframe container) is rendered
+    await fixture.whenStable();
+    expect(getIframe()?.getAttribute("width")).toEqual("0");
+    expect(getIframe()?.getAttribute("height")).toEqual("0");
   });
 
   /** Simulates the size of the iframe container, which has no layout in the test DOM. */
@@ -39,12 +39,10 @@ describe("EcowattWidget", () => {
   it("Should display the Ecowatt iframe in read mode", async () => {
     await fixture.whenStable();
     expect(element.querySelector(".widget-read-mode")).toBeTruthy();
-    expect(element.querySelector(".ecowatt-widget-header")?.textContent).toEqual(
-      component.labels.title
-    );
+    expect(element.querySelector(".ecowatt-widget-header")?.textContent).toEqual("Ecowatt");
     expect(element.querySelector(".edit-button")).toBeNull();
     expect(getIframe()?.src).toEqual(ECOWATT_IFRAME_URL);
-    expect(getIframe()?.title).toEqual(component.labels.iframeTitle);
+    expect(getIframe()?.title).toEqual("ecowatt");
   });
 
   it("Should resize the iframe to its container when the window is resized", async () => {
@@ -53,8 +51,6 @@ describe("EcowattWidget", () => {
     window.dispatchEvent(new Event("resize"));
     await fixture.whenStable();
 
-    expect(component.iframeContainerWidth()).toEqual(400);
-    expect(component.iframeContainerHeight()).toEqual(300);
     expect(getIframe()?.getAttribute("width")).toEqual("400");
     expect(getIframe()?.getAttribute("height")).toEqual("300");
   });
@@ -77,8 +73,8 @@ describe("EcowattWidget", () => {
     element.querySelector<HTMLButtonElement>(".refresh-button")?.click();
     await fixture.whenStable();
 
-    expect(component.iframeContainerHeight()).toEqual(350);
-    expect(component.iframeContainerWidth()).toEqual(500);
+    expect(getIframe()?.getAttribute("width")).toEqual("500");
+    expect(getIframe()?.getAttribute("height")).toEqual("350");
     expect(srcAssignments).toEqual(1);
     expect(iframe.src).toEqual(ECOWATT_IFRAME_URL);
   });

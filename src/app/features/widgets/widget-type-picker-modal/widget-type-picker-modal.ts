@@ -8,7 +8,7 @@ import {
   MatDialogTitle
 } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
-import { IWidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker.model";
+import { WidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker-data";
 
 /** Lists the types of (mini) widgets, the dialog is closed with the key of the selected type. */
 @Component({
@@ -18,9 +18,9 @@ import { IWidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-
   imports: [MatDialogTitle, MatDialogContent, MatIcon, MatButton, MatDialogClose, MatDialogActions]
 })
 export class WidgetTypePickerModal {
-  public readonly labels = {
+  protected readonly labels = {
     close: "Fermer"
   };
 
-  public readonly data = inject<IWidgetTypePickerData>(MAT_DIALOG_DATA);
+  protected readonly data = inject<WidgetTypePickerData>(MAT_DIALOG_DATA);
 }

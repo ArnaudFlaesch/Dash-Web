@@ -3,18 +3,18 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "@shared/utils/form-validators";
+import { requiredText } from "@shared/forms/form-validators";
 import { MatIconButton } from "@angular/material/button";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatTooltip } from "@angular/material/tooltip";
-import { IWidgetConfig } from "@widgets/widget-config.model";
-import { isResourceLoaded } from "@shared/utils/resource.utils";
+import { WidgetConfig } from "@widgets/widget-config";
+import { isResourceLoaded } from "@shared/resources/resource-status";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { WidgetService } from "@widgets/widget-service";
-import { injectWidgetData, WIDGET_ID } from "@widgets/widget.tokens";
-import { IArticle, IRSSHeader } from "./article.model";
+import { injectWidgetData, WIDGET_ID } from "@widgets/widget-tokens";
+import { Article, RssHeader } from "./article";
 import { RssFeed } from "./rss-feed/rss-feed";
 import { RssWidgetService } from "./rss-widget-service";
 import { catchError, map, of } from "rxjs";
@@ -61,27 +61,27 @@ export class RssWidget {
     return [...new Set(guids.map((guid) => this.guidToString(guid)))];
   }
 
-  public readonly labels = {
+  protected readonly labels = {
     logo: "logo",
     url: "URL",
     enterRssFeedUrl: "Saisissez l'URL du flux RSS",
     markAllFeedAsRead: "Marquer tout le flux comme lu"
   };
 
-  public readonly config = signal({ url: injectWidgetData("url", "") });
-  public readonly configForm = form(this.config, (path) => requiredText(path.url));
+  protected readonly config = signal({ url: injectWidgetData("url", "") });
+  protected readonly configForm = form(this.config, (path) => requiredText(path.url));
 
   /** Channel of the RSS feed saved on the last refresh, reloaded on each refresh. */
-  public readonly rssFeedResource = rxResource({
+  private readonly rssFeedResource = rxResource({
     params: () => this.refreshedFeed(),
     stream: ({ params: { url } }) =>
       this.rssWidgetService.fetchDataFromRssFeed(url).pipe(
-        map((apiResult) => (apiResult as { channel?: IRSSHeader } | null)?.channel),
+        map((apiResult) => (apiResult as { channel?: RssHeader } | null)?.channel),
         map((channel) =>
           channel
             ? {
                 ...channel,
-                item: (channel.item ?? []).map((article): IArticle => ({
+                item: (channel.item ?? []).map((article): Article => ({
                   ...article,
                   guid: this.guidToString(article.guid)
                 }))
@@ -96,15 +96,17 @@ export class RssWidget {
     defaultValue: undefined
   });
 
-  public readonly rssFeedResult = this.rssFeedResource.value;
-  public readonly isWidgetLoaded = computed(() => isResourceLoaded(this.rssFeedResource.status()));
-  public readonly isLogoBroken = signal(false);
-  public readonly readArticles = signal(
+  protected readonly rssFeedResult = this.rssFeedResource.value;
+  protected readonly isWidgetLoaded = computed(() =>
+    isResourceLoaded(this.rssFeedResource.status())
+  );
+  protected readonly isLogoBroken = signal(false);
+  protected readonly readArticles = signal(
     this.toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
   );
 
-  public readonly isFormValid = computed(() => this.configForm().valid());
-  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  protected readonly isFormValid = computed(() => this.configForm().valid());
+  protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   private readonly ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
   private readonly ERROR_MARKING_FEED_AS_READ = "Erreur pendant la mise à jour du widget RSS.";
@@ -117,17 +119,17 @@ export class RssWidget {
   private readonly widgetService = inject(WidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  public refreshWidget(): void {
+  protected refreshWidget(): void {
     if (this.isFormValid()) {
       this.refreshedFeed.set({ url: this.config().url });
     }
   }
 
-  public markArticleAsRead(guid: string): void {
+  protected markArticleAsRead(guid: string): void {
     this.updateRssFeed(this.toReadArticlesGuids([guid, ...this.readArticles()]));
   }
 
-  public markAllFeedAsRead(): void {
+  protected markAllFeedAsRead(): void {
     // Without a loaded feed, the saved read articles would be erased
     const articles = this.rssFeedResult()?.item;
     if (articles) {
@@ -145,7 +147,7 @@ export class RssWidget {
         readArticlesGuids
       })
       .subscribe({
-        next: (response: IWidgetConfig) =>
+        next: (response: WidgetConfig) =>
           this.readArticles.set(
             this.toReadArticlesGuids((response.data?.["readArticlesGuids"] as unknown[]) ?? [])
           ),

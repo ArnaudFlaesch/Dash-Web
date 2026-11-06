@@ -7,8 +7,8 @@ import {
   MatExpansionPanelTitle
 } from "@angular/material/expansion";
 import { isThisYear, isToday, isValid } from "date-fns";
-import { DateFormatPipe } from "@shared/pipes/date-format-pipe";
-import { IArticle } from "../article.model";
+import { DateFormatPipe } from "@shared/dates/date-format-pipe";
+import { Article } from "../article";
 
 @Component({
   selector: "dash-rss-feed",
@@ -24,23 +24,23 @@ import { IArticle } from "../article.model";
   ]
 })
 export class RssFeed {
-  public readonly labels = {
+  protected readonly labels = {
     publishedOn: "Publié le",
     by: "par"
   };
 
-  public readonly feed = input.required<IArticle[]>();
+  public readonly feed = input.required<Article[]>();
   public readonly readArticles = input.required<string[]>();
   public readonly markArticleAsReadEvent = output<string>();
-  public readonly currentOpenedArticle = signal<string | undefined>(undefined);
+  private readonly currentOpenedArticle = signal<string | undefined>(undefined);
 
-  public stripHtmlFromContent(content?: string): string {
+  protected stripHtmlFromContent(content?: string): string {
     // The content is parsed in an inert document: no script is executed and no resource is loaded
     const parsedContent = new DOMParser().parseFromString(content ?? "", "text/html");
     return parsedContent.body.textContent;
   }
 
-  public formatTitleForArticle(article: IArticle): string {
+  protected formatTitleForArticle(article: Article): string {
     const articleDate = new Date(article.pubDate || article.updated || "");
     // Some articles have no (valid) publication date
     return isValid(articleDate)
@@ -48,22 +48,22 @@ export class RssFeed {
       : (article.title ?? "");
   }
 
-  public isArticleRead(guid: string): boolean {
+  protected isArticleRead(guid: string): boolean {
     return this.readArticles().includes(guid);
   }
 
-  public isArticleOpened(guid: string): boolean {
+  protected isArticleOpened(guid: string): boolean {
     return this.currentOpenedArticle() === guid;
   }
 
-  public onOpenDetail(guid: string): void {
+  protected onOpenDetail(guid: string): void {
     if (!this.isArticleRead(guid)) {
       this.markArticleAsReadEvent.emit(guid);
     }
     this.currentOpenedArticle.set(guid);
   }
 
-  public onClosePanel(): void {
+  protected onClosePanel(): void {
     this.currentOpenedArticle.set(undefined);
   }
 

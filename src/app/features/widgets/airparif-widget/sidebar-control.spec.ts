@@ -9,7 +9,7 @@ describe("SidebarControl", () => {
         <ul>
           <li id="home-tab"><a href="#home">Home</a></li>
           <li id="settings-tab" class="disabled"><a href="#settings">Settings</a></li>
-          <li id="external-tab"><a href="https://www.airparif.asso.fr">AirParif</a></li>
+          <li id="external-tab"><a href="https://www.airparif.asso.fr">Airparif</a></li>
         </ul>
       </div>
       <div class="sidebar-content">

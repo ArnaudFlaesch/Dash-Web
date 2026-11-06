@@ -1,20 +1,17 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import {
-  INotificationToDisplay,
-  NotificationTypeEnum
-} from "@features/notifications/notification.model";
+import { NotificationToDisplay, NotificationType } from "@features/notifications/app-notification";
 import { NotificationsList } from "./notifications-list";
 
 describe("NotificationsList", () => {
   let component: NotificationsList;
   let fixture: ComponentFixture<NotificationsList>;
 
-  const notifications: INotificationToDisplay[] = [
+  const notifications: NotificationToDisplay[] = [
     {
       id: 1,
       message: "username: Connexion utilisateur",
-      notificationType: NotificationTypeEnum.WARN,
+      notificationType: NotificationType.WARN,
       notificationDate: "2026-11-04T09:30:00",
       isRead: false,
       notificationDateToDisplay: "09:30",
@@ -23,7 +20,7 @@ describe("NotificationsList", () => {
     {
       id: 2,
       message: "username: Action user",
-      notificationType: NotificationTypeEnum.INFO,
+      notificationType: NotificationType.INFO,
       notificationDate: "2026-11-02T18:15:00",
       isRead: true,
       notificationDateToDisplay: "02/11",
@@ -63,7 +60,7 @@ describe("NotificationsList", () => {
 
   it("Should hide the badge when there is no unread notification", async () => {
     await fixture.whenStable();
-    expect(getElement("mat-icon").getAttribute("title")).toEqual(component.labels.notifications);
+    expect(getElement("mat-icon").getAttribute("title")).toEqual("Notifications");
     expect(getElement(".mat-badge-hidden")).not.toBeNull();
   });
 

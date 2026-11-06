@@ -1,7 +1,7 @@
 import { DecimalPipe } from "@angular/common";
 import { Component, input } from "@angular/core";
 import { format } from "date-fns";
-import { IActivity } from "../strava.model";
+import { Activity } from "../strava";
 import { fr } from "date-fns/locale/fr";
 import {
   MatAccordion,
@@ -39,7 +39,7 @@ export class StravaActivities {
     Hike: "hiking"
   };
 
-  public readonly labels = {
+  protected readonly labels = {
     kilometers: "km",
     distance: "Distance",
     duration: "Durée",
@@ -54,30 +54,30 @@ export class StravaActivities {
     viewOnStrava: "Voir sur Strava"
   };
 
-  public readonly activities = input.required<IActivity[]>();
+  public readonly activities = input.required<Activity[]>();
 
-  public formatDate(date: string): string {
+  protected formatDate(date: string): string {
     return format(new Date(date), "dd MMMM", { locale: fr });
   }
 
   /** Strava distances are in meters. */
-  public roundDistance(distanceInMeters: number): number {
+  protected roundDistance(distanceInMeters: number): number {
     return Math.round(distanceInMeters * 100) / 100000;
   }
 
-  public getActivityIcon(activityType: string): string {
+  protected getActivityIcon(activityType: string): string {
     return this.ACTIVITY_TYPE_ICONS[activityType] ?? "fitness_center";
   }
 
   /** Duration in seconds displayed as "1 h 05" or "42 min". */
-  public formatDuration(durationInSeconds: number): string {
+  protected formatDuration(durationInSeconds: number): string {
     const minutes = Math.round(durationInSeconds / 60);
     const hours = Math.floor(minutes / 60);
     return hours ? `${hours} h ${String(minutes % 60).padStart(2, "0")}` : `${minutes} min`;
   }
 
   /** Strava speeds are in meters per second. */
-  public toKilometersPerHour(speedInMetersPerSecond: number): number {
+  protected toKilometersPerHour(speedInMetersPerSecond: number): number {
     return speedInMetersPerSecond * 3.6;
   }
 }

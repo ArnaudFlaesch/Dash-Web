@@ -2,8 +2,8 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "@environments/environment";
-import { INotification, NotificationTypeEnum } from "@features/notifications/notification.model";
-import { IPage } from "@shared/models/page.model";
+import { AppNotification, NotificationType } from "@features/notifications/app-notification";
+import { Page } from "@shared/pagination/page";
 import { NotificationService } from "./notification-service";
 
 describe("NotificationService", () => {
@@ -11,11 +11,11 @@ describe("NotificationService", () => {
   let httpTestingController: HttpTestingController;
 
   const notificationsUrl = `${environment.backend_url}/notifications`;
-  const notification: INotification = {
+  const notification: AppNotification = {
     id: 1,
     message: "username: Connexion utilisateur",
     notificationDate: "2026-11-04T10:00:00",
-    notificationType: NotificationTypeEnum.INFO,
+    notificationType: NotificationType.INFO,
     isRead: false
   };
 
@@ -32,7 +32,7 @@ describe("NotificationService", () => {
   });
 
   it("Should get the notifications", () => {
-    const page: IPage<INotification> = {
+    const page: Page<AppNotification> = {
       content: [notification],
       totalPages: 1,
       totalElements: 1,
@@ -40,7 +40,7 @@ describe("NotificationService", () => {
       size: 1,
       number: 0
     };
-    let response: IPage<INotification> | undefined;
+    let response: Page<AppNotification> | undefined;
     notificationService.getNotifications().subscribe((notifications) => (response = notifications));
     const request = httpTestingController.expectOne(`${notificationsUrl}/`);
     expect(request.request.method).toEqual("GET");

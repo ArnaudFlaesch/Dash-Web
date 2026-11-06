@@ -1,13 +1,12 @@
-import { IActivity } from "../strava.model";
+import { Activity } from "../strava";
 
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { StravaActivities } from "./strava-activities";
 
 describe("StravaActivities", () => {
-  let component: StravaActivities;
   let fixture: ComponentFixture<StravaActivities>;
 
-  const activitiesData: IActivity[] = [
+  const activitiesData: Activity[] = [
     {
       resourceState: 2,
       athlete: { id: 25345795, resourceState: 0 },
@@ -216,29 +215,65 @@ describe("StravaActivities", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(StravaActivities);
-    component = fixture.componentInstance;
   });
 
-  it("Should format date", () => {
-    expect(component.formatDate("2022-10-20T18:34:39Z")).toEqual("20 octobre");
+  /** Opens the panel of each displayed activity, to display its details. */
+  async function openPanels(): Promise<void> {
+    const element = fixture.nativeElement as HTMLElement;
+    element
+      .querySelectorAll<HTMLElement>("mat-expansion-panel-header")
+      .forEach((header) => header.click());
+    await fixture.whenStable();
+  }
+
+  function getStats(panel: Element): { label?: string; value?: string }[] {
+    return Array.from(panel.querySelectorAll(".activity-stat")).map((stat) => ({
+      label: stat.querySelector(".activity-stat-label")?.textContent?.trim(),
+      value: stat.querySelector(".activity-stat-value")?.textContent?.trim()
+    }));
+  }
+
+  it("Should display the icon of each type of activity", async () => {
+    fixture.componentRef.setInput("activities", [
+      { ...activitiesData[0], id: 1, type: "Ride" },
+      { ...activitiesData[0], id: 2, type: "Swim" },
+      { ...activitiesData[0], id: 3, type: "Hike" },
+      // Unknown type of activity
+      { ...activitiesData[0], id: 4, type: "Yoga" }
+    ]);
+    await fixture.whenStable();
+    const icons = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll(".activity-type-icon")
+    ).map((icon) => icon.textContent?.trim());
+    expect(icons).toEqual(["directions_bike", "pool", "hiking", "fitness_center"]);
   });
 
-  it("Should round distance", () => {
-    expect(component.roundDistance(10529.8)).toEqual(10.5298);
-  });
+  it("Should format the duration, the distance and the speeds of an activity", async () => {
+    fixture.componentRef.setInput("activities", [
+      // 42 minutes, 5 m/s
+      { ...activitiesData[0], id: 1, movingTime: 2520, averageSpeed: 5, distance: 10529.8 },
+      // 1 hour and 5 minutes
+      { ...activitiesData[0], id: 2, movingTime: 3900 }
+    ]);
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+    const metas = Array.from(element.querySelectorAll(".activity-meta")).map((meta) =>
+      meta.textContent?.replaceAll(/\s+/g, " ").trim()
+    );
+    expect(metas).toEqual(["20 octobre · 10.5 km · 42 min", "20 octobre · 10.7 km · 1 h 05"]);
 
-  it("Should get the icon of an activity type", () => {
-    expect(component.getActivityIcon("Ride")).toEqual("directions_bike");
-    expect(component.getActivityIcon("Yoga")).toEqual("fitness_center");
-  });
-
-  it("Should format a duration", () => {
-    expect(component.formatDuration(2520)).toEqual("42 min");
-    expect(component.formatDuration(3900)).toEqual("1 h 05");
-  });
-
-  it("Should convert a speed to kilometers per hour", () => {
-    expect(component.toKilometersPerHour(5)).toEqual(18);
+    await openPanels();
+    const panels = element.querySelectorAll(".strava-activity");
+    expect(getStats(panels[0])).toEqual(
+      expect.arrayContaining([
+        { label: "Distance", value: "10.53 km" },
+        { label: "Durée", value: "42 min" },
+        { label: "Vitesse moy.", value: "18 km/h" }
+      ])
+    );
+    expect(getStats(panels[1])).toEqual(
+      expect.arrayContaining([{ label: "Durée", value: "1 h 05" }])
+    );
   });
 
   it("Should display a panel for each activity", async () => {
@@ -260,7 +295,7 @@ describe("StravaActivities", () => {
     expect(panels[0].querySelector(".activity-name")?.textContent).toContain("Evening Run");
     const meta = panels[0].querySelector(".activity-meta")?.textContent;
     expect(meta).toContain("20 octobre");
-    expect(meta).toContain(`10.7 ${component.labels.kilometers}`);
+    expect(meta).toContain(`10.7 km`);
     expect(meta).toContain("49 min");
     expect(panels[1].querySelector(".activity-type-icon")?.textContent).toContain(
       "directions_bike"
@@ -275,27 +310,28 @@ describe("StravaActivities", () => {
     await fixture.whenStable();
     const element = fixture.nativeElement as HTMLElement;
 
-    (element.querySelector("mat-expansion-panel-header") as HTMLElement).click();
-    await fixture.whenStable();
+    await openPanels();
 
-    const stats = Array.from(element.querySelectorAll(".activity-stat")).map((stat) => ({
-      label: stat.querySelector(".activity-stat-label")?.textContent?.trim(),
-      value: stat.querySelector(".activity-stat-value")?.textContent?.trim()
-    }));
-    expect(stats).toEqual([
-      { label: component.labels.distance, value: `10.7 ${component.labels.kilometers}` },
-      { label: component.labels.duration, value: "49 min" },
-      { label: component.labels.elevation, value: `49 ${component.labels.meters}` },
-      { label: component.labels.averageSpeed, value: `13 ${component.labels.kilometersPerHour}` },
-      { label: component.labels.maxSpeed, value: `60.9 ${component.labels.kilometersPerHour}` },
-      { label: component.labels.achievements, value: "1" },
-      { label: component.labels.kudos, value: "2" },
-      { label: component.labels.comments, value: "0" }
+    expect(getStats(element)).toEqual([
+      { label: "Distance", value: `10.7 km` },
+      { label: "Durée", value: "49 min" },
+      { label: "Dénivelé", value: `49 m` },
+      {
+        label: "Vitesse moy.",
+        value: `13 km/h`
+      },
+      {
+        label: "Vitesse max",
+        value: `60.9 km/h`
+      },
+      { label: "Trophées", value: "1" },
+      { label: "Kudos", value: "2" },
+      { label: "Commentaires", value: "0" }
     ]);
     const link = element.querySelector(".activity-link") as HTMLAnchorElement;
     expect(link.getAttribute("href")).toEqual(
       `https://www.strava.com/activities/${activitiesData[0].id}`
     );
-    expect(link.textContent).toContain(component.labels.viewOnStrava);
+    expect(link.textContent).toContain("Voir sur Strava");
   });
 });

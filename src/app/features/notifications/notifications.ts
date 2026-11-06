@@ -3,10 +3,10 @@ import { Component, computed, inject } from "@angular/core";
 import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { isToday } from "date-fns";
 import {
-  INotification,
-  INotificationToDisplay,
-  NotificationTypeEnum
-} from "@features/notifications/notification.model";
+  AppNotification,
+  NotificationToDisplay,
+  NotificationType
+} from "@features/notifications/app-notification";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { NotificationService } from "@features/notifications/notification-service";
 import { WidgetService } from "@widgets/widget-service";
@@ -19,13 +19,13 @@ import { catchError, map, of } from "rxjs";
   imports: [NotificationsList]
 })
 export class Notifications {
-  private readonly NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
-    [NotificationTypeEnum.INFO]: "info",
-    [NotificationTypeEnum.WARN]: "warning"
+  private readonly NOTIFICATION_TYPE_ICONS: Record<NotificationType, string> = {
+    [NotificationType.INFO]: "info",
+    [NotificationType.WARN]: "warning"
   };
 
   /** Notifications, reloaded each time the widgets are refreshed. */
-  public readonly notificationsResource = rxResource({
+  private readonly notificationsResource = rxResource({
     stream: () =>
       this.notificationService.getNotifications().pipe(
         map((notifications) => notifications.content),
@@ -34,18 +34,18 @@ export class Notifications {
           return of([]);
         })
       ),
-    defaultValue: [] as INotification[]
+    defaultValue: [] as AppNotification[]
   });
 
-  public readonly notificationsFromDatabase = this.notificationsResource.value;
-  public readonly notificationsToDisplay = computed<INotificationToDisplay[]>(() =>
+  private readonly notificationsFromDatabase = this.notificationsResource.value;
+  protected readonly notificationsToDisplay = computed<NotificationToDisplay[]>(() =>
     this.notificationsFromDatabase().map((notification) => ({
       ...notification,
       notificationDateToDisplay: this.computeDateToDisplay(notification.notificationDate),
       notificationTypeToDisplay: this.NOTIFICATION_TYPE_ICONS[notification.notificationType]
     }))
   );
-  public readonly unreadNotificationsForBadge = computed(
+  protected readonly unreadNotificationsForBadge = computed(
     () => this.notificationsFromDatabase().filter((notification) => !notification.isRead).length
   );
 
@@ -61,11 +61,11 @@ export class Notifications {
       .subscribe(() => this.notificationsResource.reload());
   }
 
-  public markNotificationAsRead(notificationId: number): void {
+  protected markNotificationAsRead(notificationId: number): void {
     this.markNotificationsAsRead([notificationId]);
   }
 
-  public markAllNotificationsAsRead(): void {
+  protected markAllNotificationsAsRead(): void {
     this.markNotificationsAsRead(this.notificationsFromDatabase().map((notif) => notif.id));
   }
 

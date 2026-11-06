@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Service } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { environment } from "@environments/environment";
-import { WidgetTypeEnum } from "@widgets/widget-type.enum";
-import { IWidgetConfig } from "@widgets/widget-config.model";
+import { WidgetType } from "@widgets/widget-type";
+import { WidgetConfig } from "@widgets/widget-config";
 
 @Service()
 export class WidgetService {
@@ -29,20 +29,20 @@ export class WidgetService {
     this.refreshWidgetsEvent.next();
   }
 
-  public getWidgets(tabId: number): Observable<IWidgetConfig[]> {
-    return this.http.get<IWidgetConfig[]>(`${this.baseUrl}/`, { params: { tabId } });
+  public getWidgets(tabId: number): Observable<WidgetConfig[]> {
+    return this.http.get<WidgetConfig[]>(`${this.baseUrl}/`, { params: { tabId } });
   }
 
-  public addWidget(type: WidgetTypeEnum, tabId: number): Observable<IWidgetConfig> {
-    return this.http.post<IWidgetConfig>(`${this.baseUrl}/addWidget`, { type, tabId });
+  public addWidget(type: WidgetType, tabId: number): Observable<WidgetConfig> {
+    return this.http.post<WidgetConfig>(`${this.baseUrl}/addWidget`, { type, tabId });
   }
 
-  public updateWidgetData(id: number, data: unknown): Observable<IWidgetConfig> {
-    return this.http.patch<IWidgetConfig>(`${this.baseUrl}/updateWidgetData/${id}`, { data });
+  public updateWidgetData(id: number, data: unknown): Observable<WidgetConfig> {
+    return this.http.patch<WidgetConfig>(`${this.baseUrl}/updateWidgetData/${id}`, { data });
   }
 
-  public updateWidgetsOrder(widgetsData: IWidgetConfig[]): Observable<IWidgetConfig[]> {
-    return this.http.post<IWidgetConfig[]>(`${this.baseUrl}/updateWidgetsOrder`, widgetsData);
+  public updateWidgetsOrder(widgetsData: WidgetConfig[]): Observable<WidgetConfig[]> {
+    return this.http.post<WidgetConfig[]>(`${this.baseUrl}/updateWidgetsOrder`, widgetsData);
   }
 
   public deleteWidget(id: number): Observable<void> {

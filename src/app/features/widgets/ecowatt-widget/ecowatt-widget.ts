@@ -9,22 +9,22 @@ import { Widget } from "@widgets/widget/widget";
   host: { "(window:resize)": "resizeWidget()" }
 })
 export class EcowattWidget {
-  public readonly labels = {
+  protected readonly labels = {
     title: "Ecowatt",
     iframeTitle: "ecowatt"
   };
 
   public readonly iframeContainer = viewChild<ElementRef<HTMLElement>>("iframeContainer");
 
-  public readonly isWidgetLoaded = signal(true);
-  public readonly iframeContainerHeight = signal(0);
-  public readonly iframeContainerWidth = signal(0);
+  protected readonly isWidgetLoaded = signal(true);
+  protected readonly iframeContainerHeight = signal(0);
+  protected readonly iframeContainerWidth = signal(0);
 
   public constructor() {
     afterNextRender(() => this.resizeWidget());
   }
 
-  public resizeWidget(): void {
+  protected resizeWidget(): void {
     const container = this.iframeContainer()?.nativeElement;
     if (container) {
       this.iframeContainerHeight.set(container.offsetHeight);
@@ -32,7 +32,7 @@ export class EcowattWidget {
     }
   }
 
-  public refreshWidget(): void {
+  protected refreshWidget(): void {
     this.resizeWidget();
     const iframe = this.iframeContainer()?.nativeElement.querySelector("iframe");
     if (iframe) {

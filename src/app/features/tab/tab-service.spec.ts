@@ -2,7 +2,7 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "@environments/environment";
-import { ITab } from "@features/tab/tab.model";
+import { Tab } from "@features/tab/tab";
 import { TabService } from "./tab-service";
 
 describe("TabService", () => {
@@ -10,7 +10,7 @@ describe("TabService", () => {
   let httpTestingController: HttpTestingController;
 
   const tabUrl = `${environment.backend_url}/tab`;
-  const tab: ITab = { id: 1, label: "Flux RSS", tabOrder: 1 };
+  const tab: Tab = { id: 1, label: "Flux RSS", tabOrder: 1 };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,7 +25,7 @@ describe("TabService", () => {
   });
 
   it("Should get the tabs", () => {
-    let tabs: ITab[] = [];
+    let tabs: Tab[] = [];
     tabService.getTabs().subscribe((response) => (tabs = response));
     const request = httpTestingController.expectOne(`${tabUrl}/`);
     expect(request.request.method).toEqual("GET");

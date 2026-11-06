@@ -9,9 +9,9 @@ import {
   signal,
   TemplateRef
 } from "@angular/core";
-import { ModeEnum } from "@widgets/abstract-widget/mode.enum";
+import { WidgetMode } from "@widgets/abstract-widget/widget-mode";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { WIDGET_ID } from "@widgets/widget.tokens";
+import { WIDGET_ID } from "@widgets/widget-tokens";
 
 /** Common behaviour (read / edit / delete modes) shared by widgets and mini widgets. */
 @Directive()
@@ -23,10 +23,10 @@ export abstract class AbstractWidget implements OnInit {
   public readonly widgetData = input<Record<string, unknown> | undefined>(undefined);
   public readonly refreshWidgetAction = output();
 
-  public readonly mode = signal(ModeEnum.EDIT);
-  public readonly isModeRead = computed(() => this.mode() === ModeEnum.READ);
-  public readonly isModeEdit = computed(() => this.mode() === ModeEnum.EDIT);
-  public readonly isModeDelete = computed(() => this.mode() === ModeEnum.DELETE);
+  protected readonly mode = signal(WidgetMode.EDIT);
+  protected readonly isModeRead = computed(() => this.mode() === WidgetMode.READ);
+  protected readonly isModeEdit = computed(() => this.mode() === WidgetMode.EDIT);
+  protected readonly isModeDelete = computed(() => this.mode() === WidgetMode.DELETE);
 
   protected readonly widgetId = inject(WIDGET_ID);
   protected readonly errorHandlerService = inject(ErrorHandlerService);
@@ -40,32 +40,32 @@ export abstract class AbstractWidget implements OnInit {
     this.refreshWidget();
   }
 
-  public refreshWidget(): void {
+  protected refreshWidget(): void {
     if (this.isFormValid()) {
       this.refreshWidgetAction.emit();
     }
   }
 
-  public toEditMode(): void {
+  protected toEditMode(): void {
     if (this.editComponent()) {
-      this.mode.set(ModeEnum.EDIT);
+      this.mode.set(WidgetMode.EDIT);
     }
   }
 
-  public toReadMode(): void {
+  protected toReadMode(): void {
     if (this.widgetData()) {
-      this.mode.set(ModeEnum.READ);
+      this.mode.set(WidgetMode.READ);
     } else {
       this.toEditMode();
     }
   }
 
-  public cancelEdition(): void {
+  protected cancelEdition(): void {
     this.toReadMode();
   }
 
-  public toDeleteMode(): void {
-    this.mode.set(ModeEnum.DELETE);
+  protected toDeleteMode(): void {
+    this.mode.set(WidgetMode.DELETE);
   }
 
   /** Called once the widget configuration has been saved. */

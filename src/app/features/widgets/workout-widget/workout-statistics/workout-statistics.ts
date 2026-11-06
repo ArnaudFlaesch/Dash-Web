@@ -3,7 +3,7 @@ import { ChartData, ChartTypeRegistry } from "chart.js";
 import { format, startOfMonth } from "date-fns";
 import { fr } from "date-fns/locale/fr";
 import { BaseChartDirective } from "ng2-charts";
-import { IWorkoutStatByMonth, IWorkoutType } from "../workout.model";
+import { WorkoutStatByMonth, WorkoutType } from "../workout";
 
 @Component({
   selector: "dash-workout-statistics",
@@ -11,10 +11,10 @@ import { IWorkoutStatByMonth, IWorkoutType } from "../workout.model";
   imports: [BaseChartDirective]
 })
 export class WorkoutStatistics {
-  public readonly workoutStatsByMonth = input.required<IWorkoutStatByMonth[]>();
-  public readonly workoutTypes = input.required<IWorkoutType[]>();
+  public readonly workoutStatsByMonth = input.required<WorkoutStatByMonth[]>();
+  public readonly workoutTypes = input.required<WorkoutType[]>();
 
-  public readonly workoutStatsChartData = computed<
+  protected readonly workoutStatsChartData = computed<
     ChartData<keyof ChartTypeRegistry, number[], string> | undefined
   >(() => {
     const stats = this.workoutStatsByMonth();
@@ -39,9 +39,9 @@ export class WorkoutStatistics {
   private getRepsListOfWorkoutTypeByMonth(
     workoutTypeId: number,
     monthsTimes: number[],
-    stats: IWorkoutStatByMonth[]
+    stats: WorkoutStatByMonth[]
   ): number[] {
-    return stats.reduce((repListOfPeriod: number[], workoutStatByMonth: IWorkoutStatByMonth) => {
+    return stats.reduce((repListOfPeriod: number[], workoutStatByMonth: WorkoutStatByMonth) => {
       if (workoutStatByMonth.workoutTypeId === workoutTypeId) {
         repListOfPeriod[
           monthsTimes.indexOf(startOfMonth(new Date(workoutStatByMonth.monthPeriod)).getTime())

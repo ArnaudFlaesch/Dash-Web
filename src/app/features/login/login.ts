@@ -10,7 +10,7 @@ import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { AuthService } from "@core/auth/auth-service";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { requiredText } from "@shared/utils/form-validators";
+import { requiredText } from "@shared/forms/form-validators";
 
 @Component({
   selector: "dash-login",
@@ -32,7 +32,7 @@ import { requiredText } from "@shared/utils/form-validators";
   ]
 })
 export class Login {
-  public readonly labels = {
+  protected readonly labels = {
     logoAlt: "dash logo",
     title: "Dash",
     subtitle: "Votre tableau de bord personnel",
@@ -47,11 +47,11 @@ export class Login {
     tryDemo: "Essayer la démo"
   };
 
-  public readonly isLoading = signal(false);
-  public readonly isPasswordVisible = signal(false);
+  protected readonly isLoading = signal(false);
+  protected readonly isPasswordVisible = signal(false);
 
-  public readonly credentials = signal({ username: "", password: "" });
-  public readonly loginForm = form(this.credentials, (path) => {
+  private readonly credentials = signal({ username: "", password: "" });
+  protected readonly loginForm = form(this.credentials, (path) => {
     requiredText(path.username);
     requiredText(path.password);
   });
@@ -60,7 +60,7 @@ export class Login {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly router = inject(Router);
 
-  public async handleLogin(): Promise<void> {
+  protected async login(): Promise<void> {
     if (this.loginForm().invalid()) {
       return;
     }
@@ -76,8 +76,8 @@ export class Login {
     }
   }
 
-  public async loginAsDemoAccount(): Promise<void> {
+  protected async loginAsDemoAccount(): Promise<void> {
     this.credentials.set({ username: "demo", password: "demo" });
-    await this.handleLogin();
+    await this.login();
   }
 }

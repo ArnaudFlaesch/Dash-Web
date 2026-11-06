@@ -1,0 +1,40 @@
+@if (editMode()) {
+  <!-- Renaming or deleting the tab must not select it, so these events don't reach the tab -->
+  <div class="tab-input row items-center gap-xs">
+    <input
+      id="tab-name-input"
+      class="tab-name-input"
+      [attr.aria-label]="labels.tabName"
+      (keydown.enter)="$event.stopPropagation(); saveTabName()"
+      (click)="$event.stopPropagation()"
+      (dblclick)="saveTabName()"
+      [formField]="tabLabelForm"
+    />
+    <mat-icon
+      class="save-tab-button accent-text"
+      role="button"
+      [attr.aria-label]="labels.saveName"
+      [title]="labels.save"
+      (keydown.enter)="$event.stopPropagation(); saveTabName()"
+      (click)="$event.stopPropagation(); saveTabName()"
+      tabindex="0"
+    >
+      check
+    </mat-icon>
+    <mat-icon
+      class="delete-tab-button"
+      role="button"
+      [attr.aria-label]="labels.deleteTab"
+      [title]="labels.deleteTab"
+      (keydown.enter)="$event.stopPropagation(); deleteTabFromDash()"
+      (click)="$event.stopPropagation(); deleteTabFromDash()"
+      tabindex="0"
+    >
+      delete
+    </mat-icon>
+  </div>
+} @else {
+  <div class="tab-label" (dblclick)="toggleEditMode()">
+    {{ tabLabel() }}
+  </div>
+}

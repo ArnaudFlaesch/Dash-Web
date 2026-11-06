@@ -2,17 +2,17 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { IForecastAPIResponse, IWeatherAPIResponse } from "./weather.model";
+import { ForecastApiResponse, WeatherApiResponse } from "./weather";
 import { WeatherWidgetService } from "./weather-widget-service";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { catchError, forkJoin, of } from "rxjs";
 import { Widget } from "@widgets/widget/widget";
-import { injectWidgetData } from "@widgets/widget.tokens";
+import { injectWidgetData } from "@widgets/widget-tokens";
 import { WeatherWidgetView } from "./weather-widget-view/weather-widget-view";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "@shared/utils/form-validators";
+import { requiredText } from "@shared/forms/form-validators";
 
 @Component({
   selector: "dash-weather-widget",
@@ -20,17 +20,17 @@ import { requiredText } from "@shared/utils/form-validators";
   imports: [Widget, MatIcon, MatFormField, MatLabel, MatInput, WeatherWidgetView, FormField]
 })
 export class WeatherWidget {
-  public readonly labels = {
+  protected readonly labels = {
     weatherTodayIn: "La météo aujourd'hui à",
     city: "Ville",
-    enterCityName: "Saisissez de nom de la ville"
+    enterCityName: "Saisissez le nom de la ville"
   };
 
-  public readonly config = signal({ city: injectWidgetData("city", "") });
-  public readonly configForm = form(this.config, (path) => requiredText(path.city));
+  protected readonly config = signal({ city: injectWidgetData("city", "") });
+  protected readonly configForm = form(this.config, (path) => requiredText(path.city));
 
   /** Weather and forecast of the city saved on the last refresh, reloaded on each refresh. */
-  public readonly weatherResource = rxResource({
+  private readonly weatherResource = rxResource({
     params: () => this.refreshedCity(),
     stream: ({ params: { city } }) =>
       forkJoin([
@@ -42,18 +42,20 @@ export class WeatherWidget {
           return of(undefined);
         })
       ),
-    defaultValue: undefined as [IWeatherAPIResponse, IForecastAPIResponse] | undefined
+    defaultValue: undefined as [WeatherApiResponse, ForecastApiResponse] | undefined
   });
 
-  public readonly weather = computed(() => this.weatherResource.value()?.[0]);
-  public readonly forecastResponse = computed(() => this.weatherResource.value()?.[1].list ?? []);
-  public readonly cityData = computed(() => this.weatherResource.value()?.[1].city);
+  protected readonly weather = computed(() => this.weatherResource.value()?.[0]);
+  protected readonly forecastResponse = computed(
+    () => this.weatherResource.value()?.[1].list ?? []
+  );
+  protected readonly cityData = computed(() => this.weatherResource.value()?.[1].city);
 
-  public readonly isWidgetLoaded = computed(
+  protected readonly isWidgetLoaded = computed(
     () => !this.weatherResource.isLoading() && this.weatherResource.value() !== undefined
   );
-  public readonly isFormValid = computed(() => this.configForm().valid());
-  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  protected readonly isFormValid = computed(() => this.configForm().valid());
+  protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   // A new object on each refresh, so that the resource reloads even if the city is unchanged
   private readonly refreshedCity = signal<{ city: string } | undefined>(undefined);
@@ -63,7 +65,7 @@ export class WeatherWidget {
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  public refreshWidget(): void {
+  protected refreshWidget(): void {
     if (this.isFormValid()) {
       this.refreshedCity.set({ city: this.config().city });
     }

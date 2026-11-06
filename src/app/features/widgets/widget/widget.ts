@@ -23,7 +23,7 @@ import { DeleteWidget } from "@widgets/widget/delete-widget/delete-widget";
   ]
 })
 export class Widget extends AbstractWidget {
-  public readonly labels = {
+  protected readonly labels = {
     widgetConfiguration: "Configuration du widget",
     deleteWidget: "Supprimer le widget",
     cancel: "Annuler",
@@ -38,14 +38,14 @@ export class Widget extends AbstractWidget {
 
   private readonly widgetService = inject(WidgetService);
 
-  public onValidation(): void {
+  protected onValidation(): void {
     this.widgetService.updateWidgetData(this.widgetId, { ...this.widgetData() }).subscribe({
       next: () => this.onWidgetDataSaved(),
       error: (error) => this.errorHandlerService.handleError(error, this.ERROR_UPDATING_WIDGET_DATA)
     });
   }
 
-  public deleteWidget(): void {
+  protected deleteWidget(): void {
     this.widgetService.notifyWidgetDeleted(this.widgetId);
   }
 }

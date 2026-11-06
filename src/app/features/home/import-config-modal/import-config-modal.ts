@@ -17,14 +17,14 @@ import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ImportConfigModal {
-  public readonly labels = {
+  protected readonly labels = {
     importConfig: "Importer la configuration",
     selectConfigFile: "Sélectionner un fichier de configuration",
     cancel: "Annuler",
     upload: "Upload"
   };
 
-  public readonly fileToUpload = signal<File | null>(null);
+  protected readonly fileToUpload = signal<File | null>(null);
 
   private readonly configService = inject(ConfigService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
@@ -32,12 +32,12 @@ export class ImportConfigModal {
 
   private readonly ERROR_IMPORT_CONFIGURATION = "Erreur lors de l'import de la configuration.";
 
-  public selectFile(event: Event): void {
+  protected selectFile(event: Event): void {
     // No file when the selection is cleared
     this.fileToUpload.set((event.target as HTMLInputElement).files?.[0] ?? null);
   }
 
-  public upload(): void {
+  protected upload(): void {
     const file = this.fileToUpload();
     if (file) {
       this.configService.importConfig(file).subscribe({
