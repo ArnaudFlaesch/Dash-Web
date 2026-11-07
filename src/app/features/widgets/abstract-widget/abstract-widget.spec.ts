@@ -1,7 +1,12 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { WidgetMode } from "@widgets/abstract-widget/widget-mode";
+import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { WIDGET_ID } from "@widgets/widget-tokens";
+import { of, throwError } from "rxjs";
+import { Mock, vi } from "vitest";
+import { WIDGET_PERSISTENCE, WidgetPersistence } from "./widget-persistence";
 import { AbstractWidget } from "./abstract-widget";
 
 /** Test widget rendering its mode and a button for each mode transition of the base class. */
@@ -22,13 +27,11 @@ import { AbstractWidget } from "./abstract-widget";
     <button class="to-delete-mode" (click)="toDeleteMode()">Delete</button>
     <button class="cancel-edition" (click)="cancelEdition()">Cancel</button>
     <button class="refresh" (click)="refreshWidget()">Refresh</button>
+    <button class="validate" (click)="onValidation()">Validate</button>
+    <button class="delete-widget" (click)="deleteWidget()">Delete widget</button>
   `
 })
-class TestWidget extends AbstractWidget {
-  public saveWidgetData(): void {
-    this.onWidgetDataSaved();
-  }
-}
+class TestWidget extends AbstractWidget {}
 
 @Component({
   template: `
@@ -59,9 +62,19 @@ describe("AbstractWidget", () => {
   let host: Host;
   let widget: TestWidget;
   let element: HTMLElement;
+  let updateWidgetData: Mock<WidgetPersistence["updateWidgetData"]>;
+  let deleteWidget: Mock<WidgetPersistence["deleteWidget"]>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [{ provide: WIDGET_ID, useValue: 3 }] });
+    updateWidgetData = vi.fn<WidgetPersistence["updateWidgetData"]>(() => of({}));
+    deleteWidget = vi.fn<WidgetPersistence["deleteWidget"]>();
+    const widgetPersistence: WidgetPersistence = { updateWidgetData, deleteWidget };
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: WIDGET_ID, useValue: 3 },
+        { provide: WIDGET_PERSISTENCE, useValue: widgetPersistence }
+      ]
+    });
     fixture = TestBed.createComponent(Host);
     host = fixture.componentInstance;
     element = fixture.nativeElement as HTMLElement;
@@ -144,10 +157,37 @@ describe("AbstractWidget", () => {
     host.isFormValid.set(true);
     await fixture.whenStable();
 
-    widget.saveWidgetData();
-    await fixture.whenStable();
+    await click(".validate");
+    expect(updateWidgetData).toHaveBeenCalledWith(3, { city: "Paris" });
     expectMode(WidgetMode.READ);
     expect(host.refreshCount).toEqual(1);
+  });
+
+  it("Should stay in edit mode and display an error when the data can't be saved", async () => {
+    const handleErrorSpy = vi
+      .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
+      .mockImplementation(() => undefined);
+    const error = new HttpErrorResponse({ status: 500 });
+    updateWidgetData.mockReturnValue(throwError(() => error));
+    await render();
+    host.widgetData.set({ city: "Paris" });
+    host.isFormValid.set(true);
+    await fixture.whenStable();
+
+    await click(".validate");
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      error,
+      "Erreur lors de la mise à jour de la configuration du widget."
+    );
+    expectMode(WidgetMode.EDIT);
+    expect(widget.isWidgetDataSaved()).toBe(false);
+    expect(host.refreshCount).toEqual(0);
+  });
+
+  it("Should delete the widget", async () => {
+    await render();
+    await click(".delete-widget");
+    expect(deleteWidget).toHaveBeenCalledWith(3);
   });
 
   it("Should know that the data of a widget created with data is saved", async () => {
@@ -164,7 +204,7 @@ describe("AbstractWidget", () => {
     await fixture.whenStable();
     expect(widget.isWidgetDataSaved()).toBe(false);
 
-    widget.saveWidgetData();
+    await click(".validate");
     expect(widget.isWidgetDataSaved()).toBe(true);
   });
 
