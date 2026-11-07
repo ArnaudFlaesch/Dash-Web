@@ -3,6 +3,7 @@
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
+  (editionCancelled)="restoreSavedConfig()"
 >
   <ng-template #headerIcon>
     @if (!isLogoBroken() && rssFeedResult()?.image?.url; as logoUrl) {
@@ -37,6 +38,7 @@
     <button
       mat-icon-button
       [matTooltip]="labels.markAllFeedAsRead"
+      [attr.aria-label]="labels.markAllFeedAsRead"
       class="mark-all-articles-as-read-button"
       (click)="markAllFeedAsRead()"
     >

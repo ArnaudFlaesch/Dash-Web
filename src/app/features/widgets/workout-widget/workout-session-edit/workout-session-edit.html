@@ -8,12 +8,19 @@
         class="session-mode-button"
         mat-icon-button
         [matTooltip]="labels.finish"
+        [attr.aria-label]="labels.finish"
         (click)="toggleSessionEditMode()"
       >
         <mat-icon>check</mat-icon>
       </button>
     } @else {
-      <button id="edit-session-button" mat-icon-button [matTooltip]="labels.editReps" (click)="toggleSessionEditMode()">
+      <button
+        id="edit-session-button"
+        mat-icon-button
+        [matTooltip]="labels.editReps"
+        [attr.aria-label]="labels.editReps"
+        (click)="toggleSessionEditMode()"
+      >
         <mat-icon>edit</mat-icon>
       </button>
     }
@@ -32,6 +39,7 @@
               [disabled]="isWidgetUpdating()"
               class="subtract-rep-to-workout-button"
               mat-icon-button
+              [attr.aria-label]="labels.removeRep + ' ' + workoutType.name"
               (click)="decrementExerciseNumberOfReps(workoutType.id)"
             >
               <mat-icon>remove</mat-icon>
@@ -49,6 +57,7 @@
               [disabled]="isWidgetUpdating()"
               class="add-rep-to-workout-button"
               mat-icon-button
+              [attr.aria-label]="labels.addRep + ' ' + workoutType.name"
               (click)="incrementExerciseNumberOfReps(workoutType.id)"
             >
               <mat-icon>add</mat-icon>

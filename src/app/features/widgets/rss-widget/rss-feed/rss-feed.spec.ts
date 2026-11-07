@@ -165,6 +165,10 @@ describe("RssFeed", () => {
     expect(await displayTitle({ ...articles[0], pubDate: "", title: undefined })).toEqual("");
   });
 
+  it("Should display only the date of an article without title", async () => {
+    expect(await displayTitle({ ...articles[0], title: undefined })).toEqual("14/03 10:00:00");
+  });
+
   it("Should keep Angular's sanitization of the article links", async () => {
     fixture.componentRef.setInput("feed", [
       { ...articles[0], guid: "guid-4", link: "javascript:alert(1)" }

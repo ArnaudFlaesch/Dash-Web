@@ -1,10 +1,17 @@
 <h1 mat-dialog-title>{{ labels.importConfig }}</h1>
 <mat-dialog-content>
-  <input type="file" id="file" name="file" [attr.aria-label]="labels.selectConfigFile" (change)="selectFile($event)" />
+  <input
+    type="file"
+    id="file"
+    name="file"
+    accept=".json,application/json"
+    [attr.aria-label]="labels.selectConfigFile"
+    (change)="selectFile($event)"
+  />
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-raised-button id="close-import-config-modal" mat-dialog-close>{{ labels.cancel }}</button>
-  <button mat-raised-button id="upload-file-button" [disabled]="!fileToUpload()" (click)="upload()">
+  <button mat-raised-button id="upload-file-button" [disabled]="!fileToUpload() || isUploading()" (click)="upload()">
     {{ labels.upload }}
   </button>
 </mat-dialog-actions>

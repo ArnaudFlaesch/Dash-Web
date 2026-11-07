@@ -164,6 +164,19 @@ describe("RssWidget", () => {
       await fixture.whenStable();
       expect(query(".rss-widget-header")).toBeNull();
       expect(query(".widget-header mat-icon")?.textContent).toEqual("rss_feed");
+
+      // The logo is tried again on the next refresh, the url of the feed may have changed
+      query(".refresh-button")?.click();
+      TestBed.tick();
+      await loadFeed();
+      expect(query<HTMLImageElement>(".rss-widget-header")?.src).toEqual(channel.image.url);
+    });
+
+    it("Should label the button marking all the feed as read", async () => {
+      await loadFeed();
+      expect(query(".mark-all-articles-as-read-button")?.getAttribute("aria-label")).toEqual(
+        "Marquer tout le flux comme lu"
+      );
     });
 
     it("Should display the title without link and the default icon of a feed without image", async () => {
@@ -332,5 +345,26 @@ describe("RssWidget", () => {
       markAllFeedAsRead();
       httpTestingController.expectNone(updateWidgetPath);
     });
+  });
+
+  it("Should restore the saved configuration when the edition is cancelled", async () => {
+    createComponent({ url: urlFeed });
+    TestBed.tick();
+    httpTestingController.expectOne(rssFeedPath).flush({ channel });
+    await fixture.whenStable();
+    const openEdition = async (): Promise<void> => {
+      element.querySelector<HTMLElement>(".edit-button")!.click();
+      await fixture.whenStable();
+    };
+    await openEdition();
+    const input = element.querySelector<HTMLInputElement>("#rss-feed-url")!;
+    input.value = "https://other.feed/rss";
+    input.dispatchEvent(new Event("input"));
+    await fixture.whenStable();
+
+    element.querySelector<HTMLElement>(".cancel-button")!.click();
+    await fixture.whenStable();
+    await openEdition();
+    expect(element.querySelector<HTMLInputElement>("#rss-feed-url")!.value).toEqual(urlFeed);
   });
 });

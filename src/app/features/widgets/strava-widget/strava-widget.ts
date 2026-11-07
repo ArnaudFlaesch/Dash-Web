@@ -4,14 +4,14 @@ import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angula
 import { rxResource } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ChartConfiguration, ChartData, ChartTypeRegistry } from "chart.js";
-import { format, isAfter } from "date-fns";
+import { format, isAfter, startOfMonth } from "date-fns";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { fr } from "date-fns/locale";
 import { catchError, finalize, firstValueFrom, map, of } from "rxjs";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { ActivitiesStatsByMonth, Activity, Athlete, TokenData } from "./strava";
+import { ActivitiesOfMonth, Activity, Athlete, parseStartDateLocal, TokenData } from "./strava";
 import { StravaActivities } from "./strava-activities/strava-activities";
 import { StravaWidgetService } from "./strava-widget-service";
 import { BaseChartDirective } from "ng2-charts";
@@ -63,8 +63,8 @@ export class StravaWidget implements OnInit {
     gettingActivities: "Erreur lors de la récupération des activités Strava."
   };
 
-  protected readonly athlete = signal<Athlete | undefined>(undefined);
-  protected readonly pageNumber = signal(1);
+  public readonly athlete = signal<Athlete | undefined>(undefined);
+  public readonly pageNumber = signal(1);
   private readonly isAthleteLoaded = signal(true);
 
   /** Page of activities of the logged in athlete, reloaded when the athlete or the page changes. */
@@ -88,17 +88,34 @@ export class StravaWidget implements OnInit {
     defaultValue: [] as Activity[]
   });
 
-  protected readonly activities = this.activitiesResource.value;
-  protected readonly activitiesChartData = computed<
+  public readonly activities = this.activitiesResource.value;
+
+  /** Activities grouped by the month where they took place, the oldest month first. */
+  private readonly activitiesByMonth = computed<ActivitiesOfMonth[]>(() => {
+    const activitiesByMonth = new Map<number, ActivitiesOfMonth>();
+    for (const activity of this.activities().toSorted((activityA, activityB) =>
+      this.byOldestActivity(activityA, activityB)
+    )) {
+      const month = startOfMonth(parseStartDateLocal(activity.startDateLocal));
+      const activitiesOfMonth = activitiesByMonth.get(month.getTime()) ?? { month, activities: [] };
+      activitiesOfMonth.activities.push(activity);
+      activitiesByMonth.set(month.getTime(), activitiesOfMonth);
+    }
+    return [...activitiesByMonth.values()];
+  });
+
+  public readonly activitiesChartData = computed<
     ChartData<keyof ChartTypeRegistry, number[], string>
   >(() => {
-    const activitiesStats = this.getStatsFromActivities();
+    const activitiesByMonth = this.activitiesByMonth();
     return {
-      labels: activitiesStats.map((stat) => format(stat.x, "MMM yyyy", { locale: fr })),
+      labels: activitiesByMonth.map(({ month }) => format(month, "MMM yyyy", { locale: fr })),
       datasets: [
         {
           label: "Distance (km)",
-          data: activitiesStats.map((stat) => stat.y),
+          data: activitiesByMonth.map(({ activities }) =>
+            Math.round(this.getTotalDistanceInKilometers(activities))
+          ),
           backgroundColor: "rgb(252 76 2 / 70%)"
         },
         // Displayed on its own axis, as there are far fewer activities than kilometers
@@ -106,7 +123,7 @@ export class StravaWidget implements OnInit {
           label: "Activités",
           type: "line",
           yAxisID: "activities",
-          data: Object.values(this.getActivitiesByMonth()).map((distances) => distances.length),
+          data: activitiesByMonth.map(({ activities }) => activities.length),
           borderColor: "#2563eb",
           backgroundColor: "#2563eb",
           tension: 0.3
@@ -116,22 +133,20 @@ export class StravaWidget implements OnInit {
   });
 
   /** Totals of the displayed activities, distance in kilometers and elevation in meters. */
-  protected readonly activitiesSummary = computed(() =>
-    this.activities().reduce(
-      (summary, activity) => ({
-        count: summary.count + 1,
-        distance: summary.distance + activity.distance / 1000,
-        elevation: summary.elevation + activity.totalElevationGain
-      }),
-      { count: 0, distance: 0, elevation: 0 }
+  public readonly activitiesSummary = computed(() => ({
+    count: this.activities().length,
+    distance: this.getTotalDistanceInKilometers(this.activities()),
+    elevation: this.activities().reduce(
+      (elevation, activity) => elevation + activity.totalElevationGain,
+      0
     )
-  );
-  protected readonly isWidgetLoaded = computed(
+  }));
+  public readonly isWidgetLoaded = computed(
     () => this.isAthleteLoaded() && !this.activitiesResource.isLoading()
   );
 
-  protected readonly paginationActivities = 25;
-  protected readonly chartOptions: ChartConfiguration["options"] = {
+  public readonly paginationActivities = 25;
+  public readonly chartOptions: ChartConfiguration["options"] = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: { legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } } },
@@ -173,12 +188,12 @@ export class StravaWidget implements OnInit {
     return Date.parse(activityA.startDate) - Date.parse(activityB.startDate);
   }
 
-  /** Distance of an activity in kilometers, rounded to the millimeter. */
-  private toKilometers(distanceInMeters: number): number {
-    return Math.round(distanceInMeters * 1000) / 1000000;
+  /** Strava distances are in meters. */
+  private getTotalDistanceInKilometers(activities: Activity[]): number {
+    return activities.reduce((distance, activity) => distance + activity.distance, 0) / 1000;
   }
 
-  protected refreshWidget(): void {
+  public refreshWidget(): void {
     this.getUserData();
   }
 
@@ -206,24 +221,7 @@ export class StravaWidget implements OnInit {
     }
   }
 
-  private getActivitiesByMonth(): Record<string, number[]> {
-    return this.activities()
-      .toSorted((activityA, activityB) => this.byOldestActivity(activityA, activityB))
-      .reduce((activitiesByMonth: Record<string, number[]>, activity) => {
-        const month = format(new Date(activity.startDateLocal), "yyyy-MM");
-        (activitiesByMonth[month] ??= []).push(this.toKilometers(activity.distance));
-        return activitiesByMonth;
-      }, {});
-  }
-
-  private getStatsFromActivities(): ActivitiesStatsByMonth[] {
-    return Object.entries(this.getActivitiesByMonth()).map(([month, distances]) => ({
-      x: new Date(month),
-      y: Math.round(distances.reduce((total, distance) => total + distance, 0))
-    }));
-  }
-
-  protected isUserLoggedIn(): boolean {
+  public isUserLoggedIn(): boolean {
     const token = this.getTokenValue();
     const refreshToken = this.getRefreshTokenValue();
     const tokenExpirationDate = this.getTokenExpiresAtValue();
@@ -235,23 +233,23 @@ export class StravaWidget implements OnInit {
     );
   }
 
-  protected loginToStrava(): void {
+  public loginToStrava(): void {
     window.open(this.loginToStravaUrl, "_self");
   }
 
-  protected getNextActivitiesPage(): void {
+  public showMoreRecentActivities(): void {
     if (this.pageNumber() > 1) {
       this.pageNumber.update((pageNumber) => pageNumber - 1);
     }
   }
 
-  protected getPreviousActivitiesPage(): void {
+  public showOlderActivities(): void {
     if (this.activities().length === this.paginationActivities) {
       this.pageNumber.update((pageNumber) => pageNumber + 1);
     }
   }
 
-  protected getAthleteProfileUrl(athleteId: number): string {
+  public getAthleteProfileUrl(athleteId: number): string {
     return `${this.STRAVA_ATHLETE_URL}${athleteId}`;
   }
 

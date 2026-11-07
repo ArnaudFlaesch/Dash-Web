@@ -6,6 +6,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatTooltip } from "@angular/material/tooltip";
 import { WidgetService } from "@widgets/widget-service";
+import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { AbstractWidget } from "@widgets/abstract-widget/abstract-widget";
 import { DeleteWidget } from "@widgets/widget/delete-widget/delete-widget";
 
@@ -38,8 +39,9 @@ export class Widget extends AbstractWidget {
   public readonly additionalActions = contentChild<TemplateRef<unknown>>("additionalActions");
 
   private readonly widgetService = inject(WidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  protected onValidation(): void {
+  public onValidation(): void {
     this.widgetService.updateWidgetData(this.widgetId, { ...this.widgetData() }).subscribe({
       next: () => this.onWidgetDataSaved(),
       error: (error: HttpErrorResponse) =>
@@ -47,7 +49,7 @@ export class Widget extends AbstractWidget {
     });
   }
 
-  protected deleteWidget(): void {
+  public deleteWidget(): void {
     this.widgetService.notifyWidgetDeleted(this.widgetId);
   }
 }

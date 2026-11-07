@@ -61,6 +61,9 @@ describe("NotificationsList", () => {
   it("Should hide the badge when there is no unread notification", async () => {
     await fixture.whenStable();
     expect(getElement("mat-icon").getAttribute("title")).toEqual("Notifications");
+    expect(getElement("#display-notifications-button").getAttribute("aria-label")).toEqual(
+      "Notifications"
+    );
     expect(getElement(".mat-badge-hidden")).not.toBeNull();
   });
 
@@ -90,7 +93,9 @@ describe("NotificationsList", () => {
     expect(containers[0].classList).toContain("warn");
     expect(containers[1].classList).not.toContain("unread-notification");
     expect(containers[1].classList).toContain("info");
-    expect(containers[0].querySelector(".mark-notification-as-read-button")).not.toBeNull();
+    expect(
+      containers[0].querySelector(".mark-notification-as-read-button")?.getAttribute("aria-label")
+    ).toEqual("Marquer comme lu");
     expect(containers[1].querySelector(".mark-notification-as-read-button")).toBeNull();
     expect(document.querySelector("#mark-all-notifications-as-read-button")).toBeNull();
   });

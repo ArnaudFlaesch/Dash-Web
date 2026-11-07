@@ -22,5 +22,5 @@ export class WidgetTypePickerModal {
     close: "Fermer"
   };
 
-  protected readonly data = inject<WidgetTypePickerData>(MAT_DIALOG_DATA);
+  public readonly data = inject<WidgetTypePickerData>(MAT_DIALOG_DATA);
 }

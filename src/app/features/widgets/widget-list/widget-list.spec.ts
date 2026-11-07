@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -173,6 +174,16 @@ describe("WidgetList rendering", () => {
       "dash-ecowatt-widget"
     ]);
     expect(element.querySelector("dash-ecowatt-widget")).toBe(ecowattWidget);
+  });
+
+  it("Should not emit a new order when a widget is dropped at its own place", async () => {
+    const emitSpy = vi.fn();
+    fixture.componentInstance.updateWidgetsOrderEvent.subscribe(emitSpy);
+    getDropList().dropped.emit({ previousIndex: 1, currentIndex: 1 } as CdkDragDrop<
+      WidgetConfig[]
+    >);
+    await fixture.whenStable();
+    expect(emitSpy).not.toHaveBeenCalled();
   });
 
   it("Should display the new list of widgets", async () => {

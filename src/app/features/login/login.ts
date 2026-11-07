@@ -47,11 +47,11 @@ export class Login {
     tryDemo: "Essayer la démo"
   };
 
-  protected readonly isLoading = signal(false);
-  protected readonly isPasswordVisible = signal(false);
+  public readonly isLoading = signal(false);
+  public readonly isPasswordVisible = signal(false);
 
   private readonly credentials = signal({ username: "", password: "" });
-  protected readonly loginForm = form(this.credentials, (path) => {
+  public readonly loginForm = form(this.credentials, (path) => {
     requiredText(path.username);
     requiredText(path.password);
   });
@@ -60,8 +60,9 @@ export class Login {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly router = inject(Router);
 
-  protected async login(): Promise<void> {
-    if (this.loginForm().invalid()) {
+  public async login(): Promise<void> {
+    // A login already in progress is not sent twice
+    if (this.loginForm().invalid() || this.isLoading()) {
       return;
     }
     const { username, password } = this.credentials();
@@ -76,7 +77,7 @@ export class Login {
     }
   }
 
-  protected async loginAsDemoAccount(): Promise<void> {
+  public async loginAsDemoAccount(): Promise<void> {
     this.credentials.set({ username: "demo", password: "demo" });
     await this.login();
   }

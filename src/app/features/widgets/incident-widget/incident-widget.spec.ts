@@ -154,6 +154,10 @@ describe("IncidentWidget", () => {
     const startStreakRequest = httpTestingController.expectOne(startStreakUrl);
     expect(startStreakRequest.request.body).toEqual({ widgetId });
     startStreakRequest.flush({ ...incidentConfig, lastIncidentDate: new Date().toISOString() });
+    await flushResources();
+    // The streaks of the incident created by the first streak are loaded
+    httpTestingController.expectOne(streaksUrl).flush([]);
+    await flushResources();
     await fixture.whenStable();
 
     expect(getDaysSinceLastIncident(element)).toEqual("0 jours");
@@ -272,7 +276,7 @@ describe("IncidentWidget", () => {
     await fixture.whenStable();
     expect(handleErrorSpy).toHaveBeenCalledWith(
       expect.objectContaining({ status: 500 }),
-      "Erreur lors de la récupération des séries."
+      "Erreur lors de la récupération de l'incident."
     );
     // The widget is loaded, without incident
     expect(element.querySelector("mat-spinner")).toBeNull();

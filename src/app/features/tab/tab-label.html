@@ -16,6 +16,7 @@
       [attr.aria-label]="labels.saveName"
       [title]="labels.save"
       (keydown.enter)="$event.stopPropagation(); saveTabName()"
+      (keydown.space)="$event.preventDefault(); $event.stopPropagation(); saveTabName()"
       (click)="$event.stopPropagation(); saveTabName()"
       tabindex="0"
     >
@@ -27,6 +28,7 @@
       [attr.aria-label]="labels.deleteTab"
       [title]="labels.deleteTab"
       (keydown.enter)="$event.stopPropagation(); deleteTabFromDash()"
+      (keydown.space)="$event.preventDefault(); $event.stopPropagation(); deleteTabFromDash()"
       (click)="$event.stopPropagation(); deleteTabFromDash()"
       tabindex="0"
     >

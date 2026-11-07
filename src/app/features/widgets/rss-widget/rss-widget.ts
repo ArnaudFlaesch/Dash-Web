@@ -50,10 +50,10 @@ export class RssWidget {
     markingFeedAsRead: "Erreur pendant la mise à jour du widget RSS."
   };
 
-  protected readonly config = signal({ url: injectWidgetData("url", "") });
-  protected readonly configForm = form(this.config, (path) => requiredText(path.url));
-  protected readonly isLogoBroken = signal(false);
-  protected readonly readArticles = signal(
+  public readonly config = signal({ url: injectWidgetData("url", "") });
+  public readonly configForm = form(this.config, (path) => requiredText(path.url));
+  public readonly isLogoBroken = signal(false);
+  public readonly readArticles = signal(
     this.toReadArticlesGuids(injectWidgetData<unknown[]>("readArticlesGuids", []))
   );
   // A new object on each refresh, so that the resource reloads even if the url is unchanged
@@ -84,29 +84,37 @@ export class RssWidget {
     defaultValue: undefined
   });
 
-  protected readonly rssFeedResult = this.rssFeedResource.value;
-  protected readonly isWidgetLoaded = computed(() =>
-    isResourceLoaded(this.rssFeedResource.status())
-  );
-  protected readonly isFormValid = computed(() => this.configForm().valid());
-  protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  public readonly rssFeedResult = this.rssFeedResource.value;
+  public readonly isWidgetLoaded = computed(() => isResourceLoaded(this.rssFeedResource.status()));
+  public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   private readonly widgetId = inject(WIDGET_ID);
   private readonly rssWidgetService = inject(RssWidgetService);
   private readonly widgetService = inject(WidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  protected refreshWidget(): void {
+  /** Restores the configuration of the last refresh when the edition is cancelled. */
+  public restoreSavedConfig(): void {
+    const refreshed = this.refreshedFeed();
+    if (refreshed) {
+      this.config.set({ url: refreshed.url });
+    }
+  }
+
+  public refreshWidget(): void {
     if (this.isFormValid()) {
+      // The url may have changed: the logo of the new feed is tried again
+      this.isLogoBroken.set(false);
       this.refreshedFeed.set({ url: this.config().url });
     }
   }
 
-  protected markArticleAsRead(guid: string): void {
+  public markArticleAsRead(guid: string): void {
     this.updateRssFeed(this.toReadArticlesGuids([guid, ...this.readArticles()]));
   }
 
-  protected markAllFeedAsRead(): void {
+  public markAllFeedAsRead(): void {
     // Without a loaded feed, the saved read articles would be erased
     const articles = this.rssFeedResult()?.item;
     if (articles) {

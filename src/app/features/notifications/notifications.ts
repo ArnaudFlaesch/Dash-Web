@@ -43,14 +43,14 @@ export class Notifications {
   });
 
   private readonly notificationsFromDatabase = this.notificationsResource.value;
-  protected readonly notificationsToDisplay = computed<NotificationToDisplay[]>(() =>
+  public readonly notificationsToDisplay = computed<NotificationToDisplay[]>(() =>
     this.notificationsFromDatabase().map((notification) => ({
       ...notification,
       notificationDateToDisplay: this.computeDateToDisplay(notification.notificationDate),
       notificationTypeToDisplay: this.NOTIFICATION_TYPE_ICONS[notification.notificationType]
     }))
   );
-  protected readonly unreadNotificationsForBadge = computed(
+  public readonly unreadNotificationsForBadge = computed(
     () => this.notificationsFromDatabase().filter((notification) => !notification.isRead).length
   );
 
@@ -63,12 +63,17 @@ export class Notifications {
       .subscribe(() => this.notificationsResource.reload());
   }
 
-  protected markNotificationAsRead(notificationId: number): void {
+  public markNotificationAsRead(notificationId: number): void {
     this.markNotificationsAsRead([notificationId]);
   }
 
-  protected markAllNotificationsAsRead(): void {
-    this.markNotificationsAsRead(this.notificationsFromDatabase().map((notif) => notif.id));
+  public markAllNotificationsAsRead(): void {
+    // Only the unread notifications are sent, the read ones would not change
+    this.markNotificationsAsRead(
+      this.notificationsFromDatabase()
+        .filter((notification) => !notification.isRead)
+        .map((notification) => notification.id)
+    );
   }
 
   private markNotificationsAsRead(notificationIds: number[]): void {

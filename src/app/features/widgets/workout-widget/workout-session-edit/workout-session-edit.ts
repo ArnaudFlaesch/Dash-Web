@@ -23,6 +23,8 @@ export class WorkoutSessionEdit {
     sessionOf: "Session du",
     finish: "Terminer",
     editReps: "Modifier les répétitions",
+    removeRep: "Retirer une répétition :",
+    addRep: "Ajouter une répétition :",
     noWorkoutType: "Ajoutez des types d'exercices pour compter vos répétitions."
   };
 
@@ -34,8 +36,8 @@ export class WorkoutSessionEdit {
   public readonly workoutTypes = input.required<WorkoutType[]>();
   public readonly currentWorkoutSessionToEdit = input.required<WorkoutSession>();
 
-  protected readonly sessionEditMode = signal(false);
-  protected readonly isWidgetUpdating = signal(false);
+  public readonly sessionEditMode = signal(false);
+  public readonly isWidgetUpdating = signal(false);
 
   /** Exercises of the edited session, reloaded whenever the session changes. */
   private readonly workoutExercisesResource = rxResource({
@@ -52,34 +54,34 @@ export class WorkoutSessionEdit {
 
   private readonly workoutExercises = this.workoutExercisesResource.value;
   // Kept short so that the title stays on one line, without surrounding spaces
-  protected readonly sessionDate = computed(() => this.currentWorkoutSessionToEdit().workoutDate);
+  public readonly sessionDate = computed(() => this.currentWorkoutSessionToEdit().workoutDate);
   // "local" once the exercises have been updated in place after a rep change
-  protected readonly workoutExercisesLoaded = computed(() =>
+  public readonly workoutExercisesLoaded = computed(() =>
     isResourceLoaded(this.workoutExercisesResource.status())
   );
 
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly workoutWidgetService = inject(WorkoutWidgetService);
 
-  protected decrementExerciseNumberOfReps(workoutTypeId: number): void {
+  public decrementExerciseNumberOfReps(workoutTypeId: number): void {
     // The number of reps cannot be negative
     if (this.getExerciseNumberOfReps(workoutTypeId) > 0) {
       this.updateNumberOfReps(workoutTypeId, -1);
     }
   }
 
-  protected incrementExerciseNumberOfReps(workoutTypeId: number): void {
+  public incrementExerciseNumberOfReps(workoutTypeId: number): void {
     this.updateNumberOfReps(workoutTypeId, 1);
   }
 
-  protected getExerciseNumberOfReps(workoutTypeId: number): number {
+  public getExerciseNumberOfReps(workoutTypeId: number): number {
     return (
       this.workoutExercises().find((exercise) => exercise.workoutTypeId === workoutTypeId)
         ?.numberOfReps ?? 0
     );
   }
 
-  protected toggleSessionEditMode(): void {
+  public toggleSessionEditMode(): void {
     this.sessionEditMode.update((sessionEditMode) => !sessionEditMode);
   }
 

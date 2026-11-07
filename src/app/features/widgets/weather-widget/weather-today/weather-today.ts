@@ -24,13 +24,13 @@ export class WeatherToday {
 
   public readonly weather = input.required<WeatherApiResponse>();
 
-  protected readonly sunriseTime = computed(() => this.formatTime(this.weather().sys.sunrise));
-  protected readonly sunsetTime = computed(() => this.formatTime(this.weather().sys.sunset));
-  protected readonly lastUpdateTime = computed(() => this.formatTime(this.weather().dt));
+  public readonly sunriseTime = computed(() => this.formatTime(this.weather().sys.sunrise));
+  public readonly sunsetTime = computed(() => this.formatTime(this.weather().sys.sunset));
+  public readonly lastUpdateTime = computed(() => this.formatTime(this.weather().dt));
 
   private readonly weatherWidgetService = inject(WeatherWidgetService);
 
-  protected getIconFromWeatherApi(icon: string): string {
+  public getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getWeatherIconUrl(icon);
   }
 

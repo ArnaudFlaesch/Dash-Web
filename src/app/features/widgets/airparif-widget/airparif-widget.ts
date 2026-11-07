@@ -46,24 +46,24 @@ export class AirparifWidget {
     gettingAirparifForecast: "Erreur lors de la récupération des prévisions d'Airparif."
   };
 
-  public readonly airParifMap = viewChild(AirparifMap);
+  private readonly airParifMap = viewChild(AirparifMap);
 
-  protected readonly config = signal({
+  public readonly config = signal({
     airParifApiKey: injectWidgetData("airParifApiKey", ""),
     communeInseeCode: injectWidgetData("communeInseeCode", "")
   });
-  protected readonly configForm = form(this.config, (path) => {
+  public readonly configForm = form(this.config, (path) => {
     requiredText(path.airParifApiKey);
     requiredText(path.communeInseeCode);
     // 5 characters, the second one being A or B for Corsica
     pattern(path.communeInseeCode, /^\s*\d[\dAB]\d{3}\s*$/i);
   });
-  protected readonly isWidgetLoaded = signal(true);
+  public readonly isWidgetLoaded = signal(true);
   // A new object on each refresh, so that the resource reloads even if the commune is unchanged
   private readonly refreshedCommune = signal<{ communeInseeCode: string } | undefined>(undefined);
 
   /** Forecast of the commune saved on the last refresh, with the colors of the indices. */
-  protected readonly airParifResource = rxResource({
+  public readonly airParifResource = rxResource({
     params: () => this.refreshedCommune(),
     stream: ({ params: { communeInseeCode } }) =>
       forkJoin([
@@ -78,30 +78,40 @@ export class AirparifWidget {
     defaultValue: [[], []] as [AirparifForecast[], AirparifCouleur[]]
   });
 
-  protected readonly airParifForecast = computed(() => this.airParifResource.value()[0]);
-  protected readonly airParifCouleursIndices = computed(() => this.airParifResource.value()[1]);
-  protected readonly isFormValid = computed(() => this.configForm().valid());
-  protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  public readonly airParifForecast = computed(() => this.airParifResource.value()[0]);
+  public readonly airParifCouleursIndices = computed(() => this.airParifResource.value()[1]);
+  public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
-  protected readonly airParifWebsiteUrl = inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL;
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly airParifWidgetService = inject(AirparifWidgetService);
+  public readonly airParifWebsiteUrl = this.airParifWidgetService.AIRPARIF_WEBSITE_URL;
+  // Configuration of the last refresh, restored when the edition is cancelled
+  private savedConfig = this.config();
 
-  protected refreshWidget(): void {
+  public refreshWidget(): void {
     if (this.isFormValid()) {
-      this.refreshedCommune.set({ communeInseeCode: this.config().communeInseeCode });
+      this.savedConfig = this.config();
+      // The pattern allows surrounding spaces and lowercase Corsican codes (2a / 2b)
+      this.refreshedCommune.set({
+        communeInseeCode: this.config().communeInseeCode.trim().toUpperCase()
+      });
     }
   }
 
-  protected getIndiceClass(indice: AirparifIndice): string {
+  public restoreSavedConfig(): void {
+    this.config.set(this.savedConfig);
+  }
+
+  public getIndiceClass(indice: AirparifIndice): string {
     return this.airParifWidgetService.getIndiceClass(indice);
   }
 
-  protected getIndiceLabel(indice: AirparifIndice): string {
+  public getIndiceLabel(indice: AirparifIndice): string {
     return this.airParifWidgetService.getIndiceLabel(indice);
   }
 
-  protected openSidebar(): void {
+  public openSidebar(): void {
     this.airParifMap()?.openSidebar();
   }
 }

@@ -334,6 +334,7 @@ describe("Home", () => {
       await flushWidgets(3, []);
       expect(getTabLabels()).toEqual([...tabs.map((tab) => tab.label), "Nouvel onglet"]);
       expect(getSelectedTabLabel()).toEqual("Nouvel onglet");
+      expect(TestBed.inject(Location).path()).toContain("tabId=3");
       expect(getElement("#empty-tab-message")).not.toBeNull();
     });
 
@@ -402,6 +403,15 @@ describe("Home", () => {
       request.flush(request.request.body);
       await fixture.whenStable();
       expect(getTabLabels()).toEqual([tabs[1].label, tabs[0].label]);
+    });
+
+    it("Should not save the tabs when a tab is dropped back at its place", async () => {
+      await loadDashboard();
+      fixture.debugElement.query(By.css("#tab-list")).triggerEventHandler("cdkDropListDropped", {
+        previousIndex: 1,
+        currentIndex: 1
+      } as CdkDragDrop<Tab[]>);
+      httpTestingController.expectNone(`${environment.backend_url}/tab/updateTabs`);
     });
 
     it("Should keep the renamed tab in the list of tabs, without changing the selected tab", async () => {

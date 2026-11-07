@@ -107,7 +107,7 @@ describe("Notifications", () => {
     getList().markAllNotificationsAsReadEvent.emit();
 
     const markNotificationAsReadRequest = httpTestingController.expectOne(markAsReadUrl);
-    expect(markNotificationAsReadRequest.request.body).toEqual({ notificationIds: [1, 2, 3] });
+    expect(markNotificationAsReadRequest.request.body).toEqual({ notificationIds: [1, 2] });
     const updatedNotificationsData = notificationsData.content.map((notif) => {
       return { ...notif, ...{ isRead: true } };
     });

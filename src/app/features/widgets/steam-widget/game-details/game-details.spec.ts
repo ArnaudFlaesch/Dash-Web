@@ -32,7 +32,6 @@ describe("GameDetails", () => {
     fixture = TestBed.createComponent(GameDetails);
     element = fixture.nativeElement as HTMLElement;
     fixture.componentRef.setInput("steamUserId", "1337");
-    fixture.componentRef.setInput("profileUrl", "https://steamcommunity.com/id/Nauno93/");
     fixture.componentRef.setInput("gameInfo", gameInfo);
     await fixture.whenStable();
   });
@@ -136,6 +135,16 @@ describe("GameDetails", () => {
     expect(noAchievements?.querySelector("a")?.textContent).toContain("Community hub");
     expect(element.querySelector(".achievements-progress")).toBeNull();
     expect(element.querySelector(".progress-value")).toBeNull();
+  });
+
+  it("should display a message for a game without player stats", async () => {
+    openPanel();
+    httpTestingController.expectOne(achievementsUrl).flush({});
+    await fixture.whenStable();
+
+    expect(element.querySelector(".no-achievements")?.textContent).toContain(
+      "Aucun succès pour ce jeu."
+    );
   });
 
   it("should handle the error when getting the achievements", async () => {

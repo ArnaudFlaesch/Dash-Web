@@ -114,7 +114,7 @@ describe("TabLabel", () => {
       await editTab();
       expect(getElement(".tab-label")).toBeNull();
       expect(getElement<HTMLInputElement>("#tab-name-input").value).toEqual(tabData.label);
-      expect(getElement("#tab-name-input").getAttribute("aria-label")).toEqual("Tab name");
+      expect(getElement("#tab-name-input").getAttribute("aria-label")).toEqual("Nom de l'onglet");
       const saveButton = getElement(".save-tab-button");
       expect(saveButton.getAttribute("aria-label")).toEqual("Enregistrer le nom");
       expect(saveButton.getAttribute("title")).toEqual("Enregistrer");
@@ -148,6 +148,29 @@ describe("TabLabel", () => {
       await fixture.whenStable();
       expect(getElement("#tab-name-input")).toBeNull();
       expect(getElement(".tab-label").textContent?.trim()).toEqual("Journaux");
+    });
+
+    it("Should save the name without its surrounding spaces", async () => {
+      await editTab();
+      await typeTabName("  Journaux ");
+      getElement(".save-tab-button").click();
+      const request = httpTestingController.expectOne(environment.backend_url + "/tab/updateTab");
+      expect(request.request.body).toEqual({ id: 1, label: "Journaux", tabOrder: 1 });
+      request.flush({ ...tabData, label: "Journaux" });
+    });
+
+    it("Should save the name and delete the tab with the Space key", async () => {
+      const deletedTabIds: number[] = [];
+      fixture.componentInstance.tabDeletedEvent.subscribe((tabId) => deletedTabIds.push(tabId));
+      await editTab();
+      getElement(".delete-tab-button").dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
+      expect(deletedTabIds).toEqual([tabData.id]);
+
+      getElement(".save-tab-button").dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
+      httpTestingController
+        .expectOne(environment.backend_url + "/tab/updateTab")
+        .flush({ ...tabData });
+      await fixture.whenStable();
     });
 
     it("Should not save a blank name", async () => {

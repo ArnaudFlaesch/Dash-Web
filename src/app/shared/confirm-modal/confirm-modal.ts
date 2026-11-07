@@ -22,5 +22,5 @@ export class ConfirmModal {
     confirm: "Confirmer"
   };
 
-  protected readonly data = inject<ConfirmModalData>(MAT_DIALOG_DATA);
+  public readonly data = inject<ConfirmModalData>(MAT_DIALOG_DATA);
 }

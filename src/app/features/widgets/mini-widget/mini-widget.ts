@@ -6,6 +6,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MiniWidgetService } from "@widgets/mini-widget-service";
+import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { AbstractWidget } from "@widgets/abstract-widget/abstract-widget";
 
 @Component({
@@ -25,8 +26,9 @@ export class MiniWidget extends AbstractWidget {
   };
 
   private readonly miniWidgetService = inject(MiniWidgetService);
+  private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  protected onValidation(): void {
+  public onValidation(): void {
     this.miniWidgetService.updateWidgetData(this.widgetId, { ...this.widgetData() }).subscribe({
       next: () => this.onWidgetDataSaved(),
       error: (error: HttpErrorResponse) =>
@@ -34,7 +36,7 @@ export class MiniWidget extends AbstractWidget {
     });
   }
 
-  protected deleteMiniWidget(): void {
+  public deleteMiniWidget(): void {
     this.miniWidgetService.notifyMiniWidgetDeleted(this.widgetId);
   }
 }

@@ -3,6 +3,7 @@
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
+  (editionCancelled)="restoreSavedConfig()"
 >
   <ng-template #headerIcon>
     <mat-icon>air</mat-icon>
@@ -53,7 +54,7 @@
   <ng-template #body>
     <dash-airparif-map
       class="airparif-map full-height"
-      [airParifApiKey]="config().airParifApiKey"
+      [airParifApiKey]="config().airParifApiKey.trim()"
       [airParifForecast]="airParifForecast()"
       [airParifCouleursIndices]="airParifCouleursIndices()"
       [isLoading]="airParifResource.isLoading()"

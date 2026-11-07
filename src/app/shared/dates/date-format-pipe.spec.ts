@@ -11,4 +11,9 @@ describe("DateFormatPipe", () => {
     expect(component.transform(new Date().toString())).toEqual("15/03/2022 00:00:00");
     expect(component.transform(new Date().toString(), "short")).toEqual("15/03/2022");
   });
+
+  it("should parse date-only strings as local dates", () => {
+    expect(component.transform("2026-10-20", "short")).toEqual("20/10/2026");
+    expect(component.transform("2026-10-20")).toEqual("20/10/2026 00:00:00");
+  });
 });

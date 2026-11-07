@@ -1,6 +1,6 @@
 @use "mixins" as *;
 
-#delete-widget-container {
+.delete-widget-container {
   height: 26rem;
   gap: $space-md;
   margin: 0 $space-md;
@@ -18,7 +18,7 @@
     color: $color-danger;
   }
 
-  #delete-widget-actions {
+  .delete-widget-actions {
     justify-content: center;
     gap: $space-sm;
     width: 100%;

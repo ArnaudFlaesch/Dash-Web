@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 
 import { isResourceLoaded } from "@shared/resources/resource-status";
@@ -44,33 +44,30 @@ export class IncidentWidget {
   private readonly ERROR_MESSAGES = {
     startingNewStreak: "Erreur lors du démarrage de la série.",
     endingNewStreak: "Erreur lors de la clôture de la série.",
+    gettingIncidentConfig: "Erreur lors de la récupération de l'incident.",
     gettingIncidentStreaks: "Erreur lors de la récupération des séries."
   };
 
-  protected readonly config = signal({ incidentName: injectWidgetData("incidentName", "") });
-  protected readonly configForm = form(this.config, (path) => requiredText(path.incidentName));
+  public readonly config = signal({ incidentName: injectWidgetData("incidentName", "") });
+  public readonly configForm = form(this.config, (path) => requiredText(path.incidentName));
   private readonly widgetView = signal(IncidentView.CURRENT_STREAK);
   // A new object on each refresh, so that the resources reload
   private readonly refreshRequest = signal<object | undefined>(undefined);
-  // Also updated when a streak is started or ended
-  protected readonly lastIncidentDate = linkedSignal(
-    () => this.incidentConfigResource.value()?.lastIncidentDate
-  );
 
-  /** Incident configuration of the widget, reloaded on each refresh. */
+  /** Incident configuration of the widget, reloaded on each refresh, or set when a streak is started or ended. */
   private readonly incidentConfigResource = rxResource({
     params: () => this.refreshRequest(),
     stream: () =>
       this.incidentWidgetService.getIncidentConfigForWidget(this.widgetId).pipe(
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingIncidentStreaks);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingIncidentConfig);
           return of(undefined);
         })
       ),
     defaultValue: undefined as Incident | undefined
   });
 
-  /** Past streaks of the incident, most recent first, reloaded with the incident configuration. */
+  /** Past streaks of the incident, most recent first, reloaded with each new incident configuration. */
   private readonly streaksResource = rxResource({
     params: () => this.incidentConfigResource.value(),
     stream: ({ params: incidentConfig }) =>
@@ -89,19 +86,22 @@ export class IncidentWidget {
     defaultValue: [] as IncidentStreak[]
   });
 
-  protected readonly streaks = this.streaksResource.value;
-  protected readonly isWidgetLoaded = computed(() =>
+  public readonly streaks = this.streaksResource.value;
+  public readonly lastIncidentDate = computed(
+    () => this.incidentConfigResource.value()?.lastIncidentDate
+  );
+  public readonly isWidgetLoaded = computed(() =>
     isResourceLoaded(this.incidentConfigResource.status())
   );
-  protected readonly isWidgetViewCurrentStreak = computed(
+  public readonly isWidgetViewCurrentStreak = computed(
     () => this.widgetView() === IncidentView.CURRENT_STREAK
   );
   private readonly isWidgetViewPastStreaks = computed(
     () => this.widgetView() === IncidentView.PAST_STREAKS
   );
-  protected readonly isFormValid = computed(() => this.configForm().valid());
-  protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
-  protected readonly daysSinceLastIncident = computed(() => {
+  public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  public readonly daysSinceLastIncident = computed(() => {
     const lastIncidentDate = this.lastIncidentDate();
     return lastIncidentDate ? differenceInDays(new Date(), Date.parse(lastIncidentDate)) : 0;
   });
@@ -110,21 +110,28 @@ export class IncidentWidget {
   private readonly incidentWidgetService = inject(IncidentWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly widgetId = inject(WIDGET_ID);
+  // Configuration of the last refresh, restored when the edition is cancelled
+  private savedConfig = this.config();
 
-  protected refreshWidget(): void {
+  public refreshWidget(): void {
+    this.savedConfig = this.config();
     this.refreshRequest.set({});
   }
 
-  protected startNewStreak(): void {
+  public restoreSavedConfig(): void {
+    this.config.set(this.savedConfig);
+  }
+
+  public startNewStreak(): void {
     this.incidentWidgetService.startFirstStreak(this.widgetId).subscribe({
-      next: (updatedIncidentConfig) =>
-        this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate),
+      // Also loads the streaks of an incident created by this first streak
+      next: (updatedIncidentConfig) => this.incidentConfigResource.set(updatedIncidentConfig),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.startingNewStreak)
     });
   }
 
-  protected openEndStreakModal(): void {
+  public openEndStreakModal(): void {
     this.dialog
       .open<ConfirmModal, ConfirmModalData, boolean>(ConfirmModal, {
         width: "600px",
@@ -135,25 +142,22 @@ export class IncidentWidget {
       .subscribe(() => this.endCurrentStreak());
   }
 
-  protected goToCurrentStreakView(): void {
+  public goToCurrentStreakView(): void {
     this.widgetView.set(IncidentView.CURRENT_STREAK);
   }
 
-  protected goToPastStreaksView(): void {
+  public goToPastStreaksView(): void {
     this.widgetView.set(IncidentView.PAST_STREAKS);
   }
 
-  protected getNumberOfDaysFromStreak(streakStartDate: string, streakEndDate: string): number {
+  public getNumberOfDaysFromStreak(streakStartDate: string, streakEndDate: string): number {
     return differenceInDays(Date.parse(streakEndDate), Date.parse(streakStartDate));
   }
 
   private endCurrentStreak(): void {
     this.incidentWidgetService.endStreak(this.widgetId).subscribe({
-      next: (updatedIncidentConfig) => {
-        this.lastIncidentDate.set(updatedIncidentConfig.lastIncidentDate);
-        // The ended streak is saved as a past streak
-        this.streaksResource.reload();
-      },
+      // The streaks are reloaded with the new configuration: the ended streak is now a past one
+      next: (updatedIncidentConfig) => this.incidentConfigResource.set(updatedIncidentConfig),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.endingNewStreak)
     });

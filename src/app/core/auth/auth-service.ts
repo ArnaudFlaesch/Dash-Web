@@ -27,15 +27,17 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly currentUser = signal<User | null>(this.readStoredUser());
 
+  /** Saves the logged in user, fails when the backend returns no token (the user couldn't use the app). */
   public login(username: string, password: string): Observable<User> {
     return this.http
       .post<User>(`${environment.backend_url}/auth/login`, { username, password })
       .pipe(
         tap((user) => {
-          if (user.accessToken) {
-            localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
-            this.currentUser.set(user);
+          if (!user.accessToken) {
+            throw new Error("No access token received");
           }
+          localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
+          this.currentUser.set(user);
         })
       );
   }

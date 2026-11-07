@@ -1,6 +1,7 @@
 <button
   id="display-notifications-button"
   [matTooltip]="labels.notifications"
+  [attr.aria-label]="labels.notifications"
   mat-icon-button
   [matMenuTriggerFor]="notificationsMenu"
 >
@@ -10,7 +11,6 @@
     matBadgeSize="small"
     matBadgeColor="warn"
     [title]="labels.notifications"
-    aria-hidden="false"
   >
     notifications
   </mat-icon>
@@ -21,6 +21,7 @@
     <button
       id="mark-all-notifications-as-read-button"
       [matTooltip]="labels.markAllAsRead"
+      [attr.aria-label]="labels.markAllAsRead"
       (click)="markAllNotificationsAsReadEvent.emit()"
       mat-icon-button
     >
@@ -43,6 +44,7 @@
       @if (!notification.isRead) {
         <button
           class="mark-notification-as-read-button"
+          [attr.aria-label]="labels.markAsRead"
           (click)="markNotificationAsReadEvent.emit(notification.id)"
           mat-icon-button
         >

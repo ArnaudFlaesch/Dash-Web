@@ -172,7 +172,7 @@ describe("SteamWidget", () => {
     expect(gameDetails[0].textContent).toContain("Half-Life 2");
     expect(gameDetails[1].textContent).toContain("Half-Life 2: Lost Coast");
     expect(element.querySelector(".no-game-found")).toBeNull();
-    expect(element.querySelector("#search-game-form mat-label")?.textContent).toContain(
+    expect(element.querySelector(".search-game-form mat-label")?.textContent).toContain(
       "Recherchez un jeu"
     );
     expect(getPaginatorRange()).toContain("30");
@@ -192,7 +192,6 @@ describe("SteamWidget", () => {
     const gameDetails = fixture.debugElement.query(By.directive(GameDetails))
       .componentInstance as GameDetails;
     expect(gameDetails.steamUserId()).toEqual(steamUserId);
-    expect(gameDetails.profileUrl()).toEqual(player.profileurl);
     expect(gameDetails.gameInfo()).toEqual({
       ...games.content[0],
       appIdLink: "https://steamcommunity.com/app/220",
@@ -225,6 +224,46 @@ describe("SteamWidget", () => {
     expect(getGameDetails()).toHaveLength(1);
   });
 
+  it("should keep the page on a refresh, and go back to the first page for another user", async () => {
+    await createLoadedWidget(games);
+    goToNextPage();
+    httpTestingController.expectOne(`${ownedGamesUrl}&pageNumber=1`).flush(games);
+    await renderResponses();
+
+    // Same user: the current page is reloaded
+    element.querySelector<HTMLButtonElement>(".refresh-button")!.click();
+    TestBed.tick();
+    httpTestingController.expectOne(playerDataUrl).flush([player]);
+    httpTestingController.expectOne(`${ownedGamesUrl}&pageNumber=1`).flush(games);
+    await renderResponses();
+
+    // Another user: the first page of its games is loaded
+    element.querySelector<HTMLButtonElement>(".edit-button")!.click();
+    await fixture.whenStable();
+    const input = element.querySelector<HTMLInputElement>("#steam-user-id-input")!;
+    input.value = "42";
+    input.dispatchEvent(new Event("input"));
+    await fixture.whenStable();
+    element.querySelector<HTMLButtonElement>(".validate-button")!.click();
+    httpTestingController.expectOne(updateWidgetUrl).flush({});
+    TestBed.tick();
+    httpTestingController
+      .expectOne(`${environment.backend_url}/steamWidget/playerData?steamUserId=42`)
+      .flush([player]);
+    httpTestingController
+      .expectOne(`${environment.backend_url}/steamWidget/ownedGames?steamUserId=42`)
+      .flush(games);
+    await renderResponses();
+    expect(getPaginatorRange()).toMatch(/^1\D+25\D+30$/);
+  });
+
+  it("should not reload the page when the search is submitted", async () => {
+    await createLoadedWidget(games);
+    const submitEvent = new Event("submit", { cancelable: true });
+    element.querySelector(".search-game-form")!.dispatchEvent(submitEvent);
+    expect(submitEvent.defaultPrevented).toBe(true);
+  });
+
   it("should stop loading when the page navigation fails", async () => {
     await createLoadedWidget(games);
 
@@ -249,9 +288,9 @@ describe("SteamWidget", () => {
     goToNextPage();
     httpTestingController.expectOne(`${ownedGamesUrl}&pageNumber=1`).flush(games);
     await renderResponses();
-    expect(element.querySelector("#reset-form-button")).toBeNull();
+    expect(element.querySelector(".reset-form-button")).toBeNull();
 
-    const searchInput = element.querySelector<HTMLInputElement>("#search-game-form input")!;
+    const searchInput = element.querySelector<HTMLInputElement>(".search-game-form input")!;
     searchInput.value = "Lost";
     searchInput.dispatchEvent(new Event("input"));
     TestBed.tick();
@@ -267,12 +306,13 @@ describe("SteamWidget", () => {
     expect(getGameDetails()).toHaveLength(1);
     expect(getPaginatorRange()).toMatch(/^1\D+1\D+1$/);
 
-    const resetButton = element.querySelector<HTMLButtonElement>("#reset-form-button")!;
+    const resetButton = element.querySelector<HTMLButtonElement>(".reset-form-button")!;
     expect(resetButton).not.toBeNull();
+    expect(resetButton.getAttribute("aria-label")).toEqual("Annuler la recherche");
     resetButton.click();
     TestBed.tick();
     expect(searchInput.value).toEqual("");
-    expect(element.querySelector("#reset-form-button")).toBeNull();
+    expect(element.querySelector(".reset-form-button")).toBeNull();
     vi.advanceTimersByTime(500);
     TestBed.tick();
     httpTestingController.expectOne(ownedGamesUrl).flush(games);
@@ -308,5 +348,26 @@ describe("SteamWidget", () => {
     expect(element.querySelector("a.steam-header img")).toBeNull();
     expect(element.querySelector("a.steam-header")?.textContent?.trim()).toEqual("");
     expect(element.querySelector("dash-game-details")).toBeNull();
+  });
+
+  it("Should restore the saved configuration when the edition is cancelled", async () => {
+    await createLoadedWidget(games);
+
+    const openEdition = async (): Promise<void> => {
+      element.querySelector<HTMLElement>(".edit-button")!.click();
+      await fixture.whenStable();
+    };
+    await openEdition();
+    const input = element.querySelector<HTMLInputElement>("#steam-user-id-input")!;
+    input.value = "42";
+    input.dispatchEvent(new Event("input"));
+    await fixture.whenStable();
+
+    element.querySelector<HTMLElement>(".cancel-button")!.click();
+    await fixture.whenStable();
+    await openEdition();
+    expect(element.querySelector<HTMLInputElement>("#steam-user-id-input")!.value).toEqual(
+      steamUserId
+    );
   });
 });

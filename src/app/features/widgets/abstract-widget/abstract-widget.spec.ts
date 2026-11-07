@@ -8,7 +8,6 @@ import { AbstractWidget } from "./abstract-widget";
 @Component({
   selector: "dash-test-widget",
   template: `
-    <span class="mode">{{ mode() }}</span>
     @if (isModeRead()) {
       <span class="read-mode"></span>
     }
@@ -37,6 +36,7 @@ class TestWidget extends AbstractWidget {
       [widgetData]="widgetData()"
       [isFormValid]="isFormValid()"
       (refreshWidgetAction)="refreshCount = refreshCount + 1"
+      (editionCancelled)="cancelCount = cancelCount + 1"
     >
       <ng-template #body>Body</ng-template>
       @if (hasEditComponent()) {
@@ -51,6 +51,7 @@ class Host {
   public readonly isFormValid = signal(false);
   public readonly hasEditComponent = signal(true);
   public refreshCount = 0;
+  public cancelCount = 0;
 }
 
 describe("AbstractWidget", () => {
@@ -76,12 +77,7 @@ describe("AbstractWidget", () => {
     await fixture.whenStable();
   }
 
-  function displayedMode(): string | undefined {
-    return element.querySelector(".mode")?.textContent ?? undefined;
-  }
-
   function expectMode(mode: WidgetMode): void {
-    expect(displayedMode()).toEqual(`${mode}`);
     expect(element.querySelector(".read-mode") !== null).toBe(mode === WidgetMode.READ);
     expect(element.querySelector(".edit-mode") !== null).toBe(mode === WidgetMode.EDIT);
     expect(element.querySelector(".delete-mode") !== null).toBe(mode === WidgetMode.DELETE);
@@ -152,5 +148,31 @@ describe("AbstractWidget", () => {
     await fixture.whenStable();
     expectMode(WidgetMode.READ);
     expect(host.refreshCount).toEqual(1);
+  });
+
+  it("Should know that the data of a widget created with data is saved", async () => {
+    host.widgetData.set({ city: "Paris" });
+    await render();
+    expect(widget.isWidgetDataSaved()).toBe(true);
+  });
+
+  it("Should only know that the data of a new widget is saved once it is saved", async () => {
+    await render();
+    expect(widget.isWidgetDataSaved()).toBe(false);
+    host.widgetData.set({ city: "Paris" });
+    host.isFormValid.set(true);
+    await fixture.whenStable();
+    expect(widget.isWidgetDataSaved()).toBe(false);
+
+    widget.saveWidgetData();
+    expect(widget.isWidgetDataSaved()).toBe(true);
+  });
+
+  it("Should notify the cancellation of the edition", async () => {
+    host.widgetData.set({ city: "Paris" });
+    await render();
+    await click(".to-edit-mode");
+    await click(".cancel-edition");
+    expect(host.cancelCount).toEqual(1);
   });
 });

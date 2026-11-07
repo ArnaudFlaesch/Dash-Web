@@ -131,13 +131,24 @@ describe("WorkoutSessionEdit", () => {
   it("should switch between the read and the edit modes", async () => {
     const element = await displaySession([]);
     expect(element.querySelector("#validate-session-button")).toBeNull();
+    expect(element.querySelector("#edit-session-button")?.getAttribute("aria-label")).toEqual(
+      "Modifier les répétitions"
+    );
 
     element.querySelector<HTMLButtonElement>("#edit-session-button")!.click();
     await fixture.whenStable();
     expect(element.querySelector("#edit-session-button")).toBeNull();
     expect(element.querySelector(".workout-exercise-container")?.classList).toContain("edit-mode");
-    expect(element.querySelector(".add-rep-to-workout-button")).not.toBeNull();
-    expect(element.querySelector(".subtract-rep-to-workout-button")).not.toBeNull();
+    // The icon buttons are labelled for the screen readers
+    expect(element.querySelector("#validate-session-button")?.getAttribute("aria-label")).toEqual(
+      "Terminer"
+    );
+    expect(element.querySelector(".add-rep-to-workout-button")?.getAttribute("aria-label")).toEqual(
+      "Ajouter une répétition : Abdos"
+    );
+    expect(
+      element.querySelector(".subtract-rep-to-workout-button")?.getAttribute("aria-label")
+    ).toEqual("Retirer une répétition : Abdos");
 
     element.querySelector<HTMLButtonElement>("#validate-session-button")!.click();
     await fixture.whenStable();

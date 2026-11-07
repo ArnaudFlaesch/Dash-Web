@@ -1,7 +1,7 @@
 import { WIDGET_ID } from "@widgets/widget-tokens";
 import {
   endOfMonth,
-  endOfWeek,
+  endOfISOWeek,
   endOfYear,
   format,
   startOfISOWeek,
@@ -84,7 +84,7 @@ describe("WorkoutWidget", () => {
   }
 
   const weekStatsUrl = (): string =>
-    statsByPeriodUrl(startOfISOWeek(new Date()), endOfWeek(new Date()));
+    statsByPeriodUrl(startOfISOWeek(new Date()), endOfISOWeek(new Date()));
   const monthStatsUrl = (month = new Date()): string =>
     statsByPeriodUrl(startOfMonth(month), endOfMonth(month));
 
@@ -368,8 +368,30 @@ describe("WorkoutWidget", () => {
       query(".workout-back-button")?.click();
       await fixture.whenStable();
       expect(query("dash-workout-session-edit")).toBeNull();
+      // Not in the list of the sessions of the selected month (the current one)
+      expect(query(".workout-session")).toBeNull();
+    });
+
+    it("should add a created workout session of the selected month to the list", async () => {
+      await createWidget([], []);
+      const today = new Date();
+      const workoutDateInput = await getDatepickerInput("#workout-date-picker-field");
+      await workoutDateInput.setValue(format(today, "dd/MM/yyyy"));
+      await workoutDateInput.blur();
+
+      query<HTMLButtonElement>("#create-workout-session-button")?.click();
+      httpTestingController
+        .expectOne(createWorkoutSessionUrl)
+        .flush({ id: 9, workoutDate: format(today, "yyyy-MM-dd"), userId: 2 });
+      TestBed.tick();
+      httpTestingController
+        .expectOne(environment.backend_url + "/workoutWidget/workoutExercises?workoutSessionId=9")
+        .flush([]);
+      await fixture.whenStable();
+
+      query(".workout-back-button")?.click();
+      await fixture.whenStable();
       expect(element.querySelectorAll(".workout-session")).toHaveLength(1);
-      expect(query(".workout-session")?.textContent).toContain("01/09/2022");
     });
 
     it("should handle the error when creating a workout session", async () => {
@@ -518,6 +540,25 @@ describe("WorkoutWidget", () => {
       await fixture.whenStable();
       expect(query("dash-workout-statistics")).toBeNull();
       expect(query("#workout-sessions-grid")).not.toBeNull();
+    });
+
+    it("should reload the statistics of the selected period on refresh", async () => {
+      await createWidget([], []);
+      await goToStatisticsView();
+      expect(query(".workout-view button[mat-icon-button]")?.getAttribute("aria-label")).toEqual(
+        "Retour aux sessions"
+      );
+
+      query(".refresh-button")?.click();
+      TestBed.tick();
+      flushWidgetRequests([], []);
+      const today = startOfMonth(new Date());
+      httpTestingController
+        .expectOne(statsByMonthUrl(subMonths(today, 2), endOfMonth(today)))
+        .flush([]);
+      await flushResources();
+      await fixture.whenStable();
+      expect(query("dash-workout-statistics")).not.toBeNull();
     });
   });
 });

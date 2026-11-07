@@ -3,6 +3,7 @@
   [widgetData]="widgetData()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
+  (editionCancelled)="restoreSavedConfig()"
 >
   <ng-template #editComponent>
     <mat-form-field appearance="outline" subscriptSizing="dynamic">

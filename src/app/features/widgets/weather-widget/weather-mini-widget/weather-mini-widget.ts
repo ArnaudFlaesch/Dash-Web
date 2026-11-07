@@ -15,6 +15,7 @@ import { MatInput } from "@angular/material/input";
 import { MiniWidget } from "@widgets/mini-widget/mini-widget";
 import { injectWidgetData } from "@widgets/widget-tokens";
 import { catchError, of } from "rxjs";
+import { isResourceLoaded } from "@shared/resources/resource-status";
 
 @Component({
   selector: "dash-weather-mini-widget",
@@ -44,8 +45,8 @@ export class WeatherMiniWidget {
     gettingWeatherData: "Erreur lors de la récupération des données météorologiques."
   };
 
-  protected readonly config = signal({ city: injectWidgetData("city", "") });
-  protected readonly configForm = form(this.config, (path) => requiredText(path.city));
+  public readonly config = signal({ city: injectWidgetData("city", "") });
+  public readonly configForm = form(this.config, (path) => requiredText(path.city));
   // A new object on each refresh, so that the resource reloads even if the city is unchanged
   private readonly refreshedCity = signal<{ city: string } | undefined>(undefined);
 
@@ -62,19 +63,28 @@ export class WeatherMiniWidget {
     defaultValue: null as WeatherApiResponse | null
   });
 
-  protected readonly weather = this.weatherResource.value;
-  protected readonly isFormValid = computed(() => this.configForm().valid());
-  protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
-  protected readonly isWidgetLoaded = computed(() => this.isFormValid() && this.weather() != null);
+  public readonly weather = this.weatherResource.value;
+  public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  // Also loaded after an error, so that the spinner is not displayed forever
+  public readonly isWidgetLoaded = computed(() => isResourceLoaded(this.weatherResource.status()));
 
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  protected getIconFromWeatherApi(icon: string): string {
+  public getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getWeatherIconUrl(icon);
   }
 
-  protected refreshWidget(): void {
+  /** Restores the configuration of the last refresh when the edition is cancelled. */
+  public restoreSavedConfig(): void {
+    const refreshed = this.refreshedCity();
+    if (refreshed) {
+      this.config.set({ city: refreshed.city });
+    }
+  }
+
+  public refreshWidget(): void {
     if (this.isFormValid()) {
       this.refreshedCity.set({ city: this.config().city });
     }

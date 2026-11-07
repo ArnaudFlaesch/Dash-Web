@@ -110,16 +110,22 @@ describe("CalendarWidget", () => {
       expect(inputs).toHaveLength(2);
       expect(inputs[0].placeholder).toEqual("Saisissez une URL iCal");
       expect(inputs[0].getAttribute("aria-label")).toEqual("URL du calendrier");
-      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(false);
+      expect(element.querySelector(".remove-calendar-url")?.getAttribute("aria-label")).toEqual(
+        "Supprimer"
+      );
+      // Empty urls can't be saved
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
 
       inputs[0].value = calendarUrl;
       inputs[0].dispatchEvent(new Event("input"));
       await fixture.whenStable();
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
 
       element.querySelectorAll<HTMLButtonElement>(".remove-calendar-url")[1].click();
       await fixture.whenStable();
       inputs = element.querySelectorAll<HTMLInputElement>(".calendar-url-container input");
       expect([...inputs].map((input) => input.value)).toEqual([calendarUrl]);
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(false);
 
       element.querySelectorAll<HTMLButtonElement>(".remove-calendar-url")[0].click();
       await fixture.whenStable();
@@ -128,19 +134,28 @@ describe("CalendarWidget", () => {
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
     });
 
-    it("Should save an empty calendar url", async () => {
+    it("Should not save an empty or blank calendar url", async () => {
       query("#add-calendar-url")?.click();
       await fixture.whenStable();
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
 
-      query(".validate-button")?.click();
-      const saveRequest = httpTestingController.expectOne(
-        environment.backend_url + "/widget/updateWidgetData/1"
-      );
-      expect(saveRequest.request.body).toEqual({ data: { calendarUrls: [""] } });
-      saveRequest.flush({});
-      TestBed.tick();
-      httpTestingController.expectOne(calendarPath).flush([]);
+      const input = query<HTMLInputElement>(".calendar-url-container input");
+      input!.value = "   ";
+      input!.dispatchEvent(new Event("input"));
       await fixture.whenStable();
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
+    });
+
+    it("Should not cancel the edition of a widget which has never been saved", async () => {
+      query("#add-calendar-url")?.click();
+      await fixture.whenStable();
+      const input = query<HTMLInputElement>(".calendar-url-container input");
+      input!.value = calendarUrl;
+      input!.dispatchEvent(new Event("input"));
+      await fixture.whenStable();
+
+      expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(false);
+      expect(query(".cancel-button")).toBeNull();
     });
 
     it("Should save the calendar urls and load the events", async () => {
@@ -278,6 +293,34 @@ describe("CalendarWidget", () => {
         }
       ]);
       expect(getDisplayedEvents().map((event) => event.title)).toEqual(["Complete"]);
+    });
+
+    it("Should display an all day event over several days on all its days", async () => {
+      await loadEvents([
+        {
+          startDate: "2022-11-01T00:00:00.000Z",
+          endDate: "2022-11-04T00:00:00.000Z",
+          description: "Vacances"
+        }
+      ]);
+      const [event] = getDisplayedEvents();
+      expect(event.allDay).toBe(true);
+      expect(event.start).toEqual(new Date(2022, 10, 1));
+      expect(event.end).toEqual(endOfDay(new Date(2022, 10, 3)));
+    });
+
+    it("Should keep the hours of an event starting at midnight UTC which is not all day long", async () => {
+      await loadEvents([
+        {
+          startDate: "2022-11-01T00:00:00.000Z",
+          endDate: "2022-11-01T02:00:00.000Z",
+          description: "Garde de nuit"
+        }
+      ]);
+      const [event] = getDisplayedEvents();
+      expect(event.allDay).toBe(false);
+      expect(event.start).toEqual(new Date("2022-11-01T00:00:00.000Z"));
+      expect(event.end).toEqual(new Date("2022-11-01T02:00:00.000Z"));
     });
 
     it("Should keep the hours of an event which is not all day long", async () => {
@@ -428,6 +471,72 @@ describe("CalendarWidget", () => {
         width: "500px",
         data: getDisplayedEvents()[0]
       });
+    });
+
+    it("Should close the opened day when clicked, and open another day of the month", async () => {
+      const getDayCell = (dayNumber: string): HTMLElement | undefined =>
+        [...element.querySelectorAll<HTMLElement>("mwl-calendar-month-view .cal-day-cell")].find(
+          (cell) =>
+            !cell.classList.contains("cal-out-month") &&
+            cell.querySelector(".cal-day-number")?.textContent?.trim() === dayNumber
+        );
+
+      getDayCell("1")?.click();
+      await fixture.whenStable();
+      expect(getOpenedDayEventTitle()).toBeNull();
+
+      getDayCell("1")?.click();
+      await fixture.whenStable();
+      expect(getOpenedDayEventTitle()?.textContent).toContain("Réunion d'équipe");
+
+      // A day without event is not opened
+      getDayCell("2")?.click();
+      await fixture.whenStable();
+      expect(getOpenedDayEventTitle()).toBeNull();
+    });
+
+    it("Should label the icon only navigation buttons", () => {
+      const navigationButtons = element.querySelectorAll<HTMLButtonElement>(
+        "#date-navigation-container button"
+      );
+      expect(navigationButtons[0].getAttribute("aria-label")).toEqual("Précédent");
+      expect(navigationButtons[2].getAttribute("aria-label")).toEqual("Suivant");
+    });
+
+    it("Should open the detail of an event clicked in the day view", async () => {
+      const openSpy = vi
+        .spyOn(TestBed.inject(MatDialog), "open")
+        .mockReturnValue(undefined as never);
+      getButtonByText("Jour")?.click();
+      await fixture.whenStable();
+
+      query<HTMLElement>("mwl-calendar-day-view .cal-event-title")?.click();
+      expect(openSpy).toHaveBeenCalledWith(EventDetailModal, {
+        width: "500px",
+        data: expect.objectContaining({ title: "Réunion d'équipe" })
+      });
+    });
+
+    it("Should restore the saved calendars when the edition is cancelled", async () => {
+      query(".edit-button")?.click();
+      await fixture.whenStable();
+      query("#add-calendar-url")?.click();
+      await fixture.whenStable();
+      const inputs = element.querySelectorAll<HTMLInputElement>(".calendar-url-container input");
+      inputs[1].value = "https://other.ical";
+      inputs[1].dispatchEvent(new Event("input"));
+      await fixture.whenStable();
+
+      query(".cancel-button")?.click();
+      await fixture.whenStable();
+      expect(query(".widget-read-mode")).toBeTruthy();
+
+      query(".edit-button")?.click();
+      await fixture.whenStable();
+      const restoredInputs = element.querySelectorAll<HTMLInputElement>(
+        ".calendar-url-container input"
+      );
+      expect([...restoredInputs].map((input) => input.value)).toEqual([calendarUrl]);
     });
 
     it("Should open the detail of an event clicked in the week view", async () => {

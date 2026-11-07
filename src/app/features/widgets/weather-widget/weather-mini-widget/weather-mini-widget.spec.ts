@@ -118,8 +118,8 @@ describe("WeatherMiniWidget", () => {
       await fixture.whenStable();
 
       expect(handleErrorSpy).toHaveBeenCalledWith(expect.anything(), ERROR_GETTING_WEATHER_DATA);
-      // Not loaded: the spinner is kept
-      expect(query("mat-spinner")).toBeTruthy();
+      // Loaded after the error: the spinner is not displayed forever
+      expect(query("mat-spinner")).toBeNull();
       expect(query(".city-name")).toBeNull();
     });
 
@@ -133,8 +133,29 @@ describe("WeatherMiniWidget", () => {
       await fixture.whenStable();
 
       expect(handleErrorSpy).toHaveBeenCalledWith(expect.anything(), ERROR_GETTING_WEATHER_DATA);
-      expect(query("mat-spinner")).toBeTruthy();
+      expect(query("mat-spinner")).toBeNull();
       expect(query(".city-name")).toBeNull();
     });
+  });
+
+  it("Should restore the saved configuration when the edition is cancelled", async () => {
+    createComponent({ city: "Paris" });
+    TestBed.tick();
+    httpTestingController.expectOne(weatherUrl + "Paris").flush(weatherData);
+    await fixture.whenStable();
+    const openEdition = async (): Promise<void> => {
+      element.querySelector<HTMLElement>(".read-mini-widget")!.dispatchEvent(new Event("dblclick"));
+      await fixture.whenStable();
+    };
+    await openEdition();
+    const input = element.querySelector<HTMLInputElement>("#city-name-input")!;
+    input.value = "Lyon";
+    input.dispatchEvent(new Event("input"));
+    await fixture.whenStable();
+
+    element.querySelector<HTMLElement>(".cancel-button")!.click();
+    await fixture.whenStable();
+    await openEdition();
+    expect(element.querySelector<HTMLInputElement>("#city-name-input")!.value).toEqual("Paris");
   });
 });

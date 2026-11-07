@@ -59,7 +59,7 @@ describe("ImportConfigModal", () => {
     );
     expect(getElement("#close-import-config-modal").textContent?.trim()).toEqual("Annuler");
     const uploadButton = getElement<HTMLButtonElement>("#upload-file-button");
-    expect(uploadButton.textContent?.trim()).toEqual("Upload");
+    expect(uploadButton.textContent?.trim()).toEqual("Importer");
     expect(uploadButton.disabled).toBe(true);
   });
 
@@ -70,6 +70,10 @@ describe("ImportConfigModal", () => {
     expect(uploadButton.disabled).toBe(false);
 
     uploadButton.click();
+    await fixture.whenStable();
+    // The file is not sent again while it is uploaded
+    expect(uploadButton.disabled).toBe(true);
+    fixture.debugElement.query(By.css("#upload-file-button")).triggerEventHandler("click");
     const request = httpTestingController.expectOne(importUrl);
     expect((request.request.body as FormData).get("file")).toEqual(file);
     request.flush(true);
@@ -100,5 +104,7 @@ describe("ImportConfigModal", () => {
       "Erreur lors de l'import de la configuration."
     );
     expect(closeSpy).not.toHaveBeenCalled();
+    await fixture.whenStable();
+    expect(getElement<HTMLButtonElement>("#upload-file-button").disabled).toBe(false);
   });
 });

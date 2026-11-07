@@ -21,9 +21,10 @@ export interface GameInfoDisplay {
   playerAchievementUrl: string;
 }
 
+/** Games without achievements have no `achievements`, or even no `playerstats`. */
 export interface AchievementResponse {
-  playerstats: {
-    achievements: Achievement[];
+  playerstats?: {
+    achievements?: Achievement[];
   };
 }
 

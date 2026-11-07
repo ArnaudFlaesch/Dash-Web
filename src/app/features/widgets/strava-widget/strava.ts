@@ -1,6 +1,16 @@
-export interface ActivitiesStatsByMonth {
-  x: Date;
-  y: number;
+/**
+ * Strava gives the local start date of an activity with a "Z" suffix, although it is not in UTC
+ * (ex: "2022-10-20T18:34:39Z" for an activity started at 18:34 where it took place). It is read
+ * without this suffix, so that its wall-clock time is kept whatever the timezone of the browser.
+ */
+export function parseStartDateLocal(startDateLocal: string): Date {
+  return new Date(startDateLocal.replace(/Z$/i, ""));
+}
+
+/** Activities of a month, the oldest first. */
+export interface ActivitiesOfMonth {
+  month: Date;
+  activities: Activity[];
 }
 
 export interface TokenData {

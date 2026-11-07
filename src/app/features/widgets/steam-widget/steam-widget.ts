@@ -57,17 +57,19 @@ export class SteamWidget {
     gettingOwnedGames: "Erreur lors de la récupération de la liste des jeux."
   };
 
-  protected readonly config = signal({ steamUserId: injectWidgetData("steamUserId", "") });
-  protected readonly configForm = form(this.config, (path) => requiredText(path.steamUserId));
-  protected readonly searchQuery = signal("");
-  protected readonly searchForm = form(this.searchQuery);
-  // Back to the first page when the search changes
-  protected readonly pageNumber = linkedSignal({
-    source: () => this.debouncedSearchQuery(),
-    computation: () => 0
-  });
+  public readonly config = signal({ steamUserId: injectWidgetData("steamUserId", "") });
+  public readonly configForm = form(this.config, (path) => requiredText(path.steamUserId));
+  public readonly searchQuery = signal("");
+  public readonly searchForm = form(this.searchQuery);
   // A new object on each refresh, so that the resources reload even if the user is unchanged
   private readonly refreshedSteamUser = signal<{ steamUserId: string } | undefined>(undefined);
+  // Unchanged by a refresh of the same user
+  private readonly refreshedSteamUserId = computed(() => this.refreshedSteamUser()?.steamUserId);
+  // Back to the first page when the search or the Steam user changes
+  public readonly pageNumber = linkedSignal({
+    source: () => [this.debouncedSearchQuery(), this.refreshedSteamUserId()],
+    computation: () => 0
+  });
 
   /** Player of the Steam user saved on the last refresh, reloaded on each refresh. */
   private readonly playerDataResource = rxResource({
@@ -103,44 +105,50 @@ export class SteamWidget {
       )
   });
 
-  protected readonly playerData = this.playerDataResource.value;
+  public readonly playerData = this.playerDataResource.value;
   // True while a page of games is loading, until the response or the error is received
-  protected readonly isOwnedGamesLoading = this.ownedGamesResource.isLoading;
-  protected readonly gameCount = computed(
-    () => this.ownedGamesResource.value()?.totalElements ?? 0
-  );
-  protected readonly ownedGamesDisplay = computed<GameInfoDisplay[]>(() =>
+  public readonly isOwnedGamesLoading = this.ownedGamesResource.isLoading;
+  public readonly gameCount = computed(() => this.ownedGamesResource.value()?.totalElements ?? 0);
+  public readonly ownedGamesDisplay = computed<GameInfoDisplay[]>(() =>
     (this.ownedGamesResource.value()?.content ?? []).map((game) =>
       this.gameInfoResponseToGameInfoDisplay(game)
     )
   );
-  protected readonly isFormValid = computed(() => this.configForm().valid());
-  protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
   private readonly debouncedSearchQuery = toSignal(
     toObservable(this.searchQuery).pipe(debounceTime(500), distinctUntilChanged()),
     { initialValue: "" }
   );
 
-  protected readonly pageSize = 25;
-  protected readonly pageSizeOptions = [this.pageSize];
+  public readonly pageSize = 25;
+  public readonly pageSizeOptions = [this.pageSize];
 
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
-  protected refreshWidget(): void {
+  /** Restores the configuration of the last refresh when the edition is cancelled. */
+  public restoreSavedConfig(): void {
+    const refreshed = this.refreshedSteamUser();
+    if (refreshed) {
+      this.config.set({ steamUserId: refreshed.steamUserId });
+    }
+  }
+
+  public refreshWidget(): void {
     const { steamUserId } = this.config();
     if (steamUserId) {
       this.refreshedSteamUser.set({ steamUserId });
     }
   }
 
-  protected onPageChanged(event: PageEvent): void {
+  public onPageChanged(event: PageEvent): void {
     if (this.refreshedSteamUser()) {
       this.pageNumber.set(event.pageIndex);
     }
   }
 
-  protected resetForm(): void {
+  public resetForm(): void {
     this.searchQuery.set("");
   }
 

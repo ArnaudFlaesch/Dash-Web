@@ -15,7 +15,7 @@ import { TabService } from "@features/tab/tab-service";
 })
 export class TabLabel {
   protected readonly labels = {
-    tabName: "Tab name",
+    tabName: "Nom de l'onglet",
     saveName: "Enregistrer le nom",
     save: "Enregistrer",
     deleteTab: "Supprimer l'onglet"
@@ -29,23 +29,23 @@ export class TabLabel {
   public readonly tabDeletedEvent = output<number>();
   public readonly tabUpdatedEvent = output<Tab>();
 
-  protected readonly editMode = signal(false);
-  protected readonly tabLabel = linkedSignal(() => this.tab().label);
-  protected readonly tabLabelForm = form(this.tabLabel, (path) => requiredText(path));
+  public readonly editMode = signal(false);
+  public readonly tabLabel = linkedSignal(() => this.tab().label);
+  public readonly tabLabelForm = form(this.tabLabel, (path) => requiredText(path));
 
   private readonly tabService = inject(TabService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  protected deleteTabFromDash(): void {
+  public deleteTabFromDash(): void {
     this.tabDeletedEvent.emit(this.tab().id);
   }
 
-  protected saveTabName(): void {
+  public saveTabName(): void {
     if (this.tabLabelForm().invalid()) {
       return;
     }
     const { id, tabOrder } = this.tab();
-    this.tabService.updateTab(id, this.tabLabel(), tabOrder).subscribe({
+    this.tabService.updateTab(id, this.tabLabel().trim(), tabOrder).subscribe({
       next: (updatedTab) => this.tabUpdatedEvent.emit(updatedTab),
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateTab),
@@ -53,7 +53,7 @@ export class TabLabel {
     });
   }
 
-  protected toggleEditMode(): void {
+  public toggleEditMode(): void {
     this.editMode.update((editMode) => !editMode);
   }
 }

@@ -157,6 +157,8 @@ describe("Login", () => {
     await fixture.whenStable();
     expect(getElement("mat-spinner")).not.toBeNull();
     expect(loginButton.disabled).toBe(true);
+    // The demo login can't be sent while a login is in progress
+    expect(getElement<HTMLButtonElement>("button[mat-stroked-button]").disabled).toBe(true);
 
     const request = httpTestingController.expectOne(loginUrl);
     expect(request.request.body).toEqual({ username: "admin", password: "password" });
@@ -164,6 +166,11 @@ describe("Login", () => {
     await vi.waitFor(() => expect(navigateSpy).toHaveBeenCalledWith(["home"]));
     await fixture.whenStable();
     expect(getElement("mat-spinner")).toBeNull();
+  });
+
+  it("Should link the logo to the home page", async () => {
+    await fixture.whenStable();
+    expect(getElement("#logo-container").getAttribute("href")).toEqual("/home");
   });
 
   it("Should log in with the demo account from the demo button", async () => {

@@ -1,18 +1,13 @@
 import { TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
-import { vi } from "vitest";
 import { App } from "./app";
-import { AuthService } from "./core/auth/auth-service";
 import { ThemeService } from "./core/theme/theme-service";
 
 describe("App", () => {
   let component: App;
-  let navigateSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     localStorage.removeItem("user");
     localStorage.removeItem("preferredTheme");
-    navigateSpy = vi.spyOn(TestBed.inject(Router), "navigate").mockResolvedValue(true);
     const fixture = TestBed.createComponent(App);
     component = fixture.componentInstance;
   });
@@ -25,17 +20,6 @@ describe("App", () => {
 
   it("should create the app", () => {
     expect(component).toBeTruthy();
-  });
-
-  it("Should redirect to the login page when the user has no valid token", () => {
-    component.ngOnInit();
-    expect(navigateSpy).toHaveBeenCalledWith(["/login"]);
-  });
-
-  it("Should stay on the current page when the user has a valid token", () => {
-    vi.spyOn(TestBed.inject(AuthService), "userHasValidToken").mockReturnValue(true);
-    component.ngOnInit();
-    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it("Should apply the preferred theme", () => {

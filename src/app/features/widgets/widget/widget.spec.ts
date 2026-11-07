@@ -100,6 +100,13 @@ describe("Widget", () => {
       expect(query(".widget-read-mode")).toBeNull();
     });
 
+    it("Should not display the cancel button of a valid but never saved widget", async () => {
+      host.widgetData.set({ city: "Lyon" });
+      await fixture.whenStable();
+      expect(query(".validate-button")).toBeTruthy();
+      expect(query(".cancel-button")).toBeNull();
+    });
+
     it("Should only allow the validation of a valid form", async () => {
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(false);
       host.isFormValid.set(false);
@@ -215,6 +222,15 @@ describe("Widget", () => {
       await fixture.whenStable();
       expect(query(".widget-read-mode")).toBeTruthy();
       expect(query(".widget-edit-mode")).toBeNull();
+    });
+
+    it("Should label the icon only action buttons", async () => {
+      await createHost({ city: "Paris" });
+      expect(query(".refresh-button")?.getAttribute("aria-label")).toEqual("Actualiser le widget");
+      expect(query(".edit-button")?.getAttribute("aria-label")).toEqual("Modifier le widget");
+      query(".edit-button")?.click();
+      await fixture.whenStable();
+      expect(query(".delete-button")?.getAttribute("aria-label")).toEqual("Supprimer le widget");
     });
 
     it("Should not display the cancel button while the widget is loading", async () => {

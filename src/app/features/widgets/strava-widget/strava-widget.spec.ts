@@ -329,6 +329,20 @@ describe("StravaWidget", () => {
     expect(activitiesDataset.data).toEqual([1, 2]);
   });
 
+  it("should group the activities by the month of their local start date", async () => {
+    // Started at 23:30 where it took place: Strava suffixes its local start date with "Z"
+    await createLoggedInWidget([
+      createActivity({
+        id: 1,
+        startDate: "2022-09-30T21:30:00Z",
+        startDateLocal: "2022-09-30T23:30:00Z"
+      })
+    ]);
+
+    expect(getChartData()?.labels).toEqual(["sept. 2022"]);
+    expect(element.querySelector(".activity-meta")?.textContent).toContain("30 septembre");
+  });
+
   it("should navigate between the pages of activities", async () => {
     await createLoggedInWidget(activities);
     const moreRecentButton = findButton("Plus récentes");

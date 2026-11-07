@@ -29,5 +29,5 @@ export class EventDetailModal {
     ok: "Ok"
   };
 
-  protected readonly eventDetail = inject<CalendarEvent>(MAT_DIALOG_DATA);
+  public readonly eventDetail = inject<CalendarEvent>(MAT_DIALOG_DATA);
 }

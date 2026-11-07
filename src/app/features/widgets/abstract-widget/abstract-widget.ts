@@ -10,7 +10,6 @@ import {
   TemplateRef
 } from "@angular/core";
 import { WidgetMode } from "@widgets/abstract-widget/widget-mode";
-import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { WIDGET_ID } from "@widgets/widget-tokens";
 
 /** Common behaviour (read / edit / delete modes) shared by widgets and mini widgets. */
@@ -22,37 +21,41 @@ export abstract class AbstractWidget implements OnInit {
   public readonly isWidgetLoaded = input(false);
   public readonly widgetData = input<Record<string, unknown> | undefined>(undefined);
   public readonly refreshWidgetAction = output();
+  /** Emitted when the edition is cancelled, so that the widget restores its saved configuration. */
+  public readonly editionCancelled = output();
 
-  protected readonly mode = signal(WidgetMode.EDIT);
-  protected readonly isModeRead = computed(() => this.mode() === WidgetMode.READ);
-  protected readonly isModeEdit = computed(() => this.mode() === WidgetMode.EDIT);
-  protected readonly isModeDelete = computed(() => this.mode() === WidgetMode.DELETE);
+  private readonly mode = signal(WidgetMode.EDIT);
+  public readonly isModeRead = computed(() => this.mode() === WidgetMode.READ);
+  public readonly isModeEdit = computed(() => this.mode() === WidgetMode.EDIT);
+  public readonly isModeDelete = computed(() => this.mode() === WidgetMode.DELETE);
+  /** True once the widget has a saved configuration: only then can its edition be cancelled. */
+  public readonly isWidgetDataSaved = signal(false);
 
   protected readonly widgetId = inject(WIDGET_ID);
-  protected readonly errorHandlerService = inject(ErrorHandlerService);
   protected readonly ERROR_UPDATING_WIDGET_DATA =
     "Erreur lors de la mise à jour de la configuration du widget.";
 
   public ngOnInit(): void {
     if (this.widgetData() !== undefined) {
+      this.isWidgetDataSaved.set(true);
       this.toReadMode();
     }
     this.refreshWidget();
   }
 
-  protected refreshWidget(): void {
+  public refreshWidget(): void {
     if (this.isFormValid()) {
       this.refreshWidgetAction.emit();
     }
   }
 
-  protected toEditMode(): void {
+  public toEditMode(): void {
     if (this.editComponent()) {
       this.mode.set(WidgetMode.EDIT);
     }
   }
 
-  protected toReadMode(): void {
+  public toReadMode(): void {
     if (this.widgetData()) {
       this.mode.set(WidgetMode.READ);
     } else {
@@ -60,16 +63,18 @@ export abstract class AbstractWidget implements OnInit {
     }
   }
 
-  protected cancelEdition(): void {
+  public cancelEdition(): void {
+    this.editionCancelled.emit();
     this.toReadMode();
   }
 
-  protected toDeleteMode(): void {
+  public toDeleteMode(): void {
     this.mode.set(WidgetMode.DELETE);
   }
 
   /** Called once the widget configuration has been saved. */
   protected onWidgetDataSaved(): void {
+    this.isWidgetDataSaved.set(true);
     this.toReadMode();
     this.refreshWidget();
   }

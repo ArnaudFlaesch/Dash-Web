@@ -1,6 +1,12 @@
 import { Injector, runInInjectionContext } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
-import { createWidgetInjector, injectWidgetData, WIDGET_DATA, WIDGET_ID } from "./widget-tokens";
+import {
+  cachedWidgetInjectors,
+  createWidgetInjector,
+  injectWidgetData,
+  WIDGET_DATA,
+  WIDGET_ID
+} from "./widget-tokens";
 
 describe("Widget tokens", () => {
   function injectInWidget<T>(
@@ -48,5 +54,18 @@ describe("Widget tokens", () => {
   it("Should keep falsy saved values", () => {
     expect(injectInWidget({ id: 1, data: { count: 0, enabled: false } }, "count", 5)).toEqual(0);
     expect(injectInWidget({ id: 1, data: { enabled: false } }, "enabled", true)).toBe(false);
+  });
+
+  it("Should cache the injector of each widget configuration", () => {
+    const getWidgetInjector = cachedWidgetInjectors(TestBed.inject(Injector));
+    const widget = { id: 1, data: { city: "Paris" } };
+    const otherWidget = { id: 2 };
+
+    const injector = getWidgetInjector(widget);
+    expect(injector.get(WIDGET_ID)).toEqual(1);
+    expect(injector.get(WIDGET_DATA)).toEqual({ city: "Paris" });
+    expect(getWidgetInjector(widget)).toBe(injector);
+    expect(getWidgetInjector(otherWidget)).not.toBe(injector);
+    expect(getWidgetInjector(otherWidget).get(WIDGET_ID)).toEqual(2);
   });
 });

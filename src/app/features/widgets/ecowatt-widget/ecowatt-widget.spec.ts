@@ -18,20 +18,6 @@ describe("EcowattWidget", () => {
     element = fixture.nativeElement as HTMLElement;
   });
 
-  it("Should load the widget, refreshed before its iframe container is rendered", async () => {
-    // The widget is refreshed on init, before its body (and so the iframe container) is rendered
-    await fixture.whenStable();
-    expect(getIframe()?.getAttribute("width")).toEqual("0");
-    expect(getIframe()?.getAttribute("height")).toEqual("0");
-  });
-
-  /** Simulates the size of the iframe container, which has no layout in the test DOM. */
-  function setContainerSize(width: number, height: number): void {
-    const container = element.querySelector<HTMLElement>("#ecowatt-info-container")!;
-    Object.defineProperty(container, "offsetWidth", { configurable: true, value: width });
-    Object.defineProperty(container, "offsetHeight", { configurable: true, value: height });
-  }
-
   function getIframe(): HTMLIFrameElement | null {
     return element.querySelector<HTMLIFrameElement>("iframe");
   }
@@ -42,22 +28,15 @@ describe("EcowattWidget", () => {
     expect(element.querySelector(".ecowatt-widget-header")?.textContent).toEqual("Ecowatt");
     expect(element.querySelector(".edit-button")).toBeNull();
     expect(getIframe()?.src).toEqual(ECOWATT_IFRAME_URL);
-    expect(getIframe()?.title).toEqual("ecowatt");
+    expect(getIframe()?.title).toEqual("Prévisions Ecowatt");
+    // Sized by its style, not by attributes
+    expect(getIframe()?.classList).toContain("ecowatt-iframe");
+    expect(getIframe()?.hasAttribute("width")).toBe(false);
+    expect(getIframe()?.hasAttribute("height")).toBe(false);
   });
 
-  it("Should resize the iframe to its container when the window is resized", async () => {
+  it("Should reload the iframe when the widget is refreshed", async () => {
     await fixture.whenStable();
-    setContainerSize(400, 300);
-    window.dispatchEvent(new Event("resize"));
-    await fixture.whenStable();
-
-    expect(getIframe()?.getAttribute("width")).toEqual("400");
-    expect(getIframe()?.getAttribute("height")).toEqual("300");
-  });
-
-  it("Should resize and reload the iframe when the widget is refreshed", async () => {
-    await fixture.whenStable();
-    setContainerSize(500, 350);
     const iframe = getIframe()!;
     let srcAssignments = 0;
     const srcDescriptor = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, "src")!;
@@ -73,8 +52,6 @@ describe("EcowattWidget", () => {
     element.querySelector<HTMLButtonElement>(".refresh-button")?.click();
     await fixture.whenStable();
 
-    expect(getIframe()?.getAttribute("width")).toEqual("500");
-    expect(getIframe()?.getAttribute("height")).toEqual("350");
     expect(srcAssignments).toEqual(1);
     expect(iframe.src).toEqual(ECOWATT_IFRAME_URL);
   });

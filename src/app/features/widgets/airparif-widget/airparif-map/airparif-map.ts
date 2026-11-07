@@ -89,8 +89,8 @@ export class AirparifMap implements AfterViewInit, OnDestroy {
     noForecastHint: "Vérifiez la clé d'API et le code commune dans la configuration du widget."
   };
 
-  public readonly mapContainer = viewChild<ElementRef<HTMLElement>>("map");
-  public readonly sidebarContainer = viewChild<ElementRef<HTMLElement>>("sidebar");
+  private readonly mapContainer = viewChild<ElementRef<HTMLElement>>("map");
+  private readonly sidebarContainer = viewChild<ElementRef<HTMLElement>>("sidebar");
   public readonly airParifCouleursIndices = input.required<AirparifCouleur[]>();
   public readonly airParifForecast = input.required<AirparifForecast[]>();
   public readonly airParifApiKey = input<string>();
@@ -98,11 +98,11 @@ export class AirparifMap implements AfterViewInit, OnDestroy {
 
   private readonly forecastMode = signal(ForecastMode.TODAY);
   // Forecast of the selected day, also when the forecasts are refreshed
-  protected readonly forecastToDisplay = computed<AirparifForecast | undefined>(
+  public readonly forecastToDisplay = computed<AirparifForecast | undefined>(
     () => this.airParifForecast()[this.forecastMode() === ForecastMode.TODAY ? 0 : 1]
   );
 
-  protected readonly pollutants = computed(() => {
+  public readonly pollutants = computed(() => {
     const forecast = this.forecastToDisplay();
     return forecast
       ? this.POLLUTANTS.map((pollutant) => ({
@@ -112,59 +112,65 @@ export class AirparifMap implements AfterViewInit, OnDestroy {
       : [];
   });
 
-  protected readonly globalIndiceDetails = computed(() => {
+  public readonly globalIndiceDetails = computed(() => {
     const forecast = this.forecastToDisplay();
     return forecast ? this.getIndiceDetails(forecast.indice) : undefined;
   });
 
-  protected readonly isForecastModeToday = computed(
-    () => this.forecastMode() === ForecastMode.TODAY
-  );
-  protected readonly isForecastModeTomorrow = computed(
+  public readonly isForecastModeToday = computed(() => this.forecastMode() === ForecastMode.TODAY);
+  public readonly isForecastModeTomorrow = computed(
     () => this.forecastMode() === ForecastMode.TOMORROW
   );
 
-  private map: Map | undefined;
+  public map: Map | undefined;
   private sidebarControl: SidebarControl | undefined;
   private forecastLayers: Record<ForecastMode, TileLayer<TileWMS>> | undefined;
 
-  protected readonly airParifWebsiteUrl = inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL;
   private readonly airParifWidgetService = inject(AirparifWidgetService);
+  public readonly airParifWebsiteUrl = this.airParifWidgetService.AIRPARIF_WEBSITE_URL;
 
   public ngAfterViewInit(): void {
     this.initMap();
   }
 
   public ngOnDestroy(): void {
-    if (this.sidebarControl) {
-      this.map?.removeControl(this.sidebarControl);
-    }
-    this.map?.setTarget();
+    // The map neither disposes its layers (and their renderers, which cache the tiles), nor the
+    // forecast layer which is not displayed
+    const layers = new Set([
+      ...(this.map?.getAllLayers() ?? []),
+      ...Object.values(this.forecastLayers ?? {})
+    ]);
+    // Disposing the map also removes its controls and detaches it from its target
     this.map?.dispose();
+    layers.forEach((layer) => layer.dispose());
+    this.map = undefined;
+    this.sidebarControl = undefined;
+    this.forecastLayers = undefined;
   }
 
+  /** Public: opened by the parent widget, from a button outside of this component. */
   public openSidebar(): void {
     this.sidebarControl?.open(this.SIDEBAR_PANE_ID);
   }
 
-  protected selectTodayForecast(): void {
+  public selectTodayForecast(): void {
     this.selectForecast(ForecastMode.TODAY);
   }
 
-  protected selectTomorrowForecast(): void {
+  public selectTomorrowForecast(): void {
     this.selectForecast(ForecastMode.TOMORROW);
   }
 
-  protected getIndiceClass(indice: AirparifIndice): string {
+  public getIndiceClass(indice: AirparifIndice): string {
     return this.airParifWidgetService.getIndiceClass(indice);
   }
 
-  protected getIndiceLabel(indice: AirparifIndice): string {
+  public getIndiceLabel(indice: AirparifIndice): string {
     return this.airParifWidgetService.getIndiceLabel(indice);
   }
 
   // Class giving a light tint of the color of the indice
-  protected getIndiceSoftClass(indice: AirparifIndice): string {
+  public getIndiceSoftClass(indice: AirparifIndice): string {
     return this.airParifWidgetService.getIndiceClass(indice, "indice-soft");
   }
 

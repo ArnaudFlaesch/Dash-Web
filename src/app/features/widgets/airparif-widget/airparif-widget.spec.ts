@@ -218,6 +218,38 @@ describe("AirparifWidget", () => {
     expect(sidebar.classList).not.toContain("collapsed");
   });
 
+  it("should load the forecast of a commune code typed with spaces or in lowercase", async () => {
+    await createWidget({ airParifApiKey: "AIRPARIFTOKEN", communeInseeCode: " 2a004 " });
+    httpTestingController
+      .expectOne(`${environment.backend_url}/airParifWidget/previsionCommune?commune=2A004`)
+      .flush(forecastData);
+    httpTestingController.expectOne(couleursUrl).flush(couleursIndicesData);
+    await flushResources();
+    await fixture.whenStable();
+    expect(element.querySelector("#airparif-today-chip")?.textContent).toContain("Moyen");
+  });
+
+  it("should restore the saved configuration when the edition is cancelled", async () => {
+    await createWidget(widgetData);
+    await flushForecast();
+
+    element.querySelector<HTMLButtonElement>(".edit-button")!.click();
+    await fixture.whenStable();
+    await typeInInput("#commune-insee-code", "69123");
+    element.querySelector<HTMLButtonElement>(".cancel-button")!.click();
+    await fixture.whenStable();
+    expect(element.querySelector(".widget-read-mode")).not.toBeNull();
+
+    // The forecast of the saved commune is reloaded on refresh
+    element.querySelector<HTMLButtonElement>(".refresh-button")!.click();
+    TestBed.tick();
+    await flushForecast();
+
+    element.querySelector<HTMLButtonElement>(".edit-button")!.click();
+    await fixture.whenStable();
+    expect(element.querySelector<HTMLInputElement>("#commune-insee-code")?.value).toEqual("75112");
+  });
+
   it("should reload the forecast of the same commune on refresh", async () => {
     await createWidget(widgetData);
     await flushForecast();

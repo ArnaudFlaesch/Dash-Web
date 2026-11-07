@@ -16,6 +16,7 @@ import { DateFormatPipe } from "@shared/dates/date-format-pipe";
 export class NotificationsList {
   protected readonly labels = {
     notifications: "Notifications",
+    markAsRead: "Marquer comme lu",
     markAllAsRead: "Marquer tout comme lu"
   };
 
@@ -25,5 +26,5 @@ export class NotificationsList {
   public readonly markNotificationAsReadEvent = output<number>();
   public readonly markAllNotificationsAsReadEvent = output();
 
-  protected readonly NotificationType = NotificationType;
+  public readonly NotificationType = NotificationType;
 }

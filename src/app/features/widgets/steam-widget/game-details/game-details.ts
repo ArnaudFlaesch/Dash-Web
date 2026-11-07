@@ -49,19 +49,18 @@ export class GameDetails {
 
   public readonly gameInfo = input.required<GameInfoDisplay>();
   public readonly steamUserId = input.required<string>();
-  public readonly profileUrl = input.required<string>();
 
   private readonly isPanelOpened = signal(false);
 
   /** Achievements of the player for this game, loaded once the panel has been opened. */
-  protected readonly achievementsResource = rxResource({
+  public readonly achievementsResource = rxResource({
     params: () =>
       this.isPanelOpened()
         ? { steamUserId: this.steamUserId(), appId: this.gameInfo().appid }
         : undefined,
     stream: ({ params: { steamUserId, appId } }) =>
       this.steamWidgetService.getAchievementList(steamUserId, appId).pipe(
-        map((response) => response.playerstats.achievements ?? []),
+        map((response) => response.playerstats?.achievements ?? []),
         catchError((error: HttpErrorResponse) => {
           this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingAchievementsData);
           return of([]);
@@ -70,13 +69,13 @@ export class GameDetails {
     defaultValue: [] as Achievement[]
   });
 
-  protected readonly achievements = this.achievementsResource.value;
+  public readonly achievements = this.achievementsResource.value;
   private readonly completedAchievements = computed(() =>
     this.achievements().filter((achievement) => achievement.achieved === 1)
   );
   // Kept short so that the text stays on one line, without surrounding spaces
-  protected readonly completedCount = computed(() => this.completedAchievements().length);
-  protected readonly completionStatus = computed(() =>
+  public readonly completedCount = computed(() => this.completedAchievements().length);
+  public readonly completionStatus = computed(() =>
     this.achievements().length
       ? Math.floor((this.completedAchievements().length / this.achievements().length) * 100)
       : undefined
@@ -85,7 +84,7 @@ export class GameDetails {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 
-  protected loadAchievementsData(): void {
+  public loadAchievementsData(): void {
     this.isPanelOpened.set(true);
   }
 }

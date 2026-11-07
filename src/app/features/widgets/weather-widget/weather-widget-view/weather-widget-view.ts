@@ -2,7 +2,7 @@ import { Component, computed, input, linkedSignal, signal } from "@angular/core"
 import { FormField, form } from "@angular/forms/signals";
 import { MatButton } from "@angular/material/button";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
-import { format, isToday, startOfDay } from "date-fns";
+import { format, isSameDay, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
 import { InitialUppercasePipe } from "@shared/text/initial-uppercase-pipe";
 import { dateInTimezone } from "@shared/dates/timezone";
@@ -34,63 +34,74 @@ export class WeatherWidgetView {
   public readonly cityData = input.required<City>();
 
   private readonly displayAllForecast = signal(false);
-  protected readonly displayAllForecastForm = form(this.displayAllForecast);
-  protected readonly forecastDays = computed<Date[]>(() =>
-    [...new Set(this.forecastResponse().map((data) => startOfDay(data.dt * 1000).getTime()))].map(
-      (data) => new Date(data)
-    )
+  public readonly displayAllForecastForm = form(this.displayAllForecast);
+  /** Days of the forecasts, in the local time of the city. */
+  public readonly forecastDays = computed<Date[]>(() =>
+    [
+      ...new Set(
+        this.forecastResponse().map((forecast) =>
+          startOfDay(this.toCityDate(forecast.dt)).getTime()
+        )
+      )
+    ].map((day) => new Date(day))
   );
-  protected readonly forecastMode = signal(ForecastMode.DAY);
+  public readonly forecastMode = signal(ForecastMode.DAY);
   private readonly selectedDayForecast = linkedSignal<Date>(
     () => this.forecastDays()[0] ?? new Date()
   );
 
-  protected readonly isForecastModeWeek = computed(() => this.forecastMode() === ForecastMode.WEEK);
+  public readonly isForecastModeWeek = computed(() => this.forecastMode() === ForecastMode.WEEK);
 
-  protected readonly forecastToDisplay = computed<Forecast[]>(() => {
-    return this.filterForecastByMode(this.cityData(), this.forecastResponse());
-  });
+  public readonly forecastToDisplay = computed<Forecast[]>(() =>
+    this.isForecastModeWeek() ? this.getWeekForecast() : this.getDayForecast()
+  );
 
-  protected formatDate(date: Date): string {
+  public formatDate(date: Date): string {
     return format(date, "eee dd", { locale: fr });
   }
 
-  protected isSelectedDay(date: Date): boolean {
-    return (
-      this.forecastMode() === ForecastMode.DAY &&
-      this.selectedDayForecast().getDay() === date.getDay()
-    );
+  public isSelectedDay(date: Date): boolean {
+    return !this.isForecastModeWeek() && isSameDay(this.selectedDayForecast(), date);
   }
 
-  protected selectDayForecast(date: Date): void {
-    if (this.forecastMode() !== ForecastMode.WEEK && this.selectedDayForecast() === date) return;
+  public selectDayForecast(date: Date): void {
     this.forecastMode.set(ForecastMode.DAY);
     this.selectedDayForecast.set(date);
   }
 
-  protected selectWeekForecast(): void {
-    if (this.forecastMode() === ForecastMode.WEEK) return;
+  public selectWeekForecast(): void {
     this.forecastMode.set(ForecastMode.WEEK);
   }
 
-  private filterForecastByMode(cityData: City, forecastData: Forecast[]): Forecast[] {
-    switch (this.forecastMode()) {
-      case ForecastMode.WEEK: {
-        return forecastData.filter((forecastDay) => {
-          const forecastHour = dateInTimezone(forecastDay.dt, cityData.timezone).getHours();
-          return forecastHour >= 15 && forecastHour <= 18;
-        });
-      }
-      case ForecastMode.DAY: {
-        if (isToday(this.selectedDayForecast())) {
-          return forecastData.slice(0, 6);
-        }
-        return forecastData.filter(
-          (forecastDay) =>
-            new Date(forecastDay.dt * 1000).getDay() === this.selectedDayForecast().getDay() &&
-            (this.displayAllForecast() || new Date(forecastDay.dt * 1000).getHours() >= 7)
-        );
-      }
+  /** Date of a forecast timestamp, in the local time of the city. */
+  private toCityDate(timestamp: number): Date {
+    return dateInTimezone(timestamp, this.cityData().timezone);
+  }
+
+  /**
+   * One forecast in the afternoon of each day: the forecasts are given every 3 hours, so exactly
+   * one of them starts between 15:00 included and 18:00 excluded.
+   */
+  private getWeekForecast(): Forecast[] {
+    return this.forecastResponse().filter((forecast) => {
+      const forecastHour = this.toCityDate(forecast.dt).getHours();
+      return forecastHour >= 15 && forecastHour < 18;
+    });
+  }
+
+  /** Next forecasts for today, the forecasts from 7:00 (or all of them) for the other days. */
+  private getDayForecast(): Forecast[] {
+    const selectedDay = this.selectedDayForecast();
+    const today = this.toCityDate(Date.now() / 1000);
+    if (isSameDay(selectedDay, today)) {
+      return this.forecastResponse().slice(0, 6);
     }
+    return this.forecastResponse().filter((forecast) => {
+      const forecastDate = this.toCityDate(forecast.dt);
+      return (
+        isSameDay(forecastDate, selectedDay) &&
+        (this.displayAllForecast() || forecastDate.getHours() >= 7)
+      );
+    });
   }
 }

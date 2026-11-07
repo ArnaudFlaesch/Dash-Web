@@ -17,6 +17,7 @@
           @for (tab of tabs(); track tab.id) {
             <dash-tab-label
               class="tab"
+              role="link"
               tabindex="0"
               (keydown.enter)="selectTab(tab.id)"
               (click)="selectTab(tab.id)"
@@ -34,8 +35,14 @@
             />
           }
         </div>
-        <button (click)="addNewTab()" [matTooltip]="labels.addNewTab" id="add-new-tab-button" mat-icon-button>
-          <mat-icon aria-hidden="false">add</mat-icon>
+        <button
+          (click)="addNewTab()"
+          [matTooltip]="labels.addNewTab"
+          [attr.aria-label]="labels.addNewTab"
+          id="add-new-tab-button"
+          mat-icon-button
+        >
+          <mat-icon>add</mat-icon>
         </button>
       </nav>
 
@@ -47,7 +54,7 @@
           id="open-add-widget-modal"
           mat-flat-button
         >
-          <mat-icon aria-hidden="false">add</mat-icon>
+          <mat-icon>add</mat-icon>
           <span id="add-widget-button-label">{{ labels.widget }}</span>
         </button>
 
@@ -55,40 +62,54 @@
           <button
             (click)="toggleEditMode()"
             [matTooltip]="labels.validateWidgetOrder"
+            [attr.aria-label]="labels.validateWidgetOrder"
             id="validate-widget-list-button"
             mat-icon-button
           >
-            <mat-icon aria-hidden="false">check</mat-icon>
+            <mat-icon>check</mat-icon>
           </button>
         } @else {
           <button
             (click)="toggleEditMode()"
             [matTooltip]="labels.changeWidgetOrder"
+            [attr.aria-label]="labels.changeWidgetOrder"
             id="toggle-edit-mode-button"
             mat-icon-button
           >
-            <mat-icon aria-hidden="false">drag_indicator</mat-icon>
+            <mat-icon>drag_indicator</mat-icon>
           </button>
         }
 
         <button
           (click)="refreshAllWidgets()"
           [matTooltip]="labels.refreshAllWidgets"
+          [attr.aria-label]="labels.refreshAllWidgets"
           mat-icon-button
           id="reload-all-widgets-button"
         >
-          <mat-icon aria-hidden="false">refresh</mat-icon>
+          <mat-icon>refresh</mat-icon>
         </button>
 
         @if (canUserSeeNotifications()) {
           <dash-notifications />
         }
 
-        <button mat-icon-button [matTooltip]="labels.applications" [matMenuTriggerFor]="appsMenu">
+        <button
+          mat-icon-button
+          [matTooltip]="labels.applications"
+          [attr.aria-label]="labels.applications"
+          [matMenuTriggerFor]="appsMenu"
+        >
           <mat-icon>apps</mat-icon>
         </button>
 
-        <button id="dash-menu" [matTooltip]="labels.userMenu" mat-icon-button [matMenuTriggerFor]="dashMenu">
+        <button
+          id="dash-menu"
+          [matTooltip]="labels.userMenu"
+          [attr.aria-label]="labels.userMenu"
+          mat-icon-button
+          [matMenuTriggerFor]="dashMenu"
+        >
           <mat-icon>account_circle</mat-icon>
         </button>
 

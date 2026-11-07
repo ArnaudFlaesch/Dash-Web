@@ -13,6 +13,7 @@ import { injectWidgetData } from "@widgets/widget-tokens";
 import { WeatherWidgetView } from "./weather-widget-view/weather-widget-view";
 import { form, FormField } from "@angular/forms/signals";
 import { requiredText } from "@shared/forms/form-validators";
+import { isResourceLoaded } from "@shared/resources/resource-status";
 
 @Component({
   selector: "dash-weather-widget",
@@ -29,8 +30,8 @@ export class WeatherWidget {
     gettingWeatherData: "Erreur lors de la récupération des données météorologiques."
   };
 
-  protected readonly config = signal({ city: injectWidgetData("city", "") });
-  protected readonly configForm = form(this.config, (path) => requiredText(path.city));
+  public readonly config = signal({ city: injectWidgetData("city", "") });
+  public readonly configForm = form(this.config, (path) => requiredText(path.city));
   // A new object on each refresh, so that the resource reloads even if the city is unchanged
   private readonly refreshedCity = signal<{ city: string } | undefined>(undefined);
 
@@ -50,21 +51,26 @@ export class WeatherWidget {
     defaultValue: undefined as [WeatherApiResponse, ForecastApiResponse] | undefined
   });
 
-  protected readonly weather = computed(() => this.weatherResource.value()?.[0]);
-  protected readonly forecastResponse = computed(
-    () => this.weatherResource.value()?.[1].list ?? []
-  );
-  protected readonly cityData = computed(() => this.weatherResource.value()?.[1].city);
-  protected readonly isWidgetLoaded = computed(
-    () => !this.weatherResource.isLoading() && this.weatherResource.value() !== undefined
-  );
-  protected readonly isFormValid = computed(() => this.configForm().valid());
-  protected readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  public readonly weather = computed(() => this.weatherResource.value()?.[0]);
+  public readonly forecastResponse = computed(() => this.weatherResource.value()?.[1].list ?? []);
+  public readonly cityData = computed(() => this.weatherResource.value()?.[1].city);
+  // Also loaded after an error, so that the spinner is not displayed forever
+  public readonly isWidgetLoaded = computed(() => isResourceLoaded(this.weatherResource.status()));
+  public readonly isFormValid = computed(() => this.configForm().valid());
+  public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
-  protected refreshWidget(): void {
+  /** Restores the configuration of the last refresh when the edition is cancelled. */
+  public restoreSavedConfig(): void {
+    const refreshed = this.refreshedCity();
+    if (refreshed) {
+      this.config.set({ city: refreshed.city });
+    }
+  }
+
+  public refreshWidget(): void {
     if (this.isFormValid()) {
       this.refreshedCity.set({ city: this.config().city });
     }

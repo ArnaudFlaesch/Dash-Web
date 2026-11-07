@@ -162,6 +162,18 @@ describe("AirparifMap", () => {
     component.ngOnDestroy();
   });
 
+  it("Should dispose the map and all its layers, also the hidden one, on destroy", async () => {
+    const map = await createMap("test-key");
+    const mapDisposeSpy = vi.spyOn(map, "dispose");
+    const layerDisposeSpy = vi.spyOn(TileLayer.prototype, "dispose");
+
+    fixture.destroy();
+    expect(mapDisposeSpy).toHaveBeenCalledTimes(1);
+    // OpenStreetMap layer, and the forecast layers of today and tomorrow
+    expect(layerDisposeSpy).toHaveBeenCalledTimes(3);
+    expect(map.getTargetElement()).toBeFalsy();
+  });
+
   /** Forecast layer displayed on the OpenLayers map, above the OpenStreetMap one. */
   function getForecastLayer(map: OlMap): TileLayer<TileWMS> {
     return map.getLayers().item(1) as TileLayer<TileWMS>;

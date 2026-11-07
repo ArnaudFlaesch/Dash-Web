@@ -34,36 +34,37 @@ export class RssFeed {
   public readonly markArticleAsReadEvent = output<string>();
   private readonly currentOpenedArticle = signal<string | undefined>(undefined);
 
-  protected stripHtmlFromContent(content?: string): string {
+  public stripHtmlFromContent(content?: string): string {
     // The content is parsed in an inert document: no script is executed and no resource is loaded
     const parsedContent = new DOMParser().parseFromString(content ?? "", "text/html");
     return parsedContent.body.textContent;
   }
 
-  protected formatTitleForArticle(article: Article): string {
+  public formatTitleForArticle(article: Article): string {
+    const title = article.title ?? "";
     const articleDate = new Date(article.pubDate || article.updated || "");
     // Some articles have no (valid) publication date
     return isValid(articleDate)
-      ? `${this.getPublicationDateToDisplay(articleDate)} ${article.title}`
-      : (article.title ?? "");
+      ? `${this.getPublicationDateToDisplay(articleDate)} ${title}`.trim()
+      : title;
   }
 
-  protected isArticleRead(guid: string): boolean {
+  public isArticleRead(guid: string): boolean {
     return this.readArticles().includes(guid);
   }
 
-  protected isArticleOpened(guid: string): boolean {
+  public isArticleOpened(guid: string): boolean {
     return this.currentOpenedArticle() === guid;
   }
 
-  protected onOpenDetail(guid: string): void {
+  public onOpenDetail(guid: string): void {
     if (!this.isArticleRead(guid)) {
       this.markArticleAsReadEvent.emit(guid);
     }
     this.currentOpenedArticle.set(guid);
   }
 
-  protected onClosePanel(): void {
+  public onClosePanel(): void {
     this.currentOpenedArticle.set(undefined);
   }
 

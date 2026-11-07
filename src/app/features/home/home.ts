@@ -109,9 +109,9 @@ export class Home {
     deleteTab: "Erreur lors de la suppression d'un onglet."
   };
 
-  protected readonly editModeEnabled = signal(false);
+  public readonly editModeEnabled = signal(false);
   private readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
-  protected readonly toggleThemeForm = form(this.isDarkTheme);
+  public readonly toggleThemeForm = form(this.isDarkTheme);
 
   private readonly tabsResource = rxResource({
     stream: () =>
@@ -124,9 +124,9 @@ export class Home {
     defaultValue: [] as Tab[]
   });
 
-  protected readonly tabs = this.tabsResource.value;
+  public readonly tabs = this.tabsResource.value;
   // The tab from the url once the tabs are loaded, then kept as long as it exists, else the first tab
-  protected readonly activeTab = linkedSignal<Tab[], number>({
+  public readonly activeTab = linkedSignal<Tab[], number>({
     source: this.tabs,
     computation: (tabs, previous) => {
       const tabId =
@@ -150,12 +150,12 @@ export class Home {
     defaultValue: [] as WidgetConfig[]
   });
 
-  protected readonly activeWidgets = this.widgetsResource.value;
-  protected readonly isDashboardLoaded = computed(() => !this.tabsResource.isLoading());
-  protected readonly areWidgetsLoaded = computed(() => !this.widgetsResource.isLoading());
-  protected readonly canUserSeeNotifications = inject(AuthService).isUserAdmin;
+  public readonly activeWidgets = this.widgetsResource.value;
+  public readonly isDashboardLoaded = computed(() => !this.tabsResource.isLoading());
+  public readonly areWidgetsLoaded = computed(() => !this.widgetsResource.isLoading());
+  public readonly canUserSeeNotifications = inject(AuthService).isUserAdmin;
 
-  protected readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
+  public readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
 
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -178,18 +178,19 @@ export class Home {
     inject(DestroyRef).onDestroy(() => clearInterval(refreshInterval));
   }
 
-  protected addNewTab(): void {
+  public addNewTab(): void {
     this.tabService.addTab("Nouvel onglet").subscribe({
       next: (insertedTab) => {
         this.tabs.update((tabs) => [...tabs, insertedTab]);
-        this.activeTab.set(insertedTab.id);
+        // Also saved in the url, like a tab selected by the user
+        this.selectTab(insertedTab.id);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.addTab)
     });
   }
 
-  protected selectTab(tabId: number): void {
+  public selectTab(tabId: number): void {
     if (this.activeTab() !== tabId) {
       this.activeTab.set(tabId);
       const url = this.router
@@ -200,7 +201,7 @@ export class Home {
   }
 
   /** Keeps the renamed tab, else its previous name would be sent back when the tabs are reordered. */
-  protected updateTab(updatedTab: Tab): void {
+  public updateTab(updatedTab: Tab): void {
     this.tabs.update((tabs) => tabs.map((tab) => (tab.id === updatedTab.id ? updatedTab : tab)));
   }
 
@@ -215,7 +216,7 @@ export class Home {
     });
   }
 
-  protected deleteTabFromDash(tabId: number): void {
+  public deleteTabFromDash(tabId: number): void {
     this.tabService.deleteTab(tabId).subscribe({
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.deleteTab),
@@ -223,14 +224,14 @@ export class Home {
     });
   }
 
-  protected openCreateWidgetModal(): void {
+  public openCreateWidgetModal(): void {
     this.dialog
       .open<WidgetTypePickerModal, WidgetTypePickerData, keyof typeof WidgetType>(
         WidgetTypePickerModal,
         {
           width: this.MODAL_WIDTH,
           data: {
-            title: "Ajouter un widget",
+            title: this.labels.addWidget,
             widgetTypes: WIDGET_TYPE_OPTIONS
           }
         }
@@ -247,19 +248,19 @@ export class Home {
       });
   }
 
-  protected refreshAllWidgets(): void {
+  public refreshAllWidgets(): void {
     this.widgetService.refreshAllWidgets();
   }
 
-  protected openImportConfigModal(): void {
+  public openImportConfigModal(): void {
     this.dialog.open(ImportConfigModal, { width: this.MODAL_WIDTH });
   }
 
-  protected downloadConfig(): void {
+  public downloadConfig(): void {
     this.configService.exportConfig().subscribe({
       next: (response) => {
         const downloadLink = this.document.createElement("a");
-        downloadLink.href = URL.createObjectURL(new Blob([response]));
+        downloadLink.href = URL.createObjectURL(response);
         downloadLink.download = "dashboardConfig.json";
         this.document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -271,19 +272,23 @@ export class Home {
     });
   }
 
-  protected async logout(): Promise<void> {
+  public async logout(): Promise<void> {
     this.authService.logout();
     await this.router.navigate(["login"]);
   }
 
-  protected updateWidgetOrder(updatedWidgets: WidgetConfig[]): void {
+  public updateWidgetOrder(updatedWidgets: WidgetConfig[]): void {
     this.widgetService.updateWidgetsOrder(updatedWidgets).subscribe({
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateWidgetsOrder)
     });
   }
 
-  protected drop(event: CdkDragDrop<Tab[]>): void {
+  public drop(event: CdkDragDrop<Tab[]>): void {
+    // A tab dropped back at its place doesn't change the order
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
     const tabs = [...this.tabs()];
     moveItemInArray(tabs, event.previousIndex, event.currentIndex);
     const updatedTabs = tabs.map((tab, index) => ({ ...tab, tabOrder: index }));
@@ -294,11 +299,11 @@ export class Home {
     });
   }
 
-  protected toggleEditMode(): void {
+  public toggleEditMode(): void {
     this.editModeEnabled.update((editModeEnabled) => !editModeEnabled);
   }
 
-  protected toggleTheme(isToggleChecked: boolean): void {
+  public toggleTheme(isToggleChecked: boolean): void {
     this.themeService.selectDarkMode(isToggleChecked);
   }
 

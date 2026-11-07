@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { forecastData, weatherData } from "../weather-widget-fixtures";
+import { Forecast } from "../weather";
 import { WeatherWidgetView } from "./weather-widget-view";
 import { vi } from "vitest";
 
@@ -121,6 +122,23 @@ describe("WeatherWidgetView", () => {
     await click(getDayButtons()[0]);
     expect(getSelectedButtons()).toEqual([true, false, false, false]);
     expect(getDisplayedForecastsCount()).toEqual(5);
+  });
+
+  it("Should display a single afternoon forecast per day of the week", async () => {
+    const forecastAt = (dt: number, description: string): Forecast => ({
+      ...forecastData.list[3],
+      dt,
+      weather: [{ ...forecastData.list[3].weather[0], description }]
+    });
+    // 15:00 and 18:00 in Paris on 08/03/2022
+    fixture.componentRef.setInput("forecastResponse", [
+      forecastAt(1646748000, "15:00"),
+      forecastAt(1646758800, "18:00")
+    ]);
+    await fixture.whenStable();
+    await click(getWeekButton());
+
+    expect(getDisplayedForecastDescriptions()).toEqual(["15:00"]);
   });
 
   it("Should display no forecast day without forecast", async () => {

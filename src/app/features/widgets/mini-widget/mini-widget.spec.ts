@@ -214,6 +214,18 @@ describe("MiniWidget", () => {
       expect(query(".test-body")).toBeTruthy();
     });
 
+    it("Should edit the mini widget with the Enter key", async () => {
+      await createHost({ city: "Lyon" });
+      const readMiniWidget = query(".read-mini-widget");
+      expect(readMiniWidget?.getAttribute("tabindex")).toEqual("0");
+      readMiniWidget?.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+      await fixture.whenStable();
+      expect(query(".edit-mini-widget .test-edit-component")).toBeTruthy();
+      expect(query(".cancel-button")?.getAttribute("aria-label")).toEqual("Annuler");
+      expect(query(".validate-button")?.getAttribute("aria-label")).toEqual("Valider");
+      expect(query(".delete-button")?.getAttribute("aria-label")).toEqual("Supprimer le widget");
+    });
+
     it("Should not display the cancel button while the mini widget is loading", async () => {
       await createHost({ city: "Lyon" }, false);
       await doubleClickBody();

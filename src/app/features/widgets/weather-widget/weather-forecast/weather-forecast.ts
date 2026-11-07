@@ -28,11 +28,11 @@ export class WeatherForecast {
 
   private readonly weatherWidgetService = inject(WeatherWidgetService);
 
-  protected getIconFromWeatherApi(icon: string): string {
+  public getIconFromWeatherApi(icon: string): string {
     return this.weatherWidgetService.getWeatherIconUrl(icon);
   }
 
-  protected getDateToDisplay(dateTime: number, timezone: number): string {
+  public getDateToDisplay(dateTime: number, timezone: number): string {
     const options: Intl.DateTimeFormatOptions =
       this.forecastMode() === ForecastMode.DAY
         ? { hour: "2-digit" }

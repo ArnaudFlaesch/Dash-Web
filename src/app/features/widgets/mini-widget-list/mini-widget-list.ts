@@ -13,14 +13,14 @@ import { MiniWidgetConfig } from "@widgets/mini-widget-config";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { MiniWidgetService } from "@widgets/mini-widget-service";
 import { WeatherMiniWidget } from "@widgets/weather-widget/weather-mini-widget/weather-mini-widget";
-import { createWidgetInjector } from "@widgets/widget-tokens";
+import { cachedWidgetInjectors } from "@widgets/widget-tokens";
 import { WidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker-data";
 import { MINI_WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-type-options";
 
 @Component({
   selector: "dash-mini-widget-list",
-  templateUrl: "../mini-widget-list/mini-widget-list.html",
-  styleUrl: "../mini-widget-list/mini-widget-list.scss",
+  templateUrl: "./mini-widget-list.html",
+  styleUrl: "./mini-widget-list.scss",
   imports: [MatIconButton, MatTooltip, MatIcon, NgComponentOutlet]
 })
 export class MiniWidgetList {
@@ -49,12 +49,12 @@ export class MiniWidgetList {
     defaultValue: [] as MiniWidgetConfig[]
   });
 
-  protected readonly miniWidgetList = this.miniWidgetsResource.value;
+  public readonly miniWidgetList = this.miniWidgetsResource.value;
 
-  protected readonly miniWidgetComponents = this.MINI_WIDGET_COMPONENTS;
-  private readonly miniWidgetInjectors = new WeakMap<MiniWidgetConfig, Injector>();
+  public readonly miniWidgetComponents = this.MINI_WIDGET_COMPONENTS;
+  /** Injector providing the mini widget id and configuration, cached so the mini widget is not recreated. */
+  public readonly getMiniWidgetInjector = cachedWidgetInjectors(inject(Injector));
 
-  private readonly injector = inject(Injector);
   private readonly dialog = inject(MatDialog);
   private readonly miniWidgetService = inject(MiniWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
@@ -65,7 +65,7 @@ export class MiniWidgetList {
       .subscribe((miniWidgetId) => this.deleteMiniWidget(miniWidgetId));
   }
 
-  protected openCreateMiniWidgetModal(): void {
+  public openCreateMiniWidgetModal(): void {
     this.dialog
       .open<WidgetTypePickerModal, WidgetTypePickerData, keyof typeof MiniWidgetType>(
         WidgetTypePickerModal,
@@ -88,16 +88,6 @@ export class MiniWidgetList {
         error: (error: HttpErrorResponse) =>
           this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.addMiniWidget)
       });
-  }
-
-  /** Injector providing the mini widget id and configuration, cached so the mini widget is not recreated. */
-  protected getMiniWidgetInjector(miniWidget: MiniWidgetConfig): Injector {
-    let miniWidgetInjector = this.miniWidgetInjectors.get(miniWidget);
-    if (!miniWidgetInjector) {
-      miniWidgetInjector = createWidgetInjector(this.injector, miniWidget);
-      this.miniWidgetInjectors.set(miniWidget, miniWidgetInjector);
-    }
-    return miniWidgetInjector;
   }
 
   private deleteMiniWidget(miniWidgetId: number): void {

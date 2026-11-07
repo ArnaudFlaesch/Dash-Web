@@ -52,12 +52,16 @@ describe("AuthService", () => {
     expect(authService.userHasValidToken()).toBe(false);
   });
 
-  it("Should not store the user when no token is returned", () => {
-    authService.login("user", "password").subscribe();
+  it("Should fail and not store the user when no token is returned", () => {
+    let loginError: unknown;
+    authService
+      .login("user", "password")
+      .subscribe({ error: (error: unknown) => (loginError = error) });
     httpTestingController
       .expectOne(`${environment.backend_url}/auth/login`)
       .flush({ id: 1, username: "user", roles: [] });
     expect(localStorage.getItem("user")).toBeNull();
+    expect(loginError).toBeInstanceOf(Error);
   });
 
   it("Should reject expired and malformed tokens", () => {
