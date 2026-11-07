@@ -20,7 +20,7 @@ export class WorkoutStatistics {
     const stats = this.workoutStatsByMonth();
     const types = this.workoutTypes();
 
-    const labels = [...new Set(stats.map((stat) => this.getMonthTime(stat)))].sort(
+    const labels = [...new Set(stats.map((stat) => this.getMonthTime(stat)))].toSorted(
       (timeA, timeB) => timeA - timeB
     );
 
