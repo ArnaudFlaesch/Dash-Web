@@ -1,7 +1,7 @@
 import { DecimalPipe } from "@angular/common";
 import { Component, input } from "@angular/core";
 import { format } from "date-fns";
-import { IActivity } from "../strava.model";
+import { Activity, parseStartDateLocal } from "../strava";
 import { fr } from "date-fns/locale/fr";
 import {
   MatAccordion,
@@ -39,7 +39,7 @@ export class StravaActivities {
     Hike: "hiking"
   };
 
-  public readonly labels = {
+  protected readonly labels = {
     kilometers: "km",
     distance: "Distance",
     duration: "Durée",
@@ -54,10 +54,10 @@ export class StravaActivities {
     viewOnStrava: "Voir sur Strava"
   };
 
-  public readonly activities = input.required<IActivity[]>();
+  public readonly activities = input.required<Activity[]>();
 
   public formatDate(date: string): string {
-    return format(new Date(date), "dd MMMM", { locale: fr });
+    return format(parseStartDateLocal(date), "dd MMMM", { locale: fr });
   }
 
   /** Strava distances are in meters. */

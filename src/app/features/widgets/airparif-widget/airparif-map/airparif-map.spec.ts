@@ -1,11 +1,15 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import OlMap from "ol/Map";
+import TileLayer from "ol/layer/Tile";
 import { get as getProjection } from "ol/proj";
-import { AirParifIndiceEnum, IAirParifCouleur, IForecast } from "../airparif.model";
-import { AirParifMap } from "./airparif-map";
+import TileWMS from "ol/source/TileWMS";
+import { AirparifCouleur, AirparifForecast } from "../airparif";
+import { AirparifWidgetService } from "../airparif-widget-service";
+import { AirparifMap } from "./airparif-map";
 
-describe("AirParifMap", () => {
-  let component: AirParifMap;
-  let fixture: ComponentFixture<AirParifMap>;
+describe("AirparifMap", () => {
+  let component: AirparifMap;
+  let fixture: ComponentFixture<AirparifMap>;
 
   beforeAll(() => {
     if (typeof window !== "undefined" && !window.ResizeObserver) {
@@ -17,12 +21,12 @@ describe("AirParifMap", () => {
     }
   });
 
-  beforeEach(async () => {
-    fixture = TestBed.createComponent(AirParifMap);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AirparifMap);
     component = fixture.componentInstance;
   });
 
-  it("Should create an AirParif map", () => {
+  it("Should create an Airparif map", async () => {
     const couleursIndicesData = [
       {
         name: "BON",
@@ -48,7 +52,7 @@ describe("AirParifMap", () => {
         name: "EXTREMEMENT_MAUVAIS",
         color: "#7d2181"
       }
-    ] as unknown as IAirParifCouleur[];
+    ] as unknown as AirparifCouleur[];
 
     const forecastData = [
       {
@@ -69,28 +73,44 @@ describe("AirParifMap", () => {
         so2: "BON",
         indice: "MOYEN"
       }
-    ] as unknown as IForecast[];
+    ] as unknown as AirparifForecast[];
 
     fixture.componentRef.setInput("airParifForecast", forecastData);
     fixture.componentRef.setInput("airParifCouleursIndices", couleursIndicesData);
-    component.ngAfterViewInit();
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
 
-    expect(component.getIndiceClass("BON" as AirParifIndiceEnum)).toEqual("indice-bon");
-    expect(component.getIndiceClass("TRES_MAUVAIS" as AirParifIndiceEnum)).toEqual(
-      "indice-tres-mauvais"
+    // Class and label of each indice of the legend
+    const legend = Array.from(element.querySelectorAll("#indices-legend .indice-label")).map(
+      (indice) => ({
+        class: indice.querySelector(".indice-dot")?.className,
+        label: indice.textContent?.trim()
+      })
+    );
+    expect(legend).toEqual([
+      { class: "indice-dot indice-bon", label: "Bon" },
+      { class: "indice-dot indice-moyen", label: "Moyen" },
+      { class: "indice-dot indice-degrade", label: "Dégradé" },
+      { class: "indice-dot indice-mauvais", label: "Mauvais" },
+      { class: "indice-dot indice-tres-mauvais", label: "Très mauvais" },
+      { class: "indice-dot indice-extremement-mauvais", label: "Extrêmement mauvais" }
+    ]);
+    expect(element.querySelector("#global-indice")?.className).toContain("indice-soft-moyen");
+    expect(element.querySelector("#global-indice-color mat-icon")?.textContent).toContain(
+      "sentiment_satisfied"
     );
 
-    expect(component.getIndiceSoftClass("DEGRADE" as AirParifIndiceEnum)).toEqual(
-      "indice-soft-degrade"
+    const [todayButton, tomorrowButton] = Array.from(
+      element.querySelectorAll<HTMLButtonElement>(".forecast-select-button")
     );
-    expect(component.getIndiceLabel("DEGRADE" as AirParifIndiceEnum)).toEqual("Dégradé");
-    expect(component.globalIndiceDetails()?.icon).toEqual("sentiment_satisfied");
-
-    expect(component.isForecastModeToday()).toEqual(true);
-    component.selectTomorrowForecast();
-    expect(component.isForecastModeTomorrow()).toEqual(true);
-    component.selectTodayForecast();
-    expect(component.forecastToDisplay()?.no2).toEqual("MOYEN");
+    expect(todayButton.classList).toContain("active");
+    tomorrowButton.click();
+    await fixture.whenStable();
+    expect(tomorrowButton.classList).toContain("active");
+    todayButton.click();
+    await fixture.whenStable();
+    expect(todayButton.classList).toContain("active");
+    expect(element.querySelector(".airparif-indice .indice-badge")?.textContent).toContain("Moyen");
   });
 
   it("Should display an empty state without forecast", async () => {
@@ -99,7 +119,7 @@ describe("AirParifMap", () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector("#forecast-empty")).toBeTruthy();
-    expect(component.globalIndiceDetails()).toBeUndefined();
+    expect(fixture.nativeElement.querySelector("#global-indice")).toBeNull();
 
     fixture.componentRef.setInput("isLoading", true);
     await fixture.whenStable();
@@ -119,7 +139,7 @@ describe("AirParifMap", () => {
         so2: "BON",
         indice: "MOYEN"
       }
-    ] as unknown as IForecast[]);
+    ] as unknown);
     fixture.componentRef.setInput("airParifCouleursIndices", []);
     fixture.componentRef.setInput("airParifApiKey", "test-key");
     await fixture.whenStable();
@@ -142,14 +162,45 @@ describe("AirParifMap", () => {
     component.ngOnDestroy();
   });
 
+  it("Should dispose the map and all its layers, also the hidden one, on destroy", async () => {
+    const map = await createMap("test-key");
+    const mapDisposeSpy = vi.spyOn(map, "dispose");
+    const layerDisposeSpy = vi.spyOn(TileLayer.prototype, "dispose");
+
+    fixture.destroy();
+    expect(mapDisposeSpy).toHaveBeenCalledTimes(1);
+    // OpenStreetMap layer, and the forecast layers of today and tomorrow
+    expect(layerDisposeSpy).toHaveBeenCalledTimes(3);
+    expect(map.getTargetElement()).toBeFalsy();
+  });
+
+  /** Forecast layer displayed on the OpenLayers map, above the OpenStreetMap one. */
+  function getForecastLayer(map: OlMap): TileLayer<TileWMS> {
+    return map.getLayers().item(1) as TileLayer<TileWMS>;
+  }
+
   /** Url of a tile of the forecast layer, as requested by OpenLayers. */
-  async function getForecastTileUrl(apiKey: string | undefined): Promise<string | undefined> {
-    fixture.componentRef.setInput("airParifForecast", []);
+  function getTileUrl(layer: TileLayer<TileWMS>): string | undefined {
+    return layer.getSource()?.getTileUrlFunction()([11, 1037, 704], 1, getProjection("EPSG:3857")!);
+  }
+
+  /** Displays the map, returning the OpenLayers map to which the sidebar is added. */
+  async function createMap(
+    apiKey: string | undefined,
+    forecast: AirparifForecast[] = []
+  ): Promise<OlMap> {
+    const addControlSpy = vi.spyOn(OlMap.prototype, "addControl");
+    fixture.componentRef.setInput("airParifForecast", forecast);
     fixture.componentRef.setInput("airParifCouleursIndices", []);
     fixture.componentRef.setInput("airParifApiKey", apiKey);
     await fixture.whenStable();
-    const source = component["forecastLayers"]?.[component.forecastMode()].getSource();
-    return source?.getTileUrlFunction()([11, 1037, 704], 1, getProjection("EPSG:3857")!);
+    expect(addControlSpy).toHaveBeenCalledTimes(1);
+    return addControlSpy.mock.contexts[0] as OlMap;
+  }
+
+  /** Url of a tile of the forecast layer, as requested by OpenLayers. */
+  async function getForecastTileUrl(apiKey: string | undefined): Promise<string | undefined> {
+    return getTileUrl(getForecastLayer(await createMap(apiKey)));
   }
 
   it("Should send the API key with the requests of the forecast tiles", async () => {
@@ -164,6 +215,47 @@ describe("AirParifMap", () => {
       expect(url).not.toContain("authkey");
     }
   );
+
+  it("Should display the forecast layer of the selected day on the map", async () => {
+    const map = await createMap("test-key", [
+      {
+        date: "2022-10-08",
+        no2: "BON",
+        o3: "BON",
+        pm10: "BON",
+        pm25: "BON",
+        so2: "BON",
+        indice: "BON"
+      },
+      {
+        date: "2022-10-09",
+        no2: "BON",
+        o3: "BON",
+        pm10: "BON",
+        pm25: "BON",
+        so2: "BON",
+        indice: "BON"
+      }
+    ] as unknown as AirparifForecast[]);
+    const buttons = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+      ".forecast-select-button"
+    );
+    expect(map.getLayers().getLength()).toEqual(2);
+    expect(getTileUrl(getForecastLayer(map))).toContain(
+      "LAYERS=siteweb%3Avue_indice_atmo_2020_com&"
+    );
+
+    buttons[1].click();
+    expect(map.getLayers().getLength()).toEqual(2);
+    expect(getTileUrl(getForecastLayer(map))).toContain(
+      "LAYERS=siteweb%3Avue_indice_atmo_2020_com_jp1"
+    );
+
+    buttons[0].click();
+    expect(getTileUrl(getForecastLayer(map))).toContain(
+      "LAYERS=siteweb%3Avue_indice_atmo_2020_com&"
+    );
+  });
 
   describe("Forecast display", () => {
     const forecasts = [
@@ -185,11 +277,11 @@ describe("AirParifMap", () => {
         so2: "BON",
         indice: "BON"
       }
-    ] as unknown as IForecast[];
+    ] as unknown as AirparifForecast[];
     const couleurs = [
       { name: "BON", color: "#50f0e6" },
       { name: "DEGRADE", color: "#f0e641" }
-    ] as unknown as IAirParifCouleur[];
+    ] as unknown as AirparifCouleur[];
 
     let element: HTMLElement;
 
@@ -205,23 +297,19 @@ describe("AirParifMap", () => {
     }
 
     it("Should display the forecast of today", () => {
-      expect(element.querySelector("#sidebar-title")?.textContent).toContain(
-        component.labels.airQuality
-      );
+      expect(element.querySelector("#sidebar-title")?.textContent).toContain("Qualité de l'air");
       expect(element.querySelector("#sidebar-date")?.textContent).toContain("Saturday 8 October");
       expect(element.querySelector("#sidebar-tab-indice")?.className).toEqual("indice-degrade");
 
       const [todayButton, tomorrowButton] = getForecastButtons();
-      expect(todayButton.textContent).toContain(component.labels.today);
+      expect(todayButton.textContent).toContain("Aujourd'hui");
       expect(todayButton.classList).toContain("active");
       expect(todayButton.getAttribute("aria-selected")).toEqual("true");
-      expect(tomorrowButton.textContent).toContain(component.labels.tomorrow);
+      expect(tomorrowButton.textContent).toContain("Demain");
       expect(tomorrowButton.classList).not.toContain("active");
 
       expect(element.querySelector("#global-indice")?.className).toContain("indice-soft-degrade");
-      expect(element.querySelector("#global-indice-label")?.textContent).toContain(
-        component.labels.globalIndice
-      );
+      expect(element.querySelector("#global-indice-label")?.textContent).toContain("Indice global");
       expect(element.querySelector("#global-indice-value")?.textContent).toContain("Dégradé");
       expect(element.querySelector("#global-indice-color mat-icon")?.textContent).toContain(
         "sentiment_neutral"
@@ -241,7 +329,7 @@ describe("AirParifMap", () => {
       expect(legend[0].classList).not.toContain("active");
       expect(legend[1].classList).toContain("active");
       expect(element.querySelector("#airparif-source")?.getAttribute("href")).toEqual(
-        component.airParifWebsiteUrl
+        TestBed.inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL
       );
       expect(element.querySelector("#forecast-empty")).toBeNull();
       expect(element.querySelector("#map-loading")).toBeNull();
@@ -272,11 +360,10 @@ describe("AirParifMap", () => {
       fixture.componentRef.setInput("airParifForecast", [
         { ...forecasts[0], date: "2022-10-09" },
         { ...forecasts[1], date: "2022-10-10", indice: "MAUVAIS" }
-      ] as unknown as IForecast[]);
+      ] as unknown);
       await fixture.whenStable();
 
       // The tomorrow tab is still selected, so its forecast is displayed
-      expect(component.isForecastModeTomorrow()).toBe(true);
       expect(getForecastButtons()[1].classList).toContain("active");
       expect(element.querySelector("#sidebar-date")?.textContent).toContain("Monday 10 October");
       expect(element.querySelector("#global-indice-value")?.textContent).toContain("Mauvais");
@@ -293,10 +380,9 @@ describe("AirParifMap", () => {
     it("Should display a default icon for an unknown indice", async () => {
       fixture.componentRef.setInput("airParifForecast", [
         { ...forecasts[0], indice: "INCONNU" }
-      ] as unknown as IForecast[]);
+      ] as unknown);
       await fixture.whenStable();
 
-      expect(component.globalIndiceDetails()).toBeUndefined();
       expect(element.querySelector("#global-indice-color mat-icon")?.textContent).toContain("air");
       expect(element.querySelector("#global-indice-value")?.textContent).toContain("INCONNU");
       expect(element.querySelector("#global-indice-advice")).toBeNull();

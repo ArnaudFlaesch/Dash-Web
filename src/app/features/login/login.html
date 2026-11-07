@@ -1,12 +1,12 @@
 <div id="login-page" class="centered full-height">
   <div id="login-container" class="surface column items-center">
-    <a routerLink href="/home" id="logo-container">
+    <a routerLink="/home" id="logo-container">
       <img ngSrc="logo.png" width="62" height="106" priority id="dash-logo" class="app-logo" [alt]="labels.logoAlt" />
     </a>
     <h1 id="login-page-title">{{ labels.title }}</h1>
     <p id="login-page-subtitle" class="muted-text">{{ labels.subtitle }}</p>
 
-    <form id="login-form" class="column" (submit)="$event.preventDefault(); handleLogin()">
+    <form id="login-form" class="column" (submit)="$event.preventDefault(); login()">
       <mat-form-field appearance="outline">
         <mat-label>{{ labels.usernameLabel }}</mat-label>
         <mat-icon matPrefix>person</mat-icon>
@@ -16,7 +16,6 @@
           [placeholder]="labels.username"
           autocomplete="username"
           [formField]="loginForm.username"
-          [attr.aria-label]="labels.username"
         />
       </mat-form-field>
 
@@ -30,7 +29,6 @@
           [type]="isPasswordVisible() ? 'text' : 'password'"
           autocomplete="current-password"
           [formField]="loginForm.password"
-          [attr.aria-label]="labels.password"
         />
         <button
           mat-icon-button
@@ -60,7 +58,7 @@
 
       <div id="login-separator" class="muted-text row items-center gap-sm">{{ labels.or }}</div>
 
-      <button mat-stroked-button type="button" (click)="loginAsDemoAccount()">
+      <button mat-stroked-button type="button" [disabled]="isLoading()" (click)="loginAsDemoAccount()">
         <mat-icon>visibility</mat-icon>
         {{ labels.tryDemo }}
       </button>

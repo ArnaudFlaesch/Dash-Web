@@ -21,7 +21,7 @@ de prévisions météorologiques. Il est possible de répartir ces widgets sur
 plusieurs onglets.
 
 Le projet est déployé via Github Pages et accessible à cette
-addresse : <https://arnaudflaesch.github.io/Dash-Web/>.
+adresse : <https://arnaudflaesch.github.io/Dash-Web/>.
 
 ## Démarrage
 
@@ -33,7 +33,7 @@ addresse : <https://arnaudflaesch.github.io/Dash-Web/>.
 
   > npm start
 
-L'application est ensuite accessible à l'addresse <http://localhost:4200>.
+L'application est ensuite accessible à l'adresse <http://localhost:4200>.
 
 - Démarrage du backend
 

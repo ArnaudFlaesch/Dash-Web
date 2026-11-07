@@ -13,7 +13,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatProgressBar } from "@angular/material/progress-bar";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { catchError, map, of } from "rxjs";
-import { IAchievement, IGameInfoDisplay } from "../steam.model";
+import { Achievement, GameInfoDisplay } from "../steam";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { SteamWidgetService } from "../steam-widget-service";
 
@@ -34,7 +34,7 @@ import { SteamWidgetService } from "../steam-widget-service";
   ]
 })
 export class GameDetails {
-  public readonly labels = {
+  protected readonly labels = {
     gameIcon: "game icon",
     percent: "%",
     achievements: "Succès :",
@@ -43,9 +43,14 @@ export class GameDetails {
     noAchievements: "Aucun succès pour ce jeu."
   };
 
-  public readonly gameInfo = input.required<IGameInfoDisplay>();
+  private readonly ERROR_MESSAGES = {
+    gettingAchievementsData: "Erreur lors de la récupération des succès."
+  };
+
+  public readonly gameInfo = input.required<GameInfoDisplay>();
   public readonly steamUserId = input.required<string>();
-  public readonly profileUrl = input.required<string>();
+
+  private readonly isPanelOpened = signal(false);
 
   /** Achievements of the player for this game, loaded once the panel has been opened. */
   public readonly achievementsResource = rxResource({
@@ -55,17 +60,17 @@ export class GameDetails {
         : undefined,
     stream: ({ params: { steamUserId, appId } }) =>
       this.steamWidgetService.getAchievementList(steamUserId, appId).pipe(
-        map((response) => response.playerstats.achievements ?? []),
+        map((response) => response.playerstats?.achievements ?? []),
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_ACHIEVEMENTS_DATA);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingAchievementsData);
           return of([]);
         })
       ),
-    defaultValue: [] as IAchievement[]
+    defaultValue: [] as Achievement[]
   });
 
   public readonly achievements = this.achievementsResource.value;
-  public readonly completedAchievements = computed(() =>
+  private readonly completedAchievements = computed(() =>
     this.achievements().filter((achievement) => achievement.achieved === 1)
   );
   // Kept short so that the text stays on one line, without surrounding spaces
@@ -76,9 +81,6 @@ export class GameDetails {
       : undefined
   );
 
-  private readonly isPanelOpened = signal(false);
-
-  private readonly ERROR_GETTING_ACHIEVEMENTS_DATA = "Erreur lors de la récupération des succès.";
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
 

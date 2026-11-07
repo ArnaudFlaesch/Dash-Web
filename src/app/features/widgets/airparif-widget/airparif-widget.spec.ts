@@ -1,45 +1,39 @@
-import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget.tokens";
+import { WIDGET_DATA, WIDGET_ID } from "@widgets/widget-tokens";
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { Component, input } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { AirParifWidget } from "./airparif-widget";
-import { AirParifIndiceEnum } from "./airparif.model";
+import { Widget } from "@widgets/widget/widget";
+import { AirparifWidget } from "./airparif-widget";
+import { AirparifWidgetService } from "./airparif-widget-service";
+import { AirparifMap } from "./airparif-map/airparif-map";
 
-describe("AirParifWidget", () => {
-  let component: AirParifWidget;
-  let httpTestingController: HttpTestingController;
+/** Map without OpenLayers, to display the widget without the Airparif map. */
+@Component({ selector: "dash-airparif-map", template: "" })
+class AirparifMapStub {
+  public readonly airParifApiKey = input<string>();
+  public readonly airParifForecast = input<unknown[]>();
+  public readonly airParifCouleursIndices = input<unknown[]>();
+  public readonly isLoading = input(false);
+}
 
-  const communeInseeCode = "75112";
-  const airParifToken = "AIRPARIFTOKEN";
+describe("AirparifWidget", () => {
+  const widgetData = { airParifApiKey: "AIRPARIFTOKEN", communeInseeCode: "75112" };
+  const forecastUrl = `${environment.backend_url}/airParifWidget/previsionCommune?commune=75112`;
+  const couleursUrl = `${environment.backend_url}/airParifWidget/couleurs`;
+  const updateWidgetDataUrl = `${environment.backend_url}/widget/updateWidgetData/1`;
 
   const couleursIndicesData = [
-    {
-      name: "BON",
-      color: "#50f0e6"
-    },
-    {
-      name: "MOYEN",
-      color: "#50ccaa"
-    },
-    {
-      name: "DEGRADE",
-      color: "#f0e641"
-    },
-    {
-      name: "MAUVAIS",
-      color: "#ff5050"
-    },
-    {
-      name: "TRES_MAUVAIS",
-      color: "#960032"
-    },
-    {
-      name: "EXTREMEMENT_MAUVAIS",
-      color: "#7d2181"
-    }
+    { name: "BON", color: "#50f0e6" },
+    { name: "MOYEN", color: "#50ccaa" },
+    { name: "DEGRADE", color: "#f0e641" },
+    { name: "MAUVAIS", color: "#ff5050" },
+    { name: "TRES_MAUVAIS", color: "#960032" },
+    { name: "EXTREMEMENT_MAUVAIS", color: "#7d2181" }
   ];
 
   const forecastData = [
@@ -63,126 +57,7 @@ describe("AirParifWidget", () => {
     }
   ];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: WIDGET_ID, useValue: 1 }
-      ]
-    })
-      // Not rendered, so that the resources are only loaded by the test, not by the child components
-      .overrideTemplate(AirParifWidget, "")
-      .compileComponents();
-
-    const fixture = TestBed.createComponent(AirParifWidget);
-    component = fixture.componentInstance;
-    httpTestingController = TestBed.inject(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
-  async function flushResources(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve));
-    TestBed.tick();
-  }
-
-  it("Should create an AirParif Widget", async () => {
-    expect(component.config().airParifApiKey).toEqual("");
-    expect(component.config().communeInseeCode).toEqual("");
-    expect(component.isFormValid()).toEqual(false);
-    expect(component.widgetData()).toBeUndefined();
-    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
-    component.config.update((config) => ({ ...config, communeInseeCode: communeInseeCode }));
-    expect(component.isFormValid()).toEqual(true);
-    const widgetData = component.widgetData();
-    expect(widgetData?.airParifApiKey).toBe(airParifToken);
-    expect(widgetData?.communeInseeCode).toBe(communeInseeCode);
-    expect(component.airParifForecast()).toEqual([]);
-    expect(component.airParifCouleursIndices()).toEqual([]);
-
-    component.refreshWidget();
-    TestBed.tick();
-
-    const requests = httpTestingController.match({
-      method: "GET"
-    });
-    requests[0].flush(forecastData);
-    await flushResources();
-    requests[1].flush(couleursIndicesData);
-    await flushResources();
-
-    expect(component.airParifForecast()).toEqual(forecastData);
-    expect(component.airParifCouleursIndices()).toEqual(couleursIndicesData);
-  });
-
-  it("Should validate the commune INSEE code", () => {
-    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
-    component.config.update((config) => ({ ...config, communeInseeCode: "2A004" }));
-    expect(component.isFormValid()).toEqual(true);
-    component.config.update((config) => ({ ...config, communeInseeCode: "Paris" }));
-    expect(component.isFormValid()).toEqual(false);
-    component.config.update((config) => ({ ...config, communeInseeCode: "751120" }));
-    expect(component.isFormValid()).toEqual(false);
-  });
-
-  it("Should give the class and the label of an indice", () => {
-    expect(component.getIndiceClass("TRES_MAUVAIS" as AirParifIndiceEnum)).toEqual(
-      "indice-tres-mauvais"
-    );
-    expect(component.getIndiceLabel("TRES_MAUVAIS" as AirParifIndiceEnum)).toEqual("Très mauvais");
-    // Not rendered, so there is no map to open
-    expect(() => component.openSidebar()).not.toThrow();
-  });
-
-  it("Should get errors from API", async () => {
-    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
-    component.config.update((config) => ({ ...config, communeInseeCode: communeInseeCode }));
-    expect(component.airParifForecast()).toEqual([]);
-    expect(component.airParifCouleursIndices()).toEqual([]);
-    component.refreshWidget();
-    TestBed.tick();
-
-    const requests = httpTestingController.match({
-      method: "GET"
-    });
-    requests[0].error(new ProgressEvent("Server error"));
-    await flushResources();
-
-    expect(component.airParifForecast()).toEqual([]);
-    expect(component.airParifCouleursIndices()).toEqual([]);
-  });
-
-  it("Should not load the forecast with an invalid configuration", () => {
-    component.config.update((config) => ({ ...config, airParifApiKey: airParifToken }));
-    component.refreshWidget();
-    TestBed.tick();
-    expect(httpTestingController.match(() => true)).toHaveLength(0);
-    expect(component.airParifForecast()).toEqual([]);
-  });
-});
-
-describe("AirParifWidget rendering", () => {
-  const widgetData = { airParifApiKey: "AIRPARIFTOKEN", communeInseeCode: "75112" };
-  const forecastUrl = `${environment.backend_url}/airParifWidget/previsionCommune?commune=75112`;
-  const couleursUrl = `${environment.backend_url}/airParifWidget/couleurs`;
-  const forecast = [
-    {
-      date: "2022-10-08",
-      no2: "MOYEN",
-      o3: "BON",
-      pm10: "BON",
-      pm25: "BON",
-      so2: "BON",
-      indice: "TRES_MAUVAIS"
-    }
-  ];
-
-  let fixture: ComponentFixture<AirParifWidget>;
-  let component: AirParifWidget;
+  let fixture: ComponentFixture<AirparifWidget>;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
 
@@ -196,6 +71,7 @@ describe("AirParifWidget rendering", () => {
     }
   });
 
+  /** Creates the widget with its saved configuration, which loads the forecast if it is valid. */
   async function createWidget(data?: Record<string, unknown>): Promise<void> {
     await TestBed.configureTestingModule({
       providers: [
@@ -206,8 +82,7 @@ describe("AirParifWidget rendering", () => {
       ]
     }).compileComponents();
     httpTestingController = TestBed.inject(HttpTestingController);
-    fixture = TestBed.createComponent(AirParifWidget);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(AirparifWidget);
     element = fixture.nativeElement as HTMLElement;
     TestBed.tick();
   }
@@ -222,35 +97,96 @@ describe("AirParifWidget rendering", () => {
     TestBed.tick();
   }
 
+  async function typeInInput(selector: string, value: string): Promise<void> {
+    const input = element.querySelector<HTMLInputElement>(selector)!;
+    input.value = value;
+    input.dispatchEvent(new Event("input"));
+    await fixture.whenStable();
+  }
+
+  function getValidateButton(): HTMLButtonElement {
+    return element.querySelector<HTMLButtonElement>(".validate-button")!;
+  }
+
+  /** Answers the requests of the forecast and of the colors of the indices. */
+  async function flushForecast(
+    forecast: unknown[] = forecastData,
+    couleurs: unknown[] = couleursIndicesData
+  ): Promise<void> {
+    httpTestingController.expectOne(forecastUrl).flush(forecast);
+    httpTestingController.expectOne(couleursUrl).flush(couleurs);
+    await flushResources();
+    await fixture.whenStable();
+  }
+
   it("should display the configuration form without saved configuration", async () => {
     await createWidget();
     await fixture.whenStable();
 
-    expect(element.querySelector("#airparif-api-key-label")?.textContent).toContain(
-      component.labels.apiKey
-    );
-    expect((element.querySelector("#airparif-api-key") as HTMLInputElement).placeholder).toEqual(
-      component.labels.apiKeyPlaceholder
+    expect(element.querySelector("#airparif-api-key-label")?.textContent).toContain("Clé d'API");
+    expect(element.querySelector<HTMLInputElement>("#airparif-api-key")!.placeholder).toEqual(
+      "Saisissez la clé d'API Airparif"
     );
     expect(element.querySelector("#commune-insee-code-label")?.textContent).toContain(
-      component.labels.communeCode
+      "Code commune"
+    );
+    expect(element.querySelector<HTMLInputElement>("#commune-insee-code")!.placeholder).toEqual(
+      "Saisissez le code commune"
     );
     expect(element.querySelector("mat-hint")?.textContent).toContain(
-      component.labels.communeCodeHint
+      "Code INSEE à 5 chiffres, par exemple 75112 pour Paris 12e"
     );
     expect(element.querySelector("dash-airparif-map")).toBeNull();
+    expect(getValidateButton().disabled).toBe(true);
     httpTestingController.expectNone(() => true);
+  });
 
-    for (const [id, value] of [
-      ["#airparif-api-key", "AIRPARIFTOKEN"],
-      ["#commune-insee-code", "75112"]
-    ]) {
-      const input = element.querySelector(id) as HTMLInputElement;
-      input.value = value;
-      input.dispatchEvent(new Event("input"));
+  it("should save the configuration, then load the forecast of the commune", async () => {
+    await createWidget();
+    await typeInInput("#airparif-api-key", "AIRPARIFTOKEN");
+    expect(getValidateButton().disabled).toBe(true);
+    await typeInInput("#commune-insee-code", "75112");
+    expect(getValidateButton().disabled).toBe(false);
+
+    getValidateButton().click();
+    const updateRequest = httpTestingController.expectOne(updateWidgetDataUrl);
+    expect(updateRequest.request.body).toEqual({ data: widgetData });
+    updateRequest.flush({});
+    TestBed.tick();
+
+    await flushForecast();
+    expect(element.querySelector("#airparif-today-chip")?.textContent).toContain("Moyen");
+    expect(element.querySelector("#global-indice-value")?.textContent).toContain("Moyen");
+    expect(element.querySelectorAll("#indices-legend .indice-label")).toHaveLength(6);
+  });
+
+  it("should validate the commune INSEE code", async () => {
+    await createWidget();
+    await typeInInput("#airparif-api-key", "AIRPARIFTOKEN");
+
+    // The second character is A or B for Corsica
+    for (const [communeInseeCode, isValid] of [
+      ["2A004", true],
+      ["Paris", false],
+      ["751120", false],
+      ["75112", true]
+    ] as const) {
+      await typeInInput("#commune-insee-code", communeInseeCode);
+      expect(getValidateButton().disabled, communeInseeCode).toBe(!isValid);
     }
+  });
+
+  it("should not load the forecast with an invalid configuration", async () => {
+    await createWidget({ airParifApiKey: "AIRPARIFTOKEN" });
     await fixture.whenStable();
-    expect(component.widgetData()).toEqual(widgetData);
+
+    // Still in edit mode, so that the configuration is completed
+    expect(element.querySelector("#commune-insee-code")).not.toBeNull();
+    expect(element.querySelector("dash-airparif-map")).toBeNull();
+
+    fixture.debugElement.query(By.directive(Widget)).componentInstance.refreshWidgetAction.emit();
+    TestBed.tick();
+    httpTestingController.expectNone(() => true);
   });
 
   it("should display the forecast of the commune", async () => {
@@ -258,28 +194,84 @@ describe("AirParifWidget rendering", () => {
     // Loading
     expect(element.querySelector("#map-loading")).not.toBeNull();
     expect(element.querySelector("#airparif-today-chip")).toBeNull();
-    const titleLink = element.querySelector(".widget-header a") as HTMLAnchorElement;
-    expect(titleLink.getAttribute("href")).toEqual(component.airParifWebsiteUrl);
-    expect(titleLink.textContent).toContain(component.labels.title);
+    const titleLink = element.querySelector<HTMLAnchorElement>(".widget-header a")!;
+    expect(titleLink.getAttribute("href")).toEqual(
+      TestBed.inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL
+    );
+    expect(titleLink.textContent).toContain("Airparif");
 
-    httpTestingController.expectOne(forecastUrl).flush(forecast);
-    httpTestingController
-      .expectOne(couleursUrl)
-      .flush([{ name: "TRES_MAUVAIS", color: "#960032" }]);
-    await flushResources();
-    await fixture.whenStable();
+    await flushForecast(
+      [{ ...forecastData[0], indice: "TRES_MAUVAIS" }],
+      [{ name: "TRES_MAUVAIS", color: "#960032" }]
+    );
 
     expect(element.querySelector("#map-loading")).toBeNull();
-    const todayChip = element.querySelector("#airparif-today-chip") as HTMLButtonElement;
+    const todayChip = element.querySelector<HTMLButtonElement>("#airparif-today-chip")!;
     expect(todayChip.textContent).toContain("Très mauvais");
     expect(element.querySelector("#airparif-today-dot")?.className).toEqual("indice-tres-mauvais");
     expect(element.querySelector("#global-indice-value")?.textContent).toContain("Très mauvais");
 
     // The chip opens the sidebar of the map, with the details of the forecast
-    const sidebar = element.querySelector("#sidebar") as HTMLElement;
+    const sidebar = element.querySelector<HTMLElement>("#sidebar")!;
     expect(sidebar.classList).toContain("collapsed");
     todayChip.click();
     expect(sidebar.classList).not.toContain("collapsed");
+  });
+
+  it("should load the forecast of a commune code typed with spaces or in lowercase", async () => {
+    await createWidget({ airParifApiKey: "AIRPARIFTOKEN", communeInseeCode: " 2a004 " });
+    httpTestingController
+      .expectOne(`${environment.backend_url}/airParifWidget/previsionCommune?commune=2A004`)
+      .flush(forecastData);
+    httpTestingController.expectOne(couleursUrl).flush(couleursIndicesData);
+    await flushResources();
+    await fixture.whenStable();
+    expect(element.querySelector("#airparif-today-chip")?.textContent).toContain("Moyen");
+  });
+
+  it("should restore the saved configuration when the edition is cancelled", async () => {
+    await createWidget(widgetData);
+    await flushForecast();
+
+    element.querySelector<HTMLButtonElement>(".edit-button")!.click();
+    await fixture.whenStable();
+    await typeInInput("#commune-insee-code", "69123");
+    element.querySelector<HTMLButtonElement>(".cancel-button")!.click();
+    await fixture.whenStable();
+    expect(element.querySelector(".widget-read-mode")).not.toBeNull();
+
+    // The forecast of the saved commune is reloaded on refresh
+    element.querySelector<HTMLButtonElement>(".refresh-button")!.click();
+    TestBed.tick();
+    await flushForecast();
+
+    element.querySelector<HTMLButtonElement>(".edit-button")!.click();
+    await fixture.whenStable();
+    expect(element.querySelector<HTMLInputElement>("#commune-insee-code")?.value).toEqual("75112");
+  });
+
+  it("should reload the forecast of the same commune on refresh", async () => {
+    await createWidget(widgetData);
+    await flushForecast();
+
+    element.querySelector<HTMLButtonElement>(".refresh-button")!.click();
+    TestBed.tick();
+    await flushForecast([{ ...forecastData[0], indice: "BON" }]);
+
+    expect(element.querySelector("#airparif-today-chip")?.textContent).toContain("Bon");
+  });
+
+  it("should not fail to open the sidebar without map", async () => {
+    TestBed.overrideComponent(AirparifWidget, {
+      remove: { imports: [AirparifMap] },
+      add: { imports: [AirparifMapStub] }
+    });
+    await createWidget(widgetData);
+    await flushForecast();
+
+    const todayChip = element.querySelector<HTMLButtonElement>("#airparif-today-chip")!;
+    expect(() => todayChip.click()).not.toThrow();
+    expect(element.querySelector("#sidebar")).toBeNull();
   });
 
   it("should display an empty map when the forecast cannot be loaded", async () => {
@@ -298,7 +290,7 @@ describe("AirParifWidget rendering", () => {
 
     expect(handleErrorSpy).toHaveBeenCalledWith(
       expect.objectContaining({ status: 500 }),
-      "Erreur lors de la récupération des prévisions d'AirParif."
+      "Erreur lors de la récupération des prévisions d'Airparif."
     );
     expect(element.querySelector("#airparif-today-chip")).toBeNull();
     expect(element.querySelector("#forecast-empty")).not.toBeNull();

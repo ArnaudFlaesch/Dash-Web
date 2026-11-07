@@ -3,8 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
-import { WidgetTypeEnum } from "@widgets/widget-type.enum";
-import { IWidgetConfig } from "@widgets/widget-config.model";
+import { WidgetType } from "@widgets/widget-type";
+import { WidgetConfig } from "@widgets/widget-config";
 import { WidgetService } from "./widget-service";
 
 describe("WidgetService", () => {
@@ -12,9 +12,9 @@ describe("WidgetService", () => {
   let httpTestingController: HttpTestingController;
 
   const widgetUrl = `${environment.backend_url}/widget`;
-  const widget: IWidgetConfig = {
+  const widget: WidgetConfig = {
     id: 1,
-    type: WidgetTypeEnum.RSS,
+    type: WidgetType.RSS,
     data: { url: "url.rss.xml" },
     widgetOrder: 1,
     tabId: 1
@@ -46,7 +46,7 @@ describe("WidgetService", () => {
   });
 
   it("Should get the widgets of a tab", () => {
-    let widgets: IWidgetConfig[] = [];
+    let widgets: WidgetConfig[] = [];
     widgetService.getWidgets(1).subscribe((response) => (widgets = response));
     const request = httpTestingController.expectOne(`${widgetUrl}/?tabId=1`);
     expect(request.request.method).toEqual("GET");
@@ -55,10 +55,10 @@ describe("WidgetService", () => {
   });
 
   it("Should add a widget to a tab", () => {
-    widgetService.addWidget(WidgetTypeEnum.WEATHER, 2).subscribe();
+    widgetService.addWidget(WidgetType.WEATHER, 2).subscribe();
     const request = httpTestingController.expectOne(`${widgetUrl}/addWidget`);
     expect(request.request.method).toEqual("POST");
-    expect(request.request.body).toEqual({ type: WidgetTypeEnum.WEATHER, tabId: 2 });
+    expect(request.request.body).toEqual({ type: WidgetType.WEATHER, tabId: 2 });
     request.flush(widget);
   });
 

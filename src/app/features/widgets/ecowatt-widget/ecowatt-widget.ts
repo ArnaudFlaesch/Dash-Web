@@ -1,40 +1,23 @@
-import { afterNextRender, Component, ElementRef, signal, viewChild } from "@angular/core";
+import { Component, ElementRef, viewChild } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { Widget } from "@widgets/widget/widget";
 
 @Component({
   selector: "dash-ecowatt-widget",
   templateUrl: "./ecowatt-widget.html",
-  imports: [Widget, MatIcon],
-  host: { "(window:resize)": "resizeWidget()" }
+  styleUrl: "./ecowatt-widget.scss",
+  imports: [Widget, MatIcon]
 })
 export class EcowattWidget {
-  public readonly labels = {
+  protected readonly labels = {
     title: "Ecowatt",
-    iframeTitle: "ecowatt"
+    iframeTitle: "Prévisions Ecowatt"
   };
 
-  public readonly iframeContainer = viewChild<ElementRef<HTMLElement>>("iframeContainer");
-
-  public readonly isWidgetLoaded = signal(true);
-  public readonly iframeContainerHeight = signal(0);
-  public readonly iframeContainerWidth = signal(0);
-
-  public constructor() {
-    afterNextRender(() => this.resizeWidget());
-  }
-
-  public resizeWidget(): void {
-    const container = this.iframeContainer()?.nativeElement;
-    if (container) {
-      this.iframeContainerHeight.set(container.offsetHeight);
-      this.iframeContainerWidth.set(container.offsetWidth);
-    }
-  }
+  public readonly iframe = viewChild<ElementRef<HTMLIFrameElement>>("iframe");
 
   public refreshWidget(): void {
-    this.resizeWidget();
-    const iframe = this.iframeContainer()?.nativeElement.querySelector("iframe");
+    const iframe = this.iframe()?.nativeElement;
     if (iframe) {
       // Reassigning the source reloads the iframe
       const src = iframe.src;

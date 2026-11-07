@@ -3,6 +3,7 @@
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
+  (editionCancelled)="restoreSavedConfig()"
 >
   <ng-template #headerIcon>
     <mat-icon>priority_high</mat-icon>

@@ -2,6 +2,7 @@
   [widgetData]="widgetData()"
   [isFormValid]="isFormValid()"
   (refreshWidgetAction)="refreshWidget()"
+  (editionCancelled)="restoreSavedConfig()"
   [isWidgetLoaded]="true"
 >
   <ng-template #headerIcon>
@@ -33,7 +34,8 @@
   </ng-template>
 
   <ng-template #body>
-    <form id="search-game-form">
+    <!-- Submitting the form (with the Enter key) would reload the page: the search is live -->
+    <form class="search-game-form" (submit)="$event.preventDefault()">
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-icon matPrefix>search</mat-icon>
         <mat-label>{{ labels.searchGame }}</mat-label>
@@ -44,17 +46,18 @@
             matSuffix
             type="button"
             [matTooltip]="labels.cancelSearch"
-            id="reset-form-button"
+            [attr.aria-label]="labels.cancelSearch"
+            class="reset-form-button"
             (click)="resetForm()"
           >
-            <mat-icon aria-hidden="false">close</mat-icon>
+            <mat-icon>close</mat-icon>
           </button>
         }
       </mat-form-field>
     </form>
 
     @if (config().steamUserId; as steamUserId) {
-      @if (playerData(); as playerData) {
+      @if (playerData()) {
         @if (isOwnedGamesLoading()) {
           <div class="loading-spinner games-loading">
             <mat-spinner diameter="32" />
@@ -62,7 +65,7 @@
         } @else {
           <mat-accordion class="games-list">
             @for (game of ownedGamesDisplay(); track game.appid) {
-              <dash-game-details [steamUserId]="steamUserId" [profileUrl]="playerData.profileurl" [gameInfo]="game" />
+              <dash-game-details [steamUserId]="steamUserId" [gameInfo]="game" />
             } @empty {
               <div class="no-game-found muted-text column items-center gap-xs">
                 <mat-icon>sports_esports</mat-icon>

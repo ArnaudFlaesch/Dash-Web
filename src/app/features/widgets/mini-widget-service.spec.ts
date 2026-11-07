@@ -3,8 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
-import { MiniWidgetTypeEnum } from "@widgets/mini-widget-type.enum";
-import { IMiniWidgetConfig } from "@widgets/mini-widget-config.model";
+import { MiniWidgetType } from "@widgets/mini-widget-type";
+import { MiniWidgetConfig } from "@widgets/mini-widget-config";
 import { MiniWidgetService } from "./mini-widget-service";
 
 describe("MiniWidgetService", () => {
@@ -12,9 +12,9 @@ describe("MiniWidgetService", () => {
   let httpTestingController: HttpTestingController;
 
   const miniWidgetUrl = `${environment.backend_url}/miniWidget`;
-  const miniWidget: IMiniWidgetConfig = {
+  const miniWidget: MiniWidgetConfig = {
     id: 1,
-    type: MiniWidgetTypeEnum.WEATHER,
+    type: MiniWidgetType.WEATHER,
     data: { city: "Paris" }
   };
 
@@ -38,7 +38,7 @@ describe("MiniWidgetService", () => {
   });
 
   it("Should get the mini widgets", () => {
-    let miniWidgets: IMiniWidgetConfig[] = [];
+    let miniWidgets: MiniWidgetConfig[] = [];
     miniWidgetService.getMiniWidgets().subscribe((response) => (miniWidgets = response));
     const request = httpTestingController.expectOne(`${miniWidgetUrl}/`);
     expect(request.request.method).toEqual("GET");
@@ -47,10 +47,10 @@ describe("MiniWidgetService", () => {
   });
 
   it("Should add a mini widget", () => {
-    miniWidgetService.addMiniWidget(MiniWidgetTypeEnum.WEATHER).subscribe();
+    miniWidgetService.addMiniWidget(MiniWidgetType.WEATHER).subscribe();
     const request = httpTestingController.expectOne(`${miniWidgetUrl}/addMiniWidget`);
     expect(request.request.method).toEqual("POST");
-    expect(request.request.body).toEqual({ type: MiniWidgetTypeEnum.WEATHER });
+    expect(request.request.body).toEqual({ type: MiniWidgetType.WEATHER });
     request.flush(miniWidget);
   });
 

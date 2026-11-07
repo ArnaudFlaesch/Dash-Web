@@ -7,7 +7,7 @@ import {
   MatDialogContent,
   MatDialogTitle
 } from "@angular/material/dialog";
-import { IConfirmModalData } from "@shared/confirm-modal/confirm-modal-data.model";
+import { ConfirmModalData } from "@shared/confirm-modal/confirm-modal-data";
 
 /** Asks the user to confirm an action, the dialog is closed with true once confirmed. */
 @Component({
@@ -16,11 +16,11 @@ import { IConfirmModalData } from "@shared/confirm-modal/confirm-modal-data.mode
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ConfirmModal {
-  public readonly labels = {
+  protected readonly labels = {
     confirmation: "Confirmation",
     close: "Fermer",
     confirm: "Confirmer"
   };
 
-  public readonly data = inject<IConfirmModalData>(MAT_DIALOG_DATA);
+  public readonly data = inject<ConfirmModalData>(MAT_DIALOG_DATA);
 }

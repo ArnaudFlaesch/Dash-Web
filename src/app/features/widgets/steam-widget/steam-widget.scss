@@ -1,7 +1,7 @@
 @use "mixins" as *;
 
-// The color of the paginator is set in _steam-widget.theme.scss
-#search-game-form {
+// The color of the paginator is set in _steam-widget-theme.scss
+.search-game-form {
   margin-bottom: $space-sm;
 
   mat-form-field {

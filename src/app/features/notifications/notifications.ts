@@ -3,10 +3,10 @@ import { Component, computed, inject } from "@angular/core";
 import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { isToday } from "date-fns";
 import {
-  INotification,
-  INotificationToDisplay,
-  NotificationTypeEnum
-} from "@features/notifications/notification.model";
+  AppNotification,
+  NotificationToDisplay,
+  NotificationType
+} from "@features/notifications/app-notification";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { NotificationService } from "@features/notifications/notification-service";
 import { WidgetService } from "@widgets/widget-service";
@@ -19,26 +19,31 @@ import { catchError, map, of } from "rxjs";
   imports: [NotificationsList]
 })
 export class Notifications {
-  private readonly NOTIFICATION_TYPE_ICONS: Record<NotificationTypeEnum, string> = {
-    [NotificationTypeEnum.INFO]: "info",
-    [NotificationTypeEnum.WARN]: "warning"
+  private readonly NOTIFICATION_TYPE_ICONS: Record<NotificationType, string> = {
+    [NotificationType.INFO]: "info",
+    [NotificationType.WARN]: "warning"
+  };
+
+  private readonly ERROR_MESSAGES = {
+    markingNotificationAsRead: "Erreur lors du traitement de la requête.",
+    gettingNotifications: "Erreur lors de la récupération des notifications."
   };
 
   /** Notifications, reloaded each time the widgets are refreshed. */
-  public readonly notificationsResource = rxResource({
+  private readonly notificationsResource = rxResource({
     stream: () =>
       this.notificationService.getNotifications().pipe(
         map((notifications) => notifications.content),
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_NOTIFICATIONS);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingNotifications);
           return of([]);
         })
       ),
-    defaultValue: [] as INotification[]
+    defaultValue: [] as AppNotification[]
   });
 
-  public readonly notificationsFromDatabase = this.notificationsResource.value;
-  public readonly notificationsToDisplay = computed<INotificationToDisplay[]>(() =>
+  private readonly notificationsFromDatabase = this.notificationsResource.value;
+  public readonly notificationsToDisplay = computed<NotificationToDisplay[]>(() =>
     this.notificationsFromDatabase().map((notification) => ({
       ...notification,
       notificationDateToDisplay: this.computeDateToDisplay(notification.notificationDate),
@@ -51,9 +56,6 @@ export class Notifications {
 
   private readonly notificationService = inject(NotificationService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly ERROR_MARKING_NOTIFICATION_AS_READ = "Erreur lors du traitement de la requête.";
-  private readonly ERROR_GETTING_NOTIFICATIONS =
-    "Erreur lors de la récupération des notifications.";
 
   public constructor() {
     inject(WidgetService)
@@ -66,7 +68,12 @@ export class Notifications {
   }
 
   public markAllNotificationsAsRead(): void {
-    this.markNotificationsAsRead(this.notificationsFromDatabase().map((notif) => notif.id));
+    // Only the unread notifications are sent, the read ones would not change
+    this.markNotificationsAsRead(
+      this.notificationsFromDatabase()
+        .filter((notification) => !notification.isRead)
+        .map((notification) => notification.id)
+    );
   }
 
   private markNotificationsAsRead(notificationIds: number[]): void {
@@ -77,14 +84,14 @@ export class Notifications {
           [
             ...oldNotifications.filter((notification) => !updatedIds.has(notification.id)),
             ...updatedNotifications
-          ].sort(
+          ].toSorted(
             (notifA, notifB) =>
               Date.parse(notifB.notificationDate) - Date.parse(notifA.notificationDate)
           )
         );
       },
-      error: (error) =>
-        this.errorHandlerService.handleError(error, this.ERROR_MARKING_NOTIFICATION_AS_READ)
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.markingNotificationAsRead)
     });
   }
 

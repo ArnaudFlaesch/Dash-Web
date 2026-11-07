@@ -16,7 +16,7 @@ describe("DeleteWidget", () => {
 
     fixture = TestBed.createComponent(DeleteWidget);
     component = fixture.componentInstance;
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     cancelSpy = vi.fn();
     validateSpy = vi.fn();
     component.cancelWidgetDeletion.subscribe(cancelSpy);
@@ -29,12 +29,12 @@ describe("DeleteWidget", () => {
   });
 
   it("Should display the confirmation message and the actions", () => {
-    expect(element.querySelector("h4")?.textContent).toEqual(component.labels.confirmDeletion);
-    expect(element.querySelector(".cancel-button")?.textContent?.trim()).toEqual(
-      component.labels.cancel
+    expect(element.querySelector("h4")?.textContent).toEqual(
+      "Êtes-vous sûr de vouloir supprimer ce widget ?"
     );
+    expect(element.querySelector(".cancel-button")?.textContent?.trim()).toEqual("Annuler");
     expect(element.querySelector(".validate-deletion-button")?.textContent?.trim()).toEqual(
-      component.labels.delete
+      "Supprimer"
     );
   });
 

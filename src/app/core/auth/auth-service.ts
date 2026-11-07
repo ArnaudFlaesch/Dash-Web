@@ -2,40 +2,42 @@ import { HttpClient } from "@angular/common/http";
 import { computed, inject, Service, signal } from "@angular/core";
 import { Observable, tap } from "rxjs";
 import { environment } from "@environments/environment";
-import { RoleEnum } from "@core/auth/role.enum";
-import { IUser } from "@core/auth/user.model";
-import { IJwt } from "@core/auth/jwt.model";
+import { Role } from "@core/auth/role";
+import { User } from "@core/auth/user";
+import { Jwt } from "@core/auth/jwt";
 
 @Service()
 export class AuthService {
   private readonly USER_STORAGE_KEY = "user";
 
   /** Reads the payload of a JWT, without verifying it. Throws if the token is malformed. */
-  private decodeJwtPayload(token: string): IJwt {
+  private decodeJwtPayload(token: string): Jwt {
     const payload = token.split(".")[1];
     if (!payload) {
       throw new Error("Invalid token");
     }
     // The payload is encoded in base64url
-    return JSON.parse(atob(payload.replaceAll("-", "+").replaceAll("_", "/")));
+    return JSON.parse(atob(payload.replaceAll("-", "+").replaceAll("_", "/"))) as Jwt;
   }
 
   public readonly isUserAdmin = computed(
-    () => this.currentUser()?.roles?.includes(RoleEnum.ROLE_ADMIN) ?? false
+    () => this.currentUser()?.roles?.includes(Role.ROLE_ADMIN) ?? false
   );
 
   private readonly http = inject(HttpClient);
-  private readonly currentUser = signal<IUser | null>(this.readStoredUser());
+  private readonly currentUser = signal<User | null>(this.readStoredUser());
 
-  public login(username: string, password: string): Observable<IUser> {
+  /** Saves the logged in user, fails when the backend returns no token (the user couldn't use the app). */
+  public login(username: string, password: string): Observable<User> {
     return this.http
-      .post<IUser>(`${environment.backend_url}/auth/login`, { username, password })
+      .post<User>(`${environment.backend_url}/auth/login`, { username, password })
       .pipe(
         tap((user) => {
-          if (user.accessToken) {
-            localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
-            this.currentUser.set(user);
+          if (!user.accessToken) {
+            throw new Error("No access token received");
           }
+          localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
+          this.currentUser.set(user);
         })
       );
   }
@@ -63,10 +65,10 @@ export class AuthService {
   }
 
   /** User saved in the storage, null when there is none or when the entry is corrupted. */
-  private readStoredUser(): IUser | null {
+  private readStoredUser(): User | null {
     const userData = localStorage.getItem(this.USER_STORAGE_KEY);
     try {
-      return userData ? JSON.parse(userData) : null;
+      return userData ? (JSON.parse(userData) as User) : null;
     } catch {
       return null;
     }

@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
 import { Mock, vi } from "vitest";
+import { AuthService } from "@core/auth/auth-service";
 import { ErrorHandlerService } from "./error-handler-service";
 
 describe("ErrorHandlerService", () => {
@@ -42,8 +43,10 @@ describe("ErrorHandlerService", () => {
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it("Should redirect to the login page when the token is no longer valid", async () => {
+  it("Should log out then redirect to the login page when the token is no longer valid", async () => {
+    const logoutSpy = vi.spyOn(TestBed.inject(AuthService), "logout");
     errorHandlerService.handleError(createError(401), messageToDisplay);
+    expect(logoutSpy).toHaveBeenCalled();
     expect(navigateSpy).toHaveBeenCalledWith(["login"]);
     await vi.waitFor(() => expect(openSpy).toHaveBeenCalled());
     expect(openSpy).toHaveBeenCalledWith(

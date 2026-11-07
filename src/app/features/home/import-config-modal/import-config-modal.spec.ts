@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { MatDialogRef } from "@angular/material/dialog";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { ImportConfigModal } from "./import-config-modal";
@@ -36,7 +37,7 @@ describe("ImportConfigModal", () => {
   });
 
   function getElement<T extends HTMLElement>(selector: string): T {
-    return (fixture.nativeElement as HTMLElement).querySelector(selector) as T;
+    return (fixture.nativeElement as HTMLElement).querySelector<T>(selector)!;
   }
 
   /** Selects the files in the file input, as the browser does. */
@@ -52,26 +53,27 @@ describe("ImportConfigModal", () => {
   });
 
   it("Should display the modal with the upload button disabled", () => {
-    expect(getElement("h1").textContent?.trim()).toEqual(component.labels.importConfig);
+    expect(getElement("h1").textContent?.trim()).toEqual("Importer la configuration");
     expect(getElement("#file").getAttribute("aria-label")).toEqual(
-      component.labels.selectConfigFile
+      "Sélectionner un fichier de configuration"
     );
-    expect(getElement("#close-import-config-modal").textContent?.trim()).toEqual(
-      component.labels.cancel
-    );
+    expect(getElement("#close-import-config-modal").textContent?.trim()).toEqual("Annuler");
     const uploadButton = getElement<HTMLButtonElement>("#upload-file-button");
-    expect(uploadButton.textContent?.trim()).toEqual(component.labels.upload);
+    expect(uploadButton.textContent?.trim()).toEqual("Importer");
     expect(uploadButton.disabled).toBe(true);
   });
 
   it("Should upload the selected file then close the modal", async () => {
     const file = new File(["{}"], "dashboardConfig.json");
     await selectFiles([file]);
-    expect(component.fileToUpload()).toEqual(file);
     const uploadButton = getElement<HTMLButtonElement>("#upload-file-button");
     expect(uploadButton.disabled).toBe(false);
 
     uploadButton.click();
+    await fixture.whenStable();
+    // The file is not sent again while it is uploaded
+    expect(uploadButton.disabled).toBe(true);
+    fixture.debugElement.query(By.css("#upload-file-button")).triggerEventHandler("click");
     const request = httpTestingController.expectOne(importUrl);
     expect((request.request.body as FormData).get("file")).toEqual(file);
     request.flush(true);
@@ -81,12 +83,12 @@ describe("ImportConfigModal", () => {
   it("Should disable the upload button when the file selection is cleared", async () => {
     await selectFiles([new File(["{}"], "dashboardConfig.json")]);
     await selectFiles([]);
-    expect(component.fileToUpload()).toBeNull();
     expect(getElement<HTMLButtonElement>("#upload-file-button").disabled).toBe(true);
   });
 
   it("Should not send a request when no file is selected", () => {
-    component.upload();
+    // The upload button is disabled, so its click handler is triggered directly
+    fixture.debugElement.query(By.css("#upload-file-button")).triggerEventHandler("click");
     expect(httpTestingController.match(importUrl)).toHaveLength(0);
   });
 
@@ -102,5 +104,7 @@ describe("ImportConfigModal", () => {
       "Erreur lors de l'import de la configuration."
     );
     expect(closeSpy).not.toHaveBeenCalled();
+    await fixture.whenStable();
+    expect(getElement<HTMLButtonElement>("#upload-file-button").disabled).toBe(false);
   });
 });

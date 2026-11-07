@@ -1,0 +1,20 @@
+@use "mixins" as *;
+
+// Theme colors of the list of mini widgets
+dash-mini-widget-list {
+  @include themed {
+    .mini-widget-container {
+      border: 1px solid $color-border;
+      background-color: $color-surface;
+
+      &:hover {
+        box-shadow: $shadow;
+      }
+    }
+
+    #add-mini-widget-button {
+      border: 1px dashed $color-border;
+      color: $color-muted-text;
+    }
+  }
+}

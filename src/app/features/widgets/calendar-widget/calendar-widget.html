@@ -3,6 +3,7 @@
   [isFormValid]="isFormValid()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
+  (editionCancelled)="restoreSavedConfig()"
 >
   <ng-template #headerIcon>
     <mat-icon>calendar_month</mat-icon>
@@ -17,7 +18,6 @@
       @for (calendarUrlField of configForm.calendarUrls; track calendarUrlField; let index = $index) {
         <div class="calendar-url-container row items-center gap-xs">
           <input
-            [id]="index"
             [formField]="calendarUrlField"
             [placeholder]="labels.enterIcalUrl"
             [attr.aria-label]="labels.calendarUrl"
@@ -26,6 +26,7 @@
             mat-icon-button
             class="remove-calendar-url"
             [matTooltip]="labels.delete"
+            [attr.aria-label]="labels.delete"
             (click)="removeCalendarUrl(index)"
           >
             <mat-icon>delete_outline</mat-icon>
@@ -46,13 +47,14 @@
           mat-raised-button
           class="calendar-navigation-button"
           [matTooltip]="labels.previous"
+          [attr.aria-label]="labels.previous"
           mwlCalendarPreviousView
           [view]="view()"
           [(viewDate)]="viewDate"
           color="primary"
           (viewDateChange)="closeOpenMonthViewDay()"
         >
-          <mat-icon aria-hidden="false">arrow_back</mat-icon>
+          <mat-icon>arrow_back</mat-icon>
         </button>
         <button mat-raised-button [matTooltip]="labels.today" mwlCalendarToday [(viewDate)]="viewDate">
           {{ displayTodaysDate() | initialUppercase }}
@@ -61,13 +63,14 @@
           mat-raised-button
           class="calendar-navigation-button"
           [matTooltip]="labels.next"
+          [attr.aria-label]="labels.next"
           mwlCalendarNextView
           [view]="view()"
           [(viewDate)]="viewDate"
           color="primary"
           (viewDateChange)="closeOpenMonthViewDay()"
         >
-          <mat-icon aria-hidden="false">arrow_forward</mat-icon>
+          <mat-icon>arrow_forward</mat-icon>
         </button>
       </div>
 
@@ -101,6 +104,7 @@
             [events]="events()"
             [weekStartsOn]="weekStartsOn"
             [activeDayIsOpen]="activeDayIsOpen()"
+            (dayClicked)="onMonthDayClicked($event.day)"
             (eventClicked)="openEventDetail($event.event)"
           >
           </mwl-calendar-month-view>
@@ -116,7 +120,12 @@
           </mwl-calendar-week-view>
         }
         @case (calendarView.Day) {
-          <mwl-calendar-day-view [viewDate]="viewDate()" [locale]="locale" [events]="events()"></mwl-calendar-day-view>
+          <mwl-calendar-day-view
+            [viewDate]="viewDate()"
+            [locale]="locale"
+            [events]="events()"
+            (eventClicked)="openEventDetail($event.event)"
+          ></mwl-calendar-day-view>
         }
       }
     </div>

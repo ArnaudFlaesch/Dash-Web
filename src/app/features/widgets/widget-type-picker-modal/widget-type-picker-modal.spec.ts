@@ -1,15 +1,15 @@
 import { TestBed } from "@angular/core/testing";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { vi } from "vitest";
-import { WidgetTypeEnum } from "@widgets/widget-type.enum";
-import { IWidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker.model";
+import { WidgetType } from "@widgets/widget-type";
+import { WidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker-data";
 import { WidgetTypePickerModal } from "./widget-type-picker-modal";
 import { WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-type-options";
 
 describe("WidgetTypePickerModal", () => {
   let closeSpy: ReturnType<typeof vi.fn>;
 
-  const data: IWidgetTypePickerData = {
+  const data: WidgetTypePickerData = {
     title: "Ajouter un widget",
     widgetTypes: WIDGET_TYPE_OPTIONS
   };
@@ -27,14 +27,16 @@ describe("WidgetTypePickerModal", () => {
   it("Should display a tile for each widget type", async () => {
     const fixture = TestBed.createComponent(WidgetTypePickerModal);
     await fixture.whenStable();
-    const element: HTMLElement = fixture.nativeElement;
+    const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector("h1")?.textContent).toEqual("Ajouter un widget");
     expect(element.querySelectorAll(".widget-type-tile")).toHaveLength(WIDGET_TYPE_OPTIONS.length);
   });
 
   it("Should offer every type of widget", () => {
-    const widgetTypeKeys = Object.keys(WidgetTypeEnum).filter((key) => Number.isNaN(Number(key)));
-    expect(WIDGET_TYPE_OPTIONS.map((option) => option.type).sort()).toEqual(widgetTypeKeys.sort());
+    const widgetTypeKeys = Object.keys(WidgetType).filter((key) => Number.isNaN(Number(key)));
+    expect(WIDGET_TYPE_OPTIONS.map((option) => option.type).toSorted()).toEqual(
+      widgetTypeKeys.toSorted()
+    );
   });
 
   it("Should display the icon and the label of each widget type", async () => {
@@ -67,7 +69,7 @@ describe("WidgetTypePickerModal", () => {
     const closeButton = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
       "mat-dialog-actions button"
     );
-    expect(closeButton?.textContent?.trim()).toEqual(fixture.componentInstance.labels.close);
+    expect(closeButton?.textContent?.trim()).toEqual("Fermer");
     closeButton?.click();
     expect(closeSpy).toHaveBeenCalledWith("");
   });

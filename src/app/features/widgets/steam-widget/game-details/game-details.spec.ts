@@ -1,137 +1,14 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { IGameInfoDisplay } from "../steam.model";
+import { GameInfoDisplay } from "../steam";
 import { environment } from "@environments/environment";
 import { GameDetails } from "./game-details";
 import { provideHttpClient } from "@angular/common/http";
 import { vi } from "vitest";
-import { ComponentRef } from "@angular/core";
 
 describe("GameDetails", () => {
-  let component: GameDetails;
-  let fixture: ComponentFixture<GameDetails>;
-  let componentRef: ComponentRef<GameDetails>;
-  let httpTestingController: HttpTestingController;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
-    })
-      // Not rendered, so that the resources are only loaded by the test, not by the child components
-      .overrideTemplate(GameDetails, "")
-      .compileComponents();
-
-    fixture = TestBed.createComponent(GameDetails);
-    component = fixture.componentInstance;
-    componentRef = fixture.componentRef;
-    httpTestingController = TestBed.inject(HttpTestingController);
-    componentRef.setInput("steamUserId", "1337");
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
-  async function flushResources(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve));
-    TestBed.tick();
-  }
-
-  describe("Normal cases", () => {
-    it("should create", async () => {
-      const steamUserId = "1237";
-      const appId = "1337";
-      const achievementsData = {
-        playerstats: {
-          steamID: "76561198046131373",
-          gameName: "Half-Life 2: Episode Two",
-          achievements: [
-            {
-              apiname: "EP2_KILL_POISONANTLION",
-              achieved: 1,
-              unlocktime: 1352488322
-            },
-            {
-              apiname: "EP2_KILL_ALLGRUBS",
-              achieved: 0,
-              unlocktime: 0
-            },
-            {
-              apiname: "EP2_BREAK_ALLWEBS",
-              achieved: 1,
-              unlocktime: 1446892109
-            },
-            {
-              apiname: "EP2_BEAT_ANTLIONINVASION",
-              achieved: 1,
-              unlocktime: 1352489474
-            },
-            {
-              apiname: "EP2_BEAT_ANTLIONGUARDS",
-              achieved: 1,
-              unlocktime: 1352492128
-            }
-          ],
-          success: true
-        }
-      };
-      expect(component.achievements()).toEqual([]);
-      expect(component.completedAchievements()).toEqual([]);
-      fixture.componentRef.setInput("gameInfo", {
-        appid: appId,
-        name: "Super Game"
-      } as IGameInfoDisplay);
-
-      componentRef.setInput("steamUserId", steamUserId);
-      component.loadAchievementsData();
-      TestBed.tick();
-      const getAchievementsRequest = httpTestingController.expectOne(
-        environment.backend_url +
-          "/steamWidget/achievementList?steamUserId=" +
-          steamUserId +
-          "&appId=" +
-          appId
-      );
-      getAchievementsRequest.flush(achievementsData);
-      await flushResources();
-      expect(component.achievements()).toHaveLength(5);
-      expect(component.completedAchievements()).toHaveLength(4);
-      expect(component.completionStatus()).toEqual(80);
-    });
-  });
-
-  describe("Error cases", () => {
-    it("should display error messages", async () => {
-      const steamUserId = "1237";
-      const appId = "1337";
-
-      fixture.componentRef.setInput("gameInfo", {
-        appid: appId,
-        name: "Super Game"
-      } as IGameInfoDisplay);
-
-      componentRef.setInput("steamUserId", steamUserId);
-      component.loadAchievementsData();
-      TestBed.tick();
-      httpTestingController
-        .expectOne(
-          environment.backend_url +
-            "/steamWidget/achievementList?steamUserId=" +
-            steamUserId +
-            "&appId=" +
-            appId
-        )
-        .error(new ProgressEvent("Server error"));
-      await flushResources();
-      expect(component.achievements()).toHaveLength(0);
-    });
-  });
-});
-
-describe("GameDetails rendering", () => {
-  const gameInfo: IGameInfoDisplay = {
+  const gameInfo: GameInfoDisplay = {
     appid: "220",
     name: "Half-Life 2",
     imgIconUrl: "icon",
@@ -144,7 +21,6 @@ describe("GameDetails rendering", () => {
     environment.backend_url + "/steamWidget/achievementList?steamUserId=1337&appId=220";
 
   let fixture: ComponentFixture<GameDetails>;
-  let component: GameDetails;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
 
@@ -154,10 +30,8 @@ describe("GameDetails rendering", () => {
     }).compileComponents();
     httpTestingController = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(GameDetails);
-    component = fixture.componentInstance;
     element = fixture.nativeElement as HTMLElement;
     fixture.componentRef.setInput("steamUserId", "1337");
-    fixture.componentRef.setInput("profileUrl", "https://steamcommunity.com/id/Nauno93/");
     fixture.componentRef.setInput("gameInfo", gameInfo);
     await fixture.whenStable();
   });
@@ -168,14 +42,14 @@ describe("GameDetails rendering", () => {
 
   /** Opens the panel of the game, which loads its achievements. */
   function openPanel(): void {
-    (element.querySelector("mat-expansion-panel-header") as HTMLElement).click();
+    element.querySelector<HTMLElement>("mat-expansion-panel-header")!.click();
     TestBed.tick();
   }
 
   it("should display the game, without loading its achievements", () => {
-    const image = element.querySelector(".game-info img") as HTMLImageElement;
+    const image = element.querySelector<HTMLImageElement>(".game-info img")!;
     expect(image.src).toEqual(gameInfo.gameImgSrc);
-    expect(image.alt).toEqual(component.labels.gameIcon);
+    expect(image.alt).toEqual("game icon");
     expect(element.querySelector(".game-info p")?.textContent).toContain(gameInfo.name);
     expect(element.querySelector(".game-panel")?.getAttribute("title")).toEqual(gameInfo.name);
     httpTestingController.expectNone(achievementsUrl);
@@ -197,22 +71,57 @@ describe("GameDetails rendering", () => {
 
     expect(element.querySelector("mat-progress-spinner")).toBeNull();
     // Exact texts, without surrounding spaces, as checked by the end-to-end tests
-    expect(element.querySelector(".progress-value")?.textContent).toEqual(
-      `66${component.labels.percent}`
-    );
+    expect(element.querySelector(".progress-value")?.textContent).toEqual("66%");
     expect(element.querySelector(".achievements-progress")?.getAttribute("href")).toEqual(
       gameInfo.playerAchievementUrl
     );
-    expect(element.querySelector(".totalachievements")?.textContent).toEqual(
-      `${component.labels.achievements} 3`
-    );
+    expect(element.querySelector(".totalachievements")?.textContent).toEqual("Succès : 3");
     expect(element.querySelector(".completed-achievements")?.textContent).toEqual(
-      `${component.labels.completedAchievements} 2`
+      "Succès complétés : 2"
     );
-    const communityHubLink = element.querySelector(".community-hub-link") as HTMLAnchorElement;
+    const communityHubLink = element.querySelector<HTMLAnchorElement>(".community-hub-link")!;
     expect(communityHubLink.getAttribute("href")).toEqual(gameInfo.appIdLink);
-    expect(communityHubLink.textContent).toContain(component.labels.communityHub);
+    expect(communityHubLink.textContent).toContain("Community hub");
     expect(element.querySelector(".no-achievements")).toBeNull();
+  });
+
+  it("should load the achievements of the given player and game", async () => {
+    const steamUserId = "1237";
+    const appId = "1337";
+    fixture.componentRef.setInput("steamUserId", steamUserId);
+    fixture.componentRef.setInput("gameInfo", { ...gameInfo, appid: appId, name: "Super Game" });
+    await fixture.whenStable();
+
+    openPanel();
+    httpTestingController
+      .expectOne(
+        environment.backend_url +
+          "/steamWidget/achievementList?steamUserId=" +
+          steamUserId +
+          "&appId=" +
+          appId
+      )
+      .flush({
+        playerstats: {
+          steamID: "76561198046131373",
+          gameName: "Half-Life 2: Episode Two",
+          achievements: [
+            { apiname: "EP2_KILL_POISONANTLION", achieved: 1, unlocktime: 1352488322 },
+            { apiname: "EP2_KILL_ALLGRUBS", achieved: 0, unlocktime: 0 },
+            { apiname: "EP2_BREAK_ALLWEBS", achieved: 1, unlocktime: 1446892109 },
+            { apiname: "EP2_BEAT_ANTLIONINVASION", achieved: 1, unlocktime: 1352489474 },
+            { apiname: "EP2_BEAT_ANTLIONGUARDS", achieved: 1, unlocktime: 1352492128 }
+          ],
+          success: true
+        }
+      });
+    await fixture.whenStable();
+
+    expect(element.querySelector(".progress-value")?.textContent).toEqual("80%");
+    expect(element.querySelector(".totalachievements")?.textContent).toEqual("Succès : 5");
+    expect(element.querySelector(".completed-achievements")?.textContent).toEqual(
+      "Succès complétés : 4"
+    );
   });
 
   it("should display a message for a game without achievements", async () => {
@@ -221,10 +130,21 @@ describe("GameDetails rendering", () => {
     await fixture.whenStable();
 
     const noAchievements = element.querySelector(".no-achievements");
-    expect(noAchievements?.textContent).toContain(component.labels.noAchievements);
+    expect(noAchievements?.textContent).toContain("Aucun succès pour ce jeu.");
     expect(noAchievements?.querySelector("a")?.getAttribute("href")).toEqual(gameInfo.appIdLink);
-    expect(component.completionStatus()).toBeUndefined();
+    expect(noAchievements?.querySelector("a")?.textContent).toContain("Community hub");
     expect(element.querySelector(".achievements-progress")).toBeNull();
+    expect(element.querySelector(".progress-value")).toBeNull();
+  });
+
+  it("should display a message for a game without player stats", async () => {
+    openPanel();
+    httpTestingController.expectOne(achievementsUrl).flush({});
+    await fixture.whenStable();
+
+    expect(element.querySelector(".no-achievements")?.textContent).toContain(
+      "Aucun succès pour ce jeu."
+    );
   });
 
   it("should handle the error when getting the achievements", async () => {
@@ -241,6 +161,8 @@ describe("GameDetails rendering", () => {
       expect.objectContaining({ status: 500 }),
       "Erreur lors de la récupération des succès."
     );
+    expect(element.querySelector("mat-progress-spinner")).toBeNull();
     expect(element.querySelector(".no-achievements")).not.toBeNull();
+    expect(element.querySelector(".achievements-progress")).toBeNull();
   });
 });
