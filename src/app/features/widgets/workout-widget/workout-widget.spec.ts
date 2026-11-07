@@ -472,6 +472,7 @@ describe("WorkoutWidget", () => {
       await monthInput.setValue("invalid");
       await monthInput.blur();
 
+      expect(await monthInput.getValue()).toEqual("invalid");
       httpTestingController.expectNone((request) => request.url.includes("/workoutSessions"));
       httpTestingController.expectNone((request) => request.url.includes("/workoutStatsByPeriod"));
     });
