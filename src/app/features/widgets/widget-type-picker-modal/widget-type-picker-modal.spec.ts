@@ -34,7 +34,9 @@ describe("WidgetTypePickerModal", () => {
 
   it("Should offer every type of widget", () => {
     const widgetTypeKeys = Object.keys(WidgetType).filter((key) => Number.isNaN(Number(key)));
-    expect(WIDGET_TYPE_OPTIONS.map((option) => option.type).sort()).toEqual(widgetTypeKeys.sort());
+    expect(WIDGET_TYPE_OPTIONS.map((option) => option.type).toSorted()).toEqual(
+      widgetTypeKeys.toSorted()
+    );
   });
 
   it("Should display the icon and the label of each widget type", async () => {

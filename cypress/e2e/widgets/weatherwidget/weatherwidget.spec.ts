@@ -41,6 +41,7 @@ describe("Weather Widget tests", () => {
     cy.get(".widget .select-forecast:nth(1)").click();
     cy.get(".forecast").should("have.length.at.least", 5);
     cy.get(".widget #toggle-week-forecast").click();
-    cy.get(".widget .forecast").should("have.length.at.least", 3);
+    // One afternoon forecast per day: the mocked forecasts cover the afternoons of the 29th and 30th
+    cy.get(".widget .forecast").should("have.length", 2);
   });
 });

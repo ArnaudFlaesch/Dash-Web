@@ -14,7 +14,7 @@ export class EcowattWidget {
     iframeTitle: "Prévisions Ecowatt"
   };
 
-  public readonly iframe = viewChild<ElementRef<HTMLIFrameElement>>("iframe");
+  private readonly iframe = viewChild<ElementRef<HTMLIFrameElement>>("iframe");
 
   public refreshWidget(): void {
     const iframe = this.iframe()?.nativeElement;

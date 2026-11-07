@@ -84,7 +84,7 @@ export class Notifications {
           [
             ...oldNotifications.filter((notification) => !updatedIds.has(notification.id)),
             ...updatedNotifications
-          ].sort(
+          ].toSorted(
             (notifA, notifB) =>
               Date.parse(notifB.notificationDate) - Date.parse(notifA.notificationDate)
           )
