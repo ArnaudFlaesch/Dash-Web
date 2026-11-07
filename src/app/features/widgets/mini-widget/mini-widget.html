@@ -53,12 +53,14 @@
 
   @if (isModeRead()) {
     <!-- Touch gestures are kept, so that the list of mini widgets can be scrolled on phones -->
-    <!-- Also editable with the keyboard: focusable, and opened with the Enter key -->
-    <div
+    <!-- A native button, so that it can also be edited with the keyboard (Enter or Space key) -->
+    <!-- No click handler: a single click does not edit the mini widget, only a double click -->
+    <button
+      type="button"
       class="read-mini-widget"
-      tabindex="0"
       (dblclick)="toEditMode()"
       (keydown.enter)="toEditMode()"
+      (keydown.space)="$event.preventDefault(); toEditMode()"
       [matTooltip]="labels.doubleClickToEdit"
       [matTooltipShowDelay]="800"
       matTooltipTouchGestures="off"
@@ -72,6 +74,6 @@
           </div>
         }
       </div>
-    </div>
+    </button>
   }
 </div>

@@ -93,15 +93,15 @@ describe("WidgetList rendering", () => {
     await fixture.whenStable();
   });
 
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
   it("Should create the weather widget with its saved city", () => {
     expect(weatherRequests).toHaveLength(2);
     weatherRequests.forEach((request) => {
       expect(request.request.params.get("city")).toEqual("Paris");
     });
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
   });
 
   function getDropList(): CdkDropList<WidgetConfig[]> {

@@ -217,13 +217,31 @@ describe("MiniWidget", () => {
     it("Should edit the mini widget with the Enter key", async () => {
       await createHost({ city: "Lyon" });
       const readMiniWidget = query(".read-mini-widget");
-      expect(readMiniWidget?.getAttribute("tabindex")).toEqual("0");
+      expect(readMiniWidget?.tagName).toEqual("BUTTON");
+      expect(readMiniWidget?.getAttribute("type")).toEqual("button");
       readMiniWidget?.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
       await fixture.whenStable();
       expect(query(".edit-mini-widget .test-edit-component")).toBeTruthy();
       expect(query(".cancel-button")?.getAttribute("aria-label")).toEqual("Annuler");
       expect(query(".validate-button")?.getAttribute("aria-label")).toEqual("Valider");
       expect(query(".delete-button")?.getAttribute("aria-label")).toEqual("Supprimer le widget");
+    });
+
+    it("Should not edit the mini widget on a single click", async () => {
+      await createHost({ city: "Lyon" });
+      query<HTMLButtonElement>(".read-mini-widget")?.click();
+      await fixture.whenStable();
+      expect(query(".edit-mini-widget")).toBeNull();
+      expect(query(".test-body")).toBeTruthy();
+    });
+
+    it("Should edit the mini widget with the Space key, without scrolling the page", async () => {
+      await createHost({ city: "Lyon" });
+      const spaceEvent = new KeyboardEvent("keydown", { key: " ", cancelable: true });
+      query(".read-mini-widget")?.dispatchEvent(spaceEvent);
+      await fixture.whenStable();
+      expect(spaceEvent.defaultPrevented).toBe(true);
+      expect(query(".edit-mini-widget .test-edit-component")).toBeTruthy();
     });
 
     it("Should not display the cancel button while the mini widget is loading", async () => {

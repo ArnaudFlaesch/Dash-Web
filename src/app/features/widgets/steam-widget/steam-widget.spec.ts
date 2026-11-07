@@ -118,6 +118,9 @@ describe("SteamWidget", () => {
     fixture.debugElement.query(By.css("dash-widget")).triggerEventHandler("refreshWidgetAction");
     await fixture.whenStable();
     httpTestingController.expectNone(() => true);
+    // The configuration form is still displayed, without player nor games
+    expect(element.querySelector("#steam-user-id-input")).toBeTruthy();
+    expect(element.querySelector("dash-game-details")).toBeNull();
   });
 
   it("should save the typed Steam user, then load its player and games", async () => {

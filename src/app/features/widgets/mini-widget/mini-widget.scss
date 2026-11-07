@@ -2,6 +2,20 @@
 
 // The background and the border are set by the container in the list of mini widgets
 
+// Native button displayed as its content: without the default style of a button
+.read-mini-widget {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: default;
+}
+
 // Not a scroll container, so that swiping on a mini widget scrolls the list of mini widgets
 .read-mini-widget-body-container {
   padding: $space-xs;
