@@ -7,8 +7,8 @@ import {
   MatExpansionPanelTitle
 } from "@angular/material/expansion";
 import { isThisYear, isToday, isValid } from "date-fns";
-import { DateFormatPipe } from "@shared/pipes/date-format-pipe";
-import { IArticle } from "../article.model";
+import { DateFormatPipe } from "@shared/dates/date-format-pipe";
+import { Article } from "../article";
 
 @Component({
   selector: "dash-rss-feed",
@@ -24,15 +24,15 @@ import { IArticle } from "../article.model";
   ]
 })
 export class RssFeed {
-  public readonly labels = {
+  protected readonly labels = {
     publishedOn: "Publié le",
     by: "par"
   };
 
-  public readonly feed = input.required<IArticle[]>();
+  public readonly feed = input.required<Article[]>();
   public readonly readArticles = input.required<string[]>();
   public readonly markArticleAsReadEvent = output<string>();
-  public readonly currentOpenedArticle = signal<string | undefined>(undefined);
+  private readonly currentOpenedArticle = signal<string | undefined>(undefined);
 
   public stripHtmlFromContent(content?: string): string {
     // The content is parsed in an inert document: no script is executed and no resource is loaded
@@ -40,12 +40,13 @@ export class RssFeed {
     return parsedContent.body.textContent;
   }
 
-  public formatTitleForArticle(article: IArticle): string {
+  public formatTitleForArticle(article: Article): string {
+    const title = article.title ?? "";
     const articleDate = new Date(article.pubDate || article.updated || "");
     // Some articles have no (valid) publication date
     return isValid(articleDate)
-      ? `${this.getPublicationDateToDisplay(articleDate)} ${article.title}`
-      : (article.title ?? "");
+      ? `${this.getPublicationDateToDisplay(articleDate)} ${title}`.trim()
+      : title;
   }
 
   public isArticleRead(guid: string): boolean {

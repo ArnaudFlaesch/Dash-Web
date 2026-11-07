@@ -2,17 +2,18 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { IForecastAPIResponse, IWeatherAPIResponse } from "./weather.model";
+import { ForecastApiResponse, WeatherApiResponse } from "./weather";
 import { WeatherWidgetService } from "./weather-widget-service";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { catchError, forkJoin, of } from "rxjs";
 import { Widget } from "@widgets/widget/widget";
-import { injectWidgetData } from "@widgets/widget.tokens";
+import { injectWidgetData } from "@widgets/widget-tokens";
 import { WeatherWidgetView } from "./weather-widget-view/weather-widget-view";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "@shared/utils/form-validators";
+import { requiredText } from "@shared/forms/form-validators";
+import { isResourceLoaded } from "@shared/resources/resource-status";
 
 @Component({
   selector: "dash-weather-widget",
@@ -20,17 +21,22 @@ import { requiredText } from "@shared/utils/form-validators";
   imports: [Widget, MatIcon, MatFormField, MatLabel, MatInput, WeatherWidgetView, FormField]
 })
 export class WeatherWidget {
-  public readonly labels = {
+  protected readonly labels = {
     weatherTodayIn: "La météo aujourd'hui à",
     city: "Ville",
-    enterCityName: "Saisissez de nom de la ville"
+    enterCityName: "Saisissez le nom de la ville"
+  };
+  private readonly ERROR_MESSAGES = {
+    gettingWeatherData: "Erreur lors de la récupération des données météorologiques."
   };
 
   public readonly config = signal({ city: injectWidgetData("city", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.city));
+  // A new object on each refresh, so that the resource reloads even if the city is unchanged
+  private readonly refreshedCity = signal<{ city: string } | undefined>(undefined);
 
   /** Weather and forecast of the city saved on the last refresh, reloaded on each refresh. */
-  public readonly weatherResource = rxResource({
+  private readonly weatherResource = rxResource({
     params: () => this.refreshedCity(),
     stream: ({ params: { city } }) =>
       forkJoin([
@@ -38,30 +44,31 @@ export class WeatherWidget {
         this.weatherWidgetService.fetchForecastData(city)
       ]).pipe(
         catchError((error: HttpErrorResponse) => {
-          this.errorHandlerService.handleError(error, this.ERROR_GETTING_WEATHER_DATA);
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingWeatherData);
           return of(undefined);
         })
       ),
-    defaultValue: undefined as [IWeatherAPIResponse, IForecastAPIResponse] | undefined
+    defaultValue: undefined as [WeatherApiResponse, ForecastApiResponse] | undefined
   });
 
   public readonly weather = computed(() => this.weatherResource.value()?.[0]);
   public readonly forecastResponse = computed(() => this.weatherResource.value()?.[1].list ?? []);
   public readonly cityData = computed(() => this.weatherResource.value()?.[1].city);
-
-  public readonly isWidgetLoaded = computed(
-    () => !this.weatherResource.isLoading() && this.weatherResource.value() !== undefined
-  );
+  // Also loaded after an error, so that the spinner is not displayed forever
+  public readonly isWidgetLoaded = computed(() => isResourceLoaded(this.weatherResource.status()));
   public readonly isFormValid = computed(() => this.configForm().valid());
   public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
-  // A new object on each refresh, so that the resource reloads even if the city is unchanged
-  private readonly refreshedCity = signal<{ city: string } | undefined>(undefined);
-
-  private readonly ERROR_GETTING_WEATHER_DATA =
-    "Erreur lors de la récupération des données météorologiques.";
   private readonly weatherWidgetService = inject(WeatherWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
+
+  /** Restores the configuration of the last refresh when the edition is cancelled. */
+  public restoreSavedConfig(): void {
+    const refreshed = this.refreshedCity();
+    if (refreshed) {
+      this.config.set({ city: refreshed.city });
+    }
+  }
 
   public refreshWidget(): void {
     if (this.isFormValid()) {

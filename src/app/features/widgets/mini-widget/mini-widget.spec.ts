@@ -1,68 +1,13 @@
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { Component, signal } from "@angular/core";
+import { Component, signal, Type } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { MiniWidgetService } from "@widgets/mini-widget-service";
-import { WIDGET_ID } from "@widgets/widget.tokens";
+import { WIDGET_ID } from "@widgets/widget-tokens";
 import { MiniWidget } from "./mini-widget";
-
-describe("MiniWidget", () => {
-  const miniWidgetId = 8;
-  let fixture: ComponentFixture<MiniWidget>;
-  let component: MiniWidget;
-  let httpTestingController: HttpTestingController;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: WIDGET_ID, useValue: miniWidgetId }
-      ]
-    });
-    fixture = TestBed.createComponent(MiniWidget);
-    component = fixture.componentInstance;
-    httpTestingController = TestBed.inject(HttpTestingController);
-    fixture.componentRef.setInput("widgetData", { city: "Lyon" });
-    fixture.componentRef.setInput("isFormValid", true);
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  it("Should save the mini widget data and refresh it", () => {
-    const refreshSpy = vi.fn();
-    component.refreshWidgetAction.subscribe(refreshSpy);
-
-    component.onValidation();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/miniWidget/updateWidgetData/${miniWidgetId}`)
-      .flush({});
-
-    expect(component.isModeRead()).toBe(true);
-    expect(refreshSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it("Should display an error when the mini widget data can't be saved", () => {
-    const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
-    component.onValidation();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/miniWidget/updateWidgetData/${miniWidgetId}`)
-      .flush(null, { status: 500, statusText: "Server error" });
-    expect(handleErrorSpy).toHaveBeenCalled();
-  });
-
-  it("Should notify the mini widget deletion", () => {
-    const deletedSpy = vi.fn();
-    TestBed.inject(MiniWidgetService).miniWidgetDeleted.subscribe(deletedSpy);
-    component.deleteMiniWidget();
-    expect(deletedSpy).toHaveBeenCalledWith(miniWidgetId);
-  });
-});
 
 @Component({
   template: `
@@ -85,11 +30,27 @@ class MiniWidgetHost {
   public refreshCount = 0;
 }
 
-describe("MiniWidget template", () => {
+/** Mini widget which can't be configured. */
+@Component({
+  template: `
+    <dash-mini-widget
+      [widgetData]="widgetData()"
+      [isFormValid]="isFormValid()"
+      [isWidgetLoaded]="isWidgetLoaded()"
+      (refreshWidgetAction)="refreshCount = refreshCount + 1"
+    >
+      <ng-template #body><div class="test-body">Body</div></ng-template>
+    </dash-mini-widget>
+  `,
+  imports: [MiniWidget]
+})
+class MiniWidgetWithoutEditionHost extends MiniWidgetHost {}
+
+describe("MiniWidget", () => {
   const miniWidgetId = 8;
+  const updateUrl = `${environment.backend_url}/miniWidget/updateWidgetData/${miniWidgetId}`;
   let fixture: ComponentFixture<MiniWidgetHost>;
   let host: MiniWidgetHost;
-  let miniWidget: MiniWidget;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
 
@@ -110,19 +71,31 @@ describe("MiniWidget template", () => {
 
   async function createHost(
     widgetData: Record<string, unknown> | undefined,
-    isWidgetLoaded = true
+    isWidgetLoaded = true,
+    hostType: Type<MiniWidgetHost> = MiniWidgetHost
   ): Promise<void> {
-    fixture = TestBed.createComponent(MiniWidgetHost);
+    fixture = TestBed.createComponent(hostType);
     host = fixture.componentInstance;
     host.widgetData.set(widgetData);
     host.isWidgetLoaded.set(isWidgetLoaded);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     await fixture.whenStable();
-    miniWidget = fixture.debugElement.children[0].componentInstance;
   }
 
   function query<T extends HTMLElement = HTMLElement>(selector: string): T | null {
     return element.querySelector<T>(selector);
+  }
+
+  async function doubleClickBody(): Promise<void> {
+    query(".read-mini-widget-body-container")?.dispatchEvent(
+      new MouseEvent("dblclick", { bubbles: true })
+    );
+    await fixture.whenStable();
+  }
+
+  async function clickDeleteButton(): Promise<void> {
+    [...element.querySelectorAll<HTMLButtonElement>(".edit-mini-widget button")].at(-1)?.click();
+    await fixture.whenStable();
   }
 
   describe("Edit mode", () => {
@@ -144,20 +117,18 @@ describe("MiniWidget template", () => {
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(true);
     });
 
-    it("Should save the mini widget data on validation", async () => {
+    it("Should save the mini widget data on validation, then display and refresh it", async () => {
       host.widgetData.set({ city: "Lyon" });
       await fixture.whenStable();
       const initialRefreshCount = host.refreshCount;
       query(".validate-button")?.click();
-      const request = httpTestingController.expectOne(
-        `${environment.backend_url}/miniWidget/updateWidgetData/${miniWidgetId}`
-      );
+      const request = httpTestingController.expectOne(updateUrl);
       expect(request.request.method).toEqual("PATCH");
       expect(request.request.body).toEqual({ data: { city: "Lyon" } });
       request.flush({});
       await fixture.whenStable();
 
-      expect(query(".test-body")).toBeTruthy();
+      expect(query(".read-mini-widget-body-container .test-body")).toBeTruthy();
       expect(query(".edit-mini-widget")).toBeNull();
       expect(host.refreshCount).toEqual(initialRefreshCount + 1);
     });
@@ -166,9 +137,10 @@ describe("MiniWidget template", () => {
       const handleErrorSpy = vi
         .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
         .mockImplementation(() => undefined);
+      const initialRefreshCount = host.refreshCount;
       query(".validate-button")?.click();
       httpTestingController
-        .expectOne(`${environment.backend_url}/miniWidget/updateWidgetData/${miniWidgetId}`)
+        .expectOne(updateUrl)
         .flush(null, { status: 500, statusText: "Server error" });
       await fixture.whenStable();
 
@@ -177,31 +149,29 @@ describe("MiniWidget template", () => {
         "Erreur lors de la mise à jour de la configuration du widget."
       );
       expect(query(".edit-mini-widget")).toBeTruthy();
+      expect(host.refreshCount).toEqual(initialRefreshCount);
     });
 
     it("Should ask a confirmation before deleting the mini widget", async () => {
       const deletedSpy = vi.fn();
       TestBed.inject(MiniWidgetService).miniWidgetDeleted.subscribe(deletedSpy);
-      element.querySelectorAll<HTMLButtonElement>(".edit-mini-widget button")[1].click();
-      await fixture.whenStable();
+      await clickDeleteButton();
 
       expect(query(".delete-mini-widget h4")?.textContent).toEqual(
-        miniWidget.labels.confirmDeletion
+        "Êtes-vous sûr de vouloir supprimer ce widget ?"
       );
-      expect(query(".delete-mini-widget .cancel-button")?.textContent?.trim()).toEqual(
-        miniWidget.labels.cancel
-      );
+      expect(query(".delete-mini-widget .cancel-button")?.textContent?.trim()).toEqual("Annuler");
       const validateDeletionButton = query(".delete-mini-widget .validate-deletion-button");
-      expect(validateDeletionButton?.textContent?.trim()).toEqual(miniWidget.labels.delete);
+      expect(validateDeletionButton?.textContent?.trim()).toEqual("Supprimer");
       expect(query(".edit-mini-widget")).toBeNull();
+      expect(deletedSpy).not.toHaveBeenCalled();
 
       validateDeletionButton?.click();
       expect(deletedSpy).toHaveBeenCalledWith(miniWidgetId);
     });
 
     it("Should go back to edit mode when the deletion of a mini widget without data is cancelled", async () => {
-      miniWidget.toDeleteMode();
-      await fixture.whenStable();
+      await clickDeleteButton();
       query(".delete-mini-widget .cancel-button")?.click();
       await fixture.whenStable();
       expect(query(".delete-mini-widget")).toBeNull();
@@ -219,6 +189,14 @@ describe("MiniWidget template", () => {
       expect(host.refreshCount).toEqual(1);
     });
 
+    it("Should not refresh a mini widget with an invalid form on initialization", async () => {
+      fixture = TestBed.createComponent(MiniWidgetHost);
+      host = fixture.componentInstance;
+      host.isFormValid.set(false);
+      await fixture.whenStable();
+      expect(host.refreshCount).toEqual(0);
+    });
+
     it("Should display a spinner while the mini widget is loading", async () => {
       await createHost({ city: "Lyon" }, false);
       expect(query(".loading-spinner mat-spinner")).toBeTruthy();
@@ -227,11 +205,8 @@ describe("MiniWidget template", () => {
 
     it("Should edit the mini widget on double click, then cancel the edition", async () => {
       await createHost({ city: "Lyon" });
-      query(".read-mini-widget-body-container")?.dispatchEvent(
-        new MouseEvent("dblclick", { bubbles: true })
-      );
-      await fixture.whenStable();
-      expect(query(".edit-mini-widget")).toBeTruthy();
+      await doubleClickBody();
+      expect(query(".edit-mini-widget .test-edit-component")).toBeTruthy();
 
       query(".cancel-button")?.click();
       await fixture.whenStable();
@@ -239,22 +214,50 @@ describe("MiniWidget template", () => {
       expect(query(".test-body")).toBeTruthy();
     });
 
+    it("Should edit the mini widget with the Enter key", async () => {
+      await createHost({ city: "Lyon" });
+      const readMiniWidget = query(".read-mini-widget");
+      expect(readMiniWidget?.getAttribute("tabindex")).toEqual("0");
+      readMiniWidget?.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+      await fixture.whenStable();
+      expect(query(".edit-mini-widget .test-edit-component")).toBeTruthy();
+      expect(query(".cancel-button")?.getAttribute("aria-label")).toEqual("Annuler");
+      expect(query(".validate-button")?.getAttribute("aria-label")).toEqual("Valider");
+      expect(query(".delete-button")?.getAttribute("aria-label")).toEqual("Supprimer le widget");
+    });
+
     it("Should not display the cancel button while the mini widget is loading", async () => {
       await createHost({ city: "Lyon" }, false);
-      miniWidget.toEditMode();
-      await fixture.whenStable();
+      await doubleClickBody();
       expect(query(".edit-mini-widget")).toBeTruthy();
       expect(query(".cancel-button")).toBeNull();
     });
 
     it("Should go back to read mode when the deletion is cancelled", async () => {
       await createHost({ city: "Lyon" });
-      miniWidget.toDeleteMode();
-      await fixture.whenStable();
+      await doubleClickBody();
+      await clickDeleteButton();
+      expect(query(".delete-mini-widget")).toBeTruthy();
       expect(query(".test-body")).toBeNull();
       query(".delete-mini-widget .cancel-button")?.click();
       await fixture.whenStable();
+      expect(query(".delete-mini-widget")).toBeNull();
       expect(query(".test-body")).toBeTruthy();
+    });
+  });
+
+  describe("Without edit component", () => {
+    it("Should not edit the mini widget on double click", async () => {
+      await createHost({ city: "Lyon" }, true, MiniWidgetWithoutEditionHost);
+      await doubleClickBody();
+      expect(query(".edit-mini-widget")).toBeNull();
+      expect(query(".test-body")).toBeTruthy();
+    });
+
+    it("Should only display the actions of a mini widget without data", async () => {
+      await createHost(undefined, true, MiniWidgetWithoutEditionHost);
+      expect(query(".edit-mini-widget .validate-button")).toBeTruthy();
+      expect(query(".edit-mini-widget input")).toBeNull();
     });
   });
 });

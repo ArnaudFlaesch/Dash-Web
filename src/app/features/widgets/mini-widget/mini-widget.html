@@ -3,8 +3,14 @@
     <div class="edit-mini-widget row">
       <ng-container *ngTemplateOutlet="editComponent() ?? null" />
 
-      @if (isWidgetLoaded() && widgetData()) {
-        <button class="cancel-button" [matTooltip]="labels.cancel" mat-icon-button (click)="cancelEdition()">
+      @if (isWidgetLoaded() && isWidgetDataSaved() && widgetData()) {
+        <button
+          class="cancel-button"
+          [matTooltip]="labels.cancel"
+          [attr.aria-label]="labels.cancel"
+          mat-icon-button
+          (click)="cancelEdition()"
+        >
           <mat-icon>undo</mat-icon>
         </button>
       }
@@ -12,6 +18,7 @@
       <button
         class="validate-button"
         [matTooltip]="labels.validate"
+        [attr.aria-label]="labels.validate"
         mat-icon-button
         (click)="onValidation()"
         color="primary"
@@ -19,8 +26,15 @@
       >
         <mat-icon>check</mat-icon>
       </button>
-      <button mat-icon-button [matTooltip]="labels.deleteWidget" (click)="toDeleteMode()" color="alert">
-        <mat-icon aria-hidden="false">delete</mat-icon>
+      <button
+        class="delete-button"
+        mat-icon-button
+        [matTooltip]="labels.deleteWidget"
+        [attr.aria-label]="labels.deleteWidget"
+        (click)="toDeleteMode()"
+        color="alert"
+      >
+        <mat-icon>delete</mat-icon>
       </button>
     </div>
   }
@@ -28,9 +42,9 @@
   @if (isModeDelete()) {
     <div class="delete-mini-widget">
       <h4>{{ labels.confirmDeletion }}</h4>
-      <div id="delete-mini-widget-actions" class="row gap-sm">
+      <div class="delete-mini-widget-actions row gap-sm">
         <button (click)="toReadMode()" mat-button class="cancel-button">{{ labels.cancel }}</button>
-        <button (click)="deleteMiniWidget()" mat-raised-button color="warn" class="validate-deletion-button">
+        <button (click)="deleteWidget()" mat-raised-button color="warn" class="validate-deletion-button">
           {{ labels.delete }}
         </button>
       </div>
@@ -39,8 +53,12 @@
 
   @if (isModeRead()) {
     <!-- Touch gestures are kept, so that the list of mini widgets can be scrolled on phones -->
+    <!-- Also editable with the keyboard: focusable, and opened with the Enter key -->
     <div
+      class="read-mini-widget"
+      tabindex="0"
       (dblclick)="toEditMode()"
+      (keydown.enter)="toEditMode()"
       [matTooltip]="labels.doubleClickToEdit"
       [matTooltipShowDelay]="800"
       matTooltipTouchGestures="off"

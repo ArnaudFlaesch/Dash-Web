@@ -7,8 +7,14 @@
           <span>{{ labels.widgetConfiguration }}</span>
         </div>
         <div class="header-actions muted-text row">
-          <button class="delete-button" mat-icon-button [matTooltip]="labels.deleteWidget" (click)="toDeleteMode()">
-            <mat-icon aria-hidden="false">delete_outline</mat-icon>
+          <button
+            class="delete-button"
+            mat-icon-button
+            [matTooltip]="labels.deleteWidget"
+            [attr.aria-label]="labels.deleteWidget"
+            (click)="toDeleteMode()"
+          >
+            <mat-icon>delete_outline</mat-icon>
           </button>
         </div>
       </div>
@@ -17,7 +23,7 @@
           <ng-container *ngTemplateOutlet="editComponent() ?? null" />
         </div>
         <div class="edit-component-actions row">
-          @if (isWidgetLoaded() && widgetData()) {
+          @if (isWidgetLoaded() && isWidgetDataSaved() && widgetData()) {
             <button class="cancel-button" mat-button (click)="cancelEdition()">{{ labels.cancel }}</button>
           }
           <button class="validate-button" mat-flat-button (click)="onValidation()" [disabled]="!isFormValid()">
@@ -48,11 +54,23 @@
             </span>
           }
 
-          <button mat-icon-button [matTooltip]="labels.refreshWidget" (click)="refreshWidget()" class="refresh-button">
-            <mat-icon aria-hidden="false">refresh</mat-icon>
+          <button
+            mat-icon-button
+            [matTooltip]="labels.refreshWidget"
+            [attr.aria-label]="labels.refreshWidget"
+            (click)="refreshWidget()"
+            class="refresh-button"
+          >
+            <mat-icon>refresh</mat-icon>
           </button>
           @if (editComponent()) {
-            <button mat-icon-button [matTooltip]="labels.editWidget" (click)="toEditMode()" class="edit-button">
+            <button
+              mat-icon-button
+              [matTooltip]="labels.editWidget"
+              [attr.aria-label]="labels.editWidget"
+              (click)="toEditMode()"
+              class="edit-button"
+            >
               <mat-icon>settings</mat-icon>
             </button>
           }

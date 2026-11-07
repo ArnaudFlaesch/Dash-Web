@@ -2,8 +2,8 @@
 
 import { Interception } from "cypress/types/net-stubbing";
 
-describe("AirParif Widget tests", () => {
-  const tabName = "AirParif";
+describe("Airparif Widget tests", () => {
+  const tabName = "Airparif";
 
   beforeEach(() => cy.loginAsAdmin().navigateToTab(tabName));
 

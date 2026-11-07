@@ -1,20 +1,17 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { vi } from "vitest";
-import {
-  INotificationToDisplay,
-  NotificationTypeEnum
-} from "@features/notifications/notification.model";
+import { NotificationToDisplay, NotificationType } from "@features/notifications/app-notification";
 import { NotificationsList } from "./notifications-list";
 
 describe("NotificationsList", () => {
   let component: NotificationsList;
   let fixture: ComponentFixture<NotificationsList>;
 
-  const notifications: INotificationToDisplay[] = [
+  const notifications: NotificationToDisplay[] = [
     {
       id: 1,
       message: "username: Connexion utilisateur",
-      notificationType: NotificationTypeEnum.WARN,
+      notificationType: NotificationType.WARN,
       notificationDate: "2026-11-04T09:30:00",
       isRead: false,
       notificationDateToDisplay: "09:30",
@@ -23,7 +20,7 @@ describe("NotificationsList", () => {
     {
       id: 2,
       message: "username: Action user",
-      notificationType: NotificationTypeEnum.INFO,
+      notificationType: NotificationType.INFO,
       notificationDate: "2026-11-02T18:15:00",
       isRead: true,
       notificationDateToDisplay: "02/11",
@@ -47,7 +44,7 @@ describe("NotificationsList", () => {
   });
 
   function getElement<T extends HTMLElement>(selector: string): T {
-    return (fixture.nativeElement as HTMLElement).querySelector(selector) as T;
+    return (fixture.nativeElement as HTMLElement).querySelector<T>(selector)!;
   }
 
   /** Opens the notifications menu, rendered in an overlay. */
@@ -63,7 +60,10 @@ describe("NotificationsList", () => {
 
   it("Should hide the badge when there is no unread notification", async () => {
     await fixture.whenStable();
-    expect(getElement("mat-icon").getAttribute("title")).toEqual(component.labels.notifications);
+    expect(getElement("mat-icon").getAttribute("title")).toEqual("Notifications");
+    expect(getElement("#display-notifications-button").getAttribute("aria-label")).toEqual(
+      "Notifications"
+    );
     expect(getElement(".mat-badge-hidden")).not.toBeNull();
   });
 
@@ -93,7 +93,9 @@ describe("NotificationsList", () => {
     expect(containers[0].classList).toContain("warn");
     expect(containers[1].classList).not.toContain("unread-notification");
     expect(containers[1].classList).toContain("info");
-    expect(containers[0].querySelector(".mark-notification-as-read-button")).not.toBeNull();
+    expect(
+      containers[0].querySelector(".mark-notification-as-read-button")?.getAttribute("aria-label")
+    ).toEqual("Marquer comme lu");
     expect(containers[1].querySelector(".mark-notification-as-read-button")).toBeNull();
     expect(document.querySelector("#mark-all-notifications-as-read-button")).toBeNull();
   });

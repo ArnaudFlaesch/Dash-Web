@@ -2,22 +2,21 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { IWorkoutExercise, IWorkoutSession, IWorkoutType } from "../workout.model";
+import { WorkoutExercise, WorkoutSession, WorkoutType } from "../workout";
 import { WorkoutSessionEdit } from "./workout-session-edit";
 import { provideHttpClient } from "@angular/common/http";
 import { vi } from "vitest";
 
 describe("WorkoutSessionEdit", () => {
-  let component: WorkoutSessionEdit;
   let fixture: ComponentFixture<WorkoutSessionEdit>;
   let httpTestingController: HttpTestingController;
 
-  const workoutTypes = [{ id: 1, name: "Abdos" } as IWorkoutType];
+  const workoutTypes = [{ id: 1, name: "Abdos" } as WorkoutType];
   const newWorkoutSessionDate = new Date(2022, 8, 1, 0, 0, 0).toString();
   const currentWorkoutSessionToEdit = {
     id: 1,
     workoutDate: newWorkoutSessionDate
-  } as IWorkoutSession;
+  } as WorkoutSession;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -25,7 +24,6 @@ describe("WorkoutSessionEdit", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkoutSessionEdit);
-    component = fixture.componentInstance;
     fixture.componentRef.setInput("workoutTypes", workoutTypes);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
@@ -34,56 +32,55 @@ describe("WorkoutSessionEdit", () => {
     httpTestingController.verify();
   });
 
-  it("should add a rep to an exercise", () => {
-    fixture.componentRef.setInput("currentWorkoutSessionToEdit", currentWorkoutSessionToEdit);
-    TestBed.tick();
-    const getWorkoutExercisesRequest = httpTestingController.expectOne(
-      environment.backend_url +
-        `/workoutWidget/workoutExercises?workoutSessionId=${currentWorkoutSessionToEdit.id}`
-    );
-    getWorkoutExercisesRequest.flush([]);
-    const workoutTypeIdToEdit = workoutTypes[0].id;
-    expect(component.workoutExercises()).toEqual([]);
-
-    expect(component.getExerciceNumberOfReps(workoutTypeIdToEdit)).toEqual(0);
-    component.incrementExerciceNumberOfReps(workoutTypeIdToEdit);
-    const incrementWorkoutExerciseRequest = httpTestingController.expectOne(
-      environment.backend_url + `/workoutWidget/updateWorkoutExercise`
-    );
-    incrementWorkoutExerciseRequest.flush({
-      workoutSessionId: currentWorkoutSessionToEdit.id,
-      workoutTypeId: workoutTypeIdToEdit,
-      numberOfReps: 1
-    } as IWorkoutExercise);
-
-    expect(component.getExerciceNumberOfReps(workoutTypeIdToEdit)).toEqual(1);
-
-    component.decrementExerciceNumberOfReps(workoutTypeIdToEdit);
-    const decrementWorkoutExerciseRequest = httpTestingController.expectOne(
-      environment.backend_url + `/workoutWidget/updateWorkoutExercise`
-    );
-    decrementWorkoutExerciseRequest.flush({
-      workoutSessionId: currentWorkoutSessionToEdit.id,
-      workoutTypeId: workoutTypeIdToEdit,
-      numberOfReps: 0
-    } as IWorkoutExercise);
-
-    expect(component.getExerciceNumberOfReps(workoutTypeIdToEdit)).toEqual(0);
-  });
-
   const workoutExercisesUrl =
     environment.backend_url +
     `/workoutWidget/workoutExercises?workoutSessionId=${currentWorkoutSessionToEdit.id}`;
   const updateWorkoutExerciseUrl = environment.backend_url + "/workoutWidget/updateWorkoutExercise";
 
   /** Displays the edited session, with the given exercises. */
-  async function displaySession(workoutExercises: IWorkoutExercise[]): Promise<HTMLElement> {
+  async function displaySession(workoutExercises: WorkoutExercise[]): Promise<HTMLElement> {
     fixture.componentRef.setInput("currentWorkoutSessionToEdit", currentWorkoutSessionToEdit);
     TestBed.tick();
     httpTestingController.expectOne(workoutExercisesUrl).flush(workoutExercises);
     await fixture.whenStable();
     return fixture.nativeElement as HTMLElement;
   }
+
+  async function toEditMode(element: HTMLElement): Promise<void> {
+    element.querySelector<HTMLButtonElement>("#edit-session-button")?.click();
+    await fixture.whenStable();
+  }
+
+  function getDisplayedReps(element: HTMLElement): string | undefined {
+    return element
+      .querySelector(".workout-exercise-container .edit-reps-container > span")
+      ?.textContent?.trim();
+  }
+
+  it("should add a rep to an exercise without reps, then remove it", async () => {
+    const element = await displaySession([]);
+    expect(getDisplayedReps(element)).toEqual("0");
+    await toEditMode(element);
+
+    element.querySelector<HTMLButtonElement>(".add-rep-to-workout-button")?.click();
+    const incrementRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
+    expect(incrementRequest.request.body).toEqual({
+      workoutSessionId: currentWorkoutSessionToEdit.id,
+      workoutTypeId: workoutTypes[0].id,
+      numberOfReps: 1
+    });
+    incrementRequest.flush({ workoutTypeId: workoutTypes[0].id, numberOfReps: 1 });
+    await fixture.whenStable();
+    expect(element.querySelector(".workout-number-of-reps")?.textContent).toContain("1");
+
+    element.querySelector<HTMLButtonElement>(".subtract-rep-to-workout-button")?.click();
+    const decrementRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
+    expect(decrementRequest.request.body.numberOfReps).toEqual(0);
+    decrementRequest.flush({ workoutTypeId: workoutTypes[0].id, numberOfReps: 0 });
+    await fixture.whenStable();
+    expect(element.querySelector(".workout-number-of-reps")).toBeNull();
+    expect(getDisplayedReps(element)).toEqual("0");
+  });
 
   it("should display a spinner until the exercises are loaded", async () => {
     fixture.componentRef.setInput("currentWorkoutSessionToEdit", currentWorkoutSessionToEdit);
@@ -98,14 +95,14 @@ describe("WorkoutSessionEdit", () => {
     expect(element.querySelector("mat-spinner")).toBeNull();
     // Exact text, without surrounding spaces, as checked by the end-to-end tests
     expect(element.querySelector("#workout-session-date")?.textContent).toEqual(
-      `${component.labels.sessionOf} ${new Date(currentWorkoutSessionToEdit.workoutDate).toLocaleDateString("fr")}`
+      `Session du ${new Date(currentWorkoutSessionToEdit.workoutDate).toLocaleDateString("fr")}`
     );
   });
 
   it("should display the workout types with their number of reps", async () => {
     fixture.componentRef.setInput("workoutTypes", [
       ...workoutTypes,
-      { id: 2, name: "Pompes" } as IWorkoutType
+      { id: 2, name: "Pompes" } as WorkoutType
     ]);
     const element = await displaySession([{ workoutTypeId: 1, numberOfReps: 12 }]);
 
@@ -118,7 +115,7 @@ describe("WorkoutSessionEdit", () => {
     expect(exercises[1].querySelector(".workout-no-reps")?.textContent).toContain("0");
     // The reps can only be edited in the edit mode
     expect(element.querySelector(".add-rep-to-workout-button")).toBeNull();
-    expect(element.querySelector(".substract-rep-to-workout-button")).toBeNull();
+    expect(element.querySelector(".subtract-rep-to-workout-button")).toBeNull();
   });
 
   it("should display a message without workout type", async () => {
@@ -126,7 +123,7 @@ describe("WorkoutSessionEdit", () => {
     const element = await displaySession([]);
 
     expect(element.querySelector(".workout-no-exercise")?.textContent).toContain(
-      component.labels.noWorkoutType
+      "Ajoutez des types d'exercices pour compter vos répétitions."
     );
     expect(element.querySelector(".workout-exercise-container")).toBeNull();
   });
@@ -134,30 +131,38 @@ describe("WorkoutSessionEdit", () => {
   it("should switch between the read and the edit modes", async () => {
     const element = await displaySession([]);
     expect(element.querySelector("#validate-session-button")).toBeNull();
+    expect(element.querySelector("#edit-session-button")?.getAttribute("aria-label")).toEqual(
+      "Modifier les répétitions"
+    );
 
-    (element.querySelector("#edit-session-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>("#edit-session-button")!.click();
     await fixture.whenStable();
-    expect(component.sessionEditMode()).toBe(true);
     expect(element.querySelector("#edit-session-button")).toBeNull();
     expect(element.querySelector(".workout-exercise-container")?.classList).toContain("edit-mode");
-    expect(element.querySelector(".add-rep-to-workout-button")).not.toBeNull();
-    expect(element.querySelector(".substract-rep-to-workout-button")).not.toBeNull();
+    // The icon buttons are labelled for the screen readers
+    expect(element.querySelector("#validate-session-button")?.getAttribute("aria-label")).toEqual(
+      "Terminer"
+    );
+    expect(element.querySelector(".add-rep-to-workout-button")?.getAttribute("aria-label")).toEqual(
+      "Ajouter une répétition : Abdos"
+    );
+    expect(
+      element.querySelector(".subtract-rep-to-workout-button")?.getAttribute("aria-label")
+    ).toEqual("Retirer une répétition : Abdos");
 
-    (element.querySelector("#validate-session-button") as HTMLButtonElement).click();
+    element.querySelector<HTMLButtonElement>("#validate-session-button")!.click();
     await fixture.whenStable();
-    expect(component.sessionEditMode()).toBe(false);
     expect(element.querySelector("#edit-session-button")).not.toBeNull();
     expect(element.querySelector(".add-rep-to-workout-button")).toBeNull();
   });
 
   it("should update the reps with the buttons, disabled while the update is sent", async () => {
     const element = await displaySession([{ workoutTypeId: 1, numberOfReps: 3 }]);
-    component.toggleSessionEditMode();
-    await fixture.whenStable();
-    const addButton = element.querySelector(".add-rep-to-workout-button") as HTMLButtonElement;
-    const substractButton = element.querySelector(
-      ".substract-rep-to-workout-button"
-    ) as HTMLButtonElement;
+    await toEditMode(element);
+    const addButton = element.querySelector<HTMLButtonElement>(".add-rep-to-workout-button")!;
+    const subtractButton = element.querySelector<HTMLButtonElement>(
+      ".subtract-rep-to-workout-button"
+    )!;
 
     addButton.click();
     TestBed.tick();
@@ -168,16 +173,16 @@ describe("WorkoutSessionEdit", () => {
       numberOfReps: 4
     });
     expect(addButton.disabled).toBe(true);
-    expect(substractButton.disabled).toBe(true);
+    expect(subtractButton.disabled).toBe(true);
     addRequest.flush({ workoutTypeId: 1, numberOfReps: 4 });
     await fixture.whenStable();
     expect(addButton.disabled).toBe(false);
     expect(element.querySelector(".workout-number-of-reps")?.textContent).toContain("4");
 
-    substractButton.click();
-    const substractRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
-    expect(substractRequest.request.body.numberOfReps).toEqual(3);
-    substractRequest.flush({ workoutTypeId: 1, numberOfReps: 3 });
+    subtractButton.click();
+    const subtractRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
+    expect(subtractRequest.request.body.numberOfReps).toEqual(3);
+    subtractRequest.flush({ workoutTypeId: 1, numberOfReps: 3 });
     await fixture.whenStable();
     expect(element.querySelector(".workout-number-of-reps")?.textContent).toContain("3");
   });
@@ -188,9 +193,8 @@ describe("WorkoutSessionEdit", () => {
       .spyOn(errorHandlerService, "handleError")
       .mockImplementation(() => undefined);
     const element = await displaySession([{ workoutTypeId: 1, numberOfReps: 3 }]);
-    component.toggleSessionEditMode();
-    await fixture.whenStable();
-    const addButton = element.querySelector(".add-rep-to-workout-button") as HTMLButtonElement;
+    await toEditMode(element);
+    const addButton = element.querySelector<HTMLButtonElement>(".add-rep-to-workout-button")!;
 
     addButton.click();
     httpTestingController
@@ -202,19 +206,20 @@ describe("WorkoutSessionEdit", () => {
       expect.objectContaining({ status: 500 }),
       "Erreur lors de l'ajout d'un exercice."
     );
-    expect(component.isWidgetUpdating()).toBe(false);
     expect(addButton.disabled).toBe(false);
     // The number of reps is unchanged
-    expect(component.getExerciceNumberOfReps(1)).toEqual(3);
+    expect(getDisplayedReps(element)).toEqual("3");
   });
 
   it("should not remove a rep from an exercise without reps", async () => {
-    await displaySession([]);
+    const element = await displaySession([]);
+    await toEditMode(element);
 
-    component.decrementExerciceNumberOfReps(workoutTypes[0].id);
+    element.querySelector<HTMLButtonElement>(".subtract-rep-to-workout-button")?.click();
+    await fixture.whenStable();
 
     httpTestingController.expectNone(updateWorkoutExerciseUrl);
-    expect(component.getExerciceNumberOfReps(workoutTypes[0].id)).toEqual(0);
+    expect(getDisplayedReps(element)).toEqual("0");
   });
 
   it("should handle the error when getting the exercises", async () => {
@@ -233,18 +238,25 @@ describe("WorkoutSessionEdit", () => {
       expect.objectContaining({ status: 500 }),
       "Erreur lors de la récupération des exercices."
     );
-    expect(component.workoutExercises()).toEqual([]);
-    expect(component.workoutExercisesLoaded()).toBe(true);
+    // The session is displayed, without reps
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector("mat-spinner")).toBeNull();
+    expect(element.querySelector("#workout-session-date")).not.toBeNull();
+    expect(getDisplayedReps(element)).toEqual("0");
   });
 
-  it("should not load the exercises of a session without id", () => {
+  it("should not load the exercises of a session without id", async () => {
     fixture.componentRef.setInput("currentWorkoutSessionToEdit", {
       ...currentWorkoutSessionToEdit,
       id: 0
     });
     TestBed.tick();
 
+    await fixture.whenStable();
+
     httpTestingController.expectNone(environment.backend_url + "/workoutWidget/workoutExercises");
-    expect(component.workoutExercises()).toEqual([]);
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector("mat-spinner")).not.toBeNull();
+    expect(element.querySelector(".workout-exercise-container")).toBeNull();
   });
 });

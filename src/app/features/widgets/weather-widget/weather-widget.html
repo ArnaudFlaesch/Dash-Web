@@ -3,6 +3,7 @@
   [widgetData]="widgetData()"
   [isWidgetLoaded]="isWidgetLoaded()"
   (refreshWidgetAction)="refreshWidget()"
+  (editionCancelled)="restoreSavedConfig()"
 >
   <ng-template #headerIcon>
     <mat-icon>sunny</mat-icon>

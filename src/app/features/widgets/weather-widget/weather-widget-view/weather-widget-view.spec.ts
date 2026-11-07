@@ -1,55 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { format } from "date-fns";
-import { forecastData, weatherData } from "../weather-widget.fixtures";
+import { forecastData, weatherData } from "../weather-widget-fixtures";
+import { Forecast } from "../weather";
 import { WeatherWidgetView } from "./weather-widget-view";
 import { vi } from "vitest";
 
 describe("WeatherWidgetView", () => {
-  let component: WeatherWidgetView;
-  let fixture: ComponentFixture<WeatherWidgetView>;
-
-  vi.setSystemTime(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [WeatherWidgetView]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(WeatherWidgetView);
-    component = fixture.componentInstance;
-    fixture.componentRef.setInput("weather", weatherData);
-    fixture.componentRef.setInput("cityData", forecastData.city);
-    fixture.componentRef.setInput("forecastResponse", forecastData.list);
-  });
-
-  it("should create", () => {
-    expect(component.isForecastModeWeek()).toEqual(false);
-    component.selectDayForecast(new Date(component.forecastDays()[0]));
-    const dateToSelect = new Date(component.forecastDays()[1]);
-    component.selectDayForecast(dateToSelect);
-    expect(component.isSelectedDay(dateToSelect)).toEqual(true);
-    // Select the same date a second time to check that nothing changes and to cover all possible cases
-    component.selectDayForecast(dateToSelect);
-    expect(component.isSelectedDay(dateToSelect)).toEqual(true);
-    expect(
-      component
-        .forecastToDisplay()
-        .map((forecast) => format(new Date(forecast.dt * 1000), "dd-MM-yyyy"))
-    ).toEqual(["07-03-2022"]);
-    component.selectWeekForecast();
-    expect(component.isSelectedDay(dateToSelect)).toEqual(false);
-    component.selectWeekForecast();
-  });
-
-  it("Should format date", () => {
-    const date = new Date(2022, 5, 1);
-    expect(component.formatDate(date)).toEqual("mer. 01");
-  });
-});
-
-describe("WeatherWidgetView template", () => {
-  let component: WeatherWidgetView;
   let fixture: ComponentFixture<WeatherWidgetView>;
   let element: HTMLElement;
 
@@ -60,8 +16,7 @@ describe("WeatherWidgetView template", () => {
     vi.setSystemTime(new Date(2022, 2, 6, 0, 0, 0)); // 06/03/2022
 
     fixture = TestBed.createComponent(WeatherWidgetView);
-    component = fixture.componentInstance;
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     fixture.componentRef.setInput("weather", weatherData);
     fixture.componentRef.setInput("cityData", forecastData.city);
     fixture.componentRef.setInput("forecastResponse", [
@@ -78,8 +33,31 @@ describe("WeatherWidgetView template", () => {
     return [...element.querySelectorAll<HTMLButtonElement>(".select-forecast")];
   }
 
+  function getWeekButton(): HTMLButtonElement {
+    return element.querySelector<HTMLButtonElement>("#toggle-week-forecast")!;
+  }
+
+  /** Whether each day button, then the week button, is highlighted as selected. */
+  function getSelectedButtons(): boolean[] {
+    return [...getDayButtons(), getWeekButton()].map((button) =>
+      button.classList.contains("mat-primary")
+    );
+  }
+
   function getDisplayedForecastsCount(): number {
     return element.querySelectorAll("dash-weather-forecast .forecast-container").length;
+  }
+
+  /** Weather descriptions of the displayed forecasts, which identify them in the test data. */
+  function getDisplayedForecastDescriptions(): string[] {
+    return [
+      ...element.querySelectorAll<HTMLImageElement>("dash-weather-forecast .current-weather-icon")
+    ].map((icon) => icon.alt);
+  }
+
+  async function click(button: HTMLButtonElement): Promise<void> {
+    button.click();
+    await fixture.whenStable();
   }
 
   it("Should display today's weather, one button per forecast day and the week button", () => {
@@ -89,51 +67,85 @@ describe("WeatherWidgetView template", () => {
       "Lun. 07",
       "Mer. 09"
     ]);
-    expect(element.querySelector("#toggle-week-forecast")?.textContent?.trim()).toEqual(
-      component.labels.week
-    );
+    expect(getWeekButton().textContent?.trim()).toEqual("Semaine");
     expect(element.querySelector("mat-slide-toggle")?.textContent?.trim()).toEqual(
-      component.labels.displayFullForecast
+      "Afficher les prévisions complètes"
     );
   });
 
   it("Should display the first forecasts of today", () => {
-    expect(component.isSelectedDay(component.forecastDays()[0])).toBe(true);
+    expect(getSelectedButtons()).toEqual([true, false, false, false]);
+    expect(getDisplayedForecastsCount()).toEqual(5);
+  });
+
+  it("Should keep today's forecast when today is selected again", async () => {
+    await click(getDayButtons()[0]);
+    expect(getSelectedButtons()).toEqual([true, false, false, false]);
     expect(getDisplayedForecastsCount()).toEqual(5);
   });
 
   it("Should display the forecast of a selected day from 7 o'clock", async () => {
-    getDayButtons()[1].click();
-    await fixture.whenStable();
-    expect(component.isSelectedDay(component.forecastDays()[1])).toBe(true);
-    expect(component.forecastToDisplay()).toEqual([forecastData.list[2]]);
-    expect(getDisplayedForecastsCount()).toEqual(1);
+    await click(getDayButtons()[1]);
+    expect(getSelectedButtons()).toEqual([false, true, false, false]);
+    expect(getDisplayedForecastDescriptions()).toEqual(["Ensoleillé"]);
+
+    // Selecting the same day a second time changes nothing
+    await click(getDayButtons()[1]);
+    expect(getSelectedButtons()).toEqual([false, true, false, false]);
+    expect(getDisplayedForecastDescriptions()).toEqual(["Ensoleillé"]);
   });
 
   it("Should display the full forecast of a selected day", async () => {
-    getDayButtons()[1].click();
-    await fixture.whenStable();
-    element.querySelector<HTMLButtonElement>("mat-slide-toggle button")?.click();
-    await fixture.whenStable();
+    await click(getDayButtons()[1]);
+    await click(element.querySelector<HTMLButtonElement>("mat-slide-toggle button")!);
 
-    expect(component.displayAllForecast()).toBe(true);
-    expect(component.forecastToDisplay()).toEqual([earlyForecast, forecastData.list[2]]);
+    expect(element.querySelector("mat-slide-toggle button")?.getAttribute("aria-checked")).toEqual(
+      "true"
+    );
+    // The early forecast and the one at 10:00
+    expect(getDisplayedForecastDescriptions()).toEqual(["Ensoleillé", "Ensoleillé"]);
     expect(getDisplayedForecastsCount()).toEqual(2);
   });
 
   it("Should display the afternoon forecast of each day of the week", async () => {
-    element.querySelector<HTMLButtonElement>("#toggle-week-forecast")?.click();
-    await fixture.whenStable();
+    await click(getWeekButton());
 
-    expect(component.isForecastModeWeek()).toBe(true);
-    expect(component.isSelectedDay(component.forecastDays()[0])).toBe(false);
+    expect(getSelectedButtons()).toEqual([false, false, false, true]);
     // Only the forecast at 17:00 in Paris (16:00 UTC) is between 15:00 and 18:00
-    expect(component.forecastToDisplay()).toEqual([forecastData.list[3]]);
-    expect(getDisplayedForecastsCount()).toEqual(1);
+    expect(getDisplayedForecastDescriptions()).toEqual(["Nuageux"]);
 
-    getDayButtons()[0].click();
-    await fixture.whenStable();
-    expect(component.isForecastModeWeek()).toBe(false);
+    // Selecting the week a second time changes nothing
+    await click(getWeekButton());
+    expect(getSelectedButtons()).toEqual([false, false, false, true]);
+    expect(getDisplayedForecastDescriptions()).toEqual(["Nuageux"]);
+
+    await click(getDayButtons()[0]);
+    expect(getSelectedButtons()).toEqual([true, false, false, false]);
     expect(getDisplayedForecastsCount()).toEqual(5);
+  });
+
+  it("Should display a single afternoon forecast per day of the week", async () => {
+    const forecastAt = (dt: number, description: string): Forecast => ({
+      ...forecastData.list[3],
+      dt,
+      weather: [{ ...forecastData.list[3].weather[0], description }]
+    });
+    // 15:00 and 18:00 in Paris on 08/03/2022
+    fixture.componentRef.setInput("forecastResponse", [
+      forecastAt(1646748000, "15:00"),
+      forecastAt(1646758800, "18:00")
+    ]);
+    await fixture.whenStable();
+    await click(getWeekButton());
+
+    expect(getDisplayedForecastDescriptions()).toEqual(["15:00"]);
+  });
+
+  it("Should display no forecast day without forecast", async () => {
+    fixture.componentRef.setInput("forecastResponse", []);
+    await fixture.whenStable();
+    expect(getDayButtons()).toHaveLength(0);
+    expect(getSelectedButtons()).toEqual([false]);
+    expect(getDisplayedForecastsCount()).toEqual(0);
   });
 });

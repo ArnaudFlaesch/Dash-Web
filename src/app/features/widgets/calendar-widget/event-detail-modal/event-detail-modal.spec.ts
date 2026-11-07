@@ -4,7 +4,6 @@ import { CalendarEvent } from "angular-calendar";
 import { EventDetailModal } from "./event-detail-modal";
 
 describe("EventDetailModal", () => {
-  let component: EventDetailModal;
   let fixture: ComponentFixture<EventDetailModal>;
 
   const calendarEvent: CalendarEvent = {
@@ -19,7 +18,6 @@ describe("EventDetailModal", () => {
       providers: [{ provide: MAT_DIALOG_DATA, useValue: event }]
     });
     fixture = TestBed.createComponent(EventDetailModal);
-    component = fixture.componentInstance;
   }
 
   function getContentLines(): string[] {
@@ -31,24 +29,21 @@ describe("EventDetailModal", () => {
   it("Should display the data in the modal", async () => {
     createComponent(calendarEvent);
     await fixture.whenStable();
-    const element: HTMLElement = fixture.nativeElement;
+    const element = fixture.nativeElement as HTMLElement;
 
-    expect(component.eventDetail).toEqual(calendarEvent);
     expect(element.querySelector("h1")?.textContent?.trim()).toEqual(calendarEvent.title);
     expect(getContentLines()).toEqual([
-      `${component.labels.start} ${calendarEvent.start.toLocaleString("fr")}`,
-      `${component.labels.end} ${calendarEvent.end?.toLocaleString("fr")}`
+      `Début ${calendarEvent.start.toLocaleString("fr")}`,
+      `Fin ${calendarEvent.end?.toLocaleString("fr")}`
     ]);
-    expect(element.querySelector("mat-dialog-actions button")?.textContent?.trim()).toEqual(
-      component.labels.ok
-    );
+    expect(element.querySelector("mat-dialog-actions button")?.textContent?.trim()).toEqual("Ok");
   });
 
   it("Should not display the end of an event without end date", async () => {
     createComponent({ title: "Rappel", start: new Date(2022, 0, 1, 9, 30) });
     await fixture.whenStable();
     expect(getContentLines()).toEqual([
-      `${component.labels.start} ${new Date(2022, 0, 1, 9, 30).toLocaleString("fr")}`
+      `Début ${new Date(2022, 0, 1, 9, 30).toLocaleString("fr")}`
     ]);
   });
 });

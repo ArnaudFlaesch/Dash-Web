@@ -1,427 +1,54 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 
 import { provideHttpClient } from "@angular/common/http";
+import { DebugElement } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { environment } from "@environments/environment";
-import { WidgetTypeEnum } from "@widgets/widget-type.enum";
-import { IWidgetConfig } from "@widgets/widget-config.model";
+import { WidgetType } from "@widgets/widget-type";
+import { WidgetConfig } from "@widgets/widget-config";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { WidgetService } from "@widgets/widget-service";
 import { Home } from "./home";
 import { CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
+import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed";
+import { Location } from "@angular/common";
 import { By } from "@angular/platform-browser";
 import { MatDialog } from "@angular/material/dialog";
+import { MatSlideToggleHarness } from "@angular/material/slide-toggle/testing";
 import { Router } from "@angular/router";
 import { NEVER, Observable, of } from "rxjs";
 import { vi } from "vitest";
-import { ITab } from "@features/tab/tab.model";
+import { Tab } from "@features/tab/tab";
 import { ImportConfigModal } from "@features/home/import-config-modal/import-config-modal";
 import { ComponentFixture } from "@angular/core/testing";
-import { RoleEnum } from "@core/auth/role.enum";
+import { Role } from "@core/auth/role";
 import { MiniWidgetService } from "@widgets/mini-widget-service";
 import { NotificationService } from "@features/notifications/notification-service";
 import { WidgetList } from "@widgets/widget-list/widget-list";
 
 describe("Home", () => {
-  let component: Home;
+  let fixture: ComponentFixture<Home>;
   let httpTestingController: HttpTestingController;
   let dialogResult: string | undefined;
 
-  const tabPath = "/tab/";
+  const serverError = { status: 500, statusText: "Server error" };
 
-  const tabData = [
+  const tabs: Tab[] = [
     { id: 1, label: "Flux RSS", tabOrder: 1 },
     { id: 2, label: "Météo", tabOrder: 2 }
   ];
 
-  const firstTabWidgetData = [
-    {
-      id: 1,
-      type: WidgetTypeEnum.RSS,
-      data: { url: "url.rss.xml" },
-      tabId: 1,
-      widgetOrder: 1
-    },
-    {
-      id: 2,
-      type: WidgetTypeEnum.RSS,
-      data: { url: "url.rss.xml" },
-      tabId: 1,
-      widgetOrder: 2
-    }
-  ] as IWidgetConfig[];
-
-  beforeEach(async () => {
-    dialogResult = undefined;
-    await TestBed.configureTestingModule({
-      providers: [
-        provideRouter([
-          {
-            path: "home",
-            component: Home
-          }
-        ]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        {
-          provide: MatDialog,
-          useValue: {
-            open: (): { afterClosed: () => Observable<string | undefined> } => ({
-              afterClosed: (): Observable<string | undefined> => of(dialogResult)
-            })
-          }
-        }
-      ]
-    })
-      // Not rendered, so that the resources are only loaded by the test, not by the child components
-      .overrideTemplate(Home, "")
-      .compileComponents();
-
-    const fixture = TestBed.createComponent(Home);
-    component = fixture.componentInstance;
-    httpTestingController = TestBed.inject(HttpTestingController);
-    TestBed.tick();
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  const threeTabs = [
+  const threeTabs: Tab[] = [
     { id: 1, label: "Home", tabOrder: 1 },
     { id: 2, label: "RSS", tabOrder: 2 },
     { id: 3, label: "Weather", tabOrder: 3 }
   ];
 
-  /** Lets the resources receive the flushed responses, then load the requests depending on them. */
-  async function flushResources(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve));
-    TestBed.tick();
-  }
-
-  /** Answers the request loading the widgets of the active tab. */
-  async function flushActiveTabWidgets(widgets: IWidgetConfig[] = []): Promise<void> {
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/?tabId=${component.activeTab()}`)
-      .flush(widgets);
-    await flushResources();
-  }
-
-  /** Loads the tabs, then the widgets of the first tab. */
-  async function loadDashboard(
-    tabs: ITab[] = tabData,
-    widgets: IWidgetConfig[] = firstTabWidgetData
-  ): Promise<void> {
-    httpTestingController.expectOne(environment.backend_url + tabPath).flush(tabs);
-    await flushResources();
-    await flushActiveTabWidgets(widgets);
-  }
-
-  function deleteTab(tabId: number): void {
-    component.deleteTabFromDash(tabId);
-    httpTestingController
-      .expectOne(`${environment.backend_url}/tab/deleteTab?id=${tabId}`)
-      .flush(null, { status: 200, statusText: "OK" });
-  }
-
-  it("Should display two tabs with two widgets on the first one", async () => {
-    expect(component.tabs()).toEqual([]);
-    await loadDashboard();
-    expect(component.tabs()).toEqual(tabData);
-    expect(component.activeWidgets()).toHaveLength(2);
-    expect(component.activeTab()).toEqual(tabData[0].id);
-
-    // Select second tab
-    component.selectTab(tabData[1].id);
-    TestBed.tick();
-    expect(component.activeTab()).toEqual(tabData[1].id);
-    await flushActiveTabWidgets();
-  });
-
-  it("Should display two tabs then delete a widget and the second tab", async () => {
-    await loadDashboard();
-
-    // Delete second widget
-    const widgetIdToDelete = component.activeWidgets()[1].id;
-    component.deleteWidgetFromDashboard(widgetIdToDelete);
-    const deleteWidgetRequest = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/deleteWidget?id=${widgetIdToDelete}`
-    );
-    deleteWidgetRequest.flush(null, { status: 200, statusText: "OK" });
-    expect(component.activeWidgets()).toHaveLength(1);
-
-    // Delete second tab
-    deleteTab(component.tabs()[1].id);
-    expect(component.tabs()).toHaveLength(1);
-  });
-
-  it("Should delete the last tab and select the first after", async () => {
-    await loadDashboard(threeTabs, []);
-    expect(component.activeTab()).toEqual(threeTabs[0].id);
-  });
-
-  it("Should delete the first tab and select the second after", async () => {
-    await loadDashboard(threeTabs, []);
-
-    deleteTab(component.tabs()[0].id);
-    TestBed.tick();
-    await flushActiveTabWidgets();
-
-    expect(component.activeTab()).toEqual(component.tabs()[0].id);
-  });
-
-  it("Should delete the active tab and select the first one after", async () => {
-    await loadDashboard(threeTabs, []);
-
-    component.selectTab(component.tabs()[1].id);
-    TestBed.tick();
-    await flushActiveTabWidgets();
-
-    deleteTab(component.activeTab());
-    TestBed.tick();
-    await flushActiveTabWidgets();
-    expect(component.activeTab()).toEqual(threeTabs[0].id);
-  });
-
-  it("Should delete a tab", async () => {
-    await loadDashboard([{ id: 1, label: "Home", tabOrder: 1 }], []);
-
-    deleteTab(component.activeTab());
-    expect(component.tabs()).toEqual([]);
-    expect(component.activeWidgets()).toEqual([]);
-  });
-
-  it("Should switch between light and dark mode", async () => {
-    httpTestingController.expectOne(environment.backend_url + tabPath).flush([]);
-    await flushResources();
-    component.toggleTheme(true);
-    expect(localStorage.getItem("preferredTheme")).toEqual("dark");
-    component.toggleTheme(true);
-    expect(localStorage.getItem("preferredTheme")).toEqual("dark");
-    component.toggleTheme(false);
-    expect(localStorage.getItem("preferredTheme")).toEqual("light");
-  });
-
-  it("Should add a new tab and select it", async () => {
-    await loadDashboard();
-    component.addNewTab();
-    const request = httpTestingController.expectOne(`${environment.backend_url}/tab/addTab`);
-    expect(request.request.body).toEqual({ label: "Nouvel onglet" });
-    request.flush({ id: 3, label: "Nouvel onglet", tabOrder: 3 });
-    TestBed.tick();
-    await flushActiveTabWidgets();
-
-    expect(component.tabs()).toHaveLength(3);
-    expect(component.activeTab()).toEqual(3);
-    expect(component.activeWidgets()).toEqual([]);
-  });
-
-  it("Should add the widget selected in the creation modal", async () => {
-    await loadDashboard();
-    dialogResult = "WEATHER";
-    component.openCreateWidgetModal();
-    const request = httpTestingController.expectOne(`${environment.backend_url}/widget/addWidget`);
-    expect(request.request.body).toEqual({ type: WidgetTypeEnum.WEATHER, tabId: tabData[0].id });
-    request.flush({ id: 3, type: WidgetTypeEnum.WEATHER, tabId: 1, widgetOrder: 3 });
-    expect(component.activeWidgets()).toHaveLength(3);
-  });
-
-  it("Should not add a widget when the creation modal is closed", async () => {
-    await loadDashboard();
-    component.openCreateWidgetModal();
-    httpTestingController.expectNone(`${environment.backend_url}/widget/addWidget`);
-    expect(component.activeWidgets()).toHaveLength(2);
-  });
-
-  it("Should open the configuration import modal", async () => {
-    await loadDashboard();
-    const openSpy = vi.spyOn(TestBed.inject(MatDialog), "open");
-    component.openImportConfigModal();
-    expect(openSpy).toHaveBeenCalledWith(ImportConfigModal, { width: "640px" });
-  });
-
-  it("Should reorder the tabs", async () => {
-    await loadDashboard();
-    component.drop({ previousIndex: 0, currentIndex: 1 } as CdkDragDrop<ITab[]>);
-    const request = httpTestingController.expectOne(`${environment.backend_url}/tab/updateTabs`);
-    expect(request.request.body).toEqual([
-      { ...tabData[1], tabOrder: 0 },
-      { ...tabData[0], tabOrder: 1 }
-    ]);
-    request.flush(request.request.body);
-    expect(component.tabs().map((tab) => tab.id)).toEqual([2, 1]);
-  });
-
-  it("Should save the widgets order", async () => {
-    await loadDashboard();
-    component.updateWidgetOrder(firstTabWidgetData);
-    const request = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/updateWidgetsOrder`
-    );
-    expect(request.request.body).toEqual(firstTabWidgetData);
-    request.flush(firstTabWidgetData);
-  });
-
-  it("Should delete a widget when its deletion is requested", async () => {
-    await loadDashboard();
-    TestBed.inject(WidgetService).notifyWidgetDeleted(firstTabWidgetData[0].id);
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/deleteWidget?id=${firstTabWidgetData[0].id}`)
-      .flush(null);
-    expect(component.activeWidgets().map((widget) => widget.id)).toEqual([2]);
-  });
-
-  it("Should refresh all the widgets and toggle the edit mode", async () => {
-    await loadDashboard();
-    const refreshSpy = vi.fn();
-    TestBed.inject(WidgetService).refreshWidgetsAction.subscribe(refreshSpy);
-    component.refreshAllWidgets();
-    expect(refreshSpy).toHaveBeenCalledTimes(1);
-
-    expect(component.editModeEnabled()).toBe(false);
-    component.toggleEditMode();
-    expect(component.editModeEnabled()).toBe(true);
-  });
-
-  it("Should export the configuration", async () => {
-    await loadDashboard();
-    const createObjectURL = vi.fn(() => "blob:config");
-    const revokeObjectURL = vi.fn();
-    vi.stubGlobal("URL", Object.assign(URL, { createObjectURL, revokeObjectURL }));
-    const clickSpy = vi
-      .spyOn(HTMLAnchorElement.prototype, "click")
-      .mockImplementation(() => undefined);
-
-    component.downloadConfig();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/dashConfig/export`)
-      .flush(new Blob(["{}"]));
-
-    expect(createObjectURL).toHaveBeenCalled();
-    expect(clickSpy).toHaveBeenCalled();
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:config");
-    clickSpy.mockRestore();
-    vi.unstubAllGlobals();
-  });
-
-  it("Should display errors when the dashboard actions fail", async () => {
-    const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
-    httpTestingController
-      .expectOne(environment.backend_url + tabPath)
-      .flush(null, { status: 500, statusText: "Server error" });
-    await flushResources();
-    expect(component.isDashboardLoaded()).toBe(true);
-
-    component.addNewTab();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/tab/addTab`)
-      .flush(null, { status: 500, statusText: "Server error" });
-
-    component.downloadConfig();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/dashConfig/export`)
-      .flush(null, { status: 500, statusText: "Server error" });
-
-    expect(handleErrorSpy).toHaveBeenCalledTimes(3);
-  });
-
-  it("Should display errors when the widget and tab actions fail", async () => {
-    const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
-    const serverError = { status: 500, statusText: "Server error" };
-    httpTestingController.expectOne(environment.backend_url + tabPath).flush(tabData);
-    await flushResources();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/?tabId=1`)
-      .flush(null, serverError);
-    await flushResources();
-    expect(component.activeWidgets()).toEqual([]);
-    expect(handleErrorSpy).toHaveBeenLastCalledWith(
-      expect.objectContaining({ status: 500 }),
-      "Erreur lors de la récupération des widgets."
-    );
-
-    component.deleteWidgetFromDashboard(1);
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/deleteWidget?id=1`)
-      .flush(null, serverError);
-    expect(handleErrorSpy).toHaveBeenLastCalledWith(
-      expect.anything(),
-      "Erreur lors de la suppression d'un widget."
-    );
-
-    component.deleteTabFromDash(1);
-    httpTestingController
-      .expectOne(`${environment.backend_url}/tab/deleteTab?id=1`)
-      .flush(null, serverError);
-    expect(component.tabs()).toEqual(tabData);
-    expect(handleErrorSpy).toHaveBeenLastCalledWith(
-      expect.anything(),
-      "Erreur lors de la suppression d'un onglet."
-    );
-
-    component.updateWidgetOrder(firstTabWidgetData);
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/updateWidgetsOrder`)
-      .flush(null, serverError);
-    expect(handleErrorSpy).toHaveBeenLastCalledWith(
-      expect.anything(),
-      "Erreur lors de la mise à jour des widgets."
-    );
-
-    component.drop({ previousIndex: 0, currentIndex: 1 } as CdkDragDrop<ITab[]>);
-    httpTestingController
-      .expectOne(`${environment.backend_url}/tab/updateTabs`)
-      .flush(null, serverError);
-    expect(component.tabs()).toEqual(tabData);
-    expect(handleErrorSpy).toHaveBeenLastCalledWith(
-      expect.anything(),
-      "Erreur lors de la mise à jour des onglets."
-    );
-
-    dialogResult = "RSS";
-    component.openCreateWidgetModal();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/addWidget`)
-      .flush(null, serverError);
-    expect(handleErrorSpy).toHaveBeenLastCalledWith(
-      expect.anything(),
-      "Erreur lors de l'ajout d'un widget."
-    );
-    expect(handleErrorSpy).toHaveBeenCalledTimes(6);
-  });
-
-  it("Should keep the renamed tab in the list of tabs", async () => {
-    await loadDashboard();
-    component.updateTab({ ...tabData[1], label: "Journaux" });
-    expect(component.tabs()).toEqual([tabData[0], { ...tabData[1], label: "Journaux" }]);
-    expect(component.activeTab()).toEqual(tabData[0].id);
-  });
-
-  it("Should log out the user", async () => {
-    await loadDashboard();
-    localStorage.setItem("user", JSON.stringify({ accessToken: "token" }));
-    const navigateSpy = vi.spyOn(TestBed.inject(Router), "navigate").mockResolvedValue(true);
-    await component.logout();
-    expect(localStorage.getItem("user")).toBeNull();
-    expect(navigateSpy).toHaveBeenCalledWith(["login"]);
-  });
-});
-
-describe("Home template", () => {
-  let component: Home;
-  let fixture: ComponentFixture<Home>;
-  let httpTestingController: HttpTestingController;
-  let dialogResult: string | undefined;
-
-  const tabs: ITab[] = [
-    { id: 1, label: "Flux RSS", tabOrder: 1 },
-    { id: 2, label: "Météo", tabOrder: 2 }
-  ];
-
   const widgets = [
-    { id: 1, type: WidgetTypeEnum.RSS, data: { url: "url.rss.xml" }, tabId: 1, widgetOrder: 1 }
-  ] as IWidgetConfig[];
+    { id: 1, type: WidgetType.RSS, data: { url: "url.rss.xml" }, tabId: 1, widgetOrder: 1 },
+    { id: 2, type: WidgetType.RSS, data: { url: "url.rss.xml" }, tabId: 1, widgetOrder: 2 }
+  ] as WidgetConfig[];
 
   beforeEach(async () => {
     dialogResult = undefined;
@@ -458,21 +85,43 @@ describe("Home template", () => {
   afterEach(() => {
     httpTestingController.verify();
     localStorage.removeItem("user");
+    // The menus are rendered in an overlay attached to the body
+    document.querySelector(".cdk-overlay-container")?.replaceChildren();
   });
 
   function createComponent(): void {
     fixture = TestBed.createComponent(Home);
-    component = fixture.componentInstance;
     httpTestingController = TestBed.inject(HttpTestingController);
     TestBed.tick();
   }
 
   function getElement<T extends HTMLElement>(selector: string): T {
-    return (fixture.nativeElement as HTMLElement).querySelector(selector) as T;
+    return (fixture.nativeElement as HTMLElement).querySelector<T>(selector)!;
   }
 
   function getTabs(): HTMLElement[] {
-    return Array.from((fixture.nativeElement as HTMLElement).querySelectorAll("dash-tab"));
+    return Array.from((fixture.nativeElement as HTMLElement).querySelectorAll("dash-tab-label"));
+  }
+
+  function getTabLabels(): (string | undefined)[] {
+    return getTabs().map((tab) => tab.textContent?.trim());
+  }
+
+  /** Label of the selected tab, the one whose widgets are displayed. */
+  function getSelectedTabLabel(): string | undefined {
+    const selectedTabs = getTabs().filter((tab) => tab.classList.contains("selected-item"));
+    expect(selectedTabs.length).toBeLessThanOrEqual(1);
+    return selectedTabs[0]?.textContent?.trim();
+  }
+
+  function getTabLabelElement(tab: Tab): DebugElement {
+    const tabLabel = fixture.debugElement
+      .queryAll(By.css("dash-tab-label"))
+      .find((debugElement) => debugElement.nativeElement.textContent.trim() === tab.label);
+    if (!tabLabel) {
+      throw new Error(`No tab ${tab.label}`);
+    }
+    return tabLabel;
   }
 
   function getWidgetList(): WidgetList {
@@ -489,7 +138,7 @@ describe("Home template", () => {
     TestBed.tick();
   }
 
-  async function flushWidgets(tabId: number, widgetsOfTab: IWidgetConfig[]): Promise<void> {
+  async function flushWidgets(tabId: number, widgetsOfTab: WidgetConfig[]): Promise<void> {
     httpTestingController
       .expectOne(`${environment.backend_url}/widget/?tabId=${tabId}`)
       .flush(widgetsOfTab);
@@ -498,8 +147,8 @@ describe("Home template", () => {
 
   /** Loads the tabs, then the widgets of the first tab. */
   async function loadDashboard(
-    tabsToLoad: ITab[] = tabs,
-    widgetsOfTab: IWidgetConfig[] = widgets
+    tabsToLoad: Tab[] = tabs,
+    widgetsOfTab: WidgetConfig[] = widgets
   ): Promise<void> {
     createComponent();
     httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(tabsToLoad);
@@ -510,232 +159,638 @@ describe("Home template", () => {
     }
   }
 
-  it("Should display a spinner while the tabs are loading", async () => {
-    createComponent();
-    expect(getElement("#dashboard-loading-spinner")).not.toBeNull();
-    expect(getElement("#home-header-container")).toBeNull();
-    httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush([]);
-    await render();
-    expect(getElement("#dashboard-loading-spinner")).toBeNull();
-    expect(getElement("#brand-name").textContent?.trim()).toEqual(component.labels.brandName);
-  });
-
-  it("Should sort the tabs horizontally", async () => {
-    await loadDashboard();
-    const dropList = fixture.debugElement.query(By.css("#tab-list")).injector.get(CdkDropList);
-    expect(dropList.orientation).toEqual("horizontal");
-  });
-
-  it("Should display the tabs and the widgets of the first tab", async () => {
-    await loadDashboard();
-    expect(getElement("#widgets-loading-spinner")).toBeNull();
-    expect(getTabs().map((tab) => tab.textContent?.trim())).toEqual(tabs.map((tab) => tab.label));
-    expect(getTabs()[0].classList).toContain("selected-item");
-    expect(getTabs()[0].getAttribute("aria-current")).toEqual("page");
-    expect(getTabs()[1].classList).not.toContain("selected-item");
-    expect(getElement("#tab-list-container").getAttribute("aria-label")).toEqual(
-      component.labels.tabs
-    );
-    expect(getElement("#add-widget-button-label").textContent?.trim()).toEqual(
-      component.labels.widget
-    );
-    expect(getElement<HTMLButtonElement>("#open-add-widget-modal").disabled).toBe(false);
-    expect(getElement("dash-miniwidget-list")).not.toBeNull();
-    expect(getElement("#no-tab-message")).toBeNull();
-    expect(getElement("#empty-tab-message")).toBeNull();
-    expect(getWidgetList().widgetList()).toEqual(widgets);
-    expect(getWidgetList().toggleEditMode()).toBe(false);
-  });
-
-  it("Should load the widgets of the tab clicked", async () => {
-    await loadDashboard();
-    getTabs()[1].click();
+  /** Clicks on a tab, then loads its widgets. */
+  async function selectTab(tab: Tab, widgetsOfTab: WidgetConfig[] = []): Promise<void> {
+    (getTabLabelElement(tab).nativeElement as HTMLElement).click();
     TestBed.tick();
     expect(getElement("#widgets-loading-spinner")).not.toBeNull();
-    await flushWidgets(tabs[1].id, []);
-    expect(component.activeTab()).toEqual(tabs[1].id);
-    expect(getTabs()[1].classList).toContain("selected-item");
-    expect(getTabs()[0].classList).not.toContain("selected-item");
-  });
+    await flushWidgets(tab.id, widgetsOfTab);
+  }
 
-  it("Should select the tab of the url", async () => {
-    await TestBed.inject(Router).navigateByUrl("/home?tabId=2");
-    createComponent();
-    httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(tabs);
+  /** Deletes a tab, as its label asks to with its delete button. */
+  async function deleteTab(tab: Tab): Promise<void> {
+    getTabLabelElement(tab).triggerEventHandler("tabDeletedEvent", tab.id);
+    httpTestingController
+      .expectOne(`${environment.backend_url}/tab/deleteTab?id=${tab.id}`)
+      .flush(null, { status: 200, statusText: "OK" });
     await render();
-    await flushWidgets(2, []);
-    expect(component.activeTab()).toEqual(2);
-    expect(getTabs()[1].classList).toContain("selected-item");
-  });
+  }
 
-  it("Should select the first tab when the tab of the url does not exist", async () => {
-    await TestBed.inject(Router).navigateByUrl("/home?tabId=42");
-    await loadDashboard();
-    expect(component.activeTab()).toEqual(tabs[0].id);
-  });
+  /** Drops the first tab after the second one. */
+  function dropFirstTabAfterSecond(): void {
+    fixture.debugElement.query(By.css("#tab-list")).triggerEventHandler("cdkDropListDropped", {
+      previousIndex: 0,
+      currentIndex: 1
+    } as CdkDragDrop<Tab[]>);
+  }
 
-  it("Should invite to create a tab when there is none", async () => {
-    await loadDashboard([], []);
-    expect(getElement("#no-tab-message h2").textContent?.trim()).toEqual(component.labels.noTab);
-    expect(getElement("#no-tab-message p").textContent?.trim()).toEqual(component.labels.noTabHint);
-    expect(getElement<HTMLButtonElement>("#open-add-widget-modal").disabled).toBe(true);
-
-    const createTabButton = getElement<HTMLButtonElement>("#no-tab-message button");
-    expect(createTabButton.textContent).toContain(component.labels.createTab);
-    createTabButton.click();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/tab/addTab`)
-      .flush({ id: 3, label: "Nouvel onglet", tabOrder: 1 });
-    TestBed.tick();
-    await flushWidgets(3, []);
-    expect(getTabs()).toHaveLength(1);
-    expect(getElement("#no-tab-message")).toBeNull();
-    expect(getElement("#empty-tab-message")).not.toBeNull();
-  });
-
-  it("Should invite to add a widget when the tab is empty", async () => {
-    await loadDashboard(tabs, []);
-    expect(getElement("#empty-tab-message h2").textContent?.trim()).toEqual(
-      component.labels.emptyTab
-    );
-    expect(getElement("#empty-tab-message p").textContent?.trim()).toEqual(
-      component.labels.emptyTabHint
-    );
-    const addWidgetButton = getElement<HTMLButtonElement>("#empty-tab-message button");
-    expect(addWidgetButton.textContent).toContain(component.labels.addWidget);
-
-    dialogResult = "WEATHER";
-    addWidgetButton.click();
-    const request = httpTestingController.expectOne(`${environment.backend_url}/widget/addWidget`);
-    expect(request.request.body).toEqual({ type: WidgetTypeEnum.WEATHER, tabId: tabs[0].id });
-    request.flush({ id: 4, type: WidgetTypeEnum.WEATHER, tabId: 1, widgetOrder: 1 });
-    await fixture.whenStable();
-    expect(getElement("#empty-tab-message")).toBeNull();
-    expect(getElement("dash-widget-list")).not.toBeNull();
-  });
-
-  it("Should add a tab from the header and select it", async () => {
-    await loadDashboard();
-    getElement<HTMLButtonElement>("#add-new-tab-button").click();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/tab/addTab`)
-      .flush({ id: 3, label: "Nouvel onglet", tabOrder: 3 });
-    TestBed.tick();
-    await flushWidgets(3, []);
-    expect(getTabs()).toHaveLength(3);
-    expect(getTabs()[2].classList).toContain("selected-item");
-  });
-
-  it("Should add a widget from the header", async () => {
-    await loadDashboard();
-    dialogResult = "RSS";
-    getElement<HTMLButtonElement>("#open-add-widget-modal").click();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/addWidget`)
-      .flush({ id: 2, type: WidgetTypeEnum.RSS, tabId: 1, widgetOrder: 2 });
-    await fixture.whenStable();
-    expect(getWidgetList().widgetList()).toHaveLength(2);
-  });
-
-  it("Should toggle the edit mode", async () => {
-    await loadDashboard();
-    expect(getElement("#edit-mode-banner")).toBeNull();
-    expect(getElement("#validate-widget-list-button")).toBeNull();
-
-    getElement<HTMLButtonElement>("#toggle-edit-mode-button").click();
-    await fixture.whenStable();
-    expect(getElement("#toggle-edit-mode-button")).toBeNull();
-    expect(getElement("#edit-mode-banner span").textContent?.trim()).toEqual(
-      component.labels.editModeHint
-    );
-    expect(getTabs()[0].classList).toContain("draggable");
-    expect(getWidgetList().toggleEditMode()).toBe(true);
-
-    getElement<HTMLButtonElement>("#validate-widget-list-button").click();
-    await fixture.whenStable();
-    expect(getElement("#edit-mode-banner")).toBeNull();
-
-    getElement<HTMLButtonElement>("#toggle-edit-mode-button").click();
-    await fixture.whenStable();
-    const finishButton = getElement<HTMLButtonElement>("#edit-mode-banner button");
-    expect(finishButton.textContent?.trim()).toEqual(component.labels.finish);
-    finishButton.click();
-    await fixture.whenStable();
-    expect(getElement("#edit-mode-banner")).toBeNull();
-    expect(component.editModeEnabled()).toBe(false);
-  });
-
-  it("Should refresh all the widgets", async () => {
-    await loadDashboard();
-    const refreshSpy = vi.fn();
-    TestBed.inject(WidgetService).refreshWidgetsAction.subscribe(refreshSpy);
-    getElement<HTMLButtonElement>("#reload-all-widgets-button").click();
-    expect(refreshSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it("Should save the widgets order sent by the widget list", async () => {
-    await loadDashboard();
-    getWidgetList().updateWidgetsOrderEvent.emit(widgets);
-    const request = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/updateWidgetsOrder`
-    );
-    expect(request.request.body).toEqual(widgets);
-    request.flush(widgets);
-  });
-
-  it("Should not display the notifications to a user", async () => {
-    await loadDashboard();
-    expect(getElement("dash-notifications")).toBeNull();
-  });
-
-  it("Should display the notifications to an admin", async () => {
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ id: 1, accessToken: "token", roles: [RoleEnum.ROLE_ADMIN] })
-    );
-    await loadDashboard();
-    expect(getElement("dash-notifications")).not.toBeNull();
-  });
-
-  it("Should log out from the user menu", async () => {
-    await loadDashboard();
-    const navigateSpy = vi.spyOn(TestBed.inject(Router), "navigate").mockResolvedValue(true);
+  /** Opens the user menu, rendered in an overlay. */
+  async function openUserMenu(): Promise<void> {
     getElement<HTMLButtonElement>("#dash-menu").click();
     await fixture.whenStable();
-    const logoutButton = document.querySelector<HTMLButtonElement>("#logout-button");
-    expect(logoutButton?.textContent).toContain(component.labels.logout);
-    expect(document.querySelector("#download-config-button")?.textContent).toContain(
-      component.labels.downloadConfig
-    );
-    expect(document.querySelector("#open-import-config-modal")?.textContent).toContain(
-      component.labels.importConfig
-    );
-    logoutButton?.click();
-    await vi.waitFor(() => expect(navigateSpy).toHaveBeenCalledWith(["login"]));
+  }
+
+  async function clickInUserMenu(selector: string): Promise<void> {
+    await openUserMenu();
+    document.querySelector<HTMLElement>(selector)?.click();
+  }
+
+  describe("Loading", () => {
+    it("Should display a spinner while the tabs are loading", async () => {
+      createComponent();
+      expect(getElement("#dashboard-loading-spinner")).not.toBeNull();
+      expect(getElement("#home-header-container")).toBeNull();
+      httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush([]);
+      await render();
+      expect(getElement("#dashboard-loading-spinner")).toBeNull();
+      expect(getElement("#brand-name").textContent?.trim()).toEqual("Dash");
+    });
+
+    it("Should display the tabs and the widgets of the first tab", async () => {
+      await loadDashboard();
+      expect(getElement("#widgets-loading-spinner")).toBeNull();
+      expect(getTabLabels()).toEqual(tabs.map((tab) => tab.label));
+      expect(getSelectedTabLabel()).toEqual(tabs[0].label);
+      expect(getTabs()[0].getAttribute("aria-current")).toEqual("page");
+      expect(getTabs()[1].getAttribute("aria-current")).toBeNull();
+      expect(getElement("#tab-list-container").getAttribute("aria-label")).toEqual("Onglets");
+      expect(getElement("#add-widget-button-label").textContent?.trim()).toEqual("Widget");
+      expect(getElement<HTMLButtonElement>("#open-add-widget-modal").disabled).toBe(false);
+      expect(getElement("dash-mini-widget-list")).not.toBeNull();
+      expect(getElement("#no-tab-message")).toBeNull();
+      expect(getElement("#empty-tab-message")).toBeNull();
+      expect(getWidgetList().widgetList()).toEqual(widgets);
+      expect(getWidgetList().toggleEditMode()).toBe(false);
+    });
+
+    it("Should sort the tabs horizontally", async () => {
+      await loadDashboard();
+      const dropList = fixture.debugElement.query(By.css("#tab-list")).injector.get(CdkDropList);
+      expect(dropList.orientation).toEqual("horizontal");
+    });
+
+    it("Should select the tab of the url", async () => {
+      await TestBed.inject(Router).navigateByUrl("/home?tabId=2");
+      createComponent();
+      httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(tabs);
+      await render();
+      await flushWidgets(2, []);
+      expect(getSelectedTabLabel()).toEqual(tabs[1].label);
+    });
+
+    it("Should select the first tab when the tab of the url does not exist", async () => {
+      await TestBed.inject(Router).navigateByUrl("/home?tabId=42");
+      await loadDashboard();
+      expect(getSelectedTabLabel()).toEqual(tabs[0].label);
+    });
+
+    it("Should display the dashboard without tabs when they can't be loaded", async () => {
+      const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
+      createComponent();
+      httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(null, serverError);
+      await render();
+      expect(handleErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 500 }),
+        "Erreur lors de l'initialisation du dashboard."
+      );
+      expect(getElement("#dashboard-loading-spinner")).toBeNull();
+      expect(getTabs()).toEqual([]);
+      expect(getElement("#no-tab-message")).not.toBeNull();
+    });
+
+    it("Should display an empty tab when its widgets can't be loaded", async () => {
+      const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
+      createComponent();
+      httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(tabs);
+      await render();
+      httpTestingController
+        .expectOne(`${environment.backend_url}/widget/?tabId=1`)
+        .flush(null, serverError);
+      await render();
+      expect(handleErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 500 }),
+        "Erreur lors de la récupération des widgets."
+      );
+      expect(getElement("#empty-tab-message")).not.toBeNull();
+      expect(getElement("dash-widget-list")).toBeNull();
+    });
   });
 
-  it("Should keep the new name of a tab when the tabs are reordered", async () => {
-    await loadDashboard();
-    getTabs()[0].querySelector(".tab-label")?.dispatchEvent(new MouseEvent("dblclick"));
-    await fixture.whenStable();
-    const input = getElement<HTMLInputElement>("#tab-name-input");
-    input.value = "Journaux";
-    input.dispatchEvent(new Event("input"));
-    await fixture.whenStable();
-    getElement(".save-tab-button").click();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/tab/updateTab`)
-      .flush({ id: 1, label: "Journaux", tabOrder: 1 });
-    await fixture.whenStable();
+  describe("Tabs", () => {
+    it("Should load the widgets of the tab clicked", async () => {
+      await loadDashboard();
+      await selectTab(tabs[1]);
+      expect(getSelectedTabLabel()).toEqual(tabs[1].label);
+      expect(getTabs()[1].getAttribute("aria-current")).toEqual("page");
+      expect(TestBed.inject(Location).path()).toContain("tabId=2");
+      expect(getElement("#empty-tab-message")).not.toBeNull();
+    });
 
-    component.drop({ previousIndex: 0, currentIndex: 1 } as CdkDragDrop<ITab[]>);
-    const request = httpTestingController.expectOne(`${environment.backend_url}/tab/updateTabs`);
-    expect(request.request.body).toEqual([
-      { id: 2, label: "Météo", tabOrder: 0 },
-      { id: 1, label: "Journaux", tabOrder: 1 }
-    ]);
-    request.flush(request.request.body);
-    await fixture.whenStable();
-    expect(getTabs().map((tab) => tab.textContent?.trim())).toEqual(["Météo", "Journaux"]);
+    it("Should select a tab with the Enter key", async () => {
+      await loadDashboard();
+      getTabs()[1].dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+      TestBed.tick();
+      await flushWidgets(tabs[1].id, []);
+      expect(getSelectedTabLabel()).toEqual(tabs[1].label);
+    });
+
+    it("Should not reload the widgets when the selected tab is clicked", async () => {
+      await loadDashboard();
+      getTabs()[0].click();
+      TestBed.tick();
+      httpTestingController.expectNone(`${environment.backend_url}/widget/?tabId=1`);
+      expect(TestBed.inject(Location).path()).not.toContain("tabId");
+      expect(getWidgetList().widgetList()).toEqual(widgets);
+    });
+
+    it("Should invite to create a tab when there is none", async () => {
+      await loadDashboard([], []);
+      expect(getElement("#no-tab-message h2").textContent?.trim()).toEqual("Aucun onglet");
+      expect(getElement("#no-tab-message p").textContent?.trim()).toEqual(
+        "Créez un onglet pour commencer à composer votre dashboard."
+      );
+      expect(getElement<HTMLButtonElement>("#open-add-widget-modal").disabled).toBe(true);
+
+      const createTabButton = getElement<HTMLButtonElement>("#no-tab-message button");
+      expect(createTabButton.textContent).toContain("Créer un onglet");
+      createTabButton.click();
+      httpTestingController
+        .expectOne(`${environment.backend_url}/tab/addTab`)
+        .flush({ id: 3, label: "Nouvel onglet", tabOrder: 1 });
+      TestBed.tick();
+      await flushWidgets(3, []);
+      expect(getTabLabels()).toEqual(["Nouvel onglet"]);
+      expect(getElement("#no-tab-message")).toBeNull();
+      expect(getElement("#empty-tab-message")).not.toBeNull();
+    });
+
+    it("Should add a tab from the header and select it", async () => {
+      await loadDashboard();
+      getElement<HTMLButtonElement>("#add-new-tab-button").click();
+      const request = httpTestingController.expectOne(`${environment.backend_url}/tab/addTab`);
+      expect(request.request.body).toEqual({ label: "Nouvel onglet" });
+      request.flush({ id: 3, label: "Nouvel onglet", tabOrder: 3 });
+      TestBed.tick();
+      await flushWidgets(3, []);
+      expect(getTabLabels()).toEqual([...tabs.map((tab) => tab.label), "Nouvel onglet"]);
+      expect(getSelectedTabLabel()).toEqual("Nouvel onglet");
+      expect(TestBed.inject(Location).path()).toContain("tabId=3");
+      expect(getElement("#empty-tab-message")).not.toBeNull();
+    });
+
+    it("Should delete a widget and the second tab", async () => {
+      await loadDashboard();
+
+      TestBed.inject(WidgetService).notifyWidgetDeleted(widgets[1].id);
+      httpTestingController
+        .expectOne(`${environment.backend_url}/widget/deleteWidget?id=${widgets[1].id}`)
+        .flush(null, { status: 200, statusText: "OK" });
+      await render();
+      expect(getWidgetList().widgetList()).toEqual([widgets[0]]);
+
+      await deleteTab(tabs[1]);
+      expect(getTabLabels()).toEqual([tabs[0].label]);
+      expect(getSelectedTabLabel()).toEqual(tabs[0].label);
+      expect(getWidgetList().widgetList()).toEqual([widgets[0]]);
+    });
+
+    it("Should delete the last tab and keep the first one selected", async () => {
+      await loadDashboard(threeTabs, []);
+      await deleteTab(threeTabs[2]);
+      expect(getTabLabels()).toEqual([threeTabs[0].label, threeTabs[1].label]);
+      expect(getSelectedTabLabel()).toEqual(threeTabs[0].label);
+    });
+
+    it("Should delete the first tab and select the second after", async () => {
+      await loadDashboard(threeTabs, widgets);
+
+      await deleteTab(threeTabs[0]);
+      // The widgets of the deleted tab are removed at once
+      expect(getElement("dash-widget-list")).toBeNull();
+      await flushWidgets(threeTabs[1].id, []);
+
+      expect(getTabLabels()).toEqual([threeTabs[1].label, threeTabs[2].label]);
+      expect(getSelectedTabLabel()).toEqual(threeTabs[1].label);
+    });
+
+    it("Should delete the active tab and select the first one after", async () => {
+      await loadDashboard(threeTabs, []);
+      await selectTab(threeTabs[1]);
+
+      await deleteTab(threeTabs[1]);
+      await flushWidgets(threeTabs[0].id, []);
+      expect(getTabLabels()).toEqual([threeTabs[0].label, threeTabs[2].label]);
+      expect(getSelectedTabLabel()).toEqual(threeTabs[0].label);
+    });
+
+    it("Should delete the only tab", async () => {
+      await loadDashboard([{ id: 1, label: "Home", tabOrder: 1 }], widgets);
+
+      await deleteTab({ id: 1, label: "Home", tabOrder: 1 });
+      expect(getTabs()).toEqual([]);
+      expect(getElement("dash-widget-list")).toBeNull();
+      expect(getElement("#no-tab-message")).not.toBeNull();
+    });
+
+    it("Should reorder the tabs", async () => {
+      await loadDashboard();
+      dropFirstTabAfterSecond();
+      const request = httpTestingController.expectOne(`${environment.backend_url}/tab/updateTabs`);
+      expect(request.request.body).toEqual([
+        { ...tabs[1], tabOrder: 0 },
+        { ...tabs[0], tabOrder: 1 }
+      ]);
+      request.flush(request.request.body);
+      await fixture.whenStable();
+      expect(getTabLabels()).toEqual([tabs[1].label, tabs[0].label]);
+    });
+
+    it("Should not save the tabs when a tab is dropped back at its place", async () => {
+      await loadDashboard();
+      fixture.debugElement.query(By.css("#tab-list")).triggerEventHandler("cdkDropListDropped", {
+        previousIndex: 1,
+        currentIndex: 1
+      } as CdkDragDrop<Tab[]>);
+      httpTestingController.expectNone(`${environment.backend_url}/tab/updateTabs`);
+    });
+
+    it("Should keep the renamed tab in the list of tabs, without changing the selected tab", async () => {
+      await loadDashboard();
+      getTabs()[1].querySelector(".tab-label")?.dispatchEvent(new MouseEvent("dblclick"));
+      await fixture.whenStable();
+      const input = getElement<HTMLInputElement>("#tab-name-input");
+      input.value = "Journaux";
+      input.dispatchEvent(new Event("input"));
+      await fixture.whenStable();
+      // Clicking on the save button of a tab doesn't select it (no request for its widgets)
+      getElement(".save-tab-button").click();
+      httpTestingController
+        .expectOne(`${environment.backend_url}/tab/updateTab`)
+        .flush({ ...tabs[1], label: "Journaux" });
+      await fixture.whenStable();
+
+      expect(getTabLabels()).toEqual([tabs[0].label, "Journaux"]);
+      expect(getSelectedTabLabel()).toEqual(tabs[0].label);
+    });
+
+    it("Should save the name of a tab with the Enter key, without selecting the tab", async () => {
+      await loadDashboard();
+      getTabs()[1].querySelector(".tab-label")?.dispatchEvent(new MouseEvent("dblclick"));
+      await fixture.whenStable();
+      const input = getElement<HTMLInputElement>("#tab-name-input");
+      input.value = "Journaux";
+      input.dispatchEvent(new Event("input"));
+      await fixture.whenStable();
+      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      httpTestingController
+        .expectOne(`${environment.backend_url}/tab/updateTab`)
+        .flush({ ...tabs[1], label: "Journaux" });
+      await fixture.whenStable();
+
+      expect(getTabLabels()).toEqual([tabs[0].label, "Journaux"]);
+      expect(getSelectedTabLabel()).toEqual(tabs[0].label);
+    });
+
+    it("Should delete a tab with its delete button, without selecting it first", async () => {
+      await loadDashboard();
+      getTabs()[1].querySelector(".tab-label")?.dispatchEvent(new MouseEvent("dblclick"));
+      await fixture.whenStable();
+      getElement(".delete-tab-button").click();
+      httpTestingController
+        .expectOne(`${environment.backend_url}/tab/deleteTab?id=${tabs[1].id}`)
+        .flush(null, { status: 200, statusText: "OK" });
+      await render();
+
+      expect(getTabLabels()).toEqual([tabs[0].label]);
+      expect(getSelectedTabLabel()).toEqual(tabs[0].label);
+    });
+
+    it("Should keep the new name of a tab when the tabs are reordered", async () => {
+      await loadDashboard();
+      getTabs()[0].querySelector(".tab-label")?.dispatchEvent(new MouseEvent("dblclick"));
+      await fixture.whenStable();
+      const input = getElement<HTMLInputElement>("#tab-name-input");
+      input.value = "Journaux";
+      input.dispatchEvent(new Event("input"));
+      await fixture.whenStable();
+      getElement(".save-tab-button").click();
+      httpTestingController
+        .expectOne(`${environment.backend_url}/tab/updateTab`)
+        .flush({ id: 1, label: "Journaux", tabOrder: 1 });
+      await fixture.whenStable();
+
+      dropFirstTabAfterSecond();
+      const request = httpTestingController.expectOne(`${environment.backend_url}/tab/updateTabs`);
+      expect(request.request.body).toEqual([
+        { id: 2, label: "Météo", tabOrder: 0 },
+        { id: 1, label: "Journaux", tabOrder: 1 }
+      ]);
+      request.flush(request.request.body);
+      await fixture.whenStable();
+      expect(getTabLabels()).toEqual(["Météo", "Journaux"]);
+    });
+  });
+
+  describe("Widgets", () => {
+    it("Should invite to add a widget when the tab is empty", async () => {
+      await loadDashboard(tabs, []);
+      expect(getElement("#empty-tab-message h2").textContent?.trim()).toEqual(
+        "Cet onglet est vide"
+      );
+      expect(getElement("#empty-tab-message p").textContent?.trim()).toEqual(
+        "Ajoutez un widget : météo, flux RSS, agenda, Strava…"
+      );
+      const addWidgetButton = getElement<HTMLButtonElement>("#empty-tab-message button");
+      expect(addWidgetButton.textContent).toContain("Ajouter un widget");
+
+      dialogResult = "WEATHER";
+      addWidgetButton.click();
+      const request = httpTestingController.expectOne(
+        `${environment.backend_url}/widget/addWidget`
+      );
+      expect(request.request.body).toEqual({ type: WidgetType.WEATHER, tabId: tabs[0].id });
+      request.flush({ id: 4, type: WidgetType.WEATHER, tabId: 1, widgetOrder: 1 });
+      await fixture.whenStable();
+      expect(getElement("#empty-tab-message")).toBeNull();
+      expect(getElement("dash-widget-list")).not.toBeNull();
+    });
+
+    it("Should add the widget selected in the creation modal from the header", async () => {
+      await loadDashboard();
+      const openSpy = vi.spyOn(TestBed.inject(MatDialog), "open");
+      dialogResult = "RSS";
+      getElement<HTMLButtonElement>("#open-add-widget-modal").click();
+      expect(openSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ width: "640px" })
+      );
+      const request = httpTestingController.expectOne(
+        `${environment.backend_url}/widget/addWidget`
+      );
+      expect(request.request.body).toEqual({ type: WidgetType.RSS, tabId: tabs[0].id });
+      request.flush({ id: 3, type: WidgetType.RSS, tabId: 1, widgetOrder: 3 });
+      await fixture.whenStable();
+      expect(getWidgetList().widgetList()).toHaveLength(3);
+    });
+
+    it("Should not add a widget when the creation modal is closed", async () => {
+      await loadDashboard();
+      getElement<HTMLButtonElement>("#open-add-widget-modal").click();
+      httpTestingController.expectNone(`${environment.backend_url}/widget/addWidget`);
+      await fixture.whenStable();
+      expect(getWidgetList().widgetList()).toHaveLength(2);
+    });
+
+    it("Should delete a widget when its deletion is requested", async () => {
+      await loadDashboard();
+      TestBed.inject(WidgetService).notifyWidgetDeleted(widgets[0].id);
+      httpTestingController
+        .expectOne(`${environment.backend_url}/widget/deleteWidget?id=${widgets[0].id}`)
+        .flush(null);
+      await fixture.whenStable();
+      expect(
+        getWidgetList()
+          .widgetList()
+          .map((widget) => widget.id)
+      ).toEqual([2]);
+    });
+
+    it("Should save the widgets order sent by the widget list", async () => {
+      await loadDashboard();
+      getWidgetList().updateWidgetsOrderEvent.emit(widgets);
+      const request = httpTestingController.expectOne(
+        `${environment.backend_url}/widget/updateWidgetsOrder`
+      );
+      expect(request.request.body).toEqual(widgets);
+      request.flush(widgets);
+    });
+
+    it("Should refresh all the widgets", async () => {
+      await loadDashboard();
+      const refreshSpy = vi.fn();
+      TestBed.inject(WidgetService).refreshWidgetsAction.subscribe(refreshSpy);
+      getElement<HTMLButtonElement>("#reload-all-widgets-button").click();
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("Should refresh all the widgets every ten minutes", async () => {
+      vi.useFakeTimers({ toFake: ["setInterval", "clearInterval"] });
+      try {
+        await loadDashboard();
+        const refreshSpy = vi.fn();
+        TestBed.inject(WidgetService).refreshWidgetsAction.subscribe(refreshSpy);
+        vi.advanceTimersByTime(10 * 60 * 1000);
+        expect(refreshSpy).toHaveBeenCalledTimes(1);
+
+        fixture.destroy();
+        vi.advanceTimersByTime(10 * 60 * 1000);
+        expect(refreshSpy).toHaveBeenCalledTimes(1);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it("Should toggle the edit mode", async () => {
+      await loadDashboard();
+      expect(getElement("#edit-mode-banner")).toBeNull();
+      expect(getElement("#validate-widget-list-button")).toBeNull();
+      expect(getTabs()[0].classList).not.toContain("draggable");
+
+      getElement<HTMLButtonElement>("#toggle-edit-mode-button").click();
+      await fixture.whenStable();
+      expect(getElement("#toggle-edit-mode-button")).toBeNull();
+      expect(getElement("#edit-mode-banner span").textContent?.trim()).toEqual(
+        "Glissez-déposez les widgets et les onglets pour les réorganiser."
+      );
+      expect(getTabs()[0].classList).toContain("draggable");
+      expect(getWidgetList().toggleEditMode()).toBe(true);
+
+      getElement<HTMLButtonElement>("#validate-widget-list-button").click();
+      await fixture.whenStable();
+      expect(getElement("#edit-mode-banner")).toBeNull();
+
+      getElement<HTMLButtonElement>("#toggle-edit-mode-button").click();
+      await fixture.whenStable();
+      const finishButton = getElement<HTMLButtonElement>("#edit-mode-banner button");
+      expect(finishButton.textContent?.trim()).toEqual("Terminer");
+      finishButton.click();
+      await fixture.whenStable();
+      expect(getElement("#edit-mode-banner")).toBeNull();
+      expect(getElement("#toggle-edit-mode-button")).not.toBeNull();
+      expect(getWidgetList().toggleEditMode()).toBe(false);
+    });
+  });
+
+  describe("Errors", () => {
+    it("Should display errors when the dashboard actions fail", async () => {
+      const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
+      await loadDashboard([], []);
+
+      getElement<HTMLButtonElement>("#add-new-tab-button").click();
+      httpTestingController
+        .expectOne(`${environment.backend_url}/tab/addTab`)
+        .flush(null, serverError);
+      expect(handleErrorSpy).toHaveBeenLastCalledWith(
+        expect.objectContaining({ status: 500 }),
+        "Erreur lors de l'ajout d'un onglet."
+      );
+
+      await clickInUserMenu("#download-config-button");
+      httpTestingController
+        .expectOne(`${environment.backend_url}/dashConfig/export`)
+        .flush(null, serverError);
+      expect(handleErrorSpy).toHaveBeenLastCalledWith(
+        expect.anything(),
+        "Erreur lors de l'export de la configuration."
+      );
+
+      await fixture.whenStable();
+      expect(getTabs()).toEqual([]);
+      expect(handleErrorSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it("Should display errors when the widget and tab actions fail", async () => {
+      const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
+      await loadDashboard();
+
+      TestBed.inject(WidgetService).notifyWidgetDeleted(1);
+      httpTestingController
+        .expectOne(`${environment.backend_url}/widget/deleteWidget?id=1`)
+        .flush(null, serverError);
+      expect(handleErrorSpy).toHaveBeenLastCalledWith(
+        expect.anything(),
+        "Erreur lors de la suppression d'un widget."
+      );
+
+      getTabLabelElement(tabs[0]).triggerEventHandler("tabDeletedEvent", tabs[0].id);
+      httpTestingController
+        .expectOne(`${environment.backend_url}/tab/deleteTab?id=1`)
+        .flush(null, serverError);
+      expect(handleErrorSpy).toHaveBeenLastCalledWith(
+        expect.anything(),
+        "Erreur lors de la suppression d'un onglet."
+      );
+
+      getWidgetList().updateWidgetsOrderEvent.emit(widgets);
+      httpTestingController
+        .expectOne(`${environment.backend_url}/widget/updateWidgetsOrder`)
+        .flush(null, serverError);
+      expect(handleErrorSpy).toHaveBeenLastCalledWith(
+        expect.anything(),
+        "Erreur lors de la mise à jour des widgets."
+      );
+
+      dropFirstTabAfterSecond();
+      httpTestingController
+        .expectOne(`${environment.backend_url}/tab/updateTabs`)
+        .flush(null, serverError);
+      expect(handleErrorSpy).toHaveBeenLastCalledWith(
+        expect.anything(),
+        "Erreur lors de la mise à jour des onglets."
+      );
+
+      dialogResult = "RSS";
+      getElement<HTMLButtonElement>("#open-add-widget-modal").click();
+      httpTestingController
+        .expectOne(`${environment.backend_url}/widget/addWidget`)
+        .flush(null, serverError);
+      expect(handleErrorSpy).toHaveBeenLastCalledWith(
+        expect.anything(),
+        "Erreur lors de l'ajout d'un widget."
+      );
+      expect(handleErrorSpy).toHaveBeenCalledTimes(5);
+
+      // Nothing changed on the dashboard
+      await fixture.whenStable();
+      expect(getTabLabels()).toEqual(tabs.map((tab) => tab.label));
+      expect(getSelectedTabLabel()).toEqual(tabs[0].label);
+      expect(getWidgetList().widgetList()).toEqual(widgets);
+    });
+  });
+
+  describe("Menus", () => {
+    it("Should not display the notifications to a user", async () => {
+      await loadDashboard();
+      expect(getElement("dash-notifications")).toBeNull();
+    });
+
+    it("Should display the notifications to an admin", async () => {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ id: 1, accessToken: "token", roles: [Role.ROLE_ADMIN] })
+      );
+      await loadDashboard();
+      expect(getElement("dash-notifications")).not.toBeNull();
+    });
+
+    it("Should display the user menu", async () => {
+      await loadDashboard();
+      await openUserMenu();
+      expect(document.querySelector("#logout-button")?.textContent).toContain("Déconnexion");
+      expect(document.querySelector("#download-config-button")?.textContent).toContain(
+        "Télécharger la configuration"
+      );
+      expect(document.querySelector("#open-import-config-modal")?.textContent).toContain(
+        "Importer une configuration"
+      );
+    });
+
+    it("Should log out from the user menu", async () => {
+      await loadDashboard();
+      localStorage.setItem("user", JSON.stringify({ accessToken: "token" }));
+      const navigateSpy = vi.spyOn(TestBed.inject(Router), "navigate").mockResolvedValue(true);
+      await clickInUserMenu("#logout-button");
+      await vi.waitFor(() => expect(navigateSpy).toHaveBeenCalledWith(["login"]));
+      expect(localStorage.getItem("user")).toBeNull();
+    });
+
+    it("Should switch between light and dark mode", async () => {
+      localStorage.removeItem("preferredTheme");
+      await loadDashboard();
+      await openUserMenu();
+      const toggle =
+        await TestbedHarnessEnvironment.documentRootLoader(fixture).getHarness(
+          MatSlideToggleHarness
+        );
+      expect(await toggle.isChecked()).toBe(false);
+
+      await toggle.toggle();
+      expect(localStorage.getItem("preferredTheme")).toEqual("dark");
+      expect(document.body.classList).toContain("dark-mode");
+
+      await toggle.toggle();
+      expect(localStorage.getItem("preferredTheme")).toEqual("light");
+      expect(document.body.classList).not.toContain("dark-mode");
+      localStorage.removeItem("preferredTheme");
+    });
+
+    it("Should open the configuration import modal", async () => {
+      await loadDashboard();
+      const openSpy = vi.spyOn(TestBed.inject(MatDialog), "open");
+      await clickInUserMenu("#open-import-config-modal");
+      expect(openSpy).toHaveBeenCalledWith(ImportConfigModal, { width: "640px" });
+    });
+
+    it("Should export the configuration", async () => {
+      await loadDashboard();
+      const createObjectURL = vi.fn(() => "blob:config");
+      const revokeObjectURL = vi.fn();
+      vi.stubGlobal("URL", Object.assign(URL, { createObjectURL, revokeObjectURL }));
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, "click")
+        .mockImplementation(() => undefined);
+
+      await clickInUserMenu("#download-config-button");
+      httpTestingController
+        .expectOne(`${environment.backend_url}/dashConfig/export`)
+        .flush(new Blob(["{}"]));
+
+      expect(createObjectURL).toHaveBeenCalled();
+      expect(clickSpy).toHaveBeenCalled();
+      expect(revokeObjectURL).toHaveBeenCalledWith("blob:config");
+      expect(document.querySelector("a[download]")).toBeNull();
+      clickSpy.mockRestore();
+      vi.unstubAllGlobals();
+    });
   });
 });

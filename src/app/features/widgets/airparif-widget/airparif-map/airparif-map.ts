@@ -18,15 +18,15 @@ import { fromLonLat, transformExtent } from "ol/proj";
 import OSM from "ol/source/OSM";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
-import { AirParifWidgetService } from "../airparif-widget-service";
+import { AirparifWidgetService } from "../airparif-widget-service";
 import {
-  AirParifIndiceEnum,
+  AirparifIndice,
   ForecastMode,
-  IAirParifCouleur,
-  IForecast,
-  IIndiceDetails,
-  IPollutant
-} from "../airparif.model";
+  AirparifCouleur,
+  AirparifForecast,
+  IndiceDetails,
+  Pollutant
+} from "../airparif";
 import { SidebarControl } from "../sidebar-control";
 
 @Component({
@@ -35,8 +35,8 @@ import { SidebarControl } from "../sidebar-control";
   styleUrl: "./airparif-map.scss",
   imports: [MatIcon, MatProgressBar, DatePipe]
 })
-export class AirParifMap implements AfterViewInit, OnDestroy {
-  private readonly POLLUTANTS: IPollutant[] = [
+export class AirparifMap implements AfterViewInit, OnDestroy {
+  private readonly POLLUTANTS: Pollutant[] = [
     { key: "no2", formula: "NO₂", name: "Dioxyde d'azote" },
     { key: "o3", formula: "O₃", name: "Ozone" },
     { key: "pm10", formula: "PM₁₀", name: "Particules < 10 µm" },
@@ -45,7 +45,7 @@ export class AirParifMap implements AfterViewInit, OnDestroy {
   ];
 
   // Keyed by the keys of the enum, sent by the API
-  private readonly INDICE_DETAILS: Record<keyof typeof AirParifIndiceEnum, IIndiceDetails> = {
+  private readonly INDICE_DETAILS: Record<keyof typeof AirparifIndice, IndiceDetails> = {
     BON: {
       icon: "sentiment_very_satisfied",
       advice: "Qualité de l'air idéale pour vos activités en extérieur."
@@ -76,7 +76,7 @@ export class AirParifMap implements AfterViewInit, OnDestroy {
 
   private readonly AIRPARIF_WMS_URL = "https://magellan.airparif.asso.fr/geoserver/siteweb/wms";
 
-  public readonly labels = {
+  protected readonly labels = {
     airQuality: "Qualité de l'air",
     close: "Fermer",
     today: "Aujourd'hui",
@@ -84,22 +84,21 @@ export class AirParifMap implements AfterViewInit, OnDestroy {
     globalIndice: "Indice global",
     pollutantDetails: "Détail par polluant",
     mapLegend: "Légende de la carte",
-    source: "Source : AirParif",
+    source: "Source : Airparif",
     noForecast: "Aucune prévision disponible",
     noForecastHint: "Vérifiez la clé d'API et le code commune dans la configuration du widget."
   };
 
-  public readonly mapContainer = viewChild<ElementRef<HTMLElement>>("map");
-  public readonly sidebarContainer = viewChild<ElementRef<HTMLElement>>("sidebar");
-  public readonly airParifCouleursIndices = input.required<IAirParifCouleur[]>();
-  public readonly airParifForecast = input.required<IForecast[]>();
+  private readonly mapContainer = viewChild<ElementRef<HTMLElement>>("map");
+  private readonly sidebarContainer = viewChild<ElementRef<HTMLElement>>("sidebar");
+  public readonly airParifCouleursIndices = input.required<AirparifCouleur[]>();
+  public readonly airParifForecast = input.required<AirparifForecast[]>();
   public readonly airParifApiKey = input<string>();
   public readonly isLoading = input(false);
-  public readonly airParifWebsiteUrl = inject(AirParifWidgetService).AIRPARIF_WEBSITE_URL;
 
-  public readonly forecastMode = signal(ForecastMode.TODAY);
+  private readonly forecastMode = signal(ForecastMode.TODAY);
   // Forecast of the selected day, also when the forecasts are refreshed
-  public readonly forecastToDisplay = computed<IForecast | undefined>(
+  public readonly forecastToDisplay = computed<AirparifForecast | undefined>(
     () => this.airParifForecast()[this.forecastMode() === ForecastMode.TODAY ? 0 : 1]
   );
 
@@ -123,24 +122,33 @@ export class AirParifMap implements AfterViewInit, OnDestroy {
     () => this.forecastMode() === ForecastMode.TOMORROW
   );
 
-  private readonly airParifWidgetService = inject(AirParifWidgetService);
-
-  private map: Map | undefined;
+  public map: Map | undefined;
   private sidebarControl: SidebarControl | undefined;
   private forecastLayers: Record<ForecastMode, TileLayer<TileWMS>> | undefined;
+
+  private readonly airParifWidgetService = inject(AirparifWidgetService);
+  public readonly airParifWebsiteUrl = this.airParifWidgetService.AIRPARIF_WEBSITE_URL;
 
   public ngAfterViewInit(): void {
     this.initMap();
   }
 
   public ngOnDestroy(): void {
-    if (this.sidebarControl) {
-      this.map?.removeControl(this.sidebarControl);
-    }
-    this.map?.setTarget();
+    // The map neither disposes its layers (and their renderers, which cache the tiles), nor the
+    // forecast layer which is not displayed
+    const layers = new Set([
+      ...(this.map?.getAllLayers() ?? []),
+      ...Object.values(this.forecastLayers ?? {})
+    ]);
+    // Disposing the map also removes its controls and detaches it from its target
     this.map?.dispose();
+    layers.forEach((layer) => layer.dispose());
+    this.map = undefined;
+    this.sidebarControl = undefined;
+    this.forecastLayers = undefined;
   }
 
+  /** Public: opened by the parent widget, from a button outside of this component. */
   public openSidebar(): void {
     this.sidebarControl?.open(this.SIDEBAR_PANE_ID);
   }
@@ -153,21 +161,21 @@ export class AirParifMap implements AfterViewInit, OnDestroy {
     this.selectForecast(ForecastMode.TOMORROW);
   }
 
-  public getIndiceClass(indice: AirParifIndiceEnum): string {
+  public getIndiceClass(indice: AirparifIndice): string {
     return this.airParifWidgetService.getIndiceClass(indice);
   }
 
-  public getIndiceLabel(indice: AirParifIndiceEnum): string {
+  public getIndiceLabel(indice: AirparifIndice): string {
     return this.airParifWidgetService.getIndiceLabel(indice);
   }
 
   // Class giving a light tint of the color of the indice
-  public getIndiceSoftClass(indice: AirParifIndiceEnum): string {
+  public getIndiceSoftClass(indice: AirparifIndice): string {
     return this.airParifWidgetService.getIndiceClass(indice, "indice-soft");
   }
 
-  public getIndiceDetails(indice: AirParifIndiceEnum): IIndiceDetails | undefined {
-    return this.INDICE_DETAILS[indice as unknown as keyof typeof AirParifIndiceEnum];
+  private getIndiceDetails(indice: AirparifIndice): IndiceDetails | undefined {
+    return this.INDICE_DETAILS[indice as unknown as keyof typeof AirparifIndice];
   }
 
   private selectForecast(forecastMode: ForecastMode): void {
@@ -228,7 +236,7 @@ export class AirParifMap implements AfterViewInit, OnDestroy {
           // OpenLayers leaves the undefined parameters out of the url
           authkey: apiKey || undefined
         },
-        attributions: `<a href="${this.airParifWebsiteUrl}">AirParif</a>`
+        attributions: `<a href="${this.airParifWebsiteUrl}">Airparif</a>`
       })
     });
   }

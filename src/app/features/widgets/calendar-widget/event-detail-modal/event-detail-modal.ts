@@ -7,7 +7,7 @@ import {
   MatDialogTitle
 } from "@angular/material/dialog";
 import { CalendarEvent } from "angular-calendar";
-import { DateFormatPipe } from "@shared/pipes/date-format-pipe";
+import { DateFormatPipe } from "@shared/dates/date-format-pipe";
 import { MatButton } from "@angular/material/button";
 
 @Component({
@@ -23,7 +23,7 @@ import { MatButton } from "@angular/material/button";
   ]
 })
 export class EventDetailModal {
-  public readonly labels = {
+  protected readonly labels = {
     start: "Début",
     end: "Fin",
     ok: "Ok"

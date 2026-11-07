@@ -2,9 +2,9 @@ import { DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { Component, inject, computed, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
-import { InitialUppercasePipe } from "@shared/pipes/initial-uppercase-pipe";
-import { dateInTimezone } from "@shared/utils/date.utils";
-import { IWeatherAPIResponse } from "../weather.model";
+import { InitialUppercasePipe } from "@shared/text/initial-uppercase-pipe";
+import { dateInTimezone } from "@shared/dates/timezone";
+import { WeatherApiResponse } from "../weather";
 import { WeatherWidgetService } from "../weather-widget-service";
 
 @Component({
@@ -14,7 +14,7 @@ import { WeatherWidgetService } from "../weather-widget-service";
   imports: [NgOptimizedImage, MatTooltip, MatIcon, InitialUppercasePipe, DecimalPipe]
 })
 export class WeatherToday {
-  public readonly labels = {
+  protected readonly labels = {
     currentTemperature: "Température actuelle",
     celsius: "°C",
     sunrise: "Lever du soleil",
@@ -22,7 +22,7 @@ export class WeatherToday {
     lastUpdate: "Dernière mise à jour à"
   };
 
-  public readonly weather = input.required<IWeatherAPIResponse>();
+  public readonly weather = input.required<WeatherApiResponse>();
 
   public readonly sunriseTime = computed(() => this.formatTime(this.weather().sys.sunrise));
   public readonly sunsetTime = computed(() => this.formatTime(this.weather().sys.sunset));

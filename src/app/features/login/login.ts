@@ -10,7 +10,7 @@ import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { AuthService } from "@core/auth/auth-service";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { requiredText } from "@shared/utils/form-validators";
+import { requiredText } from "@shared/forms/form-validators";
 
 @Component({
   selector: "dash-login",
@@ -32,7 +32,7 @@ import { requiredText } from "@shared/utils/form-validators";
   ]
 })
 export class Login {
-  public readonly labels = {
+  protected readonly labels = {
     logoAlt: "dash logo",
     title: "Dash",
     subtitle: "Votre tableau de bord personnel",
@@ -50,7 +50,7 @@ export class Login {
   public readonly isLoading = signal(false);
   public readonly isPasswordVisible = signal(false);
 
-  public readonly credentials = signal({ username: "", password: "" });
+  private readonly credentials = signal({ username: "", password: "" });
   public readonly loginForm = form(this.credentials, (path) => {
     requiredText(path.username);
     requiredText(path.password);
@@ -60,8 +60,9 @@ export class Login {
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly router = inject(Router);
 
-  public async handleLogin(): Promise<void> {
-    if (this.loginForm().invalid()) {
+  public async login(): Promise<void> {
+    // A login already in progress is not sent twice
+    if (this.loginForm().invalid() || this.isLoading()) {
       return;
     }
     const { username, password } = this.credentials();
@@ -78,6 +79,6 @@ export class Login {
 
   public async loginAsDemoAccount(): Promise<void> {
     this.credentials.set({ username: "demo", password: "demo" });
-    await this.handleLogin();
+    await this.login();
   }
 }

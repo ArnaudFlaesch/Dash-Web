@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Service } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { environment } from "@environments/environment";
-import { MiniWidgetTypeEnum } from "@widgets/mini-widget-type.enum";
-import { IMiniWidgetConfig } from "@widgets/mini-widget-config.model";
+import { MiniWidgetType } from "@widgets/mini-widget-type";
+import { MiniWidgetConfig } from "@widgets/mini-widget-config";
 
 @Service()
 export class MiniWidgetService {
@@ -20,16 +20,16 @@ export class MiniWidgetService {
     this.miniWidgetDeletedEvent.next(miniWidgetId);
   }
 
-  public getMiniWidgets(): Observable<IMiniWidgetConfig[]> {
-    return this.http.get<IMiniWidgetConfig[]>(`${this.baseUrl}/`);
+  public getMiniWidgets(): Observable<MiniWidgetConfig[]> {
+    return this.http.get<MiniWidgetConfig[]>(`${this.baseUrl}/`);
   }
 
-  public addMiniWidget(type: MiniWidgetTypeEnum): Observable<IMiniWidgetConfig> {
-    return this.http.post<IMiniWidgetConfig>(`${this.baseUrl}/addMiniWidget`, { type });
+  public addMiniWidget(type: MiniWidgetType): Observable<MiniWidgetConfig> {
+    return this.http.post<MiniWidgetConfig>(`${this.baseUrl}/addMiniWidget`, { type });
   }
 
-  public updateWidgetData(id: number, data: unknown): Observable<IMiniWidgetConfig> {
-    return this.http.patch<IMiniWidgetConfig>(`${this.baseUrl}/updateWidgetData/${id}`, { data });
+  public updateWidgetData(id: number, data: unknown): Observable<MiniWidgetConfig> {
+    return this.http.patch<MiniWidgetConfig>(`${this.baseUrl}/updateWidgetData/${id}`, { data });
   }
 
   public deleteMiniWidget(widgetId: number): Observable<void> {

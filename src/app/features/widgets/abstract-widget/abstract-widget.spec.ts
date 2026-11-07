@@ -1,18 +1,37 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ModeEnum } from "@widgets/abstract-widget/mode.enum";
-import { WIDGET_ID } from "@widgets/widget.tokens";
+import { WidgetMode } from "@widgets/abstract-widget/widget-mode";
+import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
+import { WIDGET_ID } from "@widgets/widget-tokens";
+import { of, throwError } from "rxjs";
+import { Mock, vi } from "vitest";
+import { WIDGET_PERSISTENCE, WidgetPersistence } from "./widget-persistence";
 import { AbstractWidget } from "./abstract-widget";
 
+/** Test widget rendering its mode and a button for each mode transition of the base class. */
 @Component({
   selector: "dash-test-widget",
-  template: `<span class="mode">{{ mode() }}</span>`
+  template: `
+    @if (isModeRead()) {
+      <span class="read-mode"></span>
+    }
+    @if (isModeEdit()) {
+      <span class="edit-mode"></span>
+    }
+    @if (isModeDelete()) {
+      <span class="delete-mode"></span>
+    }
+    <button class="to-edit-mode" (click)="toEditMode()">Edit</button>
+    <button class="to-read-mode" (click)="toReadMode()">Read</button>
+    <button class="to-delete-mode" (click)="toDeleteMode()">Delete</button>
+    <button class="cancel-edition" (click)="cancelEdition()">Cancel</button>
+    <button class="refresh" (click)="refreshWidget()">Refresh</button>
+    <button class="validate" (click)="onValidation()">Validate</button>
+    <button class="delete-widget" (click)="deleteWidget()">Delete widget</button>
+  `
 })
-class TestWidget extends AbstractWidget {
-  public saveWidgetData(): void {
-    this.onWidgetDataSaved();
-  }
-}
+class TestWidget extends AbstractWidget {}
 
 @Component({
   template: `
@@ -20,6 +39,7 @@ class TestWidget extends AbstractWidget {
       [widgetData]="widgetData()"
       [isFormValid]="isFormValid()"
       (refreshWidgetAction)="refreshCount = refreshCount + 1"
+      (editionCancelled)="cancelCount = cancelCount + 1"
     >
       <ng-template #body>Body</ng-template>
       @if (hasEditComponent()) {
@@ -34,17 +54,30 @@ class Host {
   public readonly isFormValid = signal(false);
   public readonly hasEditComponent = signal(true);
   public refreshCount = 0;
+  public cancelCount = 0;
 }
 
 describe("AbstractWidget", () => {
   let fixture: ComponentFixture<Host>;
   let host: Host;
   let widget: TestWidget;
+  let element: HTMLElement;
+  let updateWidgetData: Mock<WidgetPersistence["updateWidgetData"]>;
+  let deleteWidget: Mock<WidgetPersistence["deleteWidget"]>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [{ provide: WIDGET_ID, useValue: 3 }] });
+    updateWidgetData = vi.fn<WidgetPersistence["updateWidgetData"]>(() => of({}));
+    deleteWidget = vi.fn<WidgetPersistence["deleteWidget"]>();
+    const widgetPersistence: WidgetPersistence = { updateWidgetData, deleteWidget };
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: WIDGET_ID, useValue: 3 },
+        { provide: WIDGET_PERSISTENCE, useValue: widgetPersistence }
+      ]
+    });
     fixture = TestBed.createComponent(Host);
     host = fixture.componentInstance;
+    element = fixture.nativeElement as HTMLElement;
   });
 
   async function render(): Promise<void> {
@@ -52,19 +85,39 @@ describe("AbstractWidget", () => {
     widget = fixture.debugElement.children[0].componentInstance;
   }
 
+  async function click(selector: string): Promise<void> {
+    element.querySelector<HTMLButtonElement>(selector)?.click();
+    await fixture.whenStable();
+  }
+
+  function expectMode(mode: WidgetMode): void {
+    expect(element.querySelector(".read-mode") !== null).toBe(mode === WidgetMode.READ);
+    expect(element.querySelector(".edit-mode") !== null).toBe(mode === WidgetMode.EDIT);
+    expect(element.querySelector(".delete-mode") !== null).toBe(mode === WidgetMode.DELETE);
+  }
+
   it("Should start in edit mode without data and without refresh when the form is invalid", async () => {
     await render();
-    expect(widget.mode()).toEqual(ModeEnum.EDIT);
-    expect(widget.isModeEdit()).toBe(true);
+    expectMode(WidgetMode.EDIT);
     expect(host.refreshCount).toEqual(0);
-    expect(fixture.nativeElement.querySelector(".mode").textContent).toEqual(`${ModeEnum.EDIT}`);
   });
 
   it("Should start in read mode and refresh a widget with valid data", async () => {
     host.widgetData.set({ city: "Paris" });
     host.isFormValid.set(true);
     await render();
-    expect(widget.isModeRead()).toBe(true);
+    expectMode(WidgetMode.READ);
+    expect(host.refreshCount).toEqual(1);
+  });
+
+  it("Should only refresh a widget with a valid form", async () => {
+    await render();
+    await click(".refresh");
+    expect(host.refreshCount).toEqual(0);
+
+    host.isFormValid.set(true);
+    await fixture.whenStable();
+    await click(".refresh");
     expect(host.refreshCount).toEqual(1);
   });
 
@@ -72,22 +125,30 @@ describe("AbstractWidget", () => {
     host.widgetData.set({ city: "Paris" });
     await render();
 
-    widget.toEditMode();
-    expect(widget.isModeEdit()).toBe(true);
-    widget.cancelEdition();
-    expect(widget.isModeRead()).toBe(true);
-    widget.toDeleteMode();
-    expect(widget.isModeDelete()).toBe(true);
-    widget.toReadMode();
-    expect(widget.isModeRead()).toBe(true);
+    await click(".to-edit-mode");
+    expectMode(WidgetMode.EDIT);
+    await click(".cancel-edition");
+    expectMode(WidgetMode.READ);
+    await click(".to-delete-mode");
+    expectMode(WidgetMode.DELETE);
+    await click(".to-read-mode");
+    expectMode(WidgetMode.READ);
+  });
+
+  it("Should stay in edit mode when going to read mode without data", async () => {
+    await render();
+    await click(".to-delete-mode");
+    expectMode(WidgetMode.DELETE);
+    await click(".to-read-mode");
+    expectMode(WidgetMode.EDIT);
   });
 
   it("Should stay in read mode without edit component", async () => {
     host.widgetData.set({ city: "Paris" });
     host.hasEditComponent.set(false);
     await render();
-    widget.toEditMode();
-    expect(widget.isModeRead()).toBe(true);
+    await click(".to-edit-mode");
+    expectMode(WidgetMode.READ);
   });
 
   it("Should go to read mode and refresh once the data is saved", async () => {
@@ -96,8 +157,62 @@ describe("AbstractWidget", () => {
     host.isFormValid.set(true);
     await fixture.whenStable();
 
-    widget.saveWidgetData();
-    expect(widget.isModeRead()).toBe(true);
+    await click(".validate");
+    expect(updateWidgetData).toHaveBeenCalledWith(3, { city: "Paris" });
+    expectMode(WidgetMode.READ);
     expect(host.refreshCount).toEqual(1);
+  });
+
+  it("Should stay in edit mode and display an error when the data can't be saved", async () => {
+    const handleErrorSpy = vi
+      .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
+      .mockImplementation(() => undefined);
+    const error = new HttpErrorResponse({ status: 500 });
+    updateWidgetData.mockReturnValue(throwError(() => error));
+    await render();
+    host.widgetData.set({ city: "Paris" });
+    host.isFormValid.set(true);
+    await fixture.whenStable();
+
+    await click(".validate");
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      error,
+      "Erreur lors de la mise à jour de la configuration du widget."
+    );
+    expectMode(WidgetMode.EDIT);
+    expect(widget.isWidgetDataSaved()).toBe(false);
+    expect(host.refreshCount).toEqual(0);
+  });
+
+  it("Should delete the widget", async () => {
+    await render();
+    await click(".delete-widget");
+    expect(deleteWidget).toHaveBeenCalledWith(3);
+  });
+
+  it("Should know that the data of a widget created with data is saved", async () => {
+    host.widgetData.set({ city: "Paris" });
+    await render();
+    expect(widget.isWidgetDataSaved()).toBe(true);
+  });
+
+  it("Should only know that the data of a new widget is saved once it is saved", async () => {
+    await render();
+    expect(widget.isWidgetDataSaved()).toBe(false);
+    host.widgetData.set({ city: "Paris" });
+    host.isFormValid.set(true);
+    await fixture.whenStable();
+    expect(widget.isWidgetDataSaved()).toBe(false);
+
+    await click(".validate");
+    expect(widget.isWidgetDataSaved()).toBe(true);
+  });
+
+  it("Should notify the cancellation of the edition", async () => {
+    host.widgetData.set({ city: "Paris" });
+    await render();
+    await click(".to-edit-mode");
+    await click(".cancel-edition");
+    expect(host.cancelCount).toEqual(1);
   });
 });

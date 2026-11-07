@@ -2,7 +2,7 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "@environments/environment";
-import { RoleEnum } from "@core/auth/role.enum";
+import { Role } from "@core/auth/role";
 import { AuthService } from "./auth-service";
 
 /** Builds an unsigned JWT whose payload only contains the expiration date (in seconds). */
@@ -35,7 +35,7 @@ describe("AuthService", () => {
       username: "admin",
       email: "admin@email.com",
       accessToken: createToken(Date.now() / 1000 + 3600),
-      roles: [RoleEnum.ROLE_ADMIN]
+      roles: [Role.ROLE_ADMIN]
     };
     expect(authService.isUserAdmin()).toBe(false);
 
@@ -52,12 +52,16 @@ describe("AuthService", () => {
     expect(authService.userHasValidToken()).toBe(false);
   });
 
-  it("Should not store the user when no token is returned", () => {
-    authService.login("user", "password").subscribe();
+  it("Should fail and not store the user when no token is returned", () => {
+    let loginError: unknown;
+    authService
+      .login("user", "password")
+      .subscribe({ error: (error: unknown) => (loginError = error) });
     httpTestingController
       .expectOne(`${environment.backend_url}/auth/login`)
       .flush({ id: 1, username: "user", roles: [] });
     expect(localStorage.getItem("user")).toBeNull();
+    expect(loginError).toBeInstanceOf(Error);
   });
 
   it("Should reject expired and malformed tokens", () => {

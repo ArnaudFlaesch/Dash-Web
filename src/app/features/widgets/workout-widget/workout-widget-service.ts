@@ -4,17 +4,17 @@ import { format } from "date-fns";
 import { Observable } from "rxjs";
 import { environment } from "@environments/environment";
 import {
-  IWorkoutExercise,
-  IWorkoutSession,
-  IWorkoutStatByMonth,
-  IWorkoutStatsByPeriod,
-  IWorkoutType
-} from "./workout.model";
+  WorkoutExercise,
+  WorkoutSession,
+  WorkoutStatByMonth,
+  WorkoutStatsByPeriod,
+  WorkoutType
+} from "./workout";
 import {
-  IAddWorkoutTypePayload,
-  ICreateWorkoutSessionPayload,
-  IUpdateWorkoutExercisePayload
-} from "./workout-payload.model";
+  AddWorkoutTypePayload,
+  CreateWorkoutSessionPayload,
+  UpdateWorkoutExercisePayload
+} from "./workout-payload";
 
 @Service()
 export class WorkoutWidgetService {
@@ -22,21 +22,21 @@ export class WorkoutWidgetService {
   private readonly baseUrl = `${environment.backend_url}/workoutWidget`;
   private readonly dateFormat = "yyyy-MM-dd";
 
-  public getWorkoutTypes(): Observable<IWorkoutType[]> {
-    return this.http.get<IWorkoutType[]>(`${this.baseUrl}/workoutTypes`);
+  public getWorkoutTypes(): Observable<WorkoutType[]> {
+    return this.http.get<WorkoutType[]>(`${this.baseUrl}/workoutTypes`);
   }
 
   public getWorkoutSessions(
     dateIntervalStart: Date,
     dateIntervalEnd: Date
-  ): Observable<IWorkoutSession[]> {
-    return this.http.get<IWorkoutSession[]>(`${this.baseUrl}/workoutSessions`, {
+  ): Observable<WorkoutSession[]> {
+    return this.http.get<WorkoutSession[]>(`${this.baseUrl}/workoutSessions`, {
       params: this.getIntervalParams(dateIntervalStart, dateIntervalEnd)
     });
   }
 
-  public getWorkoutExercises(workoutSessionId: number): Observable<IWorkoutExercise[]> {
-    return this.http.get<IWorkoutExercise[]>(`${this.baseUrl}/workoutExercises`, {
+  public getWorkoutExercises(workoutSessionId: number): Observable<WorkoutExercise[]> {
+    return this.http.get<WorkoutExercise[]>(`${this.baseUrl}/workoutExercises`, {
       params: { workoutSessionId }
     });
   }
@@ -44,8 +44,8 @@ export class WorkoutWidgetService {
   public getWorkoutStatsByPeriod(
     dateIntervalStart: Date,
     dateIntervalEnd: Date
-  ): Observable<IWorkoutStatsByPeriod[]> {
-    return this.http.get<IWorkoutStatsByPeriod[]>(`${this.baseUrl}/workoutStatsByPeriod`, {
+  ): Observable<WorkoutStatsByPeriod[]> {
+    return this.http.get<WorkoutStatsByPeriod[]>(`${this.baseUrl}/workoutStatsByPeriod`, {
       params: this.getIntervalParams(dateIntervalStart, dateIntervalEnd)
     });
   }
@@ -53,33 +53,33 @@ export class WorkoutWidgetService {
   public getWorkoutStatsByMonth(
     dateIntervalStart: Date,
     dateIntervalEnd: Date
-  ): Observable<IWorkoutStatByMonth[]> {
-    return this.http.get<IWorkoutStatByMonth[]>(`${this.baseUrl}/workoutStatsByMonth`, {
+  ): Observable<WorkoutStatByMonth[]> {
+    return this.http.get<WorkoutStatByMonth[]>(`${this.baseUrl}/workoutStatsByMonth`, {
       params: this.getIntervalParams(dateIntervalStart, dateIntervalEnd)
     });
   }
 
-  public addWorkoutType(workoutType: string): Observable<IWorkoutType> {
-    const payload: IAddWorkoutTypePayload = { workoutType };
-    return this.http.post<IWorkoutType>(`${this.baseUrl}/addWorkoutType`, payload);
+  public addWorkoutType(workoutType: string): Observable<WorkoutType> {
+    const payload: AddWorkoutTypePayload = { workoutType };
+    return this.http.post<WorkoutType>(`${this.baseUrl}/addWorkoutType`, payload);
   }
 
-  public createWorkoutSession(workoutDate: Date): Observable<IWorkoutSession> {
-    const payload: ICreateWorkoutSessionPayload = { workoutDate };
-    return this.http.post<IWorkoutSession>(`${this.baseUrl}/createWorkoutSession`, payload);
+  public createWorkoutSession(workoutDate: Date): Observable<WorkoutSession> {
+    const payload: CreateWorkoutSessionPayload = { workoutDate };
+    return this.http.post<WorkoutSession>(`${this.baseUrl}/createWorkoutSession`, payload);
   }
 
   public updateWorkoutExercise(
     workoutSessionId: number,
     workoutTypeId: number,
     numberOfReps: number
-  ): Observable<IWorkoutExercise> {
-    const payload: IUpdateWorkoutExercisePayload = {
+  ): Observable<WorkoutExercise> {
+    const payload: UpdateWorkoutExercisePayload = {
       workoutSessionId,
       workoutTypeId,
       numberOfReps
     };
-    return this.http.post<IWorkoutExercise>(`${this.baseUrl}/updateWorkoutExercise`, payload);
+    return this.http.post<WorkoutExercise>(`${this.baseUrl}/updateWorkoutExercise`, payload);
   }
 
   private getIntervalParams(

@@ -13,21 +13,22 @@ import {
   CalendarView,
   CalendarWeekViewComponent
 } from "angular-calendar";
-import { endOfDay, format } from "date-fns";
+import { endOfDay, format, isSameDay, isSameMonth } from "date-fns";
 import { catchError, defaultIfEmpty, forkJoin, map, of } from "rxjs";
 
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { CalendarWidgetService } from "./calendar-widget-service";
 import { EventDetailModal } from "./event-detail-modal/event-detail-modal";
-import { ICalendarData } from "./calendar-data.model";
+import { CalendarData } from "./calendar-data";
 import { fr } from "date-fns/locale";
-import { InitialUppercasePipe } from "@shared/pipes/initial-uppercase-pipe";
+import { InitialUppercasePipe } from "@shared/text/initial-uppercase-pipe";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { form, FormField, minLength } from "@angular/forms/signals";
+import { applyEach, form, FormField, minLength } from "@angular/forms/signals";
+import { requiredText } from "@shared/forms/form-validators";
 import { Widget } from "@widgets/widget/widget";
-import { injectWidgetData } from "@widgets/widget.tokens";
+import { injectWidgetData } from "@widgets/widget-tokens";
 
 @Component({
   selector: "dash-calendar-widget",
@@ -53,7 +54,7 @@ import { injectWidgetData } from "@widgets/widget.tokens";
 export class CalendarWidget {
   private readonly MILLISECONDS_IN_A_DAY = 86400000;
 
-  public readonly labels = {
+  protected readonly labels = {
     calendar: "Agenda",
     enterIcalUrl: "Saisissez une URL iCal",
     calendarUrl: "URL du calendrier",
@@ -67,13 +68,28 @@ export class CalendarWidget {
     week: "Semaine"
   };
 
+  private readonly ERROR_MESSAGES = {
+    parsingEvents: "Erreur lors de la récupération des évènements."
+  };
+
   public readonly viewDate = signal(new Date());
-  public readonly config = signal({ calendarUrls: injectWidgetData<string[]>("calendarUrls", []) });
-  public readonly configForm = form(this.config, (path) => minLength(path.calendarUrls, 1));
+  private readonly config = signal({
+    calendarUrls: injectWidgetData<string[]>("calendarUrls", [])
+  });
+  public readonly configForm = form(this.config, (path) => {
+    minLength(path.calendarUrls, 1);
+    applyEach(path.calendarUrls, (calendarUrl) => requiredText(calendarUrl));
+  });
   public readonly isWidgetLoaded = signal(true);
+  public readonly view = signal(CalendarView.Month);
+  public readonly activeDayIsOpen = signal(true);
+  // A new object on each refresh, so that the resource reloads even if the urls are unchanged
+  private readonly refreshedCalendarUrls = signal<{ calendarUrls: string[] } | undefined>(
+    undefined
+  );
 
   /** Events of all the calendars saved on the last refresh, a failing calendar is skipped. */
-  public readonly eventsResource = rxResource({
+  private readonly eventsResource = rxResource({
     params: () => this.refreshedCalendarUrls(),
     stream: ({ params: { calendarUrls } }) =>
       forkJoin(
@@ -81,7 +97,7 @@ export class CalendarWidget {
           this.calendarWidgetService.getCalendarEvents(calendarUrl).pipe(
             map((calendarData) => this.parseEvents(calendarData)),
             catchError((error: HttpErrorResponse) => {
-              this.errorHandlerService.handleError(error, this.ERROR_PARSING_EVENTS);
+              this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.parsingEvents);
               return of([]);
             })
           )
@@ -94,10 +110,6 @@ export class CalendarWidget {
   });
 
   public readonly events = this.eventsResource.value;
-  public readonly view = signal(CalendarView.Month);
-  public readonly activeDayIsOpen = signal(true);
-  public readonly locale = inject(LOCALE_ID);
-
   public readonly isCalendarViewMonth = computed(() => this.view() === CalendarView.Month);
   public readonly isCalendarViewWeek = computed(() => this.view() === CalendarView.Week);
   public readonly isCalendarViewDay = computed(() => this.view() === CalendarView.Day);
@@ -107,18 +119,22 @@ export class CalendarWidget {
   public readonly calendarView = CalendarView;
   public readonly weekStartsOn = 1;
 
-  // A new object on each refresh, so that the resource reloads even if the urls are unchanged
-  private readonly refreshedCalendarUrls = signal<{ calendarUrls: string[] } | undefined>(
-    undefined
-  );
-
+  public readonly locale = inject(LOCALE_ID);
   private readonly dialog = inject(MatDialog);
   private readonly calendarWidgetService = inject(CalendarWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
-  private readonly ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
+  // Configuration of the last refresh, restored when the edition is cancelled
+  private savedConfig = this.config();
 
   public refreshWidget(): void {
-    this.refreshedCalendarUrls.set({ calendarUrls: this.config().calendarUrls });
+    this.savedConfig = this.config();
+    this.refreshedCalendarUrls.set({
+      calendarUrls: this.config().calendarUrls.map((calendarUrl) => calendarUrl.trim())
+    });
+  }
+
+  public restoreSavedConfig(): void {
+    this.config.set(this.savedConfig);
   }
 
   public onCalendarUrlAdded(): void {
@@ -139,6 +155,17 @@ export class CalendarWidget {
     this.activeDayIsOpen.set(false);
   }
 
+  /** Opens the clicked day of the month, or closes it when it is already opened or has no event. */
+  public onMonthDayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    const viewDate = this.viewDate();
+    if (!isSameMonth(date, viewDate)) {
+      return;
+    }
+    const isOpenedDay = isSameDay(date, viewDate) && this.activeDayIsOpen();
+    this.activeDayIsOpen.set(!isOpenedDay && events.length > 0);
+    this.viewDate.set(date);
+  }
+
   public setView(view: CalendarView): void {
     this.view.set(view);
   }
@@ -147,28 +174,25 @@ export class CalendarWidget {
     this.dialog.open(EventDetailModal, { width: "500px", data: event });
   }
 
-  private parseEvents(calendarData: ICalendarData[]): CalendarEvent[] {
+  private parseEvents(calendarData: CalendarData[]): CalendarEvent[] {
     return calendarData
       .filter((event) => event.startDate && event.endDate && event.description)
       .map((event) => {
-        let startDate = new Date(event.startDate);
-        let endDate = new Date(event.endDate);
-        const isAllDay = endDate.getTime() - startDate.getTime() === this.MILLISECONDS_IN_A_DAY;
-        // Dates at midnight UTC are days: they are displayed on the same day in the local timezone
-        if (this.isMidnightUtc(endDate)) {
-          endDate = endOfDay(
-            this.toLocalDay(new Date(endDate.getTime() - this.MILLISECONDS_IN_A_DAY))
-          );
+        const startDate = new Date(event.startDate);
+        const endDate = new Date(event.endDate);
+        if (!this.isMidnightUtc(startDate) || !this.isMidnightUtc(endDate)) {
+          return { title: event.description, start: startDate, end: endDate, allDay: false };
         }
-        if (this.isMidnightUtc(startDate)) {
-          startDate = this.toLocalDay(startDate);
-        }
-
+        // Days (one or several) are sent as dates at midnight UTC, the end day being excluded:
+        // they are displayed on the same days in the local timezone
+        const lastDay = new Date(
+          Math.max(startDate.getTime(), endDate.getTime() - this.MILLISECONDS_IN_A_DAY)
+        );
         return {
           title: event.description,
-          start: startDate,
-          end: endDate,
-          allDay: isAllDay
+          start: this.toLocalDay(startDate),
+          end: endOfDay(this.toLocalDay(lastDay)),
+          allDay: true
         };
       });
   }

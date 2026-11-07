@@ -64,7 +64,7 @@
               mat-button
               [disabled]="pageNumber() <= 1"
               [matTooltip]="labels.moreRecentActivities"
-              (click)="getNextActivitiesPage()"
+              (click)="showMoreRecentActivities()"
             >
               <mat-icon>chevron_left</mat-icon>
               {{ labels.moreRecent }}
@@ -75,7 +75,7 @@
               class="older-activities-button"
               [disabled]="activities().length < paginationActivities"
               [matTooltip]="labels.olderActivities"
-              (click)="getPreviousActivitiesPage()"
+              (click)="showOlderActivities()"
             >
               {{ labels.older }}
               <mat-icon>chevron_right</mat-icon>

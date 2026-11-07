@@ -6,78 +6,8 @@ import { vi } from "vitest";
 import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { WidgetService } from "@widgets/widget-service";
-import { WIDGET_ID } from "@widgets/widget.tokens";
+import { WIDGET_ID } from "@widgets/widget-tokens";
 import { Widget } from "./widget";
-
-describe("Widget", () => {
-  const widgetId = 5;
-  let fixture: ComponentFixture<Widget>;
-  let component: Widget;
-  let httpTestingController: HttpTestingController;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: WIDGET_ID, useValue: widgetId }
-      ]
-    });
-    fixture = TestBed.createComponent(Widget);
-    component = fixture.componentInstance;
-    httpTestingController = TestBed.inject(HttpTestingController);
-    fixture.componentRef.setInput("widgetData", { city: "Paris" });
-    fixture.componentRef.setInput("isFormValid", true);
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  it("Should save the widget data, switch to read mode and refresh the widget", () => {
-    const refreshSpy = vi.fn();
-    component.refreshWidgetAction.subscribe(refreshSpy);
-
-    component.onValidation();
-    const request = httpTestingController.expectOne(
-      `${environment.backend_url}/widget/updateWidgetData/${widgetId}`
-    );
-    expect(request.request.body).toEqual({ data: { city: "Paris" } });
-    request.flush({});
-
-    expect(component.isModeRead()).toBe(true);
-    expect(refreshSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it("Should display an error when the widget data can't be saved", () => {
-    const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
-    component.onValidation();
-    httpTestingController
-      .expectOne(`${environment.backend_url}/widget/updateWidgetData/${widgetId}`)
-      .flush(null, { status: 500, statusText: "Server error" });
-    expect(handleErrorSpy).toHaveBeenCalled();
-    expect(component.isModeEdit()).toBe(true);
-  });
-
-  it("Should switch between modes and notify the widget deletion", () => {
-    const deletedSpy = vi.fn();
-    TestBed.inject(WidgetService).widgetDeleted.subscribe(deletedSpy);
-
-    component.toDeleteMode();
-    expect(component.isModeDelete()).toBe(true);
-    component.cancelEdition();
-    expect(component.isModeRead()).toBe(true);
-
-    component.deleteWidget();
-    expect(deletedSpy).toHaveBeenCalledWith(widgetId);
-  });
-
-  it("Should stay in edit mode while the widget has no data", () => {
-    fixture.componentRef.setInput("widgetData", undefined);
-    component.toReadMode();
-    expect(component.isModeEdit()).toBe(true);
-  });
-});
 
 @Component({
   template: `
@@ -117,11 +47,10 @@ class WidgetHost {
 })
 class ReadOnlyWidgetHost {}
 
-describe("Widget template", () => {
+describe("Widget", () => {
   const widgetId = 5;
   let fixture: ComponentFixture<WidgetHost>;
   let host: WidgetHost;
-  let widget: Widget;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
 
@@ -148,9 +77,8 @@ describe("Widget template", () => {
     host = fixture.componentInstance;
     host.widgetData.set(widgetData);
     host.isWidgetLoaded.set(isWidgetLoaded);
-    element = fixture.nativeElement;
+    element = fixture.nativeElement as HTMLElement;
     await fixture.whenStable();
-    widget = fixture.debugElement.children[0].componentInstance;
   }
 
   function query<T extends HTMLElement = HTMLElement>(selector: string): T | null {
@@ -164,12 +92,19 @@ describe("Widget template", () => {
 
     it("Should display the edit component without the cancel button", () => {
       expect(query(".widget-edit-mode .widget-header")?.textContent?.trim()).toContain(
-        widget.labels.widgetConfiguration
+        "Configuration du widget"
       );
       expect(query(".test-edit-component")).toBeTruthy();
-      expect(query(".validate-button")?.textContent).toContain(widget.labels.validate);
+      expect(query(".validate-button")?.textContent).toContain("Valider");
       expect(query(".cancel-button")).toBeNull();
       expect(query(".widget-read-mode")).toBeNull();
+    });
+
+    it("Should not display the cancel button of a valid but never saved widget", async () => {
+      host.widgetData.set({ city: "Lyon" });
+      await fixture.whenStable();
+      expect(query(".validate-button")).toBeTruthy();
+      expect(query(".cancel-button")).toBeNull();
     });
 
     it("Should only allow the validation of a valid form", async () => {
@@ -281,12 +216,21 @@ describe("Widget template", () => {
       query(".edit-button")?.click();
       await fixture.whenStable();
       expect(query(".widget-edit-mode")).toBeTruthy();
-      expect(query(".cancel-button")?.textContent?.trim()).toEqual(widget.labels.cancel);
+      expect(query(".cancel-button")?.textContent?.trim()).toEqual("Annuler");
 
       query(".cancel-button")?.click();
       await fixture.whenStable();
       expect(query(".widget-read-mode")).toBeTruthy();
       expect(query(".widget-edit-mode")).toBeNull();
+    });
+
+    it("Should label the icon only action buttons", async () => {
+      await createHost({ city: "Paris" });
+      expect(query(".refresh-button")?.getAttribute("aria-label")).toEqual("Actualiser le widget");
+      expect(query(".edit-button")?.getAttribute("aria-label")).toEqual("Modifier le widget");
+      query(".edit-button")?.click();
+      await fixture.whenStable();
+      expect(query(".delete-button")?.getAttribute("aria-label")).toEqual("Supprimer le widget");
     });
 
     it("Should not display the cancel button while the widget is loading", async () => {
@@ -299,9 +243,12 @@ describe("Widget template", () => {
 
     it("Should go back to read mode when the deletion is cancelled", async () => {
       await createHost({ city: "Paris" });
-      widget.toDeleteMode();
+      query(".edit-button")?.click();
+      await fixture.whenStable();
+      query(".delete-button")?.click();
       await fixture.whenStable();
       expect(query("dash-delete-widget")).toBeTruthy();
+      expect(query(".widget-edit-mode")).toBeNull();
       expect(query(".widget-read-mode")).toBeNull();
       query("dash-delete-widget .cancel-button")?.click();
       await fixture.whenStable();
@@ -313,17 +260,11 @@ describe("Widget template", () => {
     const readOnlyFixture = TestBed.createComponent(ReadOnlyWidgetHost);
     await readOnlyFixture.whenStable();
     const readOnlyElement: HTMLElement = readOnlyFixture.nativeElement;
-    const readOnlyWidget: Widget = readOnlyFixture.debugElement.children[0].componentInstance;
 
     expect(readOnlyElement.querySelector(".widget-read-mode")).toBeTruthy();
     expect(readOnlyElement.querySelector(".test-body")).toBeTruthy();
     expect(readOnlyElement.querySelector(".refresh-button")).toBeTruthy();
     expect(readOnlyElement.querySelector(".edit-button")).toBeNull();
     expect(readOnlyElement.querySelectorAll(".header-actions > span")).toHaveLength(0);
-
-    // Without edit component, the widget stays in read mode
-    readOnlyWidget.toEditMode();
-    await readOnlyFixture.whenStable();
-    expect(readOnlyElement.querySelector(".widget-read-mode")).toBeTruthy();
   });
 });

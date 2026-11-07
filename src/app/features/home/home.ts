@@ -22,11 +22,11 @@ import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { MatTooltip } from "@angular/material/tooltip";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, filter, of, switchMap } from "rxjs";
-import { WidgetTypeEnum } from "@widgets/widget-type.enum";
+import { WidgetType } from "@widgets/widget-type";
 import { ImportConfigModal } from "@features/home/import-config-modal/import-config-modal";
 import { WidgetTypePickerModal } from "@widgets/widget-type-picker-modal/widget-type-picker-modal";
-import { IWidgetConfig } from "@widgets/widget-config.model";
-import { ITab } from "@features/tab/tab.model";
+import { WidgetConfig } from "@widgets/widget-config";
+import { Tab } from "@features/tab/tab";
 import { Notifications } from "@features/notifications/notifications";
 import { AuthService } from "@core/auth/auth-service";
 import { ConfigService } from "@features/home/config-service";
@@ -34,10 +34,10 @@ import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { TabService } from "@features/tab/tab-service";
 import { ThemeService } from "@core/theme/theme-service";
 import { WidgetService } from "@widgets/widget-service";
-import { Tab } from "@features/tab/tab";
-import { MiniWidgetList } from "@widgets/miniwidget-list/miniwidget-list";
+import { TabLabel } from "@features/tab/tab-label";
+import { MiniWidgetList } from "@widgets/mini-widget-list/mini-widget-list";
 import { WidgetList } from "@widgets/widget-list/widget-list";
-import { IWidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker.model";
+import { WidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker-data";
 import { WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-type-options";
 
 @Component({
@@ -47,7 +47,7 @@ import { WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-ty
   imports: [
     NgOptimizedImage,
     CdkDropList,
-    Tab,
+    TabLabel,
     CdkDrag,
     MatButton,
     MatIconButton,
@@ -66,23 +66,11 @@ import { WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-ty
   ]
 })
 export class Home {
-  private readonly ERROR_MESSAGES = {
-    initDashboard: "Erreur lors de l'initialisation du dashboard.",
-    exportConfiguration: "Erreur lors de l'export de la configuration.",
-    getWidgets: "Erreur lors de la récupération des widgets.",
-    addWidget: "Erreur lors de l'ajout d'un widget.",
-    updateWidgetsOrder: "Erreur lors de la mise à jour des widgets.",
-    deleteWidget: "Erreur lors de la suppression d'un widget.",
-    addTab: "Erreur lors de l'ajout d'un onglet.",
-    updateTabs: "Erreur lors de la mise à jour des onglets.",
-    deleteTab: "Erreur lors de la suppression d'un onglet."
-  };
-
   private readonly REFRESH_INTERVAL = 10 * 60 * 1000;
   private readonly MODAL_WIDTH = "640px";
   private readonly CASH_MANAGER_URL = "https://arnaudflaesch.github.io/CashManager/";
 
-  public readonly labels = {
+  protected readonly labels = {
     brandName: "Dash",
     tabs: "Onglets",
     doubleClickToRename: "Double-cliquez pour renommer",
@@ -109,7 +97,23 @@ export class Home {
     addWidget: "Ajouter un widget"
   };
 
-  public readonly tabsResource = rxResource({
+  private readonly ERROR_MESSAGES = {
+    initDashboard: "Erreur lors de l'initialisation du dashboard.",
+    exportConfiguration: "Erreur lors de l'export de la configuration.",
+    getWidgets: "Erreur lors de la récupération des widgets.",
+    addWidget: "Erreur lors de l'ajout d'un widget.",
+    updateWidgetsOrder: "Erreur lors de la mise à jour des widgets.",
+    deleteWidget: "Erreur lors de la suppression d'un widget.",
+    addTab: "Erreur lors de l'ajout d'un onglet.",
+    updateTabs: "Erreur lors de la mise à jour des onglets.",
+    deleteTab: "Erreur lors de la suppression d'un onglet."
+  };
+
+  public readonly editModeEnabled = signal(false);
+  private readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
+  public readonly toggleThemeForm = form(this.isDarkTheme);
+
+  private readonly tabsResource = rxResource({
     stream: () =>
       this.tabService.getTabs().pipe(
         catchError((error: HttpErrorResponse) => {
@@ -117,12 +121,12 @@ export class Home {
           return of([]);
         })
       ),
-    defaultValue: [] as ITab[]
+    defaultValue: [] as Tab[]
   });
 
   public readonly tabs = this.tabsResource.value;
   // The tab from the url once the tabs are loaded, then kept as long as it exists, else the first tab
-  public readonly activeTab = linkedSignal<ITab[], number>({
+  public readonly activeTab = linkedSignal<Tab[], number>({
     source: this.tabs,
     computation: (tabs, previous) => {
       const tabId =
@@ -134,7 +138,7 @@ export class Home {
   });
 
   /** Widgets of the active tab, reloaded when another tab is selected. */
-  public readonly widgetsResource = rxResource({
+  private readonly widgetsResource = rxResource({
     params: () => (this.activeTab() === -1 ? undefined : { tabId: this.activeTab() }),
     stream: ({ params: { tabId } }) =>
       this.widgetService.getWidgets(tabId).pipe(
@@ -143,17 +147,15 @@ export class Home {
           return of([]);
         })
       ),
-    defaultValue: [] as IWidgetConfig[]
+    defaultValue: [] as WidgetConfig[]
   });
 
   public readonly activeWidgets = this.widgetsResource.value;
   public readonly isDashboardLoaded = computed(() => !this.tabsResource.isLoading());
   public readonly areWidgetsLoaded = computed(() => !this.widgetsResource.isLoading());
-  public readonly editModeEnabled = signal(false);
-  public readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
-  public readonly toggleThemeForm = form(this.isDarkTheme);
-  public readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
   public readonly canUserSeeNotifications = inject(AuthService).isUserAdmin;
+
+  public readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
 
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -180,7 +182,8 @@ export class Home {
     this.tabService.addTab("Nouvel onglet").subscribe({
       next: (insertedTab) => {
         this.tabs.update((tabs) => [...tabs, insertedTab]);
-        this.activeTab.set(insertedTab.id);
+        // Also saved in the url, like a tab selected by the user
+        this.selectTab(insertedTab.id);
       },
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.addTab)
@@ -198,11 +201,11 @@ export class Home {
   }
 
   /** Keeps the renamed tab, else its previous name would be sent back when the tabs are reordered. */
-  public updateTab(updatedTab: ITab): void {
+  public updateTab(updatedTab: Tab): void {
     this.tabs.update((tabs) => tabs.map((tab) => (tab.id === updatedTab.id ? updatedTab : tab)));
   }
 
-  public deleteWidgetFromDashboard(id: number): void {
+  private deleteWidgetFromDashboard(id: number): void {
     this.widgetService.deleteWidget(id).subscribe({
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.deleteWidget),
@@ -223,12 +226,12 @@ export class Home {
 
   public openCreateWidgetModal(): void {
     this.dialog
-      .open<WidgetTypePickerModal, IWidgetTypePickerData, keyof typeof WidgetTypeEnum>(
+      .open<WidgetTypePickerModal, WidgetTypePickerData, keyof typeof WidgetType>(
         WidgetTypePickerModal,
         {
           width: this.MODAL_WIDTH,
           data: {
-            title: "Ajouter un widget",
+            title: this.labels.addWidget,
             widgetTypes: WIDGET_TYPE_OPTIONS
           }
         }
@@ -236,7 +239,7 @@ export class Home {
       .afterClosed()
       .pipe(
         filter(Boolean),
-        switchMap((type) => this.widgetService.addWidget(WidgetTypeEnum[type], this.activeTab()))
+        switchMap((type) => this.widgetService.addWidget(WidgetType[type], this.activeTab()))
       )
       .subscribe({
         next: (widget) => this.activeWidgets.update((activeWidgets) => [...activeWidgets, widget]),
@@ -257,7 +260,7 @@ export class Home {
     this.configService.exportConfig().subscribe({
       next: (response) => {
         const downloadLink = this.document.createElement("a");
-        downloadLink.href = URL.createObjectURL(new Blob([response]));
+        downloadLink.href = URL.createObjectURL(response);
         downloadLink.download = "dashboardConfig.json";
         this.document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -274,20 +277,25 @@ export class Home {
     await this.router.navigate(["login"]);
   }
 
-  public updateWidgetOrder(updatedWidgets: IWidgetConfig[]): void {
+  public updateWidgetOrder(updatedWidgets: WidgetConfig[]): void {
     this.widgetService.updateWidgetsOrder(updatedWidgets).subscribe({
       error: (error: HttpErrorResponse) =>
         this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateWidgetsOrder)
     });
   }
 
-  public drop(event: CdkDragDrop<ITab[]>): void {
+  public drop(event: CdkDragDrop<Tab[]>): void {
+    // A tab dropped back at its place doesn't change the order
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
     const tabs = [...this.tabs()];
     moveItemInArray(tabs, event.previousIndex, event.currentIndex);
     const updatedTabs = tabs.map((tab, index) => ({ ...tab, tabOrder: index }));
     this.tabService.updateTabs(updatedTabs).subscribe({
       next: (tabs) => this.tabs.set(tabs),
-      error: (error) => this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateTabs)
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateTabs)
     });
   }
 

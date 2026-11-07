@@ -1,56 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { WeatherForecast } from "./weather-forecast";
-import { ForecastMode, IForecast } from "../weather.model";
+import { ForecastMode } from "../weather";
+import { forecastData } from "../weather-widget-fixtures";
 
-/** Forecast at a timestamp in seconds. Not imported from the weather widget spec, so that its tests are not run a second time. */
-function forecastAt(dt: number): IForecast {
-  return {
-    dt,
-    dtText: "",
-    main: {
-      temp: 7.57,
-      feelsLike: 5.19,
-      tempMin: 7.23,
-      tempMax: 7.57,
-      pressure: 1022,
-      seaLevel: 1022,
-      grndLevel: 1018,
-      humidity: 45,
-      tempKf: 0.34
-    },
-    weather: [{ id: 800, main: "Clear", description: "ciel dégagé", icon: "01n" }],
-    clouds: { all: 0 },
-    wind: { speed: 3.68, deg: 43 },
-    sys: { pod: "n" }
-  };
-}
-
-// 06/03/2022 at 18:00 and 21:00 UTC, 07/03/2022 at 09:00 UTC, 09/03/2022 at 16:00 UTC
-const forecastData = {
-  list: [
-    forecastAt(1646589600),
-    forecastAt(1646600400),
-    forecastAt(1646643600),
-    forecastAt(1646841600)
-  ]
-};
-
+// The test forecasts are on 06/03/2022 at 18:00 and 21:00 UTC, 07/03/2022 at 09:00 UTC and 09/03/2022 at 16:00 UTC
 describe("WeatherForecast", () => {
-  let component: WeatherForecast;
   let fixture: ComponentFixture<WeatherForecast>;
   let element: HTMLElement;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(WeatherForecast);
-    component = fixture.componentInstance;
-    element = fixture.nativeElement;
-  });
-
-  it("Should get weather icons", () => {
-    const icon = "sunny";
-    expect(component.getIconFromWeatherApi(icon)).toEqual(
-      `https://openweathermap.org/img/wn/${icon}@2x.png`
-    );
+    element = fixture.nativeElement as HTMLElement;
   });
 
   function getForecastTimes(): string[] {
@@ -79,13 +39,13 @@ describe("WeatherForecast", () => {
 
     const firstForecast = element.querySelector(".forecast-container");
     const icon = firstForecast?.querySelector<HTMLImageElement>(".current-weather-icon");
-    expect(icon?.src).toEqual(component.getIconFromWeatherApi("01n"));
+    expect(icon?.src).toEqual("https://openweathermap.org/img/wn/01n@2x.png");
     expect(icon?.alt).toEqual("ciel dégagé");
     const forecastIcons = [...(firstForecast?.querySelectorAll(".forecast-icons > div") ?? [])];
     expect(forecastIcons.map((line) => line.textContent?.replace(/\s+/g, " ").trim())).toEqual([
-      `device_thermostat 8 ${component.labels.celsius}`,
-      `device_thermostat 7 ${component.labels.celsius}`,
-      `opacity 45${component.labels.percent}`
+      "device_thermostat 8 °C",
+      "device_thermostat 7 °C",
+      "opacity 45%"
     ]);
   });
 

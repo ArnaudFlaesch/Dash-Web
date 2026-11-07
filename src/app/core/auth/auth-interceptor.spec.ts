@@ -46,6 +46,11 @@ describe("authInterceptor", () => {
     expect(sendRequest("https://example.com/api")).toBeNull();
   });
 
+  it("Should not add the token to a host whose name starts with the backend url", () => {
+    localStorage.setItem("user", JSON.stringify({ accessToken: "token" }));
+    expect(sendRequest(`${environment.backend_url}.evil.com/api`)).toBeNull();
+  });
+
   it("Should not add a header when the user is not logged in", () => {
     expect(sendRequest(`${environment.backend_url}/tab/`)).toBeNull();
   });
