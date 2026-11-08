@@ -11,8 +11,8 @@ import { RssWidget } from "./rss-widget";
 describe("RssWidget", () => {
   const widgetId = 37;
   const urlFeed = "https://www.lemonde.fr/rss/une.xml";
-  const rssFeedPath = environment.backend_url + "/rssWidget/?url=" + urlFeed;
-  const updateWidgetPath = environment.backend_url + `/widget/updateWidgetData/${widgetId}`;
+  const rssFeedPath = environment.backend_url + "/rss-feed?url=" + urlFeed;
+  const updateWidgetPath = environment.backend_url + `/widgets/${widgetId}`;
   const ERROR_GETTING_RSS_FEED = "Erreur pendant la récupération du flux RSS.";
   const ERROR_MARKING_FEED_AS_READ = "Erreur pendant la mise à jour du widget RSS.";
 

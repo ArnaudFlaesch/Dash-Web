@@ -8,7 +8,7 @@ import { WidgetConfig } from "@widgets/widget-config";
 @Service()
 export class WidgetService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.backend_url}/widget`;
+  private readonly baseUrl = `${environment.backend_url}/widgets`;
 
   private readonly widgetDeletedEvent = new Subject<number>();
   private readonly refreshWidgetsEvent = new Subject<void>();
@@ -30,22 +30,22 @@ export class WidgetService {
   }
 
   public getWidgets(tabId: number): Observable<WidgetConfig[]> {
-    return this.http.get<WidgetConfig[]>(`${this.baseUrl}/`, { params: { tabId } });
+    return this.http.get<WidgetConfig[]>(this.baseUrl, { params: { tabId } });
   }
 
   public addWidget(type: WidgetType, tabId: number): Observable<WidgetConfig> {
-    return this.http.post<WidgetConfig>(`${this.baseUrl}/addWidget`, { type, tabId });
+    return this.http.post<WidgetConfig>(this.baseUrl, { type, tabId });
   }
 
   public updateWidgetData(id: number, data: unknown): Observable<WidgetConfig> {
-    return this.http.patch<WidgetConfig>(`${this.baseUrl}/updateWidgetData/${id}`, { data });
+    return this.http.patch<WidgetConfig>(`${this.baseUrl}/${id}`, { data });
   }
 
   public updateWidgetsOrder(widgetsData: WidgetConfig[]): Observable<WidgetConfig[]> {
-    return this.http.post<WidgetConfig[]>(`${this.baseUrl}/updateWidgetsOrder`, widgetsData);
+    return this.http.patch<WidgetConfig[]>(this.baseUrl, widgetsData);
   }
 
   public deleteWidget(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/deleteWidget`, { params: { id } });
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

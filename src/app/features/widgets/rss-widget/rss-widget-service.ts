@@ -8,6 +8,6 @@ export class RssWidgetService {
   private readonly http = inject(HttpClient);
 
   public fetchDataFromRssFeed(url: string): Observable<unknown> {
-    return this.http.get<unknown>(`${environment.backend_url}/rssWidget/`, { params: { url } });
+    return this.http.get<unknown>(`${environment.backend_url}/rss-feed`, { params: { url } });
   }
 }

@@ -11,7 +11,7 @@ describe("MiniWidgetService", () => {
   let miniWidgetService: MiniWidgetService;
   let httpTestingController: HttpTestingController;
 
-  const miniWidgetUrl = `${environment.backend_url}/miniWidget`;
+  const miniWidgetUrl = `${environment.backend_url}/mini-widgets`;
   const miniWidget: MiniWidgetConfig = {
     id: 1,
     type: MiniWidgetType.WEATHER,
@@ -40,7 +40,7 @@ describe("MiniWidgetService", () => {
   it("Should get the mini widgets", () => {
     let miniWidgets: MiniWidgetConfig[] = [];
     miniWidgetService.getMiniWidgets().subscribe((response) => (miniWidgets = response));
-    const request = httpTestingController.expectOne(`${miniWidgetUrl}/`);
+    const request = httpTestingController.expectOne(miniWidgetUrl);
     expect(request.request.method).toEqual("GET");
     request.flush([miniWidget]);
     expect(miniWidgets).toEqual([miniWidget]);
@@ -48,7 +48,7 @@ describe("MiniWidgetService", () => {
 
   it("Should add a mini widget", () => {
     miniWidgetService.addMiniWidget(MiniWidgetType.WEATHER).subscribe();
-    const request = httpTestingController.expectOne(`${miniWidgetUrl}/addMiniWidget`);
+    const request = httpTestingController.expectOne(miniWidgetUrl);
     expect(request.request.method).toEqual("POST");
     expect(request.request.body).toEqual({ type: MiniWidgetType.WEATHER });
     request.flush(miniWidget);
@@ -56,7 +56,7 @@ describe("MiniWidgetService", () => {
 
   it("Should update the data of a mini widget", () => {
     miniWidgetService.updateWidgetData(1, { city: "Lyon" }).subscribe();
-    const request = httpTestingController.expectOne(`${miniWidgetUrl}/updateWidgetData/1`);
+    const request = httpTestingController.expectOne(`${miniWidgetUrl}/1`);
     expect(request.request.method).toEqual("PATCH");
     expect(request.request.body).toEqual({ data: { city: "Lyon" } });
     request.flush(miniWidget);
@@ -64,7 +64,7 @@ describe("MiniWidgetService", () => {
 
   it("Should delete a mini widget", () => {
     miniWidgetService.deleteMiniWidget(1).subscribe();
-    const request = httpTestingController.expectOne(`${miniWidgetUrl}/deleteMiniWidget?widgetId=1`);
+    const request = httpTestingController.expectOne(`${miniWidgetUrl}/1`);
     expect(request.request.method).toEqual("DELETE");
     request.flush(null);
   });

@@ -25,11 +25,11 @@ describe("Strava Widget tests", () => {
     window.localStorage.setItem("strava_refresh_token", STRAVA_REFRESH_TOKEN);
     window.localStorage.setItem("strava_token", STRAVA_TOKEN);
     window.localStorage.setItem("strava_token_expires_at", TOKEN_EXPIRATION_DATE.toString());
-    cy.intercept("/stravaWidget/getRefreshToken")
+    cy.intercept("/strava/token/refresh")
       .as("refreshToken")
-      .intercept("/stravaWidget/getAthleteData*")
+      .intercept({ pathname: "/strava/athlete" })
       .as("getAthleteData")
-      .intercept("/stravaWidget/getAthleteActivities*")
+      .intercept({ pathname: "/strava/athlete/activities" })
       .as("getActivities")
       .reload()
       .wait("@getAthleteData", { requestTimeout: 15000, responseTimeout: 15000 })

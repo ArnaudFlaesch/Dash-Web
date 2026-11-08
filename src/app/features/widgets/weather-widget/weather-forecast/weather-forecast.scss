@@ -30,6 +30,12 @@
       gap: 0.15rem;
       white-space: nowrap;
       font-size: 0.9em;
+
+      > div {
+        display: flex;
+        align-items: center;
+        gap: $space-xs;
+      }
     }
   }
 

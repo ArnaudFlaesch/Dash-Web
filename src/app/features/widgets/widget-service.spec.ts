@@ -11,7 +11,7 @@ describe("WidgetService", () => {
   let widgetService: WidgetService;
   let httpTestingController: HttpTestingController;
 
-  const widgetUrl = `${environment.backend_url}/widget`;
+  const widgetUrl = `${environment.backend_url}/widgets`;
   const widget: WidgetConfig = {
     id: 1,
     type: WidgetType.RSS,
@@ -48,7 +48,7 @@ describe("WidgetService", () => {
   it("Should get the widgets of a tab", () => {
     let widgets: WidgetConfig[] = [];
     widgetService.getWidgets(1).subscribe((response) => (widgets = response));
-    const request = httpTestingController.expectOne(`${widgetUrl}/?tabId=1`);
+    const request = httpTestingController.expectOne(`${widgetUrl}?tabId=1`);
     expect(request.request.method).toEqual("GET");
     request.flush([widget]);
     expect(widgets).toEqual([widget]);
@@ -56,7 +56,7 @@ describe("WidgetService", () => {
 
   it("Should add a widget to a tab", () => {
     widgetService.addWidget(WidgetType.WEATHER, 2).subscribe();
-    const request = httpTestingController.expectOne(`${widgetUrl}/addWidget`);
+    const request = httpTestingController.expectOne(widgetUrl);
     expect(request.request.method).toEqual("POST");
     expect(request.request.body).toEqual({ type: WidgetType.WEATHER, tabId: 2 });
     request.flush(widget);
@@ -64,7 +64,7 @@ describe("WidgetService", () => {
 
   it("Should update the data of a widget", () => {
     widgetService.updateWidgetData(1, { url: "other.rss.xml" }).subscribe();
-    const request = httpTestingController.expectOne(`${widgetUrl}/updateWidgetData/1`);
+    const request = httpTestingController.expectOne(`${widgetUrl}/1`);
     expect(request.request.method).toEqual("PATCH");
     expect(request.request.body).toEqual({ data: { url: "other.rss.xml" } });
     request.flush(widget);
@@ -72,15 +72,15 @@ describe("WidgetService", () => {
 
   it("Should update the order of the widgets", () => {
     widgetService.updateWidgetsOrder([widget]).subscribe();
-    const request = httpTestingController.expectOne(`${widgetUrl}/updateWidgetsOrder`);
-    expect(request.request.method).toEqual("POST");
+    const request = httpTestingController.expectOne(widgetUrl);
+    expect(request.request.method).toEqual("PATCH");
     expect(request.request.body).toEqual([widget]);
     request.flush([widget]);
   });
 
   it("Should delete a widget", () => {
     widgetService.deleteWidget(1).subscribe();
-    const request = httpTestingController.expectOne(`${widgetUrl}/deleteWidget?id=1`);
+    const request = httpTestingController.expectOne(`${widgetUrl}/1`);
     expect(request.request.method).toEqual("DELETE");
     request.flush(null);
   });

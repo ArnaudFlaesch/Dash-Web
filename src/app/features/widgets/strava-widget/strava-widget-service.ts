@@ -7,18 +7,18 @@ import { Activity, Athlete, TokenData } from "./strava";
 @Service()
 export class StravaWidgetService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.backend_url}/stravaWidget`;
+  private readonly baseUrl = `${environment.backend_url}/strava`;
 
   public getToken(apiCode: string): Observable<TokenData> {
-    return this.http.post<TokenData>(`${this.baseUrl}/getToken`, { apiCode });
+    return this.http.post<TokenData>(`${this.baseUrl}/token`, { apiCode });
   }
 
   public getRefreshToken(refreshToken: string): Observable<TokenData> {
-    return this.http.post<TokenData>(`${this.baseUrl}/getRefreshToken`, { refreshToken });
+    return this.http.post<TokenData>(`${this.baseUrl}/token/refresh`, { refreshToken });
   }
 
   public getAthleteData(token: string): Observable<Athlete> {
-    return this.http.get<Athlete>(`${this.baseUrl}/getAthleteData`, { params: { token } });
+    return this.http.get<Athlete>(`${this.baseUrl}/athlete`, { params: { token } });
   }
 
   public getActivities(
@@ -26,7 +26,7 @@ export class StravaWidgetService {
     pageNumber: number,
     numberOfActivities: number
   ): Observable<Activity[]> {
-    return this.http.get<Activity[]>(`${this.baseUrl}/getAthleteActivities`, {
+    return this.http.get<Activity[]>(`${this.baseUrl}/athlete/activities`, {
       params: { token, pageNumber, numberOfActivities }
     });
   }

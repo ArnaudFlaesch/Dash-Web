@@ -24,13 +24,13 @@ describe("Workout Widget tests", () => {
 
   it("Should add a new workout type", () => {
     const newWorkoutTypeName = "Abdos";
-    cy.intercept("POST", `/workoutWidget/addWorkoutType`).as("addWorkoutType");
+    cy.intercept("POST", `/workout/types`).as("addWorkoutType");
     cy.get(".workout-type-name").should("have.length", 0);
     cy.get(".workout-session").should("have.length", 0);
     cy.get("#add-workout-input").type(newWorkoutTypeName);
     cy.get("#add-workout-type-button").click();
     cy.wait("@addWorkoutType").then((request: Interception) => {
-      expect(request.response?.statusCode).to.equal(200);
+      expect(request.response?.statusCode).to.equal(201);
       cy.get(".workout-type-name")
         .should("have.length", 1)
         .invoke("text")
@@ -41,7 +41,7 @@ describe("Workout Widget tests", () => {
   });
 
   it("Should add a new workout session", () => {
-    cy.intercept("POST", `/workoutWidget/createWorkoutSession`).as("createWorkoutSession");
+    cy.intercept("POST", `/workout/sessions`).as("createWorkoutSession");
     cy.get(".workout-type-name").should("have.length", 1);
     cy.get(".workout-session").should("have.length", 0);
     cy.get("#workout-date-picker-field").type(format(mockedDate, "dd/MM/yyyy"));
@@ -50,7 +50,7 @@ describe("Workout Widget tests", () => {
       .then(() => {
         cy.get("#create-workout-session-button").click();
         cy.wait("@createWorkoutSession").then((request: Interception) => {
-          expect(request.response?.statusCode).to.equal(200);
+          expect(request.response?.statusCode).to.equal(201);
           const month = mockedDate.getMonth() + 1; // Nécessaire car getMonth renvoie 6 au lieu de 07
           const dateText = `${mockedDate.getDate()}/0${month}/${mockedDate.getFullYear()}`;
           cy.get("#workout-session-date").should("have.text", `Session du ${dateText}`);
@@ -59,17 +59,14 @@ describe("Workout Widget tests", () => {
   });
 
   it("Should add a new workout exercise", () => {
-    cy.intercept("GET", "/workoutWidget/workoutExercises?workoutSessionId*").as(
-      "getWorkoutExercises"
-    );
-    cy.intercept("POST", `/workoutWidget/addWorkoutExercise`).as("addWorkoutExercise");
+    cy.intercept("GET", "/workout/sessions/*/exercises").as("getWorkoutExercises");
     cy.get(".workout-session").should("have.length", 1);
     cy.get(".workout-session:nth(0)").click();
     cy.wait("@getWorkoutExercises").then((request: Interception) => {
       expect(request.response?.statusCode).to.equal(200);
       cy.get("#workout-session-date")
         .should("have.text", `Session du 22/07/${mockedDate.getFullYear()}`)
-        .intercept("POST", "/workoutWidget/updateWorkoutExercise")
+        .intercept("PUT", "/workout/sessions/*/exercises/*")
         .as("updateWorkoutExercise")
         .get("#edit-session-button")
         .click();

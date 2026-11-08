@@ -7,7 +7,7 @@ describe("Tab error tests", () => {
   });
 
   it("Should fail to get the list of tabs", () => {
-    cy.intercept("GET", "/tab/", { statusCode: 500 })
+    cy.intercept("GET", "/tabs", { statusCode: 500 })
       .as("getTabsError")
       .visit("/")
       .wait("@getTabsError")
@@ -18,7 +18,7 @@ describe("Tab error tests", () => {
   });
 
   it("Should fail to get the widgets", () => {
-    cy.intercept("GET", "/widget/*", { statusCode: 500 })
+    cy.intercept("GET", "/widgets?tabId=*", { statusCode: 500 })
       .as("getWidgetsError")
       .visit("/")
       .wait("@getWidgetsError")
@@ -29,7 +29,7 @@ describe("Tab error tests", () => {
   });
 
   it("Should fail to add a tab", () => {
-    cy.intercept("POST", "/tab/addTab", { statusCode: 500 }).as("addTabError");
+    cy.intercept("POST", "/tabs", { statusCode: 500 }).as("addTabError");
     cy.get(".tab").should("have.length", 1);
     cy.get("#add-new-tab-button").click();
     cy.wait("@addTabError").then((request: Interception) => {
@@ -41,7 +41,7 @@ describe("Tab error tests", () => {
   });
 
   it("Should fail to edit the tab", () => {
-    cy.intercept("POST", "/tab/updateTab", { statusCode: 500 })
+    cy.intercept("PUT", "/tabs/*", { statusCode: 500 })
       .as("updateTabError")
       .get(".tab-label")
       .eq(0)
@@ -69,7 +69,7 @@ describe("Tab error tests", () => {
   });
 
   it("Should fail to delete the tab", () => {
-    cy.intercept("DELETE", "/tab/deleteTab*", { statusCode: 500 }).as("deleteTabError");
+    cy.intercept("DELETE", "/tabs/*", { statusCode: 500 }).as("deleteTabError");
     cy.get(".tab").should("have.length", 1).eq(0).dblclick();
     cy.get(".delete-tab-button").click();
     cy.wait("@deleteTabError").then((request: Interception) => {

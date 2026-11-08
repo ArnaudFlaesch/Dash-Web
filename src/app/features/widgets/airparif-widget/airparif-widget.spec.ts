@@ -23,9 +23,9 @@ class AirparifMapStub {
 
 describe("AirparifWidget", () => {
   const widgetData = { airParifApiKey: "AIRPARIFTOKEN", communeInseeCode: "75112" };
-  const forecastUrl = `${environment.backend_url}/airParifWidget/previsionCommune?commune=75112`;
-  const couleursUrl = `${environment.backend_url}/airParifWidget/couleurs`;
-  const updateWidgetDataUrl = `${environment.backend_url}/widget/updateWidgetData/1`;
+  const forecastUrl = `${environment.backend_url}/air-parif/forecasts?commune=75112`;
+  const couleursUrl = `${environment.backend_url}/air-parif/colors`;
+  const updateWidgetDataUrl = `${environment.backend_url}/widgets/1`;
 
   const couleursIndicesData = [
     { name: "BON", color: "#50f0e6" },
@@ -221,7 +221,7 @@ describe("AirparifWidget", () => {
   it("should load the forecast of a commune code typed with spaces or in lowercase", async () => {
     await createWidget({ airParifApiKey: "AIRPARIFTOKEN", communeInseeCode: " 2a004 " });
     httpTestingController
-      .expectOne(`${environment.backend_url}/airParifWidget/previsionCommune?commune=2A004`)
+      .expectOne(`${environment.backend_url}/air-parif/forecasts?commune=2A004`)
       .flush(forecastData);
     httpTestingController.expectOne(couleursUrl).flush(couleursIndicesData);
     await flushResources();

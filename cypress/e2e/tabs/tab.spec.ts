@@ -14,7 +14,7 @@ describe("Tab tests", () => {
   });
 
   it("Should edit the created tab", () => {
-    cy.intercept("POST", "/tab/updateTab").as("updateTab");
+    cy.intercept("PUT", "/tabs/*").as("updateTab");
     cy.get(".tab:nth(-1) .tab-label").click();
     cy.get(".tab:nth(-1) .tab-label").dblclick();
     cy.get("input").clear();
@@ -41,14 +41,14 @@ describe("Tab tests", () => {
   });
 
   it("Should delete the created tab", () => {
-    cy.intercept("DELETE", "/tab/deleteTab*")
+    cy.intercept("DELETE", "/tabs/*")
       .as("deleteTab")
       .get(".tab")
       .contains("News feed Updated")
       .dblclick();
     cy.get(".delete-tab-button").click();
     cy.wait("@deleteTab").then((response: Interception) => {
-      expect(response.response?.statusCode).to.equal(200);
+      expect(response.response?.statusCode).to.equal(204);
       cy.get(".tab").should("have.length", 1);
     });
   });

@@ -18,9 +18,9 @@ describe("Airparif Widget tests", () => {
     cy.get("#airparif-api-key").type(AIR_PARIF_VALID_TOKEN);
     cy.get("#commune-insee-code-label").click();
     cy.get("#commune-insee-code").type(communeInseeCode);
-    cy.intercept("GET", `/airParifWidget/previsionCommune?commune=${communeInseeCode}`)
+    cy.intercept("GET", `/air-parif/forecasts?commune=${communeInseeCode}`)
       .as("getForecastData")
-      .intercept("GET", `/airParifWidget/couleurs*`)
+      .intercept("GET", `/air-parif/colors*`)
       .as("getColorsData");
     cy.get(".validate-button").click();
     cy.wait(["@getForecastData", "@getColorsData"]).then((requests: Interception[]) => {

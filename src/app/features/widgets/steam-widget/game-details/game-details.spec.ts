@@ -17,8 +17,7 @@ describe("GameDetails", () => {
     appIdLink: "https://steamcommunity.com/app/220",
     playerAchievementUrl: "https://steamcommunity.com/id/Nauno93/stats/220/achievements/"
   };
-  const achievementsUrl =
-    environment.backend_url + "/steamWidget/achievementList?steamUserId=1337&appId=220";
+  const achievementsUrl = environment.backend_url + "/steam/players/1337/games/220/achievements";
 
   let fixture: ComponentFixture<GameDetails>;
   let element: HTMLElement;
@@ -95,11 +94,7 @@ describe("GameDetails", () => {
     openPanel();
     httpTestingController
       .expectOne(
-        environment.backend_url +
-          "/steamWidget/achievementList?steamUserId=" +
-          steamUserId +
-          "&appId=" +
-          appId
+        `${environment.backend_url}/steam/players/${steamUserId}/games/${appId}/achievements`
       )
       .flush({
         playerstats: {

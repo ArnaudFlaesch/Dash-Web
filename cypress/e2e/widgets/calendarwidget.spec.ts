@@ -24,7 +24,7 @@ xdescribe("Calendar Widget tests", () => {
   });
 
   it("Should edit Calendar widget and add an Ical feed", () => {
-    cy.intercept("POST", `/calendarWidget/`)
+    cy.intercept("POST", `/calendar/events`)
       .as("getCalendarDataRequest")
       .get("#add-calendar-url")
       .click();

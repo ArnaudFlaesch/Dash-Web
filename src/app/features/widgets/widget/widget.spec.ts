@@ -120,7 +120,7 @@ describe("Widget", () => {
       const initialRefreshCount = host.refreshCount;
       query(".validate-button")?.click();
       const request = httpTestingController.expectOne(
-        `${environment.backend_url}/widget/updateWidgetData/${widgetId}`
+        `${environment.backend_url}/widgets/${widgetId}`
       );
       expect(request.request.method).toEqual("PATCH");
       expect(request.request.body).toEqual({ data: { city: "Lyon" } });
@@ -137,7 +137,7 @@ describe("Widget", () => {
         .mockImplementation(() => undefined);
       query(".validate-button")?.click();
       httpTestingController
-        .expectOne(`${environment.backend_url}/widget/updateWidgetData/${widgetId}`)
+        .expectOne(`${environment.backend_url}/widgets/${widgetId}`)
         .flush(null, { status: 500, statusText: "Server error" });
       await fixture.whenStable();
 

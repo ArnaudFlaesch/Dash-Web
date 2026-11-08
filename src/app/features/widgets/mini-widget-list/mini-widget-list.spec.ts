@@ -14,8 +14,11 @@ import { weatherData } from "@widgets/weather-widget/weather-widget-fixtures";
 import { MiniWidgetConfig } from "@widgets/mini-widget-config";
 
 describe("MiniWidgetList", () => {
-  const miniWidgetPath = environment.backend_url + "/miniWidget/";
-  const weatherPath = environment.backend_url + "/weatherWidget/weather?city=";
+  const miniWidgetPath = environment.backend_url + "/mini-widgets";
+  // Getting and adding the mini widgets share the same url
+  const getMiniWidgetsRequest = { method: "GET", url: miniWidgetPath };
+  const addMiniWidgetRequest = { method: "POST", url: miniWidgetPath };
+  const weatherPath = environment.backend_url + "/weather/current?city=";
   let fixture: ComponentFixture<MiniWidgetList>;
   let element: HTMLElement;
   let httpTestingController: HttpTestingController;
@@ -54,7 +57,7 @@ describe("MiniWidgetList", () => {
 
   async function loadMiniWidgets(miniWidgets: Partial<MiniWidgetConfig>[]): Promise<void> {
     TestBed.tick();
-    httpTestingController.expectOne(miniWidgetPath).flush(miniWidgets);
+    httpTestingController.expectOne(getMiniWidgetsRequest).flush(miniWidgets);
     await flushResources();
   }
 
@@ -98,7 +101,7 @@ describe("MiniWidgetList", () => {
       await fixture.whenStable();
       getMiniWidgets()[0].querySelector<HTMLButtonElement>(".validate-button")?.click();
 
-      const request = httpTestingController.expectOne(miniWidgetPath + "updateWidgetData/70");
+      const request = httpTestingController.expectOne(miniWidgetPath + "/70");
       expect(request.request.body).toEqual({ data: { city: "Paris" } });
       request.flush({});
       TestBed.tick();
@@ -114,7 +117,7 @@ describe("MiniWidgetList", () => {
         width: "640px",
         data: { title: "Ajouter un mini widget", widgetTypes: MINI_WIDGET_TYPE_OPTIONS }
       });
-      const request = httpTestingController.expectOne(miniWidgetPath + "addMiniWidget");
+      const request = httpTestingController.expectOne(addMiniWidgetRequest);
       expect(request.request.body).toEqual({ type: MiniWidgetType.WEATHER });
       request.flush({ id: 71, type: MiniWidgetType.WEATHER });
       await fixture.whenStable();
@@ -130,7 +133,7 @@ describe("MiniWidgetList", () => {
     it("Should not add a mini widget when the modal is closed", async () => {
       dialogResult = undefined;
       await clickAddButton();
-      httpTestingController.expectNone(miniWidgetPath + "addMiniWidget");
+      httpTestingController.expectNone(addMiniWidgetRequest);
       expect(getMiniWidgets()).toHaveLength(1);
     });
 
@@ -141,7 +144,7 @@ describe("MiniWidgetList", () => {
       await fixture.whenStable();
       await deleteFirstMiniWidget();
 
-      httpTestingController.expectOne(miniWidgetPath + "deleteMiniWidget?widgetId=70").flush(null);
+      httpTestingController.expectOne(miniWidgetPath + "/70").flush(null);
       await fixture.whenStable();
       expect(getMiniWidgets()).toHaveLength(0);
       expect(handleErrorSpy).not.toHaveBeenCalled();
@@ -152,7 +155,7 @@ describe("MiniWidgetList", () => {
     it("Should display an error when the mini widgets can't be loaded", async () => {
       TestBed.tick();
       httpTestingController
-        .expectOne(miniWidgetPath)
+        .expectOne(getMiniWidgetsRequest)
         .flush(null, { status: 500, statusText: "Server error" });
       await fixture.whenStable();
 
@@ -174,7 +177,7 @@ describe("MiniWidgetList", () => {
       it("Should display an error when a mini widget can't be added", async () => {
         await clickAddButton();
         httpTestingController
-          .expectOne(miniWidgetPath + "addMiniWidget")
+          .expectOne(addMiniWidgetRequest)
           .flush(null, { status: 500, statusText: "Server error" });
         await fixture.whenStable();
 
@@ -188,7 +191,7 @@ describe("MiniWidgetList", () => {
       it("Should display an error and keep the mini widget when it can't be deleted", async () => {
         await deleteFirstMiniWidget();
         httpTestingController
-          .expectOne(miniWidgetPath + "deleteMiniWidget?widgetId=70")
+          .expectOne(miniWidgetPath + "/70")
           .flush(null, { status: 500, statusText: "Server error" });
         await fixture.whenStable();
 

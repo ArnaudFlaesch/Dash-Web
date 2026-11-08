@@ -10,9 +10,9 @@ describe("Weather Widget tests", () => {
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   beforeEach(() => {
-    cy.intercept("GET", `/weatherWidget/weather?city=*`)
+    cy.intercept("GET", `/weather/current?city=*`)
       .as("getWeather")
-      .intercept("GET", `/weatherWidget/forecast?city=*`)
+      .intercept("GET", `/weather/forecast?city=*`)
       .as("getForecast");
     cy.loginAsAdmin().navigateToTab(tabName);
     cy.clock(new Date(2022, 9, 29, 0, 0, 0).getTime(), ["Date"]);

@@ -86,9 +86,7 @@ describe("WidgetList rendering", () => {
     );
     // Not whenStable: the pending requests of the weather widget would keep the fixture unstable
     TestBed.tick();
-    weatherRequests = httpTestingController.match((request) =>
-      request.url.includes("/weatherWidget/")
-    );
+    weatherRequests = httpTestingController.match((request) => request.url.includes("/weather/"));
     weatherRequests.forEach((request) => request.flush({}));
     await fixture.whenStable();
   });

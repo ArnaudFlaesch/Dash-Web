@@ -42,7 +42,7 @@ describe("NotificationService", () => {
     };
     let response: Page<AppNotification> | undefined;
     notificationService.getNotifications().subscribe((notifications) => (response = notifications));
-    const request = httpTestingController.expectOne(`${notificationsUrl}/`);
+    const request = httpTestingController.expectOne(notificationsUrl);
     expect(request.request.method).toEqual("GET");
     request.flush(page);
     expect(response).toEqual(page);
@@ -50,7 +50,7 @@ describe("NotificationService", () => {
 
   it("Should mark notifications as read", () => {
     notificationService.markNotificationAsRead([1, 2]).subscribe();
-    const request = httpTestingController.expectOne(`${notificationsUrl}/markNotificationAsRead`);
+    const request = httpTestingController.expectOne(`${notificationsUrl}/read`);
     expect(request.request.method).toEqual("PUT");
     expect(request.request.body).toEqual({ notificationIds: [1, 2] });
     request.flush([{ ...notification, isRead: true }]);

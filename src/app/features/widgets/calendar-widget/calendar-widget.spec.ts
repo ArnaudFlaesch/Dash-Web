@@ -22,7 +22,7 @@ import { EventDetailModal } from "./event-detail-modal/event-detail-modal";
 import { CalendarData } from "./calendar-data";
 import { provideHttpClient } from "@angular/common/http";
 
-const calendarPath = environment.backend_url + `/calendarWidget/`;
+const calendarPath = environment.backend_url + "/calendar/events";
 const ERROR_PARSING_EVENTS = "Erreur lors de la récupération des évènements.";
 
 describe("CalendarWidget", () => {
@@ -167,9 +167,7 @@ describe("CalendarWidget", () => {
       await fixture.whenStable();
 
       query(".validate-button")?.click();
-      const saveRequest = httpTestingController.expectOne(
-        environment.backend_url + "/widget/updateWidgetData/1"
-      );
+      const saveRequest = httpTestingController.expectOne(environment.backend_url + "/widgets/1");
       expect(saveRequest.request.body).toEqual({ data: { calendarUrls: [calendarUrl] } });
       saveRequest.flush({});
       // Not whenStable: the pending request of the events would keep the fixture unstable

@@ -60,27 +60,24 @@ describe("WorkoutWidget", () => {
     return `dateIntervalStart=${format(start, dateFormat)}&dateIntervalEnd=${format(end, dateFormat)}`;
   }
 
-  const workoutTypesUrl = environment.backend_url + "/workoutWidget/workoutTypes";
-  const addWorkoutTypeUrl = environment.backend_url + "/workoutWidget/addWorkoutType";
-  const createWorkoutSessionUrl = environment.backend_url + "/workoutWidget/createWorkoutSession";
+  // Getting and adding the workout types share the same url
+  const workoutTypesUrl = { method: "GET", url: environment.backend_url + "/workout/types" };
+  const addWorkoutTypeUrl = { method: "POST", url: environment.backend_url + "/workout/types" };
+  const createWorkoutSessionUrl = environment.backend_url + "/workout/sessions";
 
   function workoutSessionsUrl(month: Date): string {
     return (
       environment.backend_url +
-      `/workoutWidget/workoutSessions?${intervalParams(startOfMonth(month), endOfMonth(month))}`
+      `/workout/sessions?${intervalParams(startOfMonth(month), endOfMonth(month))}`
     );
   }
 
   function statsByPeriodUrl(start: Date, end: Date): string {
-    return (
-      environment.backend_url + `/workoutWidget/workoutStatsByPeriod?${intervalParams(start, end)}`
-    );
+    return environment.backend_url + `/workout/stats/by-period?${intervalParams(start, end)}`;
   }
 
   function statsByMonthUrl(start: Date, end: Date): string {
-    return (
-      environment.backend_url + `/workoutWidget/workoutStatsByMonth?${intervalParams(start, end)}`
-    );
+    return environment.backend_url + `/workout/stats/by-month?${intervalParams(start, end)}`;
   }
 
   const weekStatsUrl = (): string =>
@@ -358,7 +355,7 @@ describe("WorkoutWidget", () => {
 
       // The created session is edited
       httpTestingController
-        .expectOne(environment.backend_url + "/workoutWidget/workoutExercises?workoutSessionId=9")
+        .expectOne(environment.backend_url + "/workout/sessions/9/exercises")
         .flush([]);
       await fixture.whenStable();
       expect(query("dash-workout-session-edit #workout-session-date")?.textContent).toContain(
@@ -385,7 +382,7 @@ describe("WorkoutWidget", () => {
         .flush({ id: 9, workoutDate: format(today, "yyyy-MM-dd"), userId: 2 });
       TestBed.tick();
       httpTestingController
-        .expectOne(environment.backend_url + "/workoutWidget/workoutExercises?workoutSessionId=9")
+        .expectOne(environment.backend_url + "/workout/sessions/9/exercises")
         .flush([]);
       await fixture.whenStable();
 
@@ -426,7 +423,7 @@ describe("WorkoutWidget", () => {
       query(".workout-session")?.click();
       TestBed.tick();
       httpTestingController
-        .expectOne(environment.backend_url + "/workoutWidget/workoutExercises?workoutSessionId=7")
+        .expectOne(environment.backend_url + "/workout/sessions/7/exercises")
         .flush([{ workoutTypeId: 1, numberOfReps: 5 }]);
       await fixture.whenStable();
 
@@ -473,8 +470,8 @@ describe("WorkoutWidget", () => {
       await monthInput.blur();
 
       expect(await monthInput.getValue()).toEqual("invalid");
-      httpTestingController.expectNone((request) => request.url.includes("/workoutSessions"));
-      httpTestingController.expectNone((request) => request.url.includes("/workoutStatsByPeriod"));
+      httpTestingController.expectNone((request) => request.url.endsWith("/workout/sessions"));
+      httpTestingController.expectNone((request) => request.url.endsWith("/stats/by-period"));
     });
   });
 

@@ -42,8 +42,8 @@ function loginAs(username: string, password: string): Chainable<Cypress.Response
 }
 
 function navigateToTab(tabName: string): Cypress.Chainable {
-  cy.intercept("GET", "/tab/").as("getTabs");
-  cy.intercept("GET", "/widget/?tabId=*").as("getWidgets");
+  cy.intercept("GET", "/tabs").as("getTabs");
+  cy.intercept("GET", "/widgets?tabId=*").as("getWidgets");
   cy.visit("/");
   return cy.wait("@getTabs").then((getTabResponse: Interception) => {
     expect(getTabResponse?.response?.statusCode).to.equal(200);
@@ -56,11 +56,11 @@ function navigateToTab(tabName: string): Cypress.Chainable {
 
 function createNewTab(tabName: string): Cypress.Chainable {
   return cy
-    .intercept("GET", "/tab/")
+    .intercept("GET", "/tabs")
     .as("getTabs")
-    .intercept("POST", "/tab/addTab")
+    .intercept("POST", "/tabs")
     .as("createTab")
-    .intercept("POST", "/tab/updateTab")
+    .intercept("PUT", "/tabs/*")
     .as("updateTab")
     .visit("/")
     .wait("@getTabs")
@@ -68,7 +68,7 @@ function createNewTab(tabName: string): Cypress.Chainable {
       expect(getTabsResponse?.response?.statusCode).to.equal(200);
       cy.get("#add-new-tab-button").click();
       cy.wait("@createTab").then((createTabResponse) => {
-        expect(createTabResponse?.response?.statusCode).to.equal(200);
+        expect(createTabResponse?.response?.statusCode).to.equal(201);
         cy.get(".tab:nth(-1) .tab-label").click();
         cy.get(".tab:nth(-1) .tab-label").dblclick();
         cy.get("input").clear();
@@ -87,20 +87,20 @@ function createNewTab(tabName: string): Cypress.Chainable {
 }
 
 function deleteTab(tabName: string): Cypress.Chainable {
-  cy.intercept("DELETE", "/tab/deleteTab*").as("deleteTab");
+  cy.intercept("DELETE", "/tabs/*").as("deleteTab");
   cy.get(".tab").contains(tabName).dblclick();
   cy.get(".delete-tab-button").click();
   return cy.wait("@deleteTab").then((deleteTabResponse: Interception) => {
-    expect(deleteTabResponse?.response?.statusCode).to.equal(200);
+    expect(deleteTabResponse?.response?.statusCode).to.equal(204);
   });
 }
 
 function createWidget(widgetType: string): Cypress.Chainable {
-  cy.intercept("POST", "/widget/addWidget").as("addWidget");
+  cy.intercept("POST", "/widgets").as("addWidget");
   cy.get("#open-add-widget-modal").click();
   cy.get(`#${widgetType}`).click();
   return cy.wait("@addWidget").then((request: Interception) => {
-    expect(request?.response?.statusCode).to.equal(200);
+    expect(request?.response?.statusCode).to.equal(201);
     cy.get(".widget").should("have.length", 1);
   });
 }

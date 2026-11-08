@@ -11,11 +11,11 @@ export class NotificationService {
   private readonly baseUrl = `${environment.backend_url}/notifications`;
 
   public getNotifications(): Observable<Page<AppNotification>> {
-    return this.http.get<Page<AppNotification>>(`${this.baseUrl}/`);
+    return this.http.get<Page<AppNotification>>(this.baseUrl);
   }
 
   public markNotificationAsRead(notificationIds: number[]): Observable<AppNotification[]> {
-    return this.http.put<AppNotification[]>(`${this.baseUrl}/markNotificationAsRead`, {
+    return this.http.put<AppNotification[]>(`${this.baseUrl}/read`, {
       notificationIds
     });
   }

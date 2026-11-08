@@ -25,7 +25,7 @@ describe("ConfigService", () => {
     let exportedConfig: Blob | undefined;
     configService.exportConfig().subscribe((blob) => (exportedConfig = blob));
 
-    const request = httpTestingController.expectOne(`${environment.backend_url}/dashConfig/export`);
+    const request = httpTestingController.expectOne(`${environment.backend_url}/dash-config`);
     expect(request.request.method).toEqual("GET");
     expect(request.request.responseType).toEqual("blob");
     request.flush(config);
@@ -34,13 +34,13 @@ describe("ConfigService", () => {
 
   it("Should import the configuration file as form data", () => {
     const file = new File(["{}"], "dashboardConfig.json");
-    let result: boolean | undefined;
-    configService.importConfig(file).subscribe((imported) => (result = imported));
+    let completed = false;
+    configService.importConfig(file).subscribe({ complete: () => (completed = true) });
 
-    const request = httpTestingController.expectOne(`${environment.backend_url}/dashConfig/import`);
+    const request = httpTestingController.expectOne(`${environment.backend_url}/dash-config`);
     expect(request.request.method).toEqual("POST");
     expect((request.request.body as FormData).get("file")).toEqual(file);
-    request.flush(true);
-    expect(result).toBe(true);
+    request.flush(null, { status: 204, statusText: "No Content" });
+    expect(completed).toBe(true);
   });
 });

@@ -13,7 +13,7 @@ import { forecastData, weatherData } from "./weather-widget-fixtures";
 import { WeatherWidget } from "./weather-widget";
 
 describe("WeatherWidget", () => {
-  const weatherPath = environment.backend_url + "/weatherWidget/";
+  const weatherPath = environment.backend_url + "/weather/";
   const ERROR_GETTING_WEATHER_DATA = "Erreur lors de la récupération des données météorologiques.";
   let fixture: ComponentFixture<WeatherWidget>;
   let element: HTMLElement;
@@ -43,7 +43,7 @@ describe("WeatherWidget", () => {
 
   function expectWeatherRequests(city: string): TestRequest[] {
     return [
-      httpTestingController.expectOne(`${weatherPath}weather?city=${city}`),
+      httpTestingController.expectOne(`${weatherPath}current?city=${city}`),
       httpTestingController.expectOne(`${weatherPath}forecast?city=${city}`)
     ];
   }
@@ -81,9 +81,7 @@ describe("WeatherWidget", () => {
       expect(query<HTMLButtonElement>(".validate-button")?.disabled).toBe(false);
 
       query(".validate-button")?.click();
-      const saveRequest = httpTestingController.expectOne(
-        environment.backend_url + "/widget/updateWidgetData/1"
-      );
+      const saveRequest = httpTestingController.expectOne(environment.backend_url + "/widgets/1");
       expect(saveRequest.request.body).toEqual({ data: { city: "Lyon" } });
       saveRequest.flush({});
       // Not whenStable: the pending weather requests would keep the fixture unstable

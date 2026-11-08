@@ -12,10 +12,10 @@ export class WeatherWidgetService {
   }
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.backend_url}/weatherWidget`;
+  private readonly baseUrl = `${environment.backend_url}/weather`;
 
   public fetchWeatherData(city: string): Observable<WeatherApiResponse> {
-    return this.http.get<WeatherApiResponse>(`${this.baseUrl}/weather`, { params: { city } });
+    return this.http.get<WeatherApiResponse>(`${this.baseUrl}/current`, { params: { city } });
   }
 
   public fetchForecastData(city: string): Observable<ForecastApiResponse> {

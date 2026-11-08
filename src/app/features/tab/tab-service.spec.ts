@@ -9,7 +9,7 @@ describe("TabService", () => {
   let tabService: TabService;
   let httpTestingController: HttpTestingController;
 
-  const tabUrl = `${environment.backend_url}/tab`;
+  const tabUrl = `${environment.backend_url}/tabs`;
   const tab: Tab = { id: 1, label: "Flux RSS", tabOrder: 1 };
 
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe("TabService", () => {
   it("Should get the tabs", () => {
     let tabs: Tab[] = [];
     tabService.getTabs().subscribe((response) => (tabs = response));
-    const request = httpTestingController.expectOne(`${tabUrl}/`);
+    const request = httpTestingController.expectOne(tabUrl);
     expect(request.request.method).toEqual("GET");
     request.flush([tab]);
     expect(tabs).toEqual([tab]);
@@ -35,7 +35,7 @@ describe("TabService", () => {
 
   it("Should add a tab", () => {
     tabService.addTab("Nouvel onglet").subscribe();
-    const request = httpTestingController.expectOne(`${tabUrl}/addTab`);
+    const request = httpTestingController.expectOne(tabUrl);
     expect(request.request.method).toEqual("POST");
     expect(request.request.body).toEqual({ label: "Nouvel onglet" });
     request.flush(tab);
@@ -43,23 +43,23 @@ describe("TabService", () => {
 
   it("Should update a tab", () => {
     tabService.updateTab(1, "Météo", 2).subscribe();
-    const request = httpTestingController.expectOne(`${tabUrl}/updateTab`);
-    expect(request.request.method).toEqual("POST");
-    expect(request.request.body).toEqual({ id: 1, label: "Météo", tabOrder: 2 });
+    const request = httpTestingController.expectOne(`${tabUrl}/1`);
+    expect(request.request.method).toEqual("PUT");
+    expect(request.request.body).toEqual({ label: "Météo", tabOrder: 2 });
     request.flush({ id: 1, label: "Météo", tabOrder: 2 });
   });
 
   it("Should update all the tabs", () => {
     tabService.updateTabs([tab]).subscribe();
-    const request = httpTestingController.expectOne(`${tabUrl}/updateTabs`);
-    expect(request.request.method).toEqual("POST");
+    const request = httpTestingController.expectOne(tabUrl);
+    expect(request.request.method).toEqual("PATCH");
     expect(request.request.body).toEqual([tab]);
     request.flush([tab]);
   });
 
   it("Should delete a tab", () => {
     tabService.deleteTab(1).subscribe();
-    const request = httpTestingController.expectOne(`${tabUrl}/deleteTab?id=1`);
+    const request = httpTestingController.expectOne(`${tabUrl}/1`);
     expect(request.request.method).toEqual("DELETE");
     request.flush(null);
   });

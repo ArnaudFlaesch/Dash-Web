@@ -9,7 +9,7 @@ describe("Config tests", () => {
   });
 
   it("Should export config", () => {
-    cy.intercept("GET", "/dashConfig/export").as("downloadConfig");
+    cy.intercept("GET", "/dash-config").as("downloadConfig");
     cy.get("#dash-menu").click();
     cy.get("#download-config-button").click();
     cy.wait("@downloadConfig").then((request: Interception) => {
@@ -18,16 +18,16 @@ describe("Config tests", () => {
   });
 
   it("Should import config", () => {
-    cy.intercept("POST", "/dashConfig/import").as("importConfig");
+    cy.intercept("POST", "/dash-config").as("importConfig");
     cy.get("#dash-menu").click();
     cy.get("#open-import-config-modal").click();
     cy.fixture("dashboardConfigTest.json", null).as("dashboardConfigTest");
     cy.get("#file").selectFile("@dashboardConfigTest");
     cy.get("#upload-file-button").click();
     cy.wait("@importConfig").then((request: Interception) => {
-      expect(request.response?.statusCode).to.equal(200);
+      expect(request.response?.statusCode).to.equal(204);
       cy.reload()
-        .intercept("DELETE", "/tab/deleteTab*")
+        .intercept("DELETE", "/tabs/*")
         .as("deleteTab")
         .get(".tab")
         .should("have.length", 2)
@@ -36,7 +36,7 @@ describe("Config tests", () => {
       cy.get(".widget").should("have.length", 5).get(".tab").contains("Perso").dblclick();
       cy.get(".delete-tab-button").click();
       cy.wait("@deleteTab").then((request: Interception) => {
-        expect(request.response?.statusCode).to.equal(200);
+        expect(request.response?.statusCode).to.equal(204);
         cy.get(".tab").should("have.length", 1);
       });
     });
