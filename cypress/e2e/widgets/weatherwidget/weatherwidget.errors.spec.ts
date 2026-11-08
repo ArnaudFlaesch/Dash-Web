@@ -14,7 +14,7 @@ describe("Weather Widget error tests", () => {
   });
 
   it("Should fail to create a Weather Widget", () => {
-    cy.intercept("POST", "/widget/addWidget", { statusCode: 500 })
+    cy.intercept("POST", "/widgets", { statusCode: 500 })
       .as("addWidgetError")
       .get("#open-add-widget-modal")
       .click();

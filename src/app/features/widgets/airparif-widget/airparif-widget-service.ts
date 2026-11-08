@@ -19,15 +19,15 @@ export class AirparifWidgetService {
   }
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.backend_url}/airParifWidget`;
+  private readonly baseUrl = `${environment.backend_url}/air-parif`;
 
   public getCommunePrevision(communeInseeCode: string): Observable<AirparifForecast[]> {
-    return this.http.get<AirparifForecast[]>(`${this.baseUrl}/previsionCommune`, {
+    return this.http.get<AirparifForecast[]>(`${this.baseUrl}/forecasts`, {
       params: { commune: communeInseeCode }
     });
   }
 
   public getColors(): Observable<AirparifCouleur[]> {
-    return this.http.get<AirparifCouleur[]>(`${this.baseUrl}/couleurs`);
+    return this.http.get<AirparifCouleur[]>(`${this.baseUrl}/colors`);
   }
 }

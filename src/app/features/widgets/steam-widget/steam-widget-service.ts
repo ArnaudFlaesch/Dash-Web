@@ -13,12 +13,10 @@ export class SteamWidgetService {
   public readonly STEAM_COMMUNITY_URL = "https://steamcommunity.com/app/";
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.backend_url}/steamWidget`;
+  private readonly baseUrl = `${environment.backend_url}/steam/players`;
 
   public getPlayerData(steamUserId: string): Observable<PlayerDataResponse[]> {
-    return this.http.get<PlayerDataResponse[]>(`${this.baseUrl}/playerData`, {
-      params: { steamUserId }
-    });
+    return this.http.get<PlayerDataResponse[]>(`${this.baseUrl}/${steamUserId}`);
   }
 
   public getOwnedGames(
@@ -26,10 +24,9 @@ export class SteamWidgetService {
     search?: string,
     pageNumber?: number
   ): Observable<Page<GameInfoResponse>> {
-    return this.http.get<Page<GameInfoResponse>>(`${this.baseUrl}/ownedGames`, {
+    return this.http.get<Page<GameInfoResponse>>(`${this.baseUrl}/${steamUserId}/games`, {
       // Angular would send undefined values as "undefined": the optional parameters are left out
       params: {
-        steamUserId,
         ...(search ? { search } : {}),
         ...(pageNumber ? { pageNumber } : {})
       }
@@ -37,8 +34,8 @@ export class SteamWidgetService {
   }
 
   public getAchievementList(steamUserId: string, appId: string): Observable<AchievementResponse> {
-    return this.http.get<AchievementResponse>(`${this.baseUrl}/achievementList`, {
-      params: { steamUserId, appId }
-    });
+    return this.http.get<AchievementResponse>(
+      `${this.baseUrl}/${steamUserId}/games/${appId}/achievements`
+    );
   }
 }

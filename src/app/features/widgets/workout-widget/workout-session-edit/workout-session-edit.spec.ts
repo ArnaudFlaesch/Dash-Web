@@ -32,10 +32,8 @@ describe("WorkoutSessionEdit", () => {
     httpTestingController.verify();
   });
 
-  const workoutExercisesUrl =
-    environment.backend_url +
-    `/workoutWidget/workoutExercises?workoutSessionId=${currentWorkoutSessionToEdit.id}`;
-  const updateWorkoutExerciseUrl = environment.backend_url + "/workoutWidget/updateWorkoutExercise";
+  const workoutExercisesUrl = `${environment.backend_url}/workout/sessions/${currentWorkoutSessionToEdit.id}/exercises`;
+  const updateWorkoutExerciseUrl = `${workoutExercisesUrl}/${workoutTypes[0].id}`;
 
   /** Displays the edited session, with the given exercises. */
   async function displaySession(workoutExercises: WorkoutExercise[]): Promise<HTMLElement> {
@@ -64,11 +62,8 @@ describe("WorkoutSessionEdit", () => {
 
     element.querySelector<HTMLButtonElement>(".add-rep-to-workout-button")?.click();
     const incrementRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
-    expect(incrementRequest.request.body).toEqual({
-      workoutSessionId: currentWorkoutSessionToEdit.id,
-      workoutTypeId: workoutTypes[0].id,
-      numberOfReps: 1
-    });
+    expect(incrementRequest.request.method).toEqual("PUT");
+    expect(incrementRequest.request.body).toEqual({ numberOfReps: 1 });
     incrementRequest.flush({ workoutTypeId: workoutTypes[0].id, numberOfReps: 1 });
     await fixture.whenStable();
     expect(element.querySelector(".workout-number-of-reps")?.textContent).toContain("1");
@@ -167,11 +162,7 @@ describe("WorkoutSessionEdit", () => {
     addButton.click();
     TestBed.tick();
     const addRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
-    expect(addRequest.request.body).toEqual({
-      workoutSessionId: currentWorkoutSessionToEdit.id,
-      workoutTypeId: 1,
-      numberOfReps: 4
-    });
+    expect(addRequest.request.body).toEqual({ numberOfReps: 4 });
     expect(addButton.disabled).toBe(true);
     expect(subtractButton.disabled).toBe(true);
     addRequest.flush({ workoutTypeId: 1, numberOfReps: 4 });
@@ -254,7 +245,7 @@ describe("WorkoutSessionEdit", () => {
 
     await fixture.whenStable();
 
-    httpTestingController.expectNone(environment.backend_url + "/workoutWidget/workoutExercises");
+    httpTestingController.expectNone((request) => request.url.endsWith("/exercises"));
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector("mat-spinner")).not.toBeNull();
     expect(element.querySelector(".workout-exercise-container")).toBeNull();

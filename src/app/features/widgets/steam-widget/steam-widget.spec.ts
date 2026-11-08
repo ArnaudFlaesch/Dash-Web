@@ -14,9 +14,9 @@ import { provideHttpClient } from "@angular/common/http";
 
 describe("SteamWidget", () => {
   const steamUserId = "1337";
-  const playerDataUrl = `${environment.backend_url}/steamWidget/playerData?steamUserId=${steamUserId}`;
-  const ownedGamesUrl = `${environment.backend_url}/steamWidget/ownedGames?steamUserId=${steamUserId}`;
-  const updateWidgetUrl = `${environment.backend_url}/widget/updateWidgetData/1`;
+  const playerDataUrl = `${environment.backend_url}/steam/players/${steamUserId}`;
+  const ownedGamesUrl = `${environment.backend_url}/steam/players/${steamUserId}/games`;
+  const updateWidgetUrl = `${environment.backend_url}/widgets/1`;
   const ERROR_GETTING_PLAYER_DATA = "Erreur lors de la récupération de vos informations Steam.";
   const ERROR_GETTING_OWNED_GAMES = "Erreur lors de la récupération de la liste des jeux.";
   const player: PlayerDataResponse = {
@@ -218,7 +218,7 @@ describe("SteamWidget", () => {
     // The spinner is displayed until the page is received
     expect(element.querySelector(".games-loading")).not.toBeNull();
     httpTestingController
-      .expectOne(`${ownedGamesUrl}&pageNumber=1`)
+      .expectOne(`${ownedGamesUrl}?pageNumber=1`)
       .flush({ ...games, content: [games.content[0]], number: 1 });
     await renderResponses();
 
@@ -230,14 +230,14 @@ describe("SteamWidget", () => {
   it("should keep the page on a refresh, and go back to the first page for another user", async () => {
     await createLoadedWidget(games);
     goToNextPage();
-    httpTestingController.expectOne(`${ownedGamesUrl}&pageNumber=1`).flush(games);
+    httpTestingController.expectOne(`${ownedGamesUrl}?pageNumber=1`).flush(games);
     await renderResponses();
 
     // Same user: the current page is reloaded
     element.querySelector<HTMLButtonElement>(".refresh-button")!.click();
     TestBed.tick();
     httpTestingController.expectOne(playerDataUrl).flush([player]);
-    httpTestingController.expectOne(`${ownedGamesUrl}&pageNumber=1`).flush(games);
+    httpTestingController.expectOne(`${ownedGamesUrl}?pageNumber=1`).flush(games);
     await renderResponses();
 
     // Another user: the first page of its games is loaded
@@ -250,11 +250,9 @@ describe("SteamWidget", () => {
     element.querySelector<HTMLButtonElement>(".validate-button")!.click();
     httpTestingController.expectOne(updateWidgetUrl).flush({});
     TestBed.tick();
+    httpTestingController.expectOne(`${environment.backend_url}/steam/players/42`).flush([player]);
     httpTestingController
-      .expectOne(`${environment.backend_url}/steamWidget/playerData?steamUserId=42`)
-      .flush([player]);
-    httpTestingController
-      .expectOne(`${environment.backend_url}/steamWidget/ownedGames?steamUserId=42`)
+      .expectOne(`${environment.backend_url}/steam/players/42/games`)
       .flush(games);
     await renderResponses();
     expect(getPaginatorRange()).toMatch(/^1\D+25\D+30$/);
@@ -272,7 +270,7 @@ describe("SteamWidget", () => {
 
     goToNextPage();
     httpTestingController
-      .expectOne(`${ownedGamesUrl}&pageNumber=1`)
+      .expectOne(`${ownedGamesUrl}?pageNumber=1`)
       .flush(null, { status: 500, statusText: "Internal Server Error" });
     await renderResponses();
 
@@ -289,7 +287,7 @@ describe("SteamWidget", () => {
     vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
     await createLoadedWidget(games);
     goToNextPage();
-    httpTestingController.expectOne(`${ownedGamesUrl}&pageNumber=1`).flush(games);
+    httpTestingController.expectOne(`${ownedGamesUrl}?pageNumber=1`).flush(games);
     await renderResponses();
     expect(element.querySelector(".reset-form-button")).toBeNull();
 
@@ -298,12 +296,12 @@ describe("SteamWidget", () => {
     searchInput.dispatchEvent(new Event("input"));
     TestBed.tick();
     // The search is debounced
-    httpTestingController.expectNone((request) => request.url.endsWith("/ownedGames"));
+    httpTestingController.expectNone((request) => request.url.endsWith("/games"));
     vi.advanceTimersByTime(500);
     TestBed.tick();
     // Back to the first page, without page number
     httpTestingController
-      .expectOne(`${ownedGamesUrl}&search=Lost`)
+      .expectOne(`${ownedGamesUrl}?search=Lost`)
       .flush({ ...games, totalElements: 1, content: [games.content[1]] });
     await renderResponses();
     expect(getGameDetails()).toHaveLength(1);

@@ -9,7 +9,7 @@ export class CalendarWidgetService {
   private readonly http = inject(HttpClient);
 
   public getCalendarEvents(calendarUrl: string): Observable<CalendarData[]> {
-    return this.http.post<CalendarData[]>(`${environment.backend_url}/calendarWidget/`, {
+    return this.http.post<CalendarData[]>(`${environment.backend_url}/calendar/events`, {
       calendarUrl
     });
   }

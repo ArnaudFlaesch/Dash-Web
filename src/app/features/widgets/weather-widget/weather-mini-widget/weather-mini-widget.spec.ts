@@ -12,7 +12,7 @@ import { weatherData } from "../weather-widget-fixtures";
 import { WeatherMiniWidget } from "./weather-mini-widget";
 
 describe("WeatherMiniWidget", () => {
-  const weatherUrl = environment.backend_url + "/weatherWidget/weather?city=";
+  const weatherUrl = environment.backend_url + "/weather/current?city=";
   const ERROR_GETTING_WEATHER_DATA = "Erreur lors de la récupération des données météorologiques.";
   let fixture: ComponentFixture<WeatherMiniWidget>;
   let element: HTMLElement;
@@ -73,7 +73,7 @@ describe("WeatherMiniWidget", () => {
 
       query(".validate-button")?.click();
       const saveRequest = httpTestingController.expectOne(
-        environment.backend_url + "/miniWidget/updateWidgetData/1"
+        environment.backend_url + "/mini-widgets/1"
       );
       expect(saveRequest.request.body).toEqual({ data: { city: "Lyon" } });
       saveRequest.flush({});

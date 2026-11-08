@@ -7,7 +7,5 @@ export interface CreateWorkoutSessionPayload {
 }
 
 export interface UpdateWorkoutExercisePayload {
-  workoutSessionId: number;
-  workoutTypeId: number;
   numberOfReps: number;
 }

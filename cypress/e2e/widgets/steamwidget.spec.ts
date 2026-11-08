@@ -13,11 +13,11 @@ describe("Steam Widget tests", () => {
   beforeEach(() => {
     cy.loginAsAdmin()
       .navigateToTab(tabName)
-      .intercept("GET", `/steamWidget/playerData*`)
+      .intercept({ method: "GET", pathname: `/steam/players/${steamUserId}` })
       .as("getPlayerData")
-      .intercept("GET", `/steamWidget/ownedGames*`)
+      .intercept({ method: "GET", pathname: `/steam/players/${steamUserId}/games` })
       .as("getGameData")
-      .intercept("GET", `/steamWidget/achievementList?steamUserId=${steamUserId}&appId=420`)
+      .intercept("GET", `/steam/players/${steamUserId}/games/420/achievements`)
       .as("getAchievementData");
   });
 

@@ -74,8 +74,9 @@ describe("TabLabel", () => {
         label: updatedTabLabel,
         tabOrder: 1
       };
-      const request = httpTestingController.expectOne(environment.backend_url + "/tab/updateTab");
-      expect(request.request.body).toEqual(updatedTabData);
+      const request = httpTestingController.expectOne(environment.backend_url + "/tabs/1");
+      expect(request.request.method).toEqual("PUT");
+      expect(request.request.body).toEqual({ label: updatedTabLabel, tabOrder: 1 });
       request.flush(updatedTabData);
       await fixture.whenStable();
       expect(getElement("#tab-name-input")).toBeNull();
@@ -87,7 +88,7 @@ describe("TabLabel", () => {
       pressEnter(".save-tab-button");
 
       httpTestingController
-        .expectOne(environment.backend_url + "/tab/updateTab")
+        .expectOne(environment.backend_url + "/tabs/1")
         .error(new ProgressEvent("Server error"));
       await fixture.whenStable();
       expect(getElement("#tab-name-input")).not.toBeNull();
@@ -128,8 +129,8 @@ describe("TabLabel", () => {
       await typeTabName("Journaux");
       getElement(".save-tab-button").click();
 
-      const request = httpTestingController.expectOne(environment.backend_url + "/tab/updateTab");
-      expect(request.request.body).toEqual({ id: 1, label: "Journaux", tabOrder: 1 });
+      const request = httpTestingController.expectOne(environment.backend_url + "/tabs/1");
+      expect(request.request.body).toEqual({ label: "Journaux", tabOrder: 1 });
       request.flush({ ...tabData, label: "Journaux" });
       await fixture.whenStable();
 
@@ -143,7 +144,7 @@ describe("TabLabel", () => {
       await typeTabName("Journaux");
       pressEnter("#tab-name-input");
       httpTestingController
-        .expectOne(environment.backend_url + "/tab/updateTab")
+        .expectOne(environment.backend_url + "/tabs/1")
         .flush({ ...tabData, label: "Journaux" });
       await fixture.whenStable();
       expect(getElement("#tab-name-input")).toBeNull();
@@ -154,8 +155,8 @@ describe("TabLabel", () => {
       await editTab();
       await typeTabName("  Journaux ");
       getElement(".save-tab-button").click();
-      const request = httpTestingController.expectOne(environment.backend_url + "/tab/updateTab");
-      expect(request.request.body).toEqual({ id: 1, label: "Journaux", tabOrder: 1 });
+      const request = httpTestingController.expectOne(environment.backend_url + "/tabs/1");
+      expect(request.request.body).toEqual({ label: "Journaux", tabOrder: 1 });
       request.flush({ ...tabData, label: "Journaux" });
     });
 
@@ -167,9 +168,7 @@ describe("TabLabel", () => {
       expect(deletedTabIds).toEqual([tabData.id]);
 
       getElement(".save-tab-button").dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
-      httpTestingController
-        .expectOne(environment.backend_url + "/tab/updateTab")
-        .flush({ ...tabData });
+      httpTestingController.expectOne(environment.backend_url + "/tabs/1").flush({ ...tabData });
       await fixture.whenStable();
     });
 
@@ -177,7 +176,7 @@ describe("TabLabel", () => {
       await editTab();
       await typeTabName("   ");
       getElement(".save-tab-button").click();
-      httpTestingController.expectNone(environment.backend_url + "/tab/updateTab");
+      httpTestingController.expectNone(environment.backend_url + "/tabs/1");
       await fixture.whenStable();
       expect(getElement("#tab-name-input")).not.toBeNull();
     });
@@ -187,7 +186,7 @@ describe("TabLabel", () => {
       await editTab();
       getElement(".save-tab-button").click();
       httpTestingController
-        .expectOne(environment.backend_url + "/tab/updateTab")
+        .expectOne(environment.backend_url + "/tabs/1")
         .flush(null, { status: 500, statusText: "Server error" });
       await fixture.whenStable();
       expect(handleErrorSpy).toHaveBeenCalledWith(

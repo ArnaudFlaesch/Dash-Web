@@ -14,15 +14,15 @@ import { provideHttpClient } from "@angular/common/http";
 
 describe("IncidentWidget", () => {
   const widgetId = 37;
-  const incidentConfigUrl =
-    environment.backend_url + "/incidentWidget/incidentWidgetConfig?widgetId=" + widgetId;
-  const startStreakUrl = environment.backend_url + "/incidentWidget/startFirstStreak";
-  const endStreakUrl = environment.backend_url + "/incidentWidget/endStreak";
+  const incidentUrl = `${environment.backend_url}/widgets/${widgetId}/incident`;
+  // The configuration and the start of the first streak share the same url
+  const incidentConfigUrl = { method: "GET", url: incidentUrl };
+  const startStreakUrl = { method: "POST", url: incidentUrl };
+  const endStreakUrl = `${incidentUrl}/streaks`;
   const incidentConfig = { id: 4, lastIncidentDate: startOfYesterday().toISOString() };
   // Configuration of an incident which has never happened
   const configWithoutIncident = { id: incidentConfig.id } as Incident;
-  const streaksUrl =
-    environment.backend_url + "/incidentWidget/streaks?incidentId=" + incidentConfig.id;
+  const streaksUrl = `${environment.backend_url}/incidents/${incidentConfig.id}/streaks`;
   const streaks: IncidentStreak[] = [
     { streakStartDate: "2022-07-01T00:00:00Z", streakEndDate: "2022-07-11T00:00:00Z" },
     { streakStartDate: "2022-08-01T00:00:00Z", streakEndDate: "2022-08-04T00:00:00Z" },
@@ -119,7 +119,7 @@ describe("IncidentWidget", () => {
 
     validateButton?.click();
     const saveRequest = httpTestingController.expectOne(
-      environment.backend_url + "/widget/updateWidgetData/" + widgetId
+      environment.backend_url + "/widgets/" + widgetId
     );
     expect(saveRequest.request.body).toEqual({ data: { incidentName: "Chute" } });
     saveRequest.flush({});
@@ -152,7 +152,7 @@ describe("IncidentWidget", () => {
 
     findButton(element, "Départ")?.click();
     const startStreakRequest = httpTestingController.expectOne(startStreakUrl);
-    expect(startStreakRequest.request.body).toEqual({ widgetId });
+    expect(startStreakRequest.request.body).toBeNull();
     startStreakRequest.flush({ ...incidentConfig, lastIncidentDate: new Date().toISOString() });
     await flushResources();
     // The streaks of the incident created by the first streak are loaded
@@ -206,7 +206,8 @@ describe("IncidentWidget", () => {
       data: { confirmMessage: "Êtes-vous sûr de vouloir clôturer cette série ?" }
     });
     const endStreakRequest = httpTestingController.expectOne(endStreakUrl);
-    expect(endStreakRequest.request.body).toEqual({ widgetId });
+    expect(endStreakRequest.request.method).toEqual("POST");
+    expect(endStreakRequest.request.body).toBeNull();
     endStreakRequest.flush({ ...incidentConfig, lastIncidentDate: new Date().toISOString() });
     TestBed.tick();
 

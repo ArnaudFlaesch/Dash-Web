@@ -140,7 +140,7 @@ describe("Home", () => {
 
   async function flushWidgets(tabId: number, widgetsOfTab: WidgetConfig[]): Promise<void> {
     httpTestingController
-      .expectOne(`${environment.backend_url}/widget/?tabId=${tabId}`)
+      .expectOne({ method: "GET", url: `${environment.backend_url}/widgets?tabId=${tabId}` })
       .flush(widgetsOfTab);
     await render();
   }
@@ -151,7 +151,9 @@ describe("Home", () => {
     widgetsOfTab: WidgetConfig[] = widgets
   ): Promise<void> {
     createComponent();
-    httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(tabsToLoad);
+    httpTestingController
+      .expectOne({ method: "GET", url: `${environment.backend_url}/tabs` })
+      .flush(tabsToLoad);
     await render();
     if (tabsToLoad.length > 0) {
       expect(getElement("#widgets-loading-spinner")).not.toBeNull();
@@ -171,7 +173,7 @@ describe("Home", () => {
   async function deleteTab(tab: Tab): Promise<void> {
     getTabLabelElement(tab).triggerEventHandler("tabDeletedEvent", tab.id);
     httpTestingController
-      .expectOne(`${environment.backend_url}/tab/deleteTab?id=${tab.id}`)
+      .expectOne(`${environment.backend_url}/tabs/${tab.id}`)
       .flush(null, { status: 200, statusText: "OK" });
     await render();
   }
@@ -200,7 +202,9 @@ describe("Home", () => {
       createComponent();
       expect(getElement("#dashboard-loading-spinner")).not.toBeNull();
       expect(getElement("#home-header-container")).toBeNull();
-      httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush([]);
+      httpTestingController
+        .expectOne({ method: "GET", url: `${environment.backend_url}/tabs` })
+        .flush([]);
       await render();
       expect(getElement("#dashboard-loading-spinner")).toBeNull();
       expect(getElement("#brand-name").textContent?.trim()).toEqual("Dash");
@@ -232,7 +236,9 @@ describe("Home", () => {
     it("Should select the tab of the url", async () => {
       await TestBed.inject(Router).navigateByUrl("/home?tabId=2");
       createComponent();
-      httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(tabs);
+      httpTestingController
+        .expectOne({ method: "GET", url: `${environment.backend_url}/tabs` })
+        .flush(tabs);
       await render();
       await flushWidgets(2, []);
       expect(getSelectedTabLabel()).toEqual(tabs[1].label);
@@ -247,7 +253,9 @@ describe("Home", () => {
     it("Should display the dashboard without tabs when they can't be loaded", async () => {
       const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
       createComponent();
-      httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(null, serverError);
+      httpTestingController
+        .expectOne({ method: "GET", url: `${environment.backend_url}/tabs` })
+        .flush(null, serverError);
       await render();
       expect(handleErrorSpy).toHaveBeenCalledWith(
         expect.objectContaining({ status: 500 }),
@@ -261,10 +269,12 @@ describe("Home", () => {
     it("Should display an empty tab when its widgets can't be loaded", async () => {
       const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
       createComponent();
-      httpTestingController.expectOne(`${environment.backend_url}/tab/`).flush(tabs);
+      httpTestingController
+        .expectOne({ method: "GET", url: `${environment.backend_url}/tabs` })
+        .flush(tabs);
       await render();
       httpTestingController
-        .expectOne(`${environment.backend_url}/widget/?tabId=1`)
+        .expectOne({ method: "GET", url: `${environment.backend_url}/widgets?tabId=1` })
         .flush(null, serverError);
       await render();
       expect(handleErrorSpy).toHaveBeenCalledWith(
@@ -298,7 +308,10 @@ describe("Home", () => {
       await loadDashboard();
       getTabs()[0].click();
       TestBed.tick();
-      httpTestingController.expectNone(`${environment.backend_url}/widget/?tabId=1`);
+      httpTestingController.expectNone({
+        method: "GET",
+        url: `${environment.backend_url}/widgets?tabId=1`
+      });
       expect(TestBed.inject(Location).path()).not.toContain("tabId");
       expect(getWidgetList().widgetList()).toEqual(widgets);
     });
@@ -315,7 +328,7 @@ describe("Home", () => {
       expect(createTabButton.textContent).toContain("Créer un onglet");
       createTabButton.click();
       httpTestingController
-        .expectOne(`${environment.backend_url}/tab/addTab`)
+        .expectOne({ method: "POST", url: `${environment.backend_url}/tabs` })
         .flush({ id: 3, label: "Nouvel onglet", tabOrder: 1 });
       TestBed.tick();
       await flushWidgets(3, []);
@@ -327,7 +340,10 @@ describe("Home", () => {
     it("Should add a tab from the header and select it", async () => {
       await loadDashboard();
       getElement<HTMLButtonElement>("#add-new-tab-button").click();
-      const request = httpTestingController.expectOne(`${environment.backend_url}/tab/addTab`);
+      const request = httpTestingController.expectOne({
+        method: "POST",
+        url: `${environment.backend_url}/tabs`
+      });
       expect(request.request.body).toEqual({ label: "Nouvel onglet" });
       request.flush({ id: 3, label: "Nouvel onglet", tabOrder: 3 });
       TestBed.tick();
@@ -343,7 +359,7 @@ describe("Home", () => {
 
       TestBed.inject(WidgetService).notifyWidgetDeleted(widgets[1].id);
       httpTestingController
-        .expectOne(`${environment.backend_url}/widget/deleteWidget?id=${widgets[1].id}`)
+        .expectOne(`${environment.backend_url}/widgets/${widgets[1].id}`)
         .flush(null, { status: 200, statusText: "OK" });
       await render();
       expect(getWidgetList().widgetList()).toEqual([widgets[0]]);
@@ -395,7 +411,10 @@ describe("Home", () => {
     it("Should reorder the tabs", async () => {
       await loadDashboard();
       dropFirstTabAfterSecond();
-      const request = httpTestingController.expectOne(`${environment.backend_url}/tab/updateTabs`);
+      const request = httpTestingController.expectOne({
+        method: "PATCH",
+        url: `${environment.backend_url}/tabs`
+      });
       expect(request.request.body).toEqual([
         { ...tabs[1], tabOrder: 0 },
         { ...tabs[0], tabOrder: 1 }
@@ -411,7 +430,7 @@ describe("Home", () => {
         previousIndex: 1,
         currentIndex: 1
       } as CdkDragDrop<Tab[]>);
-      httpTestingController.expectNone(`${environment.backend_url}/tab/updateTabs`);
+      httpTestingController.expectNone({ method: "PATCH", url: `${environment.backend_url}/tabs` });
     });
 
     it("Should keep the renamed tab in the list of tabs, without changing the selected tab", async () => {
@@ -425,7 +444,7 @@ describe("Home", () => {
       // Clicking on the save button of a tab doesn't select it (no request for its widgets)
       getElement(".save-tab-button").click();
       httpTestingController
-        .expectOne(`${environment.backend_url}/tab/updateTab`)
+        .expectOne({ method: "PUT", url: `${environment.backend_url}/tabs/${tabs[1].id}` })
         .flush({ ...tabs[1], label: "Journaux" });
       await fixture.whenStable();
 
@@ -443,7 +462,7 @@ describe("Home", () => {
       await fixture.whenStable();
       input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
       httpTestingController
-        .expectOne(`${environment.backend_url}/tab/updateTab`)
+        .expectOne({ method: "PUT", url: `${environment.backend_url}/tabs/${tabs[1].id}` })
         .flush({ ...tabs[1], label: "Journaux" });
       await fixture.whenStable();
 
@@ -457,7 +476,7 @@ describe("Home", () => {
       await fixture.whenStable();
       getElement(".delete-tab-button").click();
       httpTestingController
-        .expectOne(`${environment.backend_url}/tab/deleteTab?id=${tabs[1].id}`)
+        .expectOne(`${environment.backend_url}/tabs/${tabs[1].id}`)
         .flush(null, { status: 200, statusText: "OK" });
       await render();
 
@@ -475,12 +494,15 @@ describe("Home", () => {
       await fixture.whenStable();
       getElement(".save-tab-button").click();
       httpTestingController
-        .expectOne(`${environment.backend_url}/tab/updateTab`)
+        .expectOne({ method: "PUT", url: `${environment.backend_url}/tabs/${tabs[0].id}` })
         .flush({ id: 1, label: "Journaux", tabOrder: 1 });
       await fixture.whenStable();
 
       dropFirstTabAfterSecond();
-      const request = httpTestingController.expectOne(`${environment.backend_url}/tab/updateTabs`);
+      const request = httpTestingController.expectOne({
+        method: "PATCH",
+        url: `${environment.backend_url}/tabs`
+      });
       expect(request.request.body).toEqual([
         { id: 2, label: "Météo", tabOrder: 0 },
         { id: 1, label: "Journaux", tabOrder: 1 }
@@ -505,9 +527,10 @@ describe("Home", () => {
 
       dialogResult = "WEATHER";
       addWidgetButton.click();
-      const request = httpTestingController.expectOne(
-        `${environment.backend_url}/widget/addWidget`
-      );
+      const request = httpTestingController.expectOne({
+        method: "POST",
+        url: `${environment.backend_url}/widgets`
+      });
       expect(request.request.body).toEqual({ type: WidgetType.WEATHER, tabId: tabs[0].id });
       request.flush({ id: 4, type: WidgetType.WEATHER, tabId: 1, widgetOrder: 1 });
       await fixture.whenStable();
@@ -524,9 +547,10 @@ describe("Home", () => {
         expect.anything(),
         expect.objectContaining({ width: "640px" })
       );
-      const request = httpTestingController.expectOne(
-        `${environment.backend_url}/widget/addWidget`
-      );
+      const request = httpTestingController.expectOne({
+        method: "POST",
+        url: `${environment.backend_url}/widgets`
+      });
       expect(request.request.body).toEqual({ type: WidgetType.RSS, tabId: tabs[0].id });
       request.flush({ id: 3, type: WidgetType.RSS, tabId: 1, widgetOrder: 3 });
       await fixture.whenStable();
@@ -536,7 +560,10 @@ describe("Home", () => {
     it("Should not add a widget when the creation modal is closed", async () => {
       await loadDashboard();
       getElement<HTMLButtonElement>("#open-add-widget-modal").click();
-      httpTestingController.expectNone(`${environment.backend_url}/widget/addWidget`);
+      httpTestingController.expectNone({
+        method: "POST",
+        url: `${environment.backend_url}/widgets`
+      });
       await fixture.whenStable();
       expect(getWidgetList().widgetList()).toHaveLength(2);
     });
@@ -545,7 +572,7 @@ describe("Home", () => {
       await loadDashboard();
       TestBed.inject(WidgetService).notifyWidgetDeleted(widgets[0].id);
       httpTestingController
-        .expectOne(`${environment.backend_url}/widget/deleteWidget?id=${widgets[0].id}`)
+        .expectOne(`${environment.backend_url}/widgets/${widgets[0].id}`)
         .flush(null);
       await fixture.whenStable();
       expect(
@@ -558,9 +585,10 @@ describe("Home", () => {
     it("Should save the widgets order sent by the widget list", async () => {
       await loadDashboard();
       getWidgetList().updateWidgetsOrderEvent.emit(widgets);
-      const request = httpTestingController.expectOne(
-        `${environment.backend_url}/widget/updateWidgetsOrder`
-      );
+      const request = httpTestingController.expectOne({
+        method: "PATCH",
+        url: `${environment.backend_url}/widgets`
+      });
       expect(request.request.body).toEqual(widgets);
       request.flush(widgets);
     });
@@ -628,7 +656,7 @@ describe("Home", () => {
 
       getElement<HTMLButtonElement>("#add-new-tab-button").click();
       httpTestingController
-        .expectOne(`${environment.backend_url}/tab/addTab`)
+        .expectOne({ method: "POST", url: `${environment.backend_url}/tabs` })
         .flush(null, serverError);
       expect(handleErrorSpy).toHaveBeenLastCalledWith(
         expect.objectContaining({ status: 500 }),
@@ -637,7 +665,7 @@ describe("Home", () => {
 
       await clickInUserMenu("#download-config-button");
       httpTestingController
-        .expectOne(`${environment.backend_url}/dashConfig/export`)
+        .expectOne(`${environment.backend_url}/dash-config`)
         .flush(null, serverError);
       expect(handleErrorSpy).toHaveBeenLastCalledWith(
         expect.anything(),
@@ -655,7 +683,7 @@ describe("Home", () => {
 
       TestBed.inject(WidgetService).notifyWidgetDeleted(1);
       httpTestingController
-        .expectOne(`${environment.backend_url}/widget/deleteWidget?id=1`)
+        .expectOne(`${environment.backend_url}/widgets/1`)
         .flush(null, serverError);
       expect(handleErrorSpy).toHaveBeenLastCalledWith(
         expect.anything(),
@@ -663,9 +691,7 @@ describe("Home", () => {
       );
 
       getTabLabelElement(tabs[0]).triggerEventHandler("tabDeletedEvent", tabs[0].id);
-      httpTestingController
-        .expectOne(`${environment.backend_url}/tab/deleteTab?id=1`)
-        .flush(null, serverError);
+      httpTestingController.expectOne(`${environment.backend_url}/tabs/1`).flush(null, serverError);
       expect(handleErrorSpy).toHaveBeenLastCalledWith(
         expect.anything(),
         "Erreur lors de la suppression d'un onglet."
@@ -673,7 +699,7 @@ describe("Home", () => {
 
       getWidgetList().updateWidgetsOrderEvent.emit(widgets);
       httpTestingController
-        .expectOne(`${environment.backend_url}/widget/updateWidgetsOrder`)
+        .expectOne({ method: "PATCH", url: `${environment.backend_url}/widgets` })
         .flush(null, serverError);
       expect(handleErrorSpy).toHaveBeenLastCalledWith(
         expect.anything(),
@@ -682,7 +708,7 @@ describe("Home", () => {
 
       dropFirstTabAfterSecond();
       httpTestingController
-        .expectOne(`${environment.backend_url}/tab/updateTabs`)
+        .expectOne({ method: "PATCH", url: `${environment.backend_url}/tabs` })
         .flush(null, serverError);
       expect(handleErrorSpy).toHaveBeenLastCalledWith(
         expect.anything(),
@@ -692,7 +718,7 @@ describe("Home", () => {
       dialogResult = "RSS";
       getElement<HTMLButtonElement>("#open-add-widget-modal").click();
       httpTestingController
-        .expectOne(`${environment.backend_url}/widget/addWidget`)
+        .expectOne({ method: "POST", url: `${environment.backend_url}/widgets` })
         .flush(null, serverError);
       expect(handleErrorSpy).toHaveBeenLastCalledWith(
         expect.anything(),
@@ -782,7 +808,7 @@ describe("Home", () => {
 
       await clickInUserMenu("#download-config-button");
       httpTestingController
-        .expectOne(`${environment.backend_url}/dashConfig/export`)
+        .expectOne(`${environment.backend_url}/dash-config`)
         .flush(new Blob(["{}"]));
 
       expect(createObjectURL).toHaveBeenCalled();

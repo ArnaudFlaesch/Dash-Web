@@ -33,7 +33,7 @@ describe("authInterceptor", () => {
 
   it("Should add the bearer token to backend requests", () => {
     localStorage.setItem("user", JSON.stringify({ accessToken: "token" }));
-    expect(sendRequest(`${environment.backend_url}/tab/`)).toEqual("Bearer token");
+    expect(sendRequest(`${environment.backend_url}/tabs`)).toEqual("Bearer token");
   });
 
   it("Should not add the token to authentication requests", () => {
@@ -52,11 +52,11 @@ describe("authInterceptor", () => {
   });
 
   it("Should not add a header when the user is not logged in", () => {
-    expect(sendRequest(`${environment.backend_url}/tab/`)).toBeNull();
+    expect(sendRequest(`${environment.backend_url}/tabs`)).toBeNull();
   });
 
   it("Should send the request without a header when the stored user is corrupted", () => {
     localStorage.setItem("user", "{not json");
-    expect(sendRequest(`${environment.backend_url}/tab/`)).toBeNull();
+    expect(sendRequest(`${environment.backend_url}/tabs`)).toBeNull();
   });
 });

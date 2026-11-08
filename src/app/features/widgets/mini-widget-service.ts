@@ -8,7 +8,7 @@ import { MiniWidgetConfig } from "@widgets/mini-widget-config";
 @Service()
 export class MiniWidgetService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.backend_url}/miniWidget`;
+  private readonly baseUrl = `${environment.backend_url}/mini-widgets`;
 
   private readonly miniWidgetDeletedEvent = new Subject<number>();
 
@@ -21,18 +21,18 @@ export class MiniWidgetService {
   }
 
   public getMiniWidgets(): Observable<MiniWidgetConfig[]> {
-    return this.http.get<MiniWidgetConfig[]>(`${this.baseUrl}/`);
+    return this.http.get<MiniWidgetConfig[]>(this.baseUrl);
   }
 
   public addMiniWidget(type: MiniWidgetType): Observable<MiniWidgetConfig> {
-    return this.http.post<MiniWidgetConfig>(`${this.baseUrl}/addMiniWidget`, { type });
+    return this.http.post<MiniWidgetConfig>(this.baseUrl, { type });
   }
 
   public updateWidgetData(id: number, data: unknown): Observable<MiniWidgetConfig> {
-    return this.http.patch<MiniWidgetConfig>(`${this.baseUrl}/updateWidgetData/${id}`, { data });
+    return this.http.patch<MiniWidgetConfig>(`${this.baseUrl}/${id}`, { data });
   }
 
   public deleteMiniWidget(widgetId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/deleteMiniWidget`, { params: { widgetId } });
+    return this.http.delete<void>(`${this.baseUrl}/${widgetId}`);
   }
 }

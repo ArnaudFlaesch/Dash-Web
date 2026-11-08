@@ -14,7 +14,7 @@ describe("ImportConfigModal", () => {
   let httpTestingController: HttpTestingController;
   let closeSpy: ReturnType<typeof vi.fn>;
 
-  const importUrl = `${environment.backend_url}/dashConfig/import`;
+  const importUrl = `${environment.backend_url}/dash-config`;
 
   beforeEach(async () => {
     closeSpy = vi.fn();
@@ -76,7 +76,7 @@ describe("ImportConfigModal", () => {
     fixture.debugElement.query(By.css("#upload-file-button")).triggerEventHandler("click");
     const request = httpTestingController.expectOne(importUrl);
     expect((request.request.body as FormData).get("file")).toEqual(file);
-    request.flush(true);
+    request.flush(null, { status: 204, statusText: "No Content" });
     expect(closeSpy).toHaveBeenCalled();
   });
 

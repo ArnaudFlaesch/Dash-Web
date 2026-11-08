@@ -7,25 +7,21 @@ import { Incident, IncidentStreak } from "./incident";
 @Service()
 export class IncidentWidgetService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.backend_url}/incidentWidget`;
+  private readonly baseUrl = environment.backend_url;
 
   public getIncidentConfigForWidget(widgetId: number): Observable<Incident> {
-    return this.http.get<Incident>(`${this.baseUrl}/incidentWidgetConfig`, {
-      params: { widgetId }
-    });
+    return this.http.get<Incident>(`${this.baseUrl}/widgets/${widgetId}/incident`);
   }
 
   public startFirstStreak(widgetId: number): Observable<Incident> {
-    return this.http.post<Incident>(`${this.baseUrl}/startFirstStreak`, { widgetId });
+    return this.http.post<Incident>(`${this.baseUrl}/widgets/${widgetId}/incident`, null);
   }
 
   public endStreak(widgetId: number): Observable<Incident> {
-    return this.http.post<Incident>(`${this.baseUrl}/endStreak`, { widgetId });
+    return this.http.post<Incident>(`${this.baseUrl}/widgets/${widgetId}/incident/streaks`, null);
   }
 
   public getIncidentStreaks(incidentId: number): Observable<IncidentStreak[]> {
-    return this.http.get<IncidentStreak[]>(`${this.baseUrl}/streaks`, {
-      params: { incidentId }
-    });
+    return this.http.get<IncidentStreak[]>(`${this.baseUrl}/incidents/${incidentId}/streaks`);
   }
 }

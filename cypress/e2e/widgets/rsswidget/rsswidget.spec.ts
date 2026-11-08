@@ -13,7 +13,7 @@ describe("RSS Widget tests", () => {
   after(() => cy.loginAsAdmin().navigateToTab(tabName).deleteTab(tabName));
 
   beforeEach(() => {
-    cy.intercept("GET", `/rssWidget/?url=${rssFeedUrl}`, {
+    cy.intercept("GET", `/rss-feed?url=${rssFeedUrl}`, {
       fixture: "rss/figaro_rss.json"
     })
       .as("refreshWidget")
@@ -38,9 +38,9 @@ describe("RSS Widget tests", () => {
   });
 
   it("Should read all articles", () => {
-    cy.intercept("PATCH", "/widget/updateWidgetData/*")
+    cy.intercept("PATCH", "/widgets/*")
       .as("markAllFeedAsRead")
-      .intercept("GET", `/rssWidget/?url=${rssFeedUrl}`, {
+      .intercept("GET", `/rss-feed?url=${rssFeedUrl}`, {
         fixture: "rss/figaro_rss.json"
       })
       .as("refreshWidget");
@@ -82,7 +82,7 @@ describe("RSS Widget tests", () => {
   it("Should fail to delete a created widget", () => {
     cy.get(".widget")
       .should("have.length", 1)
-      .intercept("DELETE", "/widget/deleteWidget*", { statusCode: 500 })
+      .intercept("DELETE", "/widgets/*", { statusCode: 500 })
       .as("deleteWidgetError");
     cy.get(".edit-button").click();
     cy.get(".delete-button").click();

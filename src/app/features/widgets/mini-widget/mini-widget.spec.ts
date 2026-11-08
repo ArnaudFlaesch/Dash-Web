@@ -48,7 +48,7 @@ class MiniWidgetWithoutEditionHost extends MiniWidgetHost {}
 
 describe("MiniWidget", () => {
   const miniWidgetId = 8;
-  const updateUrl = `${environment.backend_url}/miniWidget/updateWidgetData/${miniWidgetId}`;
+  const updateUrl = `${environment.backend_url}/mini-widgets/${miniWidgetId}`;
   let fixture: ComponentFixture<MiniWidgetHost>;
   let host: MiniWidgetHost;
   let element: HTMLElement;

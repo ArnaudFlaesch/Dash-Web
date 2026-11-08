@@ -23,11 +23,11 @@ const STRAVA_TOKEN = "FAKE_TOKEN";
 const STRAVA_REFRESH_TOKEN = "FAKE_REFRESH_TOKEN";
 
 const athleteUrl = (token: string): string =>
-  `${environment.backend_url}/stravaWidget/getAthleteData?token=${token}`;
+  `${environment.backend_url}/strava/athlete?token=${token}`;
 const activitiesUrl = (pageNumber: number, token = STRAVA_TOKEN): string =>
-  `${environment.backend_url}/stravaWidget/getAthleteActivities?token=${token}&pageNumber=${pageNumber}&numberOfActivities=25`;
-const getTokenUrl = `${environment.backend_url}/stravaWidget/getToken`;
-const getRefreshTokenUrl = `${environment.backend_url}/stravaWidget/getRefreshToken`;
+  `${environment.backend_url}/strava/athlete/activities?token=${token}&pageNumber=${pageNumber}&numberOfActivities=25`;
+const getTokenUrl = `${environment.backend_url}/strava/token`;
+const getRefreshTokenUrl = `${environment.backend_url}/strava/token/refresh`;
 
 /** Expiration date of a valid token, in seconds as sent by Strava. */
 function inFourDays(): string {
@@ -169,8 +169,8 @@ describe("StravaWidget", () => {
 
   /** Requests for the athlete, whatever the token. */
   function athleteRequests(): ReturnType<HttpTestingController["match"]> {
-    return httpTestingController.match((request) =>
-      request.url.startsWith(`${environment.backend_url}/stravaWidget/getAthleteData`)
+    return httpTestingController.match(
+      (request) => request.url === `${environment.backend_url}/strava/athlete`
     );
   }
 
