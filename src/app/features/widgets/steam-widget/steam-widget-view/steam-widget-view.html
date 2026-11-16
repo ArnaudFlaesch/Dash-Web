@@ -1,0 +1,55 @@
+<!-- Submitting the form (with the Enter key) would reload the page: the search is live -->
+<form class="search-game-form" (submit)="$event.preventDefault()">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-icon matPrefix>search</mat-icon>
+    <mat-label>{{ labels.searchGame }}</mat-label>
+    <input matInput [value]="searchQuery()" (input)="onSearchInput($event)" />
+    @if (searchQuery()) {
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        [matTooltip]="labels.cancelSearch"
+        [attr.aria-label]="labels.cancelSearch"
+        class="reset-form-button"
+        (click)="searchReset.emit()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+</form>
+
+@if (isGamesListDisplayed()) {
+  @if (isGamesLoading()) {
+    <div class="loading-spinner games-loading">
+      <mat-spinner diameter="32" />
+    </div>
+  } @else {
+    <mat-accordion class="games-list">
+      @for (game of games(); track game.appid) {
+        <dash-game-details
+          [gameInfo]="game"
+          [achievements]="achievementsByAppId()[game.appid]"
+          [isLoading]="loadingAchievementsAppIds().has(game.appid)"
+          (achievementsRequested)="achievementsRequested.emit(game.appid)"
+        />
+      } @empty {
+        <div class="no-game-found muted-text column items-center gap-xs">
+          <mat-icon>sports_esports</mat-icon>
+          <span>{{ labels.noGameFound }}</span>
+        </div>
+      }
+    </mat-accordion>
+  }
+}
+
+<mat-paginator
+  class="games-paginator"
+  (page)="onPageChanged($event)"
+  [length]="gameCount()"
+  [pageSize]="pageSize"
+  [pageIndex]="pageNumber()"
+  [pageSizeOptions]="pageSizeOptions"
+  [attr.aria-label]="labels.selectPage"
+/>

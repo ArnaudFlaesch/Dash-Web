@@ -1,3 +1,8 @@
+/** Url of the image of an OpenWeatherMap icon code. */
+export function getWeatherIconUrl(icon: string): string {
+  return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+}
+
 export enum ForecastMode {
   DAY,
   WEEK

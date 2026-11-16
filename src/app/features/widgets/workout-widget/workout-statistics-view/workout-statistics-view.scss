@@ -1,0 +1,22 @@
+@use "mixins" as *;
+@use "../workout-widget-mixins" as *;
+
+// The theme colors come from the `tile` and `muted-text` classes
+.workout-view {
+  @include workout-view;
+}
+
+.workout-section-title {
+  @include workout-section-title;
+}
+
+// Periods of the statistics, displayed as a group of chips
+.workout-periods {
+  flex-wrap: wrap;
+}
+
+.workout-period {
+  padding: $space-xs 0.75rem;
+  border-radius: $border-radius-pill;
+  font-size: 0.85rem;
+}

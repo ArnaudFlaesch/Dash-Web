@@ -29,76 +29,15 @@
   </ng-template>
 
   <ng-template #body>
-    @if (isUserLoggedIn()) {
-      @if (activities().length) {
-        <div class="strava-content column gap-sm">
-          <div class="strava-summary">
-            <div class="strava-summary-item inset">
-              <span class="strava-summary-value">{{ activitiesSummary().count }}</span>
-              <span class="strava-summary-label overline muted-text">{{ labels.activities }}</span>
-            </div>
-            <div class="strava-summary-item inset">
-              <span class="strava-summary-value"
-                >{{ activitiesSummary().distance | number: "1.0-0" }} {{ labels.kilometers }}</span
-              >
-              <span class="strava-summary-label overline muted-text">{{ labels.distance }}</span>
-            </div>
-            <div class="strava-summary-item inset">
-              <span class="strava-summary-value"
-                >{{ activitiesSummary().elevation | number: "1.0-0" }} {{ labels.meters }}</span
-              >
-              <span class="strava-summary-label overline muted-text">{{ labels.elevation }}</span>
-            </div>
-          </div>
-
-          <div id="strava-statistics" class="strava-chart chart-container">
-            <canvas baseChart [data]="activitiesChartData()" [options]="chartOptions" [type]="'bar'"></canvas>
-          </div>
-
-          <div id="strava-activities-container">
-            <dash-strava-activities [activities]="activities()" />
-          </div>
-
-          <div id="activities-pagination-container" class="row items-center justify-between">
-            <button
-              mat-button
-              [disabled]="pageNumber() <= 1"
-              [matTooltip]="labels.moreRecentActivities"
-              (click)="showMoreRecentActivities()"
-            >
-              <mat-icon>chevron_left</mat-icon>
-              {{ labels.moreRecent }}
-            </button>
-            <span class="strava-page-number muted-text">{{ labels.page }} {{ pageNumber() }}</span>
-            <button
-              mat-button
-              class="older-activities-button"
-              [disabled]="activities().length < paginationActivities"
-              [matTooltip]="labels.olderActivities"
-              (click)="showOlderActivities()"
-            >
-              {{ labels.older }}
-              <mat-icon>chevron_right</mat-icon>
-            </button>
-          </div>
-        </div>
-      } @else {
-        <div class="strava-empty muted-text column items-center gap-sm">
-          <mat-icon>directions_run</mat-icon>
-          <span>{{ labels.noActivity }}</span>
-        </div>
-      }
-    } @else {
-      <div class="strava-login column items-center gap-md">
-        <span class="strava-login-icon centered">
-          <mat-icon>directions_run</mat-icon>
-        </span>
-        <p class="muted-text">{{ labels.connectStravaAccount }}</p>
-        <button (click)="loginToStrava()" id="login-to-strava-button" mat-flat-button>
-          <mat-icon>link</mat-icon>
-          {{ labels.loginToStrava }}
-        </button>
-      </div>
-    }
+    <dash-strava-widget-view
+      class="column full-height"
+      [isUserLoggedIn]="isUserLoggedIn()"
+      [activities]="activities()"
+      [pageNumber]="pageNumber()"
+      [paginationActivities]="paginationActivities"
+      (loginRequested)="loginToStrava()"
+      (moreRecentActivitiesRequested)="showMoreRecentActivities()"
+      (olderActivitiesRequested)="showOlderActivities()"
+    />
   </ng-template>
 </dash-widget>

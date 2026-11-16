@@ -39,3 +39,9 @@ export enum WorkoutStatisticsPeriod {
   LAST_SIX_MONTHS = 3,
   LAST_THREE_MONTHS = 4
 }
+
+/** New number of reps of an exercise of a workout session. */
+export interface WorkoutRepsChange {
+  workoutTypeId: number;
+  numberOfReps: number;
+}

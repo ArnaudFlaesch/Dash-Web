@@ -1,0 +1,25 @@
+<div class="workout-view column gap-sm">
+  <div class="row items-center gap-xs">
+    <button
+      mat-icon-button
+      [matTooltip]="labels.backToSessions"
+      [attr.aria-label]="labels.backToSessions"
+      (click)="backRequested.emit()"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h3 class="workout-section-title muted-text">{{ labels.statistics }}</h3>
+  </div>
+  <div class="workout-periods row gap-xs">
+    @for (period of periods; track period.value) {
+      <button
+        class="workout-period tile"
+        [class.selected]="period.value === selectedPeriod()"
+        (click)="periodSelected.emit(period.value)"
+      >
+        {{ period.label }}
+      </button>
+    }
+  </div>
+  <dash-workout-statistics [workoutTypes]="workoutTypes()" [workoutStatsByMonth]="workoutStatsByMonth()" />
+</div>

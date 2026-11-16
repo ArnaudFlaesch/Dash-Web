@@ -1,11 +1,8 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject, input, linkedSignal, output, signal } from "@angular/core";
+import { Component, input, linkedSignal, output } from "@angular/core";
 import { form, FormField } from "@angular/forms/signals";
 import { MatIcon } from "@angular/material/icon";
 import { Tab } from "@features/tab/tab";
 import { requiredText } from "@shared/forms/form-validators";
-import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { TabService } from "@features/tab/tab-service";
 
 @Component({
   selector: "dash-tab-label",
@@ -21,36 +18,25 @@ export class TabLabel {
     deleteTab: "Supprimer l'onglet"
   };
 
-  private readonly ERROR_MESSAGES = {
-    updateTab: "Erreur lors de la modification d'un onglet."
-  };
-
   public readonly tab = input.required<Tab>();
-  public readonly tabDeletedEvent = output<number>();
-  public readonly tabUpdatedEvent = output<Tab>();
+  public readonly tabDeleted = output<number>();
+  /** The new name of the tab, without its surrounding spaces. */
+  public readonly tabRenamed = output<string>();
 
-  public readonly editMode = signal(false);
+  // The edition is closed once the renamed tab is received, so it stays open when the renaming fails
+  public readonly editMode = linkedSignal({ source: this.tab, computation: () => false });
   public readonly tabLabel = linkedSignal(() => this.tab().label);
   public readonly tabLabelForm = form(this.tabLabel, (path) => requiredText(path));
 
-  private readonly tabService = inject(TabService);
-  private readonly errorHandlerService = inject(ErrorHandlerService);
-
   public deleteTabFromDash(): void {
-    this.tabDeletedEvent.emit(this.tab().id);
+    this.tabDeleted.emit(this.tab().id);
   }
 
   public saveTabName(): void {
     if (this.tabLabelForm().invalid()) {
       return;
     }
-    const { id, tabOrder } = this.tab();
-    this.tabService.updateTab(id, this.tabLabel().trim(), tabOrder).subscribe({
-      next: (updatedTab) => this.tabUpdatedEvent.emit(updatedTab),
-      error: (error: HttpErrorResponse) =>
-        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateTab),
-      complete: () => this.toggleEditMode()
-    });
+    this.tabRenamed.emit(this.tabLabel().trim());
   }
 
   public toggleEditMode(): void {

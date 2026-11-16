@@ -34,57 +34,20 @@
   </ng-template>
 
   <ng-template #body>
-    <!-- Submitting the form (with the Enter key) would reload the page: the search is live -->
-    <form class="search-game-form" (submit)="$event.preventDefault()">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>{{ labels.searchGame }}</mat-label>
-        <input matInput [formField]="searchForm" />
-        @if (searchQuery()) {
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            [matTooltip]="labels.cancelSearch"
-            [attr.aria-label]="labels.cancelSearch"
-            class="reset-form-button"
-            (click)="resetForm()"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        }
-      </mat-form-field>
-    </form>
-
-    @if (config().steamUserId; as steamUserId) {
-      @if (playerData()) {
-        @if (isOwnedGamesLoading()) {
-          <div class="loading-spinner games-loading">
-            <mat-spinner diameter="32" />
-          </div>
-        } @else {
-          <mat-accordion class="games-list">
-            @for (game of ownedGamesDisplay(); track game.appid) {
-              <dash-game-details [steamUserId]="steamUserId" [gameInfo]="game" />
-            } @empty {
-              <div class="no-game-found muted-text column items-center gap-xs">
-                <mat-icon>sports_esports</mat-icon>
-                <span>{{ labels.noGameFound }}</span>
-              </div>
-            }
-          </mat-accordion>
-        }
-      }
-    }
-
-    <mat-paginator
-      class="games-paginator"
-      (page)="onPageChanged($event)"
-      [length]="gameCount()"
-      [pageSize]="pageSize"
-      [pageIndex]="pageNumber()"
-      [pageSizeOptions]="pageSizeOptions"
-      [attr.aria-label]="labels.selectPage"
+    <dash-steam-widget-view
+      class="steam-widget-view column"
+      [searchQuery]="searchQuery()"
+      [isGamesListDisplayed]="isGamesListDisplayed()"
+      [isGamesLoading]="isOwnedGamesLoading()"
+      [games]="ownedGamesDisplay()"
+      [gameCount]="gameCount()"
+      [pageNumber]="pageNumber()"
+      [achievementsByAppId]="achievementsByAppId()"
+      [loadingAchievementsAppIds]="loadingAchievementsAppIds()"
+      (searchChanged)="onSearchChanged($event)"
+      (searchReset)="resetSearch()"
+      (pageChanged)="onPageChanged($event)"
+      (achievementsRequested)="loadAchievements($event)"
     />
   </ng-template>
 </dash-widget>

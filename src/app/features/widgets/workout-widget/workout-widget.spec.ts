@@ -11,7 +11,7 @@ import {
   subYears
 } from "date-fns";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { WorkoutSession, WorkoutStatsByPeriod, WorkoutType } from "./workout";
+import { WorkoutExercise, WorkoutSession, WorkoutStatsByPeriod, WorkoutType } from "./workout";
 
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
@@ -557,6 +557,176 @@ describe("WorkoutWidget", () => {
       await flushResources();
       await fixture.whenStable();
       expect(query("dash-workout-statistics")).not.toBeNull();
+    });
+  });
+
+  describe("Workout exercises", () => {
+    const workoutSession = { id: 7, workoutDate: "2026-10-20", userId: 2 };
+    const workoutExercisesUrl = environment.backend_url + "/workout/sessions/7/exercises";
+    const updateWorkoutExerciseUrl = `${workoutExercisesUrl}/1`;
+
+    /** Opens the session of the list, without answering the request of its exercises. */
+    async function openSession(): Promise<void> {
+      await createWidget([{ id: 1, name: "Abdos", userId: 2 }], [workoutSession]);
+      query(".workout-session")?.click();
+      TestBed.tick();
+    }
+
+    /** Opens the session of the list, with the given exercises, in the edit mode. */
+    async function editSession(workoutExercises: WorkoutExercise[]): Promise<void> {
+      await openSession();
+      httpTestingController.expectOne(workoutExercisesUrl).flush(workoutExercises);
+      await fixture.whenStable();
+      query<HTMLButtonElement>("#edit-session-button")?.click();
+      await fixture.whenStable();
+    }
+
+    function getAddButton(): HTMLButtonElement {
+      return query<HTMLButtonElement>(".add-rep-to-workout-button")!;
+    }
+
+    function getSubtractButton(): HTMLButtonElement {
+      return query<HTMLButtonElement>(".subtract-rep-to-workout-button")!;
+    }
+
+    function getDisplayedReps(): string | undefined {
+      return query(".workout-exercise-container .edit-reps-container > span")?.textContent?.trim();
+    }
+
+    it("should display a spinner until the exercises are loaded", async () => {
+      await openSession();
+      expect(query("dash-workout-session-edit mat-spinner")).not.toBeNull();
+      expect(query("#workout-session-date")).toBeNull();
+
+      httpTestingController.expectOne(workoutExercisesUrl).flush([]);
+      await fixture.whenStable();
+
+      expect(query("dash-workout-session-edit mat-spinner")).toBeNull();
+      expect(query("#workout-session-date")?.textContent).toEqual("Session du 20/10/2026");
+    });
+
+    it("should add a rep to an exercise without reps, then remove it", async () => {
+      await editSession([]);
+      expect(getDisplayedReps()).toEqual("0");
+
+      getAddButton().click();
+      const incrementRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
+      expect(incrementRequest.request.method).toEqual("PUT");
+      expect(incrementRequest.request.body).toEqual({ numberOfReps: 1 });
+      incrementRequest.flush({ workoutTypeId: 1, numberOfReps: 1 });
+      await fixture.whenStable();
+      expect(query(".workout-number-of-reps")?.textContent).toContain("1");
+
+      getSubtractButton().click();
+      const decrementRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
+      expect(decrementRequest.request.body.numberOfReps).toEqual(0);
+      decrementRequest.flush({ workoutTypeId: 1, numberOfReps: 0 });
+      await fixture.whenStable();
+      expect(query(".workout-number-of-reps")).toBeNull();
+      expect(getDisplayedReps()).toEqual("0");
+    });
+
+    it("should update the reps with the buttons, disabled while the update is sent", async () => {
+      await editSession([{ workoutTypeId: 1, numberOfReps: 3 }]);
+      const addButton = getAddButton();
+      const subtractButton = getSubtractButton();
+
+      addButton.click();
+      await fixture.whenStable();
+      const addRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
+      expect(addRequest.request.body).toEqual({ numberOfReps: 4 });
+      expect(addButton.disabled).toBe(true);
+      expect(subtractButton.disabled).toBe(true);
+      addRequest.flush({ workoutTypeId: 1, numberOfReps: 4 });
+      await fixture.whenStable();
+      expect(addButton.disabled).toBe(false);
+      expect(query(".workout-number-of-reps")?.textContent).toContain("4");
+
+      subtractButton.click();
+      const subtractRequest = httpTestingController.expectOne(updateWorkoutExerciseUrl);
+      expect(subtractRequest.request.body.numberOfReps).toEqual(3);
+      subtractRequest.flush({ workoutTypeId: 1, numberOfReps: 3 });
+      await fixture.whenStable();
+      expect(query(".workout-number-of-reps")?.textContent).toContain("3");
+    });
+
+    it("should enable the buttons again when the update of the reps fails", async () => {
+      const handleErrorSpy = vi
+        .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
+        .mockImplementation(() => undefined);
+      await editSession([{ workoutTypeId: 1, numberOfReps: 3 }]);
+
+      getAddButton().click();
+      httpTestingController
+        .expectOne(updateWorkoutExerciseUrl)
+        .flush(null, { status: 500, statusText: "Internal Server Error" });
+      await fixture.whenStable();
+
+      expect(handleErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 500 }),
+        "Erreur lors de l'ajout d'un exercice."
+      );
+      expect(getAddButton().disabled).toBe(false);
+      // The number of reps is unchanged
+      expect(getDisplayedReps()).toEqual("3");
+    });
+
+    it("should not remove a rep from an exercise without reps", async () => {
+      await editSession([]);
+
+      getSubtractButton().click();
+      await fixture.whenStable();
+
+      httpTestingController.expectNone(updateWorkoutExerciseUrl);
+      expect(getDisplayedReps()).toEqual("0");
+    });
+
+    it("should handle the error when getting the exercises", async () => {
+      const handleErrorSpy = vi
+        .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
+        .mockImplementation(() => undefined);
+      await openSession();
+      httpTestingController
+        .expectOne(workoutExercisesUrl)
+        .flush(null, { status: 500, statusText: "Internal Server Error" });
+      await fixture.whenStable();
+
+      expect(handleErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 500 }),
+        "Erreur lors de la récupération des exercices."
+      );
+      // The session is displayed, without reps
+      expect(query("dash-workout-session-edit mat-spinner")).toBeNull();
+      expect(query("#workout-session-date")).not.toBeNull();
+      expect(getDisplayedReps()).toEqual("0");
+    });
+
+    it("should reload the exercises when the session is opened again", async () => {
+      await openSession();
+      httpTestingController.expectOne(workoutExercisesUrl).flush([]);
+      await fixture.whenStable();
+
+      query(".workout-back-button")?.click();
+      await fixture.whenStable();
+      query(".workout-session")?.click();
+      TestBed.tick();
+
+      httpTestingController
+        .expectOne(workoutExercisesUrl)
+        .flush([{ workoutTypeId: 1, numberOfReps: 2 }]);
+      await fixture.whenStable();
+      expect(query(".workout-number-of-reps")?.textContent).toContain("2");
+    });
+
+    it("should not load the exercises of a session without id", async () => {
+      await createWidget([{ id: 1, name: "Abdos", userId: 2 }], [{ ...workoutSession, id: 0 }]);
+      query(".workout-session")?.click();
+      TestBed.tick();
+      await fixture.whenStable();
+
+      httpTestingController.expectNone((request) => request.url.endsWith("/exercises"));
+      expect(query("dash-workout-session-edit mat-spinner")).not.toBeNull();
+      expect(query(".workout-exercise-container")).toBeNull();
     });
   });
 });

@@ -4,7 +4,6 @@ import {
   Component,
   computed,
   ElementRef,
-  inject,
   input,
   OnDestroy,
   signal,
@@ -18,14 +17,16 @@ import { fromLonLat, transformExtent } from "ol/proj";
 import OSM from "ol/source/OSM";
 import TileWMS from "ol/source/TileWMS";
 import View from "ol/View";
-import { AirparifWidgetService } from "../airparif-widget-service";
 import {
+  AIRPARIF_WEBSITE_URL,
   AirparifIndice,
   ForecastMode,
   AirparifCouleur,
   AirparifForecast,
   IndiceDetails,
-  Pollutant
+  Pollutant,
+  getIndiceClass,
+  getIndiceLabel
 } from "../airparif";
 import { SidebarControl } from "../sidebar-control";
 
@@ -126,8 +127,7 @@ export class AirparifMap implements AfterViewInit, OnDestroy {
   private sidebarControl: SidebarControl | undefined;
   private forecastLayers: Record<ForecastMode, TileLayer<TileWMS>> | undefined;
 
-  private readonly airParifWidgetService = inject(AirparifWidgetService);
-  public readonly airParifWebsiteUrl = this.airParifWidgetService.AIRPARIF_WEBSITE_URL;
+  public readonly airParifWebsiteUrl = AIRPARIF_WEBSITE_URL;
 
   public ngAfterViewInit(): void {
     this.initMap();
@@ -162,16 +162,16 @@ export class AirparifMap implements AfterViewInit, OnDestroy {
   }
 
   public getIndiceClass(indice: AirparifIndice): string {
-    return this.airParifWidgetService.getIndiceClass(indice);
+    return getIndiceClass(indice);
   }
 
   public getIndiceLabel(indice: AirparifIndice): string {
-    return this.airParifWidgetService.getIndiceLabel(indice);
+    return getIndiceLabel(indice);
   }
 
   // Class giving a light tint of the color of the indice
   public getIndiceSoftClass(indice: AirparifIndice): string {
-    return this.airParifWidgetService.getIndiceClass(indice, "indice-soft");
+    return getIndiceClass(indice, "indice-soft");
   }
 
   private getIndiceDetails(indice: AirparifIndice): IndiceDetails | undefined {

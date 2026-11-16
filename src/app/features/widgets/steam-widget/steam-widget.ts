@@ -1,66 +1,40 @@
 import { NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, computed, inject, linkedSignal, signal } from "@angular/core";
-import { rxResource, toObservable, toSignal } from "@angular/core/rxjs-interop";
+import { Component, computed, DestroyRef, inject, linkedSignal, signal } from "@angular/core";
+import { rxResource, takeUntilDestroyed, toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { form, FormField } from "@angular/forms/signals";
-import { requiredText } from "@shared/forms/form-validators";
-import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatInput } from "@angular/material/input";
 import { catchError, debounceTime, distinctUntilChanged, map, of } from "rxjs";
 
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { GameInfoDisplay, GameInfoResponse, PlayerDataResponse } from "./steam";
-import { SteamWidgetService } from "./steam-widget-service";
-import { GameDetails } from "./game-details/game-details";
-import { MatIcon } from "@angular/material/icon";
-import { MatTooltip } from "@angular/material/tooltip";
-import { MatIconButton } from "@angular/material/button";
-import { MatInput } from "@angular/material/input";
-import { MatAccordion } from "@angular/material/expansion";
-import { MatFormField, MatLabel, MatPrefix, MatSuffix } from "@angular/material/form-field";
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { requiredText } from "@shared/forms/form-validators";
 import { Widget } from "@widgets/widget/widget";
 import { injectWidgetData } from "@widgets/widget-tokens";
+import { Achievement, GameInfoDisplay, PlayerDataResponse, toGameInfoDisplay } from "./steam";
+import { SteamWidgetService } from "./steam-widget-service";
+import { SteamWidgetView } from "./steam-widget-view/steam-widget-view";
 
 @Component({
   selector: "dash-steam-widget",
   templateUrl: "./steam-widget.html",
   styleUrl: "./steam-widget.scss",
-  imports: [
-    NgOptimizedImage,
-    Widget,
-    MatFormField,
-    MatLabel,
-    MatPrefix,
-    MatSuffix,
-    MatInput,
-    FormField,
-    MatIconButton,
-    MatTooltip,
-    MatIcon,
-    GameDetails,
-    MatAccordion,
-    MatPaginator,
-    MatProgressSpinner
-  ]
+  imports: [NgOptimizedImage, Widget, MatFormField, MatLabel, MatInput, FormField, SteamWidgetView]
 })
 export class SteamWidget {
   protected readonly labels = {
     steamUser: "Utilisateur Steam",
-    enterSteamUserId: "Saisissez l'ID utilisateur du joueur Steam",
-    searchGame: "Recherchez un jeu",
-    cancelSearch: "Annuler la recherche",
-    noGameFound: "Aucun jeu trouvé",
-    selectPage: "Sélectionnez une page"
+    enterSteamUserId: "Saisissez l'ID utilisateur du joueur Steam"
   };
   private readonly ERROR_MESSAGES = {
     gettingPlayerData: "Erreur lors de la récupération de vos informations Steam.",
-    gettingOwnedGames: "Erreur lors de la récupération de la liste des jeux."
+    gettingOwnedGames: "Erreur lors de la récupération de la liste des jeux.",
+    gettingAchievementsData: "Erreur lors de la récupération des succès."
   };
 
   public readonly config = signal({ steamUserId: injectWidgetData("steamUserId", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.steamUserId));
   public readonly searchQuery = signal("");
-  public readonly searchForm = form(this.searchQuery);
   // A new object on each refresh, so that the resources reload even if the user is unchanged
   private readonly refreshedSteamUser = signal<{ steamUserId: string } | undefined>(undefined);
   // Unchanged by a refresh of the same user
@@ -111,9 +85,27 @@ export class SteamWidget {
   public readonly gameCount = computed(() => this.ownedGamesResource.value()?.totalElements ?? 0);
   public readonly ownedGamesDisplay = computed<GameInfoDisplay[]>(() =>
     (this.ownedGamesResource.value()?.content ?? []).map((game) =>
-      this.gameInfoResponseToGameInfoDisplay(game)
+      toGameInfoDisplay(game, this.playerData()?.profileurl)
     )
   );
+  // The links to the achievements need the profile of the player
+  public readonly isGamesListDisplayed = computed(
+    () => !!this.config().steamUserId && !!this.playerData()
+  );
+
+  /** Achievements already loaded, by appid of their game, cleared on each refresh. */
+  public readonly achievementsByAppId = linkedSignal<
+    unknown,
+    Readonly<Record<string, Achievement[]>>
+  >({
+    source: () => this.refreshedSteamUser(),
+    computation: () => ({})
+  });
+  /** Appids of the games whose achievements are loading, cleared on each refresh. */
+  public readonly loadingAchievementsAppIds = linkedSignal<unknown, ReadonlySet<string>>({
+    source: () => this.refreshedSteamUser(),
+    computation: () => new Set<string>()
+  });
   public readonly isFormValid = computed(() => this.configForm().valid());
   public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
   private readonly debouncedSearchQuery = toSignal(
@@ -121,11 +113,9 @@ export class SteamWidget {
     { initialValue: "" }
   );
 
-  public readonly pageSize = 25;
-  public readonly pageSizeOptions = [this.pageSize];
-
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly steamWidgetService = inject(SteamWidgetService);
+  private readonly destroyRef = inject(DestroyRef);
 
   /** Restores the configuration of the last refresh when the edition is cancelled. */
   public restoreSavedConfig(): void {
@@ -142,20 +132,52 @@ export class SteamWidget {
     }
   }
 
-  public onPageChanged(event: PageEvent): void {
+  public onPageChanged(pageIndex: number): void {
     if (this.refreshedSteamUser()) {
-      this.pageNumber.set(event.pageIndex);
+      this.pageNumber.set(pageIndex);
     }
   }
 
-  public resetForm(): void {
+  public onSearchChanged(searchQuery: string): void {
+    this.searchQuery.set(searchQuery);
+  }
+
+  public resetSearch(): void {
     this.searchQuery.set("");
   }
 
-  private gameInfoResponseToGameInfoDisplay(gameInfoResponse: GameInfoResponse): GameInfoDisplay {
-    const appIdLink = this.steamWidgetService.STEAM_COMMUNITY_URL + gameInfoResponse.appid;
-    const playerAchievementUrl = `${this.playerData()?.profileurl}stats/${gameInfoResponse.appid}/achievements/`;
-    const gameImgSrc = `${this.steamWidgetService.STEAM_IMAGE_URL}${gameInfoResponse.appid}/${gameInfoResponse.imgIconUrl}.jpg`;
-    return { ...gameInfoResponse, appIdLink, playerAchievementUrl, gameImgSrc };
+  /** Loads the achievements of a game, unless they are already loaded or loading. */
+  public loadAchievements(appId: string): void {
+    const refreshedSteamUser = this.refreshedSteamUser();
+    if (
+      !refreshedSteamUser ||
+      appId in this.achievementsByAppId() ||
+      this.loadingAchievementsAppIds().has(appId)
+    ) {
+      return;
+    }
+    this.loadingAchievementsAppIds.update((appIds) => new Set(appIds).add(appId));
+    this.steamWidgetService
+      .getAchievementList(refreshedSteamUser.steamUserId, appId)
+      .pipe(
+        map((response) => response.playerstats?.achievements ?? []),
+        catchError((error: HttpErrorResponse) => {
+          this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.gettingAchievementsData);
+          return of([]);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((achievements) => {
+        // Ignored if the widget has been refreshed in the meantime
+        if (this.refreshedSteamUser() === refreshedSteamUser) {
+          this.achievementsByAppId.update((achievementsByAppId) => ({
+            ...achievementsByAppId,
+            [appId]: achievements
+          }));
+          this.loadingAchievementsAppIds.update(
+            (appIds) => new Set([...appIds].filter((loadingAppId) => loadingAppId !== appId))
+          );
+        }
+      });
   }
 }

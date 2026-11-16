@@ -1,11 +1,7 @@
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { GameInfoDisplay } from "../steam";
-import { environment } from "@environments/environment";
-import { GameDetails } from "./game-details";
-import { provideHttpClient } from "@angular/common/http";
 import { vi } from "vitest";
+import { Achievement, GameInfoDisplay } from "../steam";
+import { GameDetails } from "./game-details";
 
 describe("GameDetails", () => {
   const gameInfo: GameInfoDisplay = {
@@ -17,56 +13,72 @@ describe("GameDetails", () => {
     appIdLink: "https://steamcommunity.com/app/220",
     playerAchievementUrl: "https://steamcommunity.com/id/Nauno93/stats/220/achievements/"
   };
-  const achievementsUrl = environment.backend_url + "/steam/players/1337/games/220/achievements";
+  const achievements: Achievement[] = [
+    { apiname: "A", achieved: 1, unlocktime: 1 },
+    { apiname: "B", achieved: 0, unlocktime: 0 },
+    { apiname: "C", achieved: 1, unlocktime: 1 }
+  ];
 
   let fixture: ComponentFixture<GameDetails>;
   let element: HTMLElement;
-  let httpTestingController: HttpTestingController;
+  let achievementsRequestedSpy: ReturnType<typeof vi.fn<() => void>>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
-    }).compileComponents();
-    httpTestingController = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(GameDetails);
     element = fixture.nativeElement as HTMLElement;
-    fixture.componentRef.setInput("steamUserId", "1337");
+    achievementsRequestedSpy = vi.fn<() => void>();
+    fixture.componentInstance.achievementsRequested.subscribe(achievementsRequestedSpy);
     fixture.componentRef.setInput("gameInfo", gameInfo);
     await fixture.whenStable();
   });
 
-  afterEach(() => {
-    httpTestingController.verify();
-  });
-
-  /** Opens the panel of the game, which loads its achievements. */
-  function openPanel(): void {
+  /** Opens the panel of the game, which requests its achievements. */
+  async function openPanel(): Promise<void> {
     element.querySelector<HTMLElement>("mat-expansion-panel-header")!.click();
-    TestBed.tick();
+    await fixture.whenStable();
   }
 
-  it("should display the game, without loading its achievements", () => {
+  /** Gives the state of the achievements to the game, as the container does. */
+  async function setAchievements(
+    loadedAchievements: Achievement[] | undefined,
+    isLoading = false
+  ): Promise<void> {
+    fixture.componentRef.setInput("achievements", loadedAchievements);
+    fixture.componentRef.setInput("isLoading", isLoading);
+    await fixture.whenStable();
+  }
+
+  it("should display the game, without requesting its achievements", () => {
     const image = element.querySelector<HTMLImageElement>(".game-info img")!;
     expect(image.src).toEqual(gameInfo.gameImgSrc);
     expect(image.alt).toEqual("game icon");
     expect(element.querySelector(".game-info p")?.textContent).toContain(gameInfo.name);
     expect(element.querySelector(".game-panel")?.getAttribute("title")).toEqual(gameInfo.name);
-    httpTestingController.expectNone(achievementsUrl);
+    expect(achievementsRequestedSpy).not.toHaveBeenCalled();
   });
 
-  it("should display the achievements once the panel is opened", async () => {
-    openPanel();
+  it("should request the achievements each time the panel is opened", async () => {
+    await openPanel();
+    expect(achievementsRequestedSpy).toHaveBeenCalledTimes(1);
+
+    // Closed, then opened again
+    await openPanel();
+    await openPanel();
+    expect(achievementsRequestedSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it("should display a spinner while the achievements are loading", async () => {
+    await setAchievements(undefined, true);
+    await openPanel();
+
     expect(element.querySelector("mat-progress-spinner")).not.toBeNull();
-    httpTestingController.expectOne(achievementsUrl).flush({
-      playerstats: {
-        achievements: [
-          { apiname: "A", achieved: 1, unlocktime: 1 },
-          { apiname: "B", achieved: 0, unlocktime: 0 },
-          { apiname: "C", achieved: 1, unlocktime: 1 }
-        ]
-      }
-    });
-    await fixture.whenStable();
+    expect(element.querySelector(".no-achievements")).toBeNull();
+    expect(element.querySelector(".achievements-progress")).toBeNull();
+  });
+
+  it("should display the achievements once they are loaded", async () => {
+    await openPanel();
+    await setAchievements(achievements);
 
     expect(element.querySelector("mat-progress-spinner")).toBeNull();
     // Exact texts, without surrounding spaces, as checked by the end-to-end tests
@@ -84,33 +96,15 @@ describe("GameDetails", () => {
     expect(element.querySelector(".no-achievements")).toBeNull();
   });
 
-  it("should load the achievements of the given player and game", async () => {
-    const steamUserId = "1237";
-    const appId = "1337";
-    fixture.componentRef.setInput("steamUserId", steamUserId);
-    fixture.componentRef.setInput("gameInfo", { ...gameInfo, appid: appId, name: "Super Game" });
-    await fixture.whenStable();
-
-    openPanel();
-    httpTestingController
-      .expectOne(
-        `${environment.backend_url}/steam/players/${steamUserId}/games/${appId}/achievements`
-      )
-      .flush({
-        playerstats: {
-          steamID: "76561198046131373",
-          gameName: "Half-Life 2: Episode Two",
-          achievements: [
-            { apiname: "EP2_KILL_POISONANTLION", achieved: 1, unlocktime: 1352488322 },
-            { apiname: "EP2_KILL_ALLGRUBS", achieved: 0, unlocktime: 0 },
-            { apiname: "EP2_BREAK_ALLWEBS", achieved: 1, unlocktime: 1446892109 },
-            { apiname: "EP2_BEAT_ANTLIONINVASION", achieved: 1, unlocktime: 1352489474 },
-            { apiname: "EP2_BEAT_ANTLIONGUARDS", achieved: 1, unlocktime: 1352492128 }
-          ],
-          success: true
-        }
-      });
-    await fixture.whenStable();
+  it("should round down the completion of the achievements", async () => {
+    await openPanel();
+    await setAchievements([
+      { apiname: "EP2_KILL_POISONANTLION", achieved: 1, unlocktime: 1352488322 },
+      { apiname: "EP2_KILL_ALLGRUBS", achieved: 0, unlocktime: 0 },
+      { apiname: "EP2_BREAK_ALLWEBS", achieved: 1, unlocktime: 1446892109 },
+      { apiname: "EP2_BEAT_ANTLIONINVASION", achieved: 1, unlocktime: 1352489474 },
+      { apiname: "EP2_BEAT_ANTLIONGUARDS", achieved: 1, unlocktime: 1352492128 }
+    ]);
 
     expect(element.querySelector(".progress-value")?.textContent).toEqual("80%");
     expect(element.querySelector(".totalachievements")?.textContent).toEqual("Succès : 5");
@@ -120,44 +114,15 @@ describe("GameDetails", () => {
   });
 
   it("should display a message for a game without achievements", async () => {
-    openPanel();
-    httpTestingController.expectOne(achievementsUrl).flush({ playerstats: {} });
-    await fixture.whenStable();
+    await openPanel();
+    await setAchievements([]);
 
+    expect(element.querySelector("mat-progress-spinner")).toBeNull();
     const noAchievements = element.querySelector(".no-achievements");
     expect(noAchievements?.textContent).toContain("Aucun succès pour ce jeu.");
     expect(noAchievements?.querySelector("a")?.getAttribute("href")).toEqual(gameInfo.appIdLink);
     expect(noAchievements?.querySelector("a")?.textContent).toContain("Community hub");
     expect(element.querySelector(".achievements-progress")).toBeNull();
     expect(element.querySelector(".progress-value")).toBeNull();
-  });
-
-  it("should display a message for a game without player stats", async () => {
-    openPanel();
-    httpTestingController.expectOne(achievementsUrl).flush({});
-    await fixture.whenStable();
-
-    expect(element.querySelector(".no-achievements")?.textContent).toContain(
-      "Aucun succès pour ce jeu."
-    );
-  });
-
-  it("should handle the error when getting the achievements", async () => {
-    const handleErrorSpy = vi
-      .spyOn(TestBed.inject(ErrorHandlerService), "handleError")
-      .mockImplementation(() => undefined);
-    openPanel();
-    httpTestingController
-      .expectOne(achievementsUrl)
-      .flush(null, { status: 500, statusText: "Internal Server Error" });
-    await fixture.whenStable();
-
-    expect(handleErrorSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ status: 500 }),
-      "Erreur lors de la récupération des succès."
-    );
-    expect(element.querySelector("mat-progress-spinner")).toBeNull();
-    expect(element.querySelector(".no-achievements")).not.toBeNull();
-    expect(element.querySelector(".achievements-progress")).toBeNull();
   });
 });
