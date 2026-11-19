@@ -53,7 +53,7 @@
     "@angular/compiler-cli": "22.2.6",
     "@compodoc/compodoc": "2.0.0",
     "@eslint/js": "10.0.1",
-    "@vitest/coverage-v8": "5.1.0",
+    "@vitest/coverage-v8": "5.1.1",
     "@vitest/eslint-plugin": "1.6.28",
     "angular-eslint": "22.8.0",
     "cypress": "16.3.0",
@@ -71,6 +71,6 @@
     "stylelint-config-standard-scss": "17.0.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.73.0",
-    "vitest": "5.1.0"
+    "vitest": "5.1.1"
   }
 }
