@@ -3,8 +3,7 @@ import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import { get as getProjection } from "ol/proj";
 import TileWMS from "ol/source/TileWMS";
-import { AirparifCouleur, AirparifForecast } from "../airparif";
-import { AirparifWidgetService } from "../airparif-widget-service";
+import { AIRPARIF_WEBSITE_URL, AirparifCouleur, AirparifForecast } from "../airparif";
 import { AirparifMap } from "./airparif-map";
 
 describe("AirparifMap", () => {
@@ -329,7 +328,7 @@ describe("AirparifMap", () => {
       expect(legend[0].classList).not.toContain("active");
       expect(legend[1].classList).toContain("active");
       expect(element.querySelector("#airparif-source")?.getAttribute("href")).toEqual(
-        TestBed.inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL
+        AIRPARIF_WEBSITE_URL
       );
       expect(element.querySelector("#forecast-empty")).toBeNull();
       expect(element.querySelector("#map-loading")).toBeNull();

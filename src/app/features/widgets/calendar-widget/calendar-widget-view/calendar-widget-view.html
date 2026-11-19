@@ -1,0 +1,82 @@
+<div id="calendar-actions-container" class="row justify-between">
+  <div id="date-navigation-container" class="row gap-xs">
+    <button
+      mat-raised-button
+      class="calendar-navigation-button"
+      [matTooltip]="labels.previous"
+      [attr.aria-label]="labels.previous"
+      mwlCalendarPreviousView
+      [view]="view()"
+      [(viewDate)]="viewDate"
+      color="primary"
+      (viewDateChange)="closeOpenMonthViewDay()"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button mat-raised-button [matTooltip]="labels.today" mwlCalendarToday [(viewDate)]="viewDate">
+      {{ displayTodaysDate() | initialUppercase }}
+    </button>
+    <button
+      mat-raised-button
+      class="calendar-navigation-button"
+      [matTooltip]="labels.next"
+      [attr.aria-label]="labels.next"
+      mwlCalendarNextView
+      [view]="view()"
+      [(viewDate)]="viewDate"
+      color="primary"
+      (viewDateChange)="closeOpenMonthViewDay()"
+    >
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
+
+  <div id="calendar-view-switch-container" class="row wrap gap-xs">
+    <button mat-raised-button (click)="setView(calendarView.Day)" [color]="isCalendarViewDay() ? 'primary' : ''">
+      {{ labels.day }}
+    </button>
+    <button mat-raised-button (click)="setView(calendarView.Month)" [color]="isCalendarViewMonth() ? 'primary' : ''">
+      {{ labels.month }}
+    </button>
+    <button mat-raised-button (click)="setView(calendarView.Week)" [color]="isCalendarViewWeek() ? 'primary' : ''">
+      {{ labels.week }}
+    </button>
+  </div>
+</div>
+
+<div id="calendar-selected-date">
+  <h3>{{ viewDate() | calendarDate: view() + "ViewTitle" : "fr" | initialUppercase }}</h3>
+</div>
+
+<!-- The calendar views use the application locale (LOCALE_ID) by default -->
+<div>
+  @switch (view()) {
+    @case (calendarView.Month) {
+      <mwl-calendar-month-view
+        [viewDate]="viewDate()"
+        [events]="events()"
+        [weekStartsOn]="weekStartsOn"
+        [activeDayIsOpen]="activeDayIsOpen()"
+        (dayClicked)="onMonthDayClicked($event.day)"
+        (eventClicked)="eventSelected.emit($event.event)"
+      >
+      </mwl-calendar-month-view>
+    }
+    @case (calendarView.Week) {
+      <mwl-calendar-week-view
+        [viewDate]="viewDate()"
+        [weekStartsOn]="weekStartsOn"
+        [events]="events()"
+        (eventClicked)="eventSelected.emit($event.event)"
+      >
+      </mwl-calendar-week-view>
+    }
+    @case (calendarView.Day) {
+      <mwl-calendar-day-view
+        [viewDate]="viewDate()"
+        [events]="events()"
+        (eventClicked)="eventSelected.emit($event.event)"
+      ></mwl-calendar-day-view>
+    }
+  }
+</div>

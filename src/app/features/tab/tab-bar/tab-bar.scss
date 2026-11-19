@@ -1,0 +1,32 @@
+@use "mixins" as *;
+
+// The theme colors of the tabs are set in _home-theme.scss
+#tab-list-container {
+  min-width: 0;
+
+  #tab-list {
+    min-width: 0;
+    padding: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    .tab {
+      flex: 0 0 auto;
+      cursor: pointer;
+      padding: 0.4rem 0.9rem;
+      border-width: 1px;
+      border-style: solid;
+      border-radius: $border-radius-pill;
+      font-weight: 500;
+      white-space: nowrap;
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+
+      &.draggable {
+        cursor: grab;
+        border-style: dashed;
+      }
+    }
+  }
+}

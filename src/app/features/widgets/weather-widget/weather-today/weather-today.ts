@@ -1,11 +1,10 @@
 import { DecimalPipe, NgOptimizedImage } from "@angular/common";
-import { Component, inject, computed, input } from "@angular/core";
+import { Component, computed, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { InitialUppercasePipe } from "@shared/text/initial-uppercase-pipe";
 import { dateInTimezone } from "@shared/dates/timezone";
-import { WeatherApiResponse } from "../weather";
-import { WeatherWidgetService } from "../weather-widget-service";
+import { WeatherApiResponse, getWeatherIconUrl } from "../weather";
 
 @Component({
   selector: "dash-weather-today",
@@ -28,10 +27,8 @@ export class WeatherToday {
   public readonly sunsetTime = computed(() => this.formatTime(this.weather().sys.sunset));
   public readonly lastUpdateTime = computed(() => this.formatTime(this.weather().dt));
 
-  private readonly weatherWidgetService = inject(WeatherWidgetService);
-
   public getIconFromWeatherApi(icon: string): string {
-    return this.weatherWidgetService.getWeatherIconUrl(icon);
+    return getWeatherIconUrl(icon);
   }
 
   private formatTime(timestamp: number): string {

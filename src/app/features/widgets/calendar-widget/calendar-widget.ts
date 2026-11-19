@@ -1,29 +1,18 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, computed, inject, LOCALE_ID, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
-import {
-  CalendarDatePipe,
-  CalendarDayViewComponent,
-  CalendarEvent,
-  CalendarMonthViewComponent,
-  CalendarNextViewDirective,
-  CalendarPreviousViewDirective,
-  CalendarTodayDirective,
-  CalendarView,
-  CalendarWeekViewComponent
-} from "angular-calendar";
-import { endOfDay, format, isSameDay, isSameMonth } from "date-fns";
+import { CalendarEvent } from "angular-calendar";
+import { endOfDay } from "date-fns";
 import { catchError, defaultIfEmpty, forkJoin, map, of } from "rxjs";
 
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { CalendarWidgetService } from "./calendar-widget-service";
 import { EventDetailModal } from "./event-detail-modal/event-detail-modal";
 import { CalendarData } from "./calendar-data";
-import { fr } from "date-fns/locale";
-import { InitialUppercasePipe } from "@shared/text/initial-uppercase-pipe";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatButton, MatIconButton } from "@angular/material/button";
+import { CalendarWidgetView } from "./calendar-widget-view/calendar-widget-view";
 import { MatIcon } from "@angular/material/icon";
 import { applyEach, form, FormField, minLength } from "@angular/forms/signals";
 import { requiredText } from "@shared/forms/form-validators";
@@ -34,22 +23,7 @@ import { injectWidgetData } from "@widgets/widget-tokens";
   selector: "dash-calendar-widget",
   templateUrl: "./calendar-widget.html",
   styleUrl: "./calendar-widget.scss",
-  imports: [
-    Widget,
-    FormField,
-    MatIcon,
-    MatButton,
-    MatIconButton,
-    MatTooltip,
-    InitialUppercasePipe,
-    CalendarDayViewComponent,
-    CalendarWeekViewComponent,
-    CalendarMonthViewComponent,
-    CalendarDatePipe,
-    CalendarNextViewDirective,
-    CalendarTodayDirective,
-    CalendarPreviousViewDirective
-  ]
+  imports: [Widget, FormField, MatIcon, MatButton, MatIconButton, MatTooltip, CalendarWidgetView]
 })
 export class CalendarWidget {
   private readonly MILLISECONDS_IN_A_DAY = 86400000;
@@ -59,20 +33,13 @@ export class CalendarWidget {
     enterIcalUrl: "Saisissez une URL iCal",
     calendarUrl: "URL du calendrier",
     delete: "Supprimer",
-    addCalendar: "Ajouter un calendrier",
-    previous: "Précédent",
-    today: "Aujourd'hui",
-    next: "Suivant",
-    day: "Jour",
-    month: "Mois",
-    week: "Semaine"
+    addCalendar: "Ajouter un calendrier"
   };
 
   private readonly ERROR_MESSAGES = {
     parsingEvents: "Erreur lors de la récupération des évènements."
   };
 
-  public readonly viewDate = signal(new Date());
   private readonly config = signal({
     calendarUrls: injectWidgetData<string[]>("calendarUrls", [])
   });
@@ -81,8 +48,6 @@ export class CalendarWidget {
     applyEach(path.calendarUrls, (calendarUrl) => requiredText(calendarUrl));
   });
   public readonly isWidgetLoaded = signal(true);
-  public readonly view = signal(CalendarView.Month);
-  public readonly activeDayIsOpen = signal(true);
   // A new object on each refresh, so that the resource reloads even if the urls are unchanged
   private readonly refreshedCalendarUrls = signal<{ calendarUrls: string[] } | undefined>(
     undefined
@@ -110,16 +75,9 @@ export class CalendarWidget {
   });
 
   public readonly events = this.eventsResource.value;
-  public readonly isCalendarViewMonth = computed(() => this.view() === CalendarView.Month);
-  public readonly isCalendarViewWeek = computed(() => this.view() === CalendarView.Week);
-  public readonly isCalendarViewDay = computed(() => this.view() === CalendarView.Day);
   public readonly isFormValid = computed(() => this.configForm().valid());
   public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
 
-  public readonly calendarView = CalendarView;
-  public readonly weekStartsOn = 1;
-
-  public readonly locale = inject(LOCALE_ID);
   private readonly dialog = inject(MatDialog);
   private readonly calendarWidgetService = inject(CalendarWidgetService);
   private readonly errorHandlerService = inject(ErrorHandlerService);
@@ -145,29 +103,6 @@ export class CalendarWidget {
     this.config.update(({ calendarUrls }) => ({
       calendarUrls: calendarUrls.filter((_, index) => index !== indexToRemove)
     }));
-  }
-
-  public displayTodaysDate(): string {
-    return format(new Date(), "eee dd", { locale: fr });
-  }
-
-  public closeOpenMonthViewDay(): void {
-    this.activeDayIsOpen.set(false);
-  }
-
-  /** Opens the clicked day of the month, or closes it when it is already opened or has no event. */
-  public onMonthDayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    const viewDate = this.viewDate();
-    if (!isSameMonth(date, viewDate)) {
-      return;
-    }
-    const isOpenedDay = isSameDay(date, viewDate) && this.activeDayIsOpen();
-    this.activeDayIsOpen.set(!isOpenedDay && events.length > 0);
-    this.viewDate.set(date);
-  }
-
-  public setView(view: CalendarView): void {
-    this.view.set(view);
   }
 
   public openEventDetail(event: CalendarEvent): void {

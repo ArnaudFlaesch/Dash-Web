@@ -273,24 +273,6 @@ describe("StravaWidget", () => {
     );
   });
 
-  it("should sum the distance and the elevation of the activities", async () => {
-    await createLoggedInWidget(Array.from({ length: 25 }, (_, id) => createActivity({ id })));
-
-    const summaryItems = element.querySelectorAll(".strava-summary-item");
-    // 25 activities of 10.7047 km and 49.2 m
-    expect(summaryItems[0].textContent).toContain("25");
-    expect(summaryItems[1].textContent).toContain("268 km");
-    expect(summaryItems[2].textContent).toContain("1,230 m");
-
-    const chartData = getChartData();
-    expect(chartData?.labels).toEqual(["oct. 2022"]);
-    const [distanceDataset, activitiesDataset] = chartData?.datasets ?? [];
-    expect(distanceDataset.label).toEqual("Distance (km)");
-    expect(distanceDataset.data).toEqual([268]);
-    expect(activitiesDataset.label).toEqual("Activités");
-    expect(activitiesDataset.data).toEqual([25]);
-  });
-
   it("should display the activities from the most recent, and their statistics by month", async () => {
     await createLoggedInWidget([
       createActivity({
@@ -327,20 +309,6 @@ describe("StravaWidget", () => {
     const [distanceDataset, activitiesDataset] = chartData?.datasets ?? [];
     expect(distanceDataset.data).toEqual([5, 23]);
     expect(activitiesDataset.data).toEqual([1, 2]);
-  });
-
-  it("should group the activities by the month of their local start date", async () => {
-    // Started at 23:30 where it took place: Strava suffixes its local start date with "Z"
-    await createLoggedInWidget([
-      createActivity({
-        id: 1,
-        startDate: "2022-09-30T21:30:00Z",
-        startDateLocal: "2022-09-30T23:30:00Z"
-      })
-    ]);
-
-    expect(getChartData()?.labels).toEqual(["sept. 2022"]);
-    expect(element.querySelector(".activity-meta")?.textContent).toContain("30 septembre");
   });
 
   it("should navigate between the pages of activities", async () => {

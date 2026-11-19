@@ -11,7 +11,14 @@ import { injectWidgetData } from "@widgets/widget-tokens";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { AirparifMap } from "./airparif-map/airparif-map";
 import { AirparifWidgetService } from "./airparif-widget-service";
-import { AirparifIndice, AirparifCouleur, AirparifForecast } from "./airparif";
+import {
+  AIRPARIF_WEBSITE_URL,
+  AirparifIndice,
+  AirparifCouleur,
+  AirparifForecast,
+  getIndiceClass,
+  getIndiceLabel
+} from "./airparif";
 import { form, FormField, pattern } from "@angular/forms/signals";
 import { requiredText } from "@shared/forms/form-validators";
 
@@ -82,10 +89,10 @@ export class AirparifWidget {
   public readonly airParifCouleursIndices = computed(() => this.airParifResource.value()[1]);
   public readonly isFormValid = computed(() => this.configForm().valid());
   public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
+  public readonly airParifWebsiteUrl = AIRPARIF_WEBSITE_URL;
 
   private readonly errorHandlerService = inject(ErrorHandlerService);
   private readonly airParifWidgetService = inject(AirparifWidgetService);
-  public readonly airParifWebsiteUrl = this.airParifWidgetService.AIRPARIF_WEBSITE_URL;
   // Configuration of the last refresh, restored when the edition is cancelled
   private savedConfig = this.config();
 
@@ -104,11 +111,11 @@ export class AirparifWidget {
   }
 
   public getIndiceClass(indice: AirparifIndice): string {
-    return this.airParifWidgetService.getIndiceClass(indice);
+    return getIndiceClass(indice);
   }
 
   public getIndiceLabel(indice: AirparifIndice): string {
-    return this.airParifWidgetService.getIndiceLabel(indice);
+    return getIndiceLabel(indice);
   }
 
   public openSidebar(): void {

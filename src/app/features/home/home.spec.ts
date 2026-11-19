@@ -171,7 +171,7 @@ describe("Home", () => {
 
   /** Deletes a tab, as its label asks to with its delete button. */
   async function deleteTab(tab: Tab): Promise<void> {
-    getTabLabelElement(tab).triggerEventHandler("tabDeletedEvent", tab.id);
+    getTabLabelElement(tab).triggerEventHandler("tabDeleted", tab.id);
     httpTestingController
       .expectOne(`${environment.backend_url}/tabs/${tab.id}`)
       .flush(null, { status: 200, statusText: "OK" });
@@ -443,13 +443,45 @@ describe("Home", () => {
       await fixture.whenStable();
       // Clicking on the save button of a tab doesn't select it (no request for its widgets)
       getElement(".save-tab-button").click();
-      httpTestingController
-        .expectOne({ method: "PUT", url: `${environment.backend_url}/tabs/${tabs[1].id}` })
-        .flush({ ...tabs[1], label: "Journaux" });
+      const request = httpTestingController.expectOne({
+        method: "PUT",
+        url: `${environment.backend_url}/tabs/${tabs[1].id}`
+      });
+      expect(request.request.body).toEqual({ label: "Journaux", tabOrder: tabs[1].tabOrder });
+      request.flush({ ...tabs[1], label: "Journaux" });
       await fixture.whenStable();
 
+      // The edition of the label is closed once the tab is renamed
+      expect(getElement("#tab-name-input")).toBeNull();
       expect(getTabLabels()).toEqual([tabs[0].label, "Journaux"]);
       expect(getSelectedTabLabel()).toEqual(tabs[0].label);
+    });
+
+    it("Should display an error and keep the edition open when the tab cannot be renamed", async () => {
+      const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
+      await loadDashboard();
+      getTabs()[1].querySelector(".tab-label")?.dispatchEvent(new MouseEvent("dblclick"));
+      await fixture.whenStable();
+      const input = getElement<HTMLInputElement>("#tab-name-input");
+      input.value = "  Journaux ";
+      input.dispatchEvent(new Event("input"));
+      await fixture.whenStable();
+      getElement(".save-tab-button").click();
+      const request = httpTestingController.expectOne({
+        method: "PUT",
+        url: `${environment.backend_url}/tabs/${tabs[1].id}`
+      });
+      // The name is sent without its surrounding spaces
+      expect(request.request.body).toEqual({ label: "Journaux", tabOrder: tabs[1].tabOrder });
+      request.flush(null, serverError);
+      await fixture.whenStable();
+
+      expect(handleErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 500 }),
+        "Erreur lors de la modification d'un onglet."
+      );
+      expect(getElement("#tab-name-input")).not.toBeNull();
+      expect(getTabs()[0].textContent?.trim()).toEqual(tabs[0].label);
     });
 
     it("Should save the name of a tab with the Enter key, without selecting the tab", async () => {
@@ -690,7 +722,7 @@ describe("Home", () => {
         "Erreur lors de la suppression d'un widget."
       );
 
-      getTabLabelElement(tabs[0]).triggerEventHandler("tabDeletedEvent", tabs[0].id);
+      getTabLabelElement(tabs[0]).triggerEventHandler("tabDeleted", tabs[0].id);
       httpTestingController.expectOne(`${environment.backend_url}/tabs/1`).flush(null, serverError);
       expect(handleErrorSpy).toHaveBeenLastCalledWith(
         expect.anything(),

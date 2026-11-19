@@ -19,6 +19,8 @@ describe("SteamWidget", () => {
   const updateWidgetUrl = `${environment.backend_url}/widgets/1`;
   const ERROR_GETTING_PLAYER_DATA = "Erreur lors de la récupération de vos informations Steam.";
   const ERROR_GETTING_OWNED_GAMES = "Erreur lors de la récupération de la liste des jeux.";
+  const ERROR_GETTING_ACHIEVEMENTS = "Erreur lors de la récupération des succès.";
+  const achievementsUrl = `${ownedGamesUrl}/220/achievements`;
   const player: PlayerDataResponse = {
     personaname: "Nono",
     profileurl: "https://steamcommunity.com/id/Nauno93/",
@@ -90,6 +92,16 @@ describe("SteamWidget", () => {
 
   function getPaginatorRange(): string | undefined {
     return element.querySelector(".mat-mdc-paginator-range-label")?.textContent?.trim();
+  }
+
+  /** Opens (or closes) the panel of a game, which requests its achievements when opened. */
+  async function togglePanel(index = 0): Promise<void> {
+    getGameDetails()[index].querySelector<HTMLElement>("mat-expansion-panel-header")!.click();
+    await fixture.whenStable();
+  }
+
+  function getFirstGameDetails(): GameDetails {
+    return fixture.debugElement.query(By.directive(GameDetails)).componentInstance as GameDetails;
   }
 
   function goToNextPage(): void {
@@ -194,7 +206,6 @@ describe("SteamWidget", () => {
 
     const gameDetails = fixture.debugElement.query(By.directive(GameDetails))
       .componentInstance as GameDetails;
-    expect(gameDetails.steamUserId()).toEqual(steamUserId);
     expect(gameDetails.gameInfo()).toEqual({
       ...games.content[0],
       appIdLink: "https://steamcommunity.com/app/220",
@@ -370,5 +381,112 @@ describe("SteamWidget", () => {
     expect(element.querySelector<HTMLInputElement>("#steam-user-id-input")!.value).toEqual(
       steamUserId
     );
+  });
+
+  it("should load the achievements of a game when its panel is opened", async () => {
+    await createLoadedWidget(games);
+    httpTestingController.expectNone(achievementsUrl);
+
+    await togglePanel();
+    expect(getFirstGameDetails().isLoading()).toBe(true);
+    expect(element.querySelector("mat-progress-spinner")).not.toBeNull();
+    httpTestingController.expectOne(achievementsUrl).flush({
+      playerstats: {
+        achievements: [
+          { apiname: "A", achieved: 1, unlocktime: 1 },
+          { apiname: "B", achieved: 0, unlocktime: 0 },
+          { apiname: "C", achieved: 1, unlocktime: 1 }
+        ]
+      }
+    });
+    await fixture.whenStable();
+
+    expect(getFirstGameDetails().isLoading()).toBe(false);
+    expect(element.querySelector("mat-progress-spinner")).toBeNull();
+    expect(element.querySelector(".progress-value")?.textContent).toEqual("66%");
+    expect(element.querySelector(".totalachievements")?.textContent).toEqual("Succès : 3");
+  });
+
+  it("should load the achievements of the refreshed player and of the opened game", async () => {
+    await createLoadedWidget(games);
+
+    await togglePanel(1);
+    httpTestingController.expectOne(`${ownedGamesUrl}/340/achievements`).flush({});
+    await fixture.whenStable();
+    httpTestingController.expectNone(achievementsUrl);
+  });
+
+  it("should display a message for a game without achievements or without player stats", async () => {
+    await createLoadedWidget(games);
+
+    await togglePanel(0);
+    httpTestingController.expectOne(achievementsUrl).flush({ playerstats: {} });
+    await togglePanel(1);
+    httpTestingController.expectOne(`${ownedGamesUrl}/340/achievements`).flush({});
+    await fixture.whenStable();
+
+    const noAchievements = element.querySelectorAll(".no-achievements");
+    expect(noAchievements).toHaveLength(2);
+    expect(noAchievements[0].textContent).toContain("Aucun succès pour ce jeu.");
+    expect(noAchievements[1].textContent).toContain("Aucun succès pour ce jeu.");
+  });
+
+  it("should handle the error when getting the achievements", async () => {
+    await createLoadedWidget(games);
+
+    await togglePanel();
+    httpTestingController
+      .expectOne(achievementsUrl)
+      .flush(null, { status: 500, statusText: "Internal Server Error" });
+    await fixture.whenStable();
+
+    expect(handleErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      ERROR_GETTING_ACHIEVEMENTS
+    );
+    expect(element.querySelector("mat-progress-spinner")).toBeNull();
+    expect(element.querySelector(".no-achievements")).not.toBeNull();
+    expect(element.querySelector(".achievements-progress")).toBeNull();
+  });
+
+  it("should not reload the achievements loading or already loaded", async () => {
+    await createLoadedWidget(games);
+
+    // Opened, closed and opened again while loading
+    await togglePanel();
+    await togglePanel();
+    await togglePanel();
+    httpTestingController.expectOne(achievementsUrl).flush({ playerstats: {} });
+    await fixture.whenStable();
+
+    // Opened again once loaded, even after another page
+    await togglePanel();
+    await togglePanel();
+    goToNextPage();
+    httpTestingController.expectOne(`${ownedGamesUrl}?pageNumber=1`).flush(games);
+    await renderResponses();
+    await togglePanel();
+    httpTestingController.expectNone(achievementsUrl);
+    expect(element.querySelector(".no-achievements")).not.toBeNull();
+  });
+
+  it("should reload the achievements after a refresh", async () => {
+    await createLoadedWidget(games);
+    await togglePanel();
+    // Ignored, as received after the refresh
+    const firstRequest = httpTestingController.expectOne(achievementsUrl);
+
+    element.querySelector<HTMLButtonElement>(".refresh-button")!.click();
+    TestBed.tick();
+    firstRequest.flush({ playerstats: {} });
+    httpTestingController.expectOne(playerDataUrl).flush([player]);
+    httpTestingController.expectOne(ownedGamesUrl).flush(games);
+    await renderResponses();
+    expect(getFirstGameDetails().achievements()).toBeUndefined();
+
+    await togglePanel();
+    httpTestingController.expectOne(achievementsUrl).flush({ playerstats: {} });
+    await fixture.whenStable();
+    expect(getFirstGameDetails().achievements()).toEqual([]);
   });
 });

@@ -1,7 +1,7 @@
 <mat-expansion-panel
   class="game-panel flat-panel highlight-expanded"
   [title]="gameInfo().name"
-  (opened)="loadAchievementsData()"
+  (opened)="achievementsRequested.emit()"
 >
   <mat-expansion-panel-header>
     <mat-panel-title>
@@ -13,7 +13,7 @@
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>
     <div class="game-data-container column gap-sm">
-      @if (achievements().length) {
+      @if (achievementList().length) {
         <a [href]="gameInfo().playerAchievementUrl" class="achievements-progress row items-center gap-sm">
           <mat-progress-bar mode="determinate" [value]="completionStatus()" />
           <span class="progress-value accent-text">{{ completionStatus() }}{{ labels.percent }}</span>
@@ -21,7 +21,7 @@
 
         <div class="row items-center justify-between gap-sm">
           <a [href]="gameInfo().playerAchievementUrl" class="game-achievements-data muted-text column">
-            <div class="totalachievements">{{ labels.achievements }} {{ achievements().length }}</div>
+            <div class="totalachievements">{{ labels.achievements }} {{ achievementList().length }}</div>
             <div class="completed-achievements">{{ labels.completedAchievements }} {{ completedCount() }}</div>
           </a>
           <a mat-stroked-button [href]="gameInfo().appIdLink" class="community-hub-link">
@@ -29,7 +29,7 @@
             {{ labels.communityHub }}
           </a>
         </div>
-      } @else if (achievementsResource.isLoading()) {
+      } @else if (isLoading()) {
         <div class="centered">
           <mat-progress-spinner mode="indeterminate" diameter="28" />
         </div>

@@ -1,11 +1,10 @@
 import { DecimalPipe, NgOptimizedImage } from "@angular/common";
-import { Component, inject, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { InitialUppercasePipe } from "@shared/text/initial-uppercase-pipe";
 import { dateInTimezone } from "@shared/dates/timezone";
-import { ForecastMode, Forecast } from "../weather";
-import { WeatherWidgetService } from "../weather-widget-service";
+import { ForecastMode, Forecast, getWeatherIconUrl } from "../weather";
 
 @Component({
   selector: "dash-weather-forecast",
@@ -26,10 +25,8 @@ export class WeatherForecast {
   public readonly timezone = input(0);
   public readonly forecastMode = input<ForecastMode>(ForecastMode.DAY);
 
-  private readonly weatherWidgetService = inject(WeatherWidgetService);
-
   public getIconFromWeatherApi(icon: string): string {
-    return this.weatherWidgetService.getWeatherIconUrl(icon);
+    return getWeatherIconUrl(icon);
   }
 
   public getDateToDisplay(dateTime: number, timezone: number): string {

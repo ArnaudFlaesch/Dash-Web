@@ -1,0 +1,39 @@
+<nav id="tab-list-container" class="row items-center gap-xs" [attr.aria-label]="labels.tabs">
+  <div
+    id="tab-list"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="dropTab($event)"
+    class="row gap-xs"
+  >
+    @for (tab of tabs(); track tab.id) {
+      <dash-tab-label
+        class="tab"
+        role="link"
+        tabindex="0"
+        (keydown.enter)="tabSelected.emit(tab.id)"
+        (click)="tabSelected.emit(tab.id)"
+        (tabDeleted)="tabDeleted.emit($event)"
+        (tabRenamed)="renameTab(tab, $event)"
+        [cdkDragDisabled]="!editModeEnabled()"
+        [class.selected-item]="activeTabId() === tab.id"
+        [class.draggable]="editModeEnabled()"
+        [attr.aria-current]="activeTabId() === tab.id ? 'page' : null"
+        [tab]="tab"
+        [matTooltip]="labels.doubleClickToRename"
+        [matTooltipShowDelay]="800"
+        cdkDrag
+        cdkDragBoundary="#tab-list"
+      />
+    }
+  </div>
+  <button
+    (click)="newTabRequested.emit()"
+    [matTooltip]="labels.addNewTab"
+    [attr.aria-label]="labels.addNewTab"
+    id="add-new-tab-button"
+    mat-icon-button
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</nav>
