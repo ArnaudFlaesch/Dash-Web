@@ -9,8 +9,8 @@ import { environment } from "@environments/environment";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { Widget } from "@widgets/widget/widget";
 import { AirparifWidget } from "./airparif-widget";
-import { AirparifWidgetService } from "./airparif-widget-service";
 import { AirparifMap } from "./airparif-map/airparif-map";
+import { AIRPARIF_WEBSITE_URL } from "./airparif";
 
 /** Map without OpenLayers, to display the widget without the Airparif map. */
 @Component({ selector: "dash-airparif-map", template: "" })
@@ -195,9 +195,7 @@ describe("AirparifWidget", () => {
     expect(element.querySelector("#map-loading")).not.toBeNull();
     expect(element.querySelector("#airparif-today-chip")).toBeNull();
     const titleLink = element.querySelector<HTMLAnchorElement>(".widget-header a")!;
-    expect(titleLink.getAttribute("href")).toEqual(
-      TestBed.inject(AirparifWidgetService).AIRPARIF_WEBSITE_URL
-    );
+    expect(titleLink.getAttribute("href")).toEqual(AIRPARIF_WEBSITE_URL);
     expect(titleLink.textContent).toContain("Airparif");
 
     await flushForecast(

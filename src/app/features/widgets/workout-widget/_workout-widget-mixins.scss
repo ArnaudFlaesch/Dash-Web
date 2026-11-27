@@ -1,0 +1,17 @@
+@use "mixins" as *;
+
+// Styles shared by the views of the workout widget
+
+/** Root element of a view of the widget. */
+@mixin workout-view {
+  padding-bottom: $space-sm;
+}
+
+/** Title of a section of a view of the widget. */
+@mixin workout-section-title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

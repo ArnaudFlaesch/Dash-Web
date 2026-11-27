@@ -6,7 +6,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { InitialUppercasePipe } from "@shared/text/initial-uppercase-pipe";
-import { WeatherApiResponse } from "../weather";
+import { WeatherApiResponse, getWeatherIconUrl } from "../weather";
 import { WeatherWidgetService } from "../weather-widget-service";
 import { form, FormField } from "@angular/forms/signals";
 import { requiredText } from "@shared/forms/form-validators";
@@ -73,7 +73,7 @@ export class WeatherMiniWidget {
   private readonly errorHandlerService = inject(ErrorHandlerService);
 
   public getIconFromWeatherApi(icon: string): string {
-    return this.weatherWidgetService.getWeatherIconUrl(icon);
+    return getWeatherIconUrl(icon);
   }
 
   /** Restores the configuration of the last refresh when the edition is cancelled. */

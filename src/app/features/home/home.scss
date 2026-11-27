@@ -25,11 +25,20 @@
 #home-header-top-bar {
   flex-wrap: wrap;
 
-  @media (width <= $breakpoint-md) {
-    #tab-list-container {
+  // The tab bar takes the remaining width, between the logo and the actions
+  dash-tab-bar {
+    flex: 1 1 0;
+    min-width: 0;
+
+    @media (width <= $breakpoint-md) {
       flex-basis: 100%;
       order: 3;
     }
+  }
+
+  dash-home-action-bar {
+    flex: 0 0 auto;
+    margin-left: auto;
   }
 }
 
@@ -47,64 +56,6 @@
     font-size: 1.25rem;
     font-weight: 500;
     letter-spacing: 0.02em;
-  }
-}
-
-#tab-list-container {
-  flex: 1 1 0;
-  min-width: 0;
-
-  #tab-list {
-    min-width: 0;
-    padding: 2px;
-    overflow-x: auto;
-    scrollbar-width: none;
-
-    .tab {
-      flex: 0 0 auto;
-      cursor: pointer;
-      padding: 0.4rem 0.9rem;
-      border-width: 1px;
-      border-style: solid;
-      border-radius: $border-radius-pill;
-      font-weight: 500;
-      white-space: nowrap;
-      transition:
-        background-color 0.15s ease,
-        color 0.15s ease;
-
-      &.draggable {
-        cursor: grab;
-        border-style: dashed;
-      }
-    }
-  }
-}
-
-#action-bar-buttons {
-  flex: 0 0 auto;
-  margin-left: auto;
-
-  #open-add-widget-modal {
-    margin-right: $space-xs;
-  }
-
-  // Only the icon of the "add widget" button is kept on phones
-  @media (width <= $breakpoint-sm) {
-    gap: 0;
-
-    #open-add-widget-modal {
-      min-width: 0;
-      padding: 0 $space-sm;
-
-      #add-widget-button-label {
-        display: none;
-      }
-
-      mat-icon {
-        margin: 0;
-      }
-    }
   }
 }
 

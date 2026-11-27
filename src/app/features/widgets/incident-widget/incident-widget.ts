@@ -4,13 +4,10 @@ import { rxResource } from "@angular/core/rxjs-interop";
 
 import { isResourceLoaded } from "@shared/resources/resource-status";
 import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
-import { Incident, IncidentStreak, IncidentView } from "./incident";
+import { Incident, IncidentStreak } from "./incident";
 import { IncidentWidgetService } from "./incident-widget-service";
-import { differenceInDays } from "date-fns";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfirmModal } from "@shared/confirm-modal/confirm-modal";
-import { DateFormatPipe } from "@shared/dates/date-format-pipe";
-import { MatButton } from "@angular/material/button";
 
 import { form, FormField } from "@angular/forms/signals";
 import { requiredText } from "@shared/forms/form-validators";
@@ -21,24 +18,18 @@ import { Widget } from "@widgets/widget/widget";
 import { injectWidgetData, WIDGET_ID } from "@widgets/widget-tokens";
 import { catchError, filter, map, of } from "rxjs";
 import { ConfirmModalData } from "@shared/confirm-modal/confirm-modal-data";
+import { IncidentWidgetView } from "./incident-widget-view/incident-widget-view";
 
 @Component({
   selector: "dash-incident-widget",
   templateUrl: "./incident-widget.html",
-  styleUrl: "./incident-widget.scss",
-  imports: [Widget, MatIcon, MatFormField, MatLabel, MatInput, FormField, MatButton, DateFormatPipe]
+  imports: [Widget, MatIcon, MatFormField, MatLabel, MatInput, FormField, IncidentWidgetView]
 })
 export class IncidentWidget {
   protected readonly labels = {
     incident: "Incident",
     incidentType: "Type d'incident",
-    incidentTypePlaceholder: "Saisissez le type d'incident",
-    lastIncidentOn: "Dernier incident le",
-    pastStreaks: "Séries précédentes",
-    days: "jours",
-    end: "Terminer",
-    currentStreak: "Série actuelle",
-    start: "Départ"
+    incidentTypePlaceholder: "Saisissez le type d'incident"
   };
 
   private readonly ERROR_MESSAGES = {
@@ -50,7 +41,6 @@ export class IncidentWidget {
 
   public readonly config = signal({ incidentName: injectWidgetData("incidentName", "") });
   public readonly configForm = form(this.config, (path) => requiredText(path.incidentName));
-  private readonly widgetView = signal(IncidentView.CURRENT_STREAK);
   // A new object on each refresh, so that the resources reload
   private readonly refreshRequest = signal<object | undefined>(undefined);
 
@@ -93,18 +83,8 @@ export class IncidentWidget {
   public readonly isWidgetLoaded = computed(() =>
     isResourceLoaded(this.incidentConfigResource.status())
   );
-  public readonly isWidgetViewCurrentStreak = computed(
-    () => this.widgetView() === IncidentView.CURRENT_STREAK
-  );
-  private readonly isWidgetViewPastStreaks = computed(
-    () => this.widgetView() === IncidentView.PAST_STREAKS
-  );
   public readonly isFormValid = computed(() => this.configForm().valid());
   public readonly widgetData = computed(() => (this.isFormValid() ? this.config() : undefined));
-  public readonly daysSinceLastIncident = computed(() => {
-    const lastIncidentDate = this.lastIncidentDate();
-    return lastIncidentDate ? differenceInDays(new Date(), Date.parse(lastIncidentDate)) : 0;
-  });
 
   private readonly dialog = inject(MatDialog);
   private readonly incidentWidgetService = inject(IncidentWidgetService);
@@ -140,18 +120,6 @@ export class IncidentWidget {
       .afterClosed()
       .pipe(filter(Boolean))
       .subscribe(() => this.endCurrentStreak());
-  }
-
-  public goToCurrentStreakView(): void {
-    this.widgetView.set(IncidentView.CURRENT_STREAK);
-  }
-
-  public goToPastStreaksView(): void {
-    this.widgetView.set(IncidentView.PAST_STREAKS);
-  }
-
-  public getNumberOfDaysFromStreak(streakStartDate: string, streakEndDate: string): number {
-    return differenceInDays(Date.parse(streakEndDate), Date.parse(streakStartDate));
   }
 
   private endCurrentStreak(): void {

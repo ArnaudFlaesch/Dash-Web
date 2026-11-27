@@ -1,0 +1,26 @@
+@use "mixins" as *;
+
+// The theme colors of the buttons are set in _home-theme.scss
+#action-bar-buttons {
+  #open-add-widget-modal {
+    margin-right: $space-xs;
+  }
+
+  // Only the icon of the "add widget" button is kept on phones
+  @media (width <= $breakpoint-sm) {
+    gap: 0;
+
+    #open-add-widget-modal {
+      min-width: 0;
+      padding: 0 $space-sm;
+
+      #add-widget-button-label {
+        display: none;
+      }
+
+      mat-icon {
+        margin: 0;
+      }
+    }
+  }
+}

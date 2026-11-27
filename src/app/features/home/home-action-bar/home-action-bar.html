@@ -1,0 +1,100 @@
+<div id="action-bar-buttons" class="row items-center gap-xs">
+  <button
+    [disabled]="!canAddWidget()"
+    [matTooltip]="labels.addNewWidget"
+    (click)="newWidgetRequested.emit()"
+    id="open-add-widget-modal"
+    mat-flat-button
+  >
+    <mat-icon>add</mat-icon>
+    <span id="add-widget-button-label">{{ labels.widget }}</span>
+  </button>
+
+  @if (editModeEnabled()) {
+    <button
+      (click)="editModeToggled.emit()"
+      [matTooltip]="labels.validateWidgetOrder"
+      [attr.aria-label]="labels.validateWidgetOrder"
+      id="validate-widget-list-button"
+      mat-icon-button
+    >
+      <mat-icon>check</mat-icon>
+    </button>
+  } @else {
+    <button
+      (click)="editModeToggled.emit()"
+      [matTooltip]="labels.changeWidgetOrder"
+      [attr.aria-label]="labels.changeWidgetOrder"
+      id="toggle-edit-mode-button"
+      mat-icon-button
+    >
+      <mat-icon>drag_indicator</mat-icon>
+    </button>
+  }
+
+  <button
+    (click)="refreshRequested.emit()"
+    [matTooltip]="labels.refreshAllWidgets"
+    [attr.aria-label]="labels.refreshAllWidgets"
+    mat-icon-button
+    id="reload-all-widgets-button"
+  >
+    <mat-icon>refresh</mat-icon>
+  </button>
+
+  <ng-content />
+
+  <button
+    mat-icon-button
+    [matTooltip]="labels.applications"
+    [attr.aria-label]="labels.applications"
+    [matMenuTriggerFor]="appsMenu"
+  >
+    <mat-icon>apps</mat-icon>
+  </button>
+
+  <button
+    id="dash-menu"
+    [matTooltip]="labels.userMenu"
+    [attr.aria-label]="labels.userMenu"
+    mat-icon-button
+    [matMenuTriggerFor]="dashMenu"
+  >
+    <mat-icon>account_circle</mat-icon>
+  </button>
+
+  <mat-menu #appsMenu="matMenu">
+    <a mat-menu-item [href]="cashManagerApplicationUrl">
+      <mat-icon>savings</mat-icon>
+      <span>{{ labels.cashManager }}</span>
+    </a>
+  </mat-menu>
+
+  <mat-menu #dashMenu="matMenu">
+    <div mat-menu-item>
+      <div id="toggle-mode-container" class="row items-center gap-xs">
+        <mat-icon>light_mode</mat-icon>
+        <mat-slide-toggle
+          (change)="darkThemeToggled.emit($event.checked)"
+          [formField]="toggleThemeForm"
+          [attr.aria-label]="labels.darkTheme"
+        />
+        <mat-icon>dark_mode</mat-icon>
+      </div>
+    </div>
+    <mat-divider />
+    <button mat-menu-item (click)="configDownloadRequested.emit()" id="download-config-button">
+      <mat-icon>download</mat-icon>
+      <span>{{ labels.downloadConfig }}</span>
+    </button>
+    <button mat-menu-item (click)="configImportRequested.emit()" id="open-import-config-modal">
+      <mat-icon>upload</mat-icon>
+      <span>{{ labels.importConfig }}</span>
+    </button>
+    <mat-divider />
+    <button mat-menu-item (click)="logoutRequested.emit()" id="logout-button">
+      <mat-icon>logout</mat-icon>
+      <span>{{ labels.logout }}</span>
+    </button>
+  </mat-menu>
+</div>

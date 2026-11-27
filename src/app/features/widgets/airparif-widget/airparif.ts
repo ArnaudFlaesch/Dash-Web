@@ -1,3 +1,5 @@
+export const AIRPARIF_WEBSITE_URL = "https://www.airparif.asso.fr";
+
 export enum ForecastMode {
   TODAY,
   TOMORROW
@@ -36,4 +38,14 @@ export interface Pollutant {
 export interface IndiceDetails {
   icon: string;
   advice: string;
+}
+
+/** Class giving the color of the indice, defined in _airparif-widget-theme.scss. */
+export function getIndiceClass(indice: AirparifIndice, prefix = "indice"): string {
+  return `${prefix}-${indice.toLowerCase().replaceAll("_", "-")}`;
+}
+
+/** The API sends the keys of the enum (e.g. TRES_MAUVAIS) instead of its labels. */
+export function getIndiceLabel(indice: AirparifIndice): string {
+  return AirparifIndice[indice as unknown as keyof typeof AirparifIndice] ?? indice;
 }

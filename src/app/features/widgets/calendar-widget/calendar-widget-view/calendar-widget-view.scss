@@ -1,0 +1,32 @@
+@use "mixins" as *;
+
+// Navigation and view switch buttons, kept compact so that they fit on one line when possible
+#calendar-actions-container {
+  flex-wrap: wrap;
+  gap: $space-sm;
+  margin: $space-xs;
+
+  button {
+    min-width: 0;
+    padding: 0 0.75rem;
+    white-space: nowrap;
+  }
+
+  // Icon only buttons: the margins set by Material for an icon followed by a label are removed
+  // so that the arrow is centered
+  .calendar-navigation-button .mat-icon {
+    margin: 0;
+  }
+}
+
+#calendar-view-switch-container {
+  align-items: flex-start;
+}
+
+#calendar-selected-date {
+  margin-left: $space-sm;
+
+  h3 {
+    font-weight: 500;
+  }
+}

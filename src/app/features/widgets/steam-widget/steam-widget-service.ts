@@ -7,11 +7,6 @@ import { AchievementResponse, GameInfoResponse, PlayerDataResponse } from "./ste
 
 @Service()
 export class SteamWidgetService {
-  public readonly STEAM_IMAGE_URL =
-    "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/";
-
-  public readonly STEAM_COMMUNITY_URL = "https://steamcommunity.com/app/";
-
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.backend_url}/steam/players`;
 

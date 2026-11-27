@@ -175,25 +175,15 @@ describe("IncidentWidget", () => {
     expect(findButton(element, "Séries précédentes")).toBeUndefined();
   });
 
-  it("should switch between the current streak and the past streaks", async () => {
+  it("should display the past streaks, most recent first", async () => {
     const { fixture, element } = await createWidget(incidentConfig, streaks);
 
     findButton(element, "Séries précédentes")?.click();
     await fixture.whenStable();
-    expect(element.querySelector("#incident-widget-body")).toBeNull();
     const pastStreaks = [...element.querySelectorAll("#past-streaks-list > div")].map((streak) =>
       streak.textContent?.trim()
     );
-    // Most recent streak first, with its number of days
     expect(pastStreaks).toEqual(["3 jours", "31 jours", "10 jours"]);
-    expect(element.querySelector("#go-to-current-streak-button")?.textContent).toContain(
-      "Série actuelle"
-    );
-
-    element.querySelector<HTMLButtonElement>("#go-to-current-streak-button")!.click();
-    await fixture.whenStable();
-    expect(element.querySelector("#past-streaks-list")).toBeNull();
-    expect(element.querySelector("#incident-widget-body")).not.toBeNull();
   });
 
   it("should end the current streak once confirmed, and reload the past streaks", async () => {

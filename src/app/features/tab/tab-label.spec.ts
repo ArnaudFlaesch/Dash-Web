@@ -1,15 +1,11 @@
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { environment } from "@environments/environment";
 import { Tab } from "@features/tab/tab";
-import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { TabLabel } from "./tab-label";
-import { provideHttpClient } from "@angular/common/http";
-import { vi } from "vitest";
 
 describe("TabLabel", () => {
   let fixture: ComponentFixture<TabLabel>;
-  let httpTestingController: HttpTestingController;
+  let renamedLabels: string[];
+  let deletedTabIds: number[];
 
   const tabData: Tab = {
     id: 1,
@@ -17,17 +13,12 @@ describe("TabLabel", () => {
     tabOrder: 1
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
-    }).compileComponents();
-
+  beforeEach(() => {
     fixture = TestBed.createComponent(TabLabel);
-    httpTestingController = TestBed.inject(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpTestingController.verify();
+    renamedLabels = [];
+    deletedTabIds = [];
+    fixture.componentInstance.tabRenamed.subscribe((label) => renamedLabels.push(label));
+    fixture.componentInstance.tabDeleted.subscribe((tabId) => deletedTabIds.push(tabId));
   });
 
   function getElement<T extends HTMLElement>(selector: string): T {
@@ -53,6 +44,12 @@ describe("TabLabel", () => {
     getElement(selector).dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
   }
 
+  /** Sets the tab sent back by the parent once it is renamed. */
+  async function receiveRenamedTab(label: string): Promise<void> {
+    fixture.componentRef.setInput("tab", { ...tabData, label });
+    await fixture.whenStable();
+  }
+
   describe("Simple cases", () => {
     it("Should display and edit a tab", async () => {
       fixture.componentRef.setInput("tab", tabData);
@@ -63,40 +60,27 @@ describe("TabLabel", () => {
       await fixture.whenStable();
       expect(getElement("#tab-name-input")).not.toBeNull();
 
-      const updatedTabLabel = "Journaux";
-      fixture.componentRef.setInput("tab", { ...tabData, label: updatedTabLabel });
-      await fixture.whenStable();
-      expect(getElement<HTMLInputElement>("#tab-name-input").value).toEqual(updatedTabLabel);
-
+      await typeTabName("Journaux");
       getElement("#tab-name-input").dispatchEvent(new MouseEvent("dblclick"));
-      const updatedTabData = {
-        id: 1,
-        label: updatedTabLabel,
-        tabOrder: 1
-      };
-      const request = httpTestingController.expectOne(environment.backend_url + "/tabs/1");
-      expect(request.request.method).toEqual("PUT");
-      expect(request.request.body).toEqual({ label: updatedTabLabel, tabOrder: 1 });
-      request.flush(updatedTabData);
       await fixture.whenStable();
+      expect(renamedLabels).toEqual(["Journaux"]);
+      // The edition stays open until the renamed tab is received
+      expect(getElement("#tab-name-input")).not.toBeNull();
+
+      await receiveRenamedTab("Journaux");
       expect(getElement("#tab-name-input")).toBeNull();
-      expect(getElement(".tab-label").textContent?.trim()).toEqual(updatedTabLabel);
+      expect(getElement(".tab-label").textContent?.trim()).toEqual("Journaux");
     });
 
-    it("Should not update a tab because of server error", async () => {
+    it("Should keep the edition open when the renamed tab is not received", async () => {
       await editTab();
       pressEnter(".save-tab-button");
-
-      httpTestingController
-        .expectOne(environment.backend_url + "/tabs/1")
-        .error(new ProgressEvent("Server error"));
       await fixture.whenStable();
+      expect(renamedLabels).toEqual([tabData.label]);
       expect(getElement("#tab-name-input")).not.toBeNull();
     });
 
     it("Should delete a tab when it exists", async () => {
-      const deletedTabIds: number[] = [];
-      fixture.componentInstance.tabDeletedEvent.subscribe((tabId) => deletedTabIds.push(tabId));
       await editTab();
       pressEnter(".delete-tab-button");
       expect(deletedTabIds).toEqual([tabData.id]);
@@ -122,83 +106,62 @@ describe("TabLabel", () => {
       expect(getElement(".delete-tab-button").getAttribute("title")).toEqual("Supprimer l'onglet");
     });
 
-    it("Should save the new name of the tab when the save button is clicked", async () => {
-      const updatedTabs: Tab[] = [];
-      fixture.componentInstance.tabUpdatedEvent.subscribe((tab) => updatedTabs.push(tab));
+    it("Should send the new name of the tab when the save button is clicked", async () => {
       await editTab();
       await typeTabName("Journaux");
       getElement(".save-tab-button").click();
+      expect(renamedLabels).toEqual(["Journaux"]);
 
-      const request = httpTestingController.expectOne(environment.backend_url + "/tabs/1");
-      expect(request.request.body).toEqual({ label: "Journaux", tabOrder: 1 });
-      request.flush({ ...tabData, label: "Journaux" });
-      await fixture.whenStable();
-
-      expect(updatedTabs).toEqual([{ ...tabData, label: "Journaux" }]);
+      await receiveRenamedTab("Journaux");
       expect(getElement("#tab-name-input")).toBeNull();
       expect(getElement(".tab-label").textContent?.trim()).toEqual("Journaux");
     });
 
-    it("Should save the new name of the tab when Enter is pressed", async () => {
+    it("Should send the new name of the tab when Enter is pressed", async () => {
       await editTab();
       await typeTabName("Journaux");
       pressEnter("#tab-name-input");
-      httpTestingController
-        .expectOne(environment.backend_url + "/tabs/1")
-        .flush({ ...tabData, label: "Journaux" });
-      await fixture.whenStable();
+      expect(renamedLabels).toEqual(["Journaux"]);
+
+      await receiveRenamedTab("Journaux");
       expect(getElement("#tab-name-input")).toBeNull();
       expect(getElement(".tab-label").textContent?.trim()).toEqual("Journaux");
     });
 
-    it("Should save the name without its surrounding spaces", async () => {
+    it("Should send the name without its surrounding spaces", async () => {
       await editTab();
       await typeTabName("  Journaux ");
       getElement(".save-tab-button").click();
-      const request = httpTestingController.expectOne(environment.backend_url + "/tabs/1");
-      expect(request.request.body).toEqual({ label: "Journaux", tabOrder: 1 });
-      request.flush({ ...tabData, label: "Journaux" });
+      expect(renamedLabels).toEqual(["Journaux"]);
     });
 
     it("Should save the name and delete the tab with the Space key", async () => {
-      const deletedTabIds: number[] = [];
-      fixture.componentInstance.tabDeletedEvent.subscribe((tabId) => deletedTabIds.push(tabId));
       await editTab();
       getElement(".delete-tab-button").dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
       expect(deletedTabIds).toEqual([tabData.id]);
 
       getElement(".save-tab-button").dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
-      httpTestingController.expectOne(environment.backend_url + "/tabs/1").flush({ ...tabData });
-      await fixture.whenStable();
+      expect(renamedLabels).toEqual([tabData.label]);
     });
 
     it("Should not save a blank name", async () => {
       await editTab();
       await typeTabName("   ");
       getElement(".save-tab-button").click();
-      httpTestingController.expectNone(environment.backend_url + "/tabs/1");
       await fixture.whenStable();
+      expect(renamedLabels).toEqual([]);
       expect(getElement("#tab-name-input")).not.toBeNull();
     });
 
-    it("Should display an error when the tab cannot be renamed", async () => {
-      const handleErrorSpy = vi.spyOn(TestBed.inject(ErrorHandlerService), "handleError");
+    it("Should close the edition when the tab is received again, even with the same name", async () => {
       await editTab();
       getElement(".save-tab-button").click();
-      httpTestingController
-        .expectOne(environment.backend_url + "/tabs/1")
-        .flush(null, { status: 500, statusText: "Server error" });
-      await fixture.whenStable();
-      expect(handleErrorSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ status: 500 }),
-        "Erreur lors de la modification d'un onglet."
-      );
-      expect(getElement("#tab-name-input")).not.toBeNull();
+      await receiveRenamedTab(tabData.label);
+      expect(getElement("#tab-name-input")).toBeNull();
+      expect(getElement(".tab-label").textContent?.trim()).toEqual(tabData.label);
     });
 
     it("Should ask to delete the tab when the delete button is clicked", async () => {
-      const deletedTabIds: number[] = [];
-      fixture.componentInstance.tabDeletedEvent.subscribe((tabId) => deletedTabIds.push(tabId));
       await editTab();
       getElement(".delete-tab-button").click();
       expect(deletedTabIds).toEqual([tabData.id]);

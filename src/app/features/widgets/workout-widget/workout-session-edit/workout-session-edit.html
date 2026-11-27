@@ -1,4 +1,4 @@
-@if (currentWorkoutSessionToEdit() && workoutExercisesLoaded()) {
+@if (isLoaded()) {
   <div id="workout-widget-header" class="row items-center justify-between">
     <h3 id="workout-session-date">{{ labels.sessionOf }} {{ sessionDate() | dateFormat: "short" }}</h3>
 
@@ -36,7 +36,7 @@
         <div class="edit-reps-container row items-center">
           @if (sessionEditMode()) {
             <button
-              [disabled]="isWidgetUpdating()"
+              [disabled]="isUpdating()"
               class="subtract-rep-to-workout-button"
               mat-icon-button
               [attr.aria-label]="labels.removeRep + ' ' + workoutType.name"
@@ -54,7 +54,7 @@
 
           @if (sessionEditMode()) {
             <button
-              [disabled]="isWidgetUpdating()"
+              [disabled]="isUpdating()"
               class="add-rep-to-workout-button"
               mat-icon-button
               [attr.aria-label]="labels.addRep + ' ' + workoutType.name"

@@ -1,4 +1,3 @@
-import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
 import { Location, NgOptimizedImage } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import {
@@ -11,15 +10,10 @@ import {
   signal
 } from "@angular/core";
 import { rxResource, takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { form, FormField } from "@angular/forms/signals";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
-import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
-import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { MatSlideToggle } from "@angular/material/slide-toggle";
-import { MatTooltip } from "@angular/material/tooltip";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, filter, of, switchMap } from "rxjs";
 import { WidgetType } from "@widgets/widget-type";
@@ -34,7 +28,8 @@ import { ErrorHandlerService } from "@core/error-handler/error-handler-service";
 import { TabService } from "@features/tab/tab-service";
 import { ThemeService } from "@core/theme/theme-service";
 import { WidgetService } from "@widgets/widget-service";
-import { TabLabel } from "@features/tab/tab-label";
+import { TabBar } from "@features/tab/tab-bar/tab-bar";
+import { HomeActionBar } from "@features/home/home-action-bar/home-action-bar";
 import { MiniWidgetList } from "@widgets/mini-widget-list/mini-widget-list";
 import { WidgetList } from "@widgets/widget-list/widget-list";
 import { WidgetTypePickerData } from "@widgets/widget-type-picker-modal/widget-type-picker-data";
@@ -46,47 +41,22 @@ import { WIDGET_TYPE_OPTIONS } from "@widgets/widget-type-picker-modal/widget-ty
   styleUrl: "./home.scss",
   imports: [
     NgOptimizedImage,
-    CdkDropList,
-    TabLabel,
-    CdkDrag,
+    TabBar,
+    HomeActionBar,
     MatButton,
-    MatIconButton,
-    MatTooltip,
     MatIcon,
-    MatMenuTrigger,
     Notifications,
-    MatMenu,
-    MatMenuItem,
-    MatSlideToggle,
-    MatDivider,
     MiniWidgetList,
     WidgetList,
-    MatProgressSpinner,
-    FormField
+    MatProgressSpinner
   ]
 })
 export class Home {
   private readonly REFRESH_INTERVAL = 10 * 60 * 1000;
   private readonly MODAL_WIDTH = "640px";
-  private readonly CASH_MANAGER_URL = "https://arnaudflaesch.github.io/CashManager/";
 
   protected readonly labels = {
     brandName: "Dash",
-    tabs: "Onglets",
-    doubleClickToRename: "Double-cliquez pour renommer",
-    addNewTab: "Ajouter un nouvel onglet",
-    addNewWidget: "Ajouter un nouveau widget",
-    widget: "Widget",
-    validateWidgetOrder: "Valider l'ordre des widgets",
-    changeWidgetOrder: "Changer l'ordre des widgets",
-    refreshAllWidgets: "Réactualiser tous les widgets",
-    applications: "Applications",
-    userMenu: "Menu utilisateur",
-    cashManager: "CashManager",
-    darkTheme: "Thème sombre",
-    downloadConfig: "Télécharger la configuration",
-    importConfig: "Importer une configuration",
-    logout: "Déconnexion",
     editModeHint: "Glissez-déposez les widgets et les onglets pour les réorganiser.",
     finish: "Terminer",
     noTab: "Aucun onglet",
@@ -105,13 +75,13 @@ export class Home {
     updateWidgetsOrder: "Erreur lors de la mise à jour des widgets.",
     deleteWidget: "Erreur lors de la suppression d'un widget.",
     addTab: "Erreur lors de l'ajout d'un onglet.",
+    updateTab: "Erreur lors de la modification d'un onglet.",
     updateTabs: "Erreur lors de la mise à jour des onglets.",
     deleteTab: "Erreur lors de la suppression d'un onglet."
   };
 
   public readonly editModeEnabled = signal(false);
-  private readonly isDarkTheme = linkedSignal(inject(ThemeService).isDarkModeEnabled);
-  public readonly toggleThemeForm = form(this.isDarkTheme);
+  public readonly isDarkTheme = inject(ThemeService).isDarkModeEnabled;
 
   private readonly tabsResource = rxResource({
     stream: () =>
@@ -154,8 +124,6 @@ export class Home {
   public readonly isDashboardLoaded = computed(() => !this.tabsResource.isLoading());
   public readonly areWidgetsLoaded = computed(() => !this.widgetsResource.isLoading());
   public readonly canUserSeeNotifications = inject(AuthService).isUserAdmin;
-
-  public readonly cashManagerApplicationUrl = this.CASH_MANAGER_URL;
 
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -200,9 +168,17 @@ export class Home {
     }
   }
 
-  /** Keeps the renamed tab, else its previous name would be sent back when the tabs are reordered. */
-  public updateTab(updatedTab: Tab): void {
-    this.tabs.update((tabs) => tabs.map((tab) => (tab.id === updatedTab.id ? updatedTab : tab)));
+  public renameTab({ id, label, tabOrder }: Tab): void {
+    this.tabService.updateTab(id, label, tabOrder).subscribe({
+      // Keeps the renamed tab, else its previous name would be sent back when the tabs are reordered.
+      // Receiving a new tab also closes the edition of its label, which stays open on error.
+      next: (updatedTab) =>
+        this.tabs.update((tabs) =>
+          tabs.map((tab) => (tab.id === updatedTab.id ? updatedTab : tab))
+        ),
+      error: (error: HttpErrorResponse) =>
+        this.errorHandlerService.handleError(error, this.ERROR_MESSAGES.updateTab)
+    });
   }
 
   private deleteWidgetFromDashboard(id: number): void {
@@ -284,14 +260,7 @@ export class Home {
     });
   }
 
-  public drop(event: CdkDragDrop<Tab[]>): void {
-    // A tab dropped back at its place doesn't change the order
-    if (event.previousIndex === event.currentIndex) {
-      return;
-    }
-    const tabs = [...this.tabs()];
-    moveItemInArray(tabs, event.previousIndex, event.currentIndex);
-    const updatedTabs = tabs.map((tab, index) => ({ ...tab, tabOrder: index }));
+  public updateTabsOrder(updatedTabs: Tab[]): void {
     this.tabService.updateTabs(updatedTabs).subscribe({
       next: (tabs) => this.tabs.set(tabs),
       error: (error: HttpErrorResponse) =>

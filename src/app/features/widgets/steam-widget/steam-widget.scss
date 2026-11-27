@@ -1,27 +1,4 @@
-@use "mixins" as *;
-
-// The color of the paginator is set in _steam-widget-theme.scss
-.search-game-form {
-  margin-bottom: $space-sm;
-
-  mat-form-field {
-    width: 100%;
-  }
-}
-
-.no-game-found {
-  padding: $space-lg 0;
-
-  mat-icon {
-    @include icon-size(2rem);
-  }
-}
-
-.games-loading {
-  padding: $space-lg 0;
-}
-
-.games-paginator {
-  margin-top: auto;
-  background-color: transparent;
+// The view fills the body of the widget, so that the paginator stays at its bottom
+.steam-widget-view {
+  flex: 1 0 auto;
 }
